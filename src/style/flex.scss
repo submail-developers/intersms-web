@@ -1,0 +1,217 @@
+/*
+  flex布局
+  缩写说明：
+      fx: display: flex； fx-开头的和g-开头的默认为全局class
+      col: flex-direction: column
+      x: 主轴justify-content
+      y: 交叉轴align-items
+      between: 主轴justify-content：space-between
+      around: 主轴justify-content：space-around
+      center: 主轴或交叉轴justify-content|align-items：center
+      start: 主轴或交叉轴justify-content|align-items：flex-start
+      end: 主轴或交叉轴justify-content|align-items：flex-end
+      .fx-wrap: { flex-wrap: wrap; } 超出自动换行
+      .fx-auto: { flex: 1; } 自动伸缩
+      .fx-shrink: { flex-shrink: 0; } 剩余空间不足不缩小
+      
+  tips: 有规律的，慢慢看 `_`
+        以下class如果不能满足你的需求，请在该文件中添加，或者自己写样式。
+        不熟悉flex的请看  https://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
+*/
+
+/* .fx === .fx-x-start === .fx-y-start */
+.fx, .fx-x-start, .fx-y-start {
+  display: flex;
+}
+
+/* 垂直显示 */
+.fx-col, .fx-col-start-start {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 主轴对齐方式1 横向居中 */
+.fx-x-center, .fx-center-start {
+  display: flex;
+  justify-content: center;
+}
+
+/* 主轴对齐方式2 两端对齐 */
+.fx-x-between, .fx-between-start {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 主轴对齐方式3 间隔对齐 每个项目两侧的间隔相等 */
+.fx-x-around, .fx-around-start {
+  display: flex;
+  justify-content: space-around;
+}
+
+/* 主轴对齐方式3 左对齐 */
+/* .fx === .fx-x-start === .fx-y-start */
+
+/* 主轴对齐方式4 右对齐 */
+.fx-x-end, .fx-end-start {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 交叉轴对齐方式1 居中 */
+.fx-y-center, .fx-start-center {
+  display: flex;
+  align-items: center;
+}
+
+/* 交叉轴对齐方式2 上对齐 */
+/* .fx === .fx-x-start === .fx-y-start */
+
+/* 交叉轴对齐方式3 下对齐 */
+.fx-y-end, .fx-start-end {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* 常用-水平方向-cneter-* */
+.fx-center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* .fx-center-start === .fx-x-center */
+.fx-center-end {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+/* 常用-水平方向-between-* */
+.fx-between-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* .fx-between-start === .fx-x-between */
+.fx-between-end {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+/* 常用-水平方向-around-* */
+.fx-around-center {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+/* .fx-around-start === .fx-x-around */
+.fx-around-end {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+
+/* 常用-水平方向-start-* */
+/* .fx-start-center === .fx-y-center */
+/* .fx-start-start === .fx-y-start === .fx */
+/* .fx-start-end === .fx-y-end */
+
+/* 常用-水平方向-end-* */
+.fx-end-center {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+/* .fx-end-start === .fx-x-end */
+.fx-end-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+/* 常用-垂直方向-center-* */
+.fx-col-center-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.fx-col-center-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: flex-start; */
+}
+.fx-col-center-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+/* 常用-垂直方向-start-* */
+.fx-col-start-center {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: flex-start; */
+  align-items: center;
+}
+/* .fx-col-start-start === .fx-col */
+.fx-col-start-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+/* 常用-垂直方向-between-* */
+.fx-col-between-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.fx-col-between-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* align-items: flex-start; */
+}
+.fx-col-between-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+/* 常用-垂直方向-around-* */
+.fx-col-around-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.fx-col-around-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  /* align-items: flex-start; */
+}
+.fx-col-around-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+
+/* 其他-自动换行 */
+.fx-wrap {
+  flex-wrap: wrap;
+}
+
+/*其他-自动伸缩 */
+.fx-auto {
+  flex: 1;
+  /* flex: 1; === flex: 1 1 auto; */
+}
+
+/* 其他-剩余空间不足不缩小 */
+.fx-shrink{
+  flex-shrink: 0;
+}

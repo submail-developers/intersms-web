@@ -1,0 +1,100 @@
+{
+  "id": "4029758",
+  "name": "国际短信网关",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "35227723",
+      "name": "收回1",
+      "font_class": "shouhui1",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "35227724",
+      "name": "收回",
+      "font_class": "shouhui",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "35175720",
+      "name": "全选",
+      "font_class": "quanxuan",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "35175721",
+      "name": "新增",
+      "font_class": "xinzeng",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "35175722",
+      "name": "全球国家",
+      "font_class": "quanqiuguojia",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "35175723",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "35175724",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "35175725",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "35175726",
+      "name": "停用",
+      "font_class": "tingyong",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "35175727",
+      "name": "统计1",
+      "font_class": "tongji1",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "35175729",
+      "name": "客户管理",
+      "font_class": "kehuguanli",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "35175730",
+      "name": "下拉",
+      "font_class": "xiala",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "35175757",
+      "name": "我的",
+      "font_class": "wode",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    }
+  ]
+}

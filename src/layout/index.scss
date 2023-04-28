@@ -1,0 +1,35 @@
+[data-class=page-container] {
+  background-color: #eaeff5;
+  width: 100%;
+  height: 100%;
+  .layout {
+    width: 100%;
+    height: calc(100% - 60px);
+    overflow: hidden;
+    .content {
+      background-color: #fff;
+      border-radius: 16px 0 0 0;
+      height: 100%;
+      width: 100%;
+      .wrap{
+        width: 100%;
+        height: calc(100% - 58px);
+        .content-page {
+          height: 100%;
+          width: 100%;
+          padding: 0 10px;
+          overflow-y: scroll;
+          overflow-x: hidden;
+          position: relative;
+          .outlet-content{
+            height: calc(100% - 42px);
+            width: 100%;
+            &>div{
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

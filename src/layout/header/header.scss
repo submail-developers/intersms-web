@@ -1,0 +1,14 @@
+[data-class=header-container] {
+  height: 60px;
+  background-color: transparent;
+  padding: 0 16px;
+  .logo{
+    width: auto;
+    height: 24px;
+  }
+  .text{
+    font-size: 16px;
+    margin-left: 48px;
+    line-height: 1.5;
+  }
+}
