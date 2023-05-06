@@ -1,0 +1,48 @@
+[data-class=account-config-tabble] {
+
+  .ant-table-wrapper {
+    .ant-table-header table {
+      th {
+        border-bottom: none;
+        background-color: transparent;
+        color: #888;
+        font-weight: 400;
+        padding: 12px;
+
+        &::before {
+          display: none;
+        }
+      }
+
+      .ant-table-selection-column {
+        background-color: transparent;
+      }
+    }
+
+    .ant-table-body table {
+      tbody {
+        tr {
+          &.ant-table-measure-row {
+            visibility: collapse;
+          }
+
+          &>td {
+            border: none;
+            padding: 12px;
+          }
+
+          &:nth-child(2n) {
+            &>td {
+              background-color: rgba(0, 0, 0, .03);
+            }
+          }
+          &:nth-child(2n+1) {
+            &>td {
+              background-color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+}

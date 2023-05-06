@@ -1,0 +1,25 @@
+[data-calss=submail-form-item] {
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-inline-end: 16px;
+  width: fit-content;
+  &.large {
+    height: 40px;
+  }
+  &.middle {
+    height: 32px;
+  }
+  &.small {
+    height: 24px;
+    font-size: 12px;
+  }
+  .label{
+    background-color: #f4f6f8;
+    border-right: 1px solid #e6e6e6;
+    height: 100%;
+    padding: 0 15px;
+    word-break: keep-all;
+  }
+}

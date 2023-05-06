@@ -1,0 +1,23 @@
+[data-class=buttonGroup] {
+  border-radius: 4px;
+  &.large{}
+  &.middle{}
+  &.small{}
+  .button-item{
+    width: 76px;
+    height: 32px;
+    padding: 4px 15px;
+    background: #0074d7 linear-gradient(180deg, #0074d7, #0074d7) repeat-x;
+    cursor: pointer;
+    &.danger{
+      background: #ff5e2d linear-gradient(180deg, #ff6062, #ff5e2d) repeat-x;
+    }
+    &:last-child{
+
+    }
+    .button-text{
+      word-break: break-all;
+      margin-left: 3px;
+    }
+  }
+}

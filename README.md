@@ -3,4 +3,4 @@
 
 ## 前端技术栈
 
-React18 + react-routerV6 + axios + reduxjs/toolkit + antd + antdPro
+React18 + TS + react-routerV6 + axios + reduxjs/toolkit + antd + antdPro

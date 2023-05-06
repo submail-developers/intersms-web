@@ -10,23 +10,25 @@
       background-color: #fff;
       border-radius: 16px 0 0 0;
       height: 100%;
-      width: 100%;
+      width: calc(100% - 65px);
       .wrap{
         width: 100%;
         height: calc(100% - 58px);
         .content-page {
           height: 100%;
-          width: 100%;
+          width: calc(100% - 194px);
           padding: 0 10px;
           overflow-y: scroll;
           overflow-x: hidden;
           position: relative;
-          .outlet-content{
-            height: calc(100% - 42px);
+          transition: width .3s;
+          will-change: width;
+          &.close{
             width: 100%;
-            &>div{
-              width: 100%;
-            }
+          }
+          &>div{
+            width: 100%;
+            position: relative;
           }
         }
       }

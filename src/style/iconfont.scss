@@ -1,0 +1,13 @@
+// 解决token无法修改的样式
+.ant-btn{
+  .icon.iconfont{
+    font-size: 14px;
+    margin-right: 3px;
+    &.large,&.middle{
+      font-size: 14px;
+    }
+    &.small{
+      font-size: 12px;
+    }
+  }
+}

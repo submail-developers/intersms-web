@@ -1,10 +1,12 @@
 import { NavLink } from 'react-router-dom';
 import logo from '@/assets/img/logo.png'
 import './header.scss'
+import { useSize } from '@/hooks';
 
 export default () => {
+  const size = useSize()
   return (
-    <div data-class='header-container' className="fx-start-center fx-shrink">
+    <div data-class='header-container' className={`fx-start-center fx-shrink ${size}`}>
       <NavLink to={'/'}>
         <img src={logo} alt="" className="logo" />
       </NavLink>

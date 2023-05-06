@@ -20,7 +20,7 @@ export default () => {
     })
   }, [location.pathname, currentMatchBaseRouteObj?.pathname])
 
-  // menu关闭状态
+  // menu状态
   const close = useAppSelector(menuCloseStatus)
 
   return (
@@ -28,7 +28,9 @@ export default () => {
       {
         menuList.map((menu, index) => (
           <dl className='col' key={index}>
-            <dt className='fn12'>{menu.handle.alias}</dt>
+            {
+              menu.handle.alias&&<dt className='fn12'>{menu.handle.alias}</dt>
+            }
             {
               menu.children && menu.children.map(ditem => (
                 <dd className='fn14' key={ditem.path}>
