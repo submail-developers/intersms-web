@@ -1,10 +1,6 @@
-import './codeList.scss';
+import './codeList.scss'
 
 // 状态码对照表
 export default function Fn() {
-  return (
-    <div data-class='codeList'>
-      codeList
-    </div>
-  );
-};
+  return <div data-class='codeList'>codeList</div>
+}

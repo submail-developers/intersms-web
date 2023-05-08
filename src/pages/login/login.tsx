@@ -1,13 +1,9 @@
-import React, { FC } from "react";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'
 
-
-const Fn: FC = () => {
+export default function Login() {
   return (
     <div>
       <NavLink to='/console/customer/sendlist'>login</NavLink>
     </div>
-  );
-};
-
-export default Fn;
+  )
+}

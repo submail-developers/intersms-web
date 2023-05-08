@@ -1,4 +1,4 @@
-[data-class=sidemenu] {
+[data-class='sidemenu'] {
   width: 194px;
   background-color: #fafbfc;
   padding-top: 10px;
@@ -6,9 +6,9 @@
   overflow-y: scroll;
   height: 100%;
   will-change: width;
-  transition: width .3s;
+  transition: width 0.3s;
   box-sizing: border-box;
-  &.close{
+  &.close {
     width: 0;
     padding-right: 0;
   }
@@ -37,7 +37,7 @@
         text-indent: 32px;
         line-height: 45px;
         will-change: color background-color;
-        transition: color .4s ease, background-color .4s ease;
+        transition: color 0.4s ease, background-color 0.4s ease;
         position: relative;
         &::before {
           content: '';
@@ -48,7 +48,7 @@
           height: 100%;
           background-color: transparent;
           will-change: ßbackground-color;
-          transition: background-color .4s ease;
+          transition: background-color 0.4s ease;
         }
 
         &:hover {

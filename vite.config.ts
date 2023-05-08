@@ -5,10 +5,10 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  resolve:{
-    alias:{
-      '@': path.resolve(__dirname,'./src') // 设置别名
-    }
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'), // 设置别名
+    },
   },
   server: {
     proxy: {
@@ -19,8 +19,8 @@ export default defineConfig({
       '/apis': {
         target: 'http://zjhtest.submail.intersms.com/console/api/',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/apis/, '')
-      }
-    }
-  }
+        rewrite: (path) => path.replace(/^\/apis/, ''),
+      },
+    },
+  },
 })

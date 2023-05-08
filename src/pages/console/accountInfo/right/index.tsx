@@ -1,20 +1,19 @@
-import { useState } from 'react';
-import { Tabs, Button, Select, Form, Input, DatePicker, ConfigProvider, Table, Tooltip, Grid, Col, Row, Space, Divider, Switch } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import type { TabsProps, } from 'antd';
-import { useSize } from '@/hooks';
+import { useState } from 'react'
+import { Tabs, Button, Space, Switch } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import type { TabsProps } from 'antd'
+import { useSize } from '@/hooks'
 
-import PriceConfig from './config/price';
+import PriceConfig from './config/price'
 
 import './index.scss'
 
-
-export default function Right(){
+export default function Right() {
   const [activeKey, setactiveKey] = useState<string>('1')
   const onChange = (key: string) => {
-    console.log(key);
-  };
-  
+    console.log(key)
+  }
+
   const items: TabsProps['items'] = [
     {
       key: '1',
@@ -31,10 +30,9 @@ export default function Right(){
       label: `失败处理配置`,
       children: `Content of Tab Pane 3`,
     },
-  ];
-  
-  const size = useSize()
+  ]
 
+  const size = useSize()
 
   // 自定义tabs导航
   const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => {
@@ -45,21 +43,30 @@ export default function Right(){
       console.log(checked)
     }
     return (
-      <div className={`tabbar-head ${size=='small'?'':'fx'}`}>
+      <div className={`tabbar-head ${size == 'small' ? '' : 'fx'}`}>
         <div className={`fx panle-list ${size}`}>
-          {
-            items.map(item => (
-              <div key={item.key} onClick={() => setactiveKey(item.key)} className={`panle ${size} ${item.key==activeKey?'active':''}`}>{item.label}</div>
-            ))
-          }
+          {items.map((item) => (
+            <div
+              key={item.key}
+              onClick={() => setactiveKey(item.key)}
+              className={`panle ${size} ${
+                item.key == activeKey ? 'active' : ''
+              }`}>
+              {item.label}
+            </div>
+          ))}
         </div>
         <div className={`fx-auto ext-switch fx-between-center ${size}`}>
           <div className='switch-all fx-shrink'>
-            <Switch size={size=='small' ? 'small' : 'default'} onChange={changeALl}></Switch>
+            <Switch
+              size={size == 'small' ? 'small' : 'default'}
+              onChange={changeALl}></Switch>
             <span> 开启全部营销</span>
           </div>
           <div className='switch-test'>
-            <Switch size={size=='small' ? 'small' : 'default'} onChange={changeTest}></Switch>
+            <Switch
+              size={size == 'small' ? 'small' : 'default'}
+              onChange={changeTest}></Switch>
             <span> 测试用户</span>
           </div>
         </div>
@@ -68,21 +75,35 @@ export default function Right(){
   }
 
   return (
-    <section data-class='account-right' className='right-wrap fx-auto fx-shrink'
-      style={{minWidth: `${size==='small'?'100%':''}`}}
-    >
+    <section
+      data-class='account-right'
+      className='right-wrap fx-auto fx-shrink'
+      style={{ minWidth: `${size === 'small' ? '100%' : ''}` }}>
       <div className='fx-col'>
         <Space.Compact size={size}>
-          <Button type="primary" icon={<i className={`icon iconfont icon-xinzeng ${size}`} />}>新增</Button>
-          <Button type="primary" icon={<i className={`icon iconfont icon-bianji ${size}`} />}>编辑</Button>
-          <Button type='primary' danger icon={<i className={`icon iconfont icon-shanchu ${size}`} />}>删除</Button>
+          <Button
+            type='primary'
+            icon={<i className={`icon iconfont icon-xinzeng ${size}`} />}>
+            新增
+          </Button>
+          <Button
+            type='primary'
+            icon={<i className={`icon iconfont icon-bianji ${size}`} />}>
+            编辑
+          </Button>
+          <Button
+            type='primary'
+            danger
+            icon={<i className={`icon iconfont icon-shanchu ${size}`} />}>
+            删除
+          </Button>
         </Space.Compact>
         <div className='tabs'>
           <Tabs
             type='card'
             activeKey={activeKey}
-            items={items} 
-            onChange={onChange} 
+            items={items}
+            onChange={onChange}
             renderTabBar={renderTabBar}
           />
         </div>

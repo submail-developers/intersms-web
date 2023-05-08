@@ -1,9 +1,3 @@
-import React, { FC } from 'react';
-
-const Fn:FC = () => {
-  return (
-    <div>404</div>
-  )
+export default function Error() {
+  return <div>404</div>
 }
-
-export default Fn

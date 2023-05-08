@@ -1,6 +1,6 @@
 declare namespace API {
   interface Response<T = any> {
-    data: T;
+    data: T
   }
   interface BaseParams {
     loading?: boolean // 是否需要loading， 默认false

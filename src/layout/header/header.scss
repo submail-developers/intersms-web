@@ -1,4 +1,4 @@
-[data-class=header-container] {
+[data-class='header-container'] {
   height: 60px;
   background-color: transparent;
   padding: 0 16px;
@@ -18,12 +18,12 @@
   &.small {
     .logo {
       height: 16px;
-      transition: all .3s;
+      transition: all 0.3s;
     }
 
     .text {
       font-size: 12px;
-      transition: all .3s;
+      transition: all 0.3s;
       margin-left: 28px;
     }
   }

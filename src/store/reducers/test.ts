@@ -2,10 +2,10 @@
  * 如何使用reduxjs/toolkit
  * 包含同步和异步
  * 中文文档https://cn.redux.js.org/tutorials/fundamentals/part-8-modern-redux
-*/
+ */
 
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '@/store';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { RootState } from '@/store'
 
 interface ListItem {
   id: number
@@ -20,26 +20,29 @@ interface State {
 // 初始数据
 const initialState: State = {
   number: 0,
-  list: []
+  list: [],
 }
 
 // 模拟接口
 const fetchCount = (amount = 1) => {
   return new Promise<number>((resolve) =>
-    setTimeout(() => resolve(amount), 500)
-  );
+    setTimeout(() => resolve(amount), 500),
+  )
 }
 const fetchList = () => {
   return new Promise<ListItem[]>((resolve) =>
-    setTimeout(() => resolve([{id: Math.random(),name: 'a'}]), 500)
-  );
+    setTimeout(() => resolve([{ id: Math.random(), name: 'a' }]), 500),
+  )
 }
 
 // 异步方法
-export const addNumberAsync = createAsyncThunk('addnumber',async (state: number, action) => {
-  const newnumber = await fetchCount(1)
-  return newnumber
-})
+export const addNumberAsync = createAsyncThunk(
+  'addnumber',
+  async (state: number, action) => {
+    const newnumber = await fetchCount(1)
+    return newnumber
+  },
+)
 export const addListAsync = createAsyncThunk('addlist', async () => {
   const newList = await fetchList()
   return newList
@@ -55,17 +58,23 @@ export const testStore = createSlice({
       state.number += action.payload
     },
     addList(state) {
-      state.list = [...state.list, ...[{id: Math.random(),name: 'a'}]]
-    }
+      state.list = [...state.list, ...[{ id: Math.random(), name: 'a' }]]
+    },
   },
   // 异步redicer
   extraReducers(builder) {
-    builder.addCase(addNumberAsync.fulfilled, (state, action: PayloadAction<number>) => {
-      state.number += action.payload
-    })
-    builder.addCase(addListAsync.fulfilled, (state, action: PayloadAction<ListItem[]>) => {
-      state.list = [...state.list, ...action.payload]
-    })
+    builder.addCase(
+      addNumberAsync.fulfilled,
+      (state, action: PayloadAction<number>) => {
+        state.number += action.payload
+      },
+    )
+    builder.addCase(
+      addListAsync.fulfilled,
+      (state, action: PayloadAction<ListItem[]>) => {
+        state.list = [...state.list, ...action.payload]
+      },
+    )
   },
 })
 

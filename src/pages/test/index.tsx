@@ -1,8 +1,14 @@
-import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { addList, addNumber, addListAsync, addNumberAsync, testState } from '@/store/reducers/test';
-import { Button } from 'antd';
-import { getPetInfo, createPet, getNumberList } from '@/api';
-import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/hook'
+import {
+  addList,
+  addNumber,
+  addListAsync,
+  addNumberAsync,
+  testState,
+} from '@/store/reducers/test'
+import { Button } from 'antd'
+import { getPetInfo, createPet, getNumberList } from '@/api'
+import { useState } from 'react'
 import type RES from '@/api/response.d.ts'
 
 export default function Fn() {
@@ -15,8 +21,8 @@ export default function Fn() {
 
   const getDetail = () => {
     getPetInfo({
-      id: 1
-    }).then(res => {
+      id: 1,
+    }).then((res) => {
       setpetInfo(res.data)
     })
   }
@@ -24,14 +30,14 @@ export default function Fn() {
   const create = () => {
     createPet({
       name: '123',
-      status: '123'
-    }).then(res => {
+      status: '123',
+    }).then((res) => {
       setCreateRes(res.data)
     })
   }
 
   const testFn = () => {
-    getNumberList().then(res => {
+    getNumberList().then((res) => {
       setTest(res.data)
     })
   }
@@ -46,11 +52,11 @@ export default function Fn() {
       </div>
       <dl>
         <dt>list: </dt>
-        {
-          testStore.list.map(item => (
-            <dd key={item.id}>id: {item.id};name: {item.name}</dd>
-          ))
-        }
+        {testStore.list.map((item) => (
+          <dd key={item.id}>
+            id: {item.id};name: {item.name}
+          </dd>
+        ))}
       </dl>
       <div className='fx'>
         <Button onClick={() => dispatch(addList())}>同步add-list</Button>

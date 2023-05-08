@@ -1,4 +1,4 @@
-[data-class=account-config-table] {
+[data-class='account-config-table'] {
   .ant-table {
     .ant-table-header table {
       th {
@@ -25,18 +25,18 @@
             visibility: collapse;
           }
 
-          &>td {
+          & > td {
             border: none;
             padding: 12px;
           }
 
           &:nth-child(2n) {
-            &>td {
-              background-color: rgba(0, 0, 0, .03);
+            & > td {
+              background-color: rgba(0, 0, 0, 0.03);
             }
           }
-          &:nth-child(2n+1) {
-            &>td {
+          &:nth-child(2n + 1) {
+            & > td {
               background-color: #fff;
             }
           }

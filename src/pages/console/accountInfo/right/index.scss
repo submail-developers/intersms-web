@@ -1,41 +1,40 @@
-
-[data-class=account-right]{
+[data-class='account-right'] {
   min-width: 760px;
-  .tabbar-head{
+  .tabbar-head {
     margin-top: 12px;
-    .panle-list{
+    .panle-list {
       border-radius: 4px;
       height: 40px;
       line-height: 40px;
       overflow: hidden;
       font-size: 14px;
-      &.middle{
+      &.middle {
         height: 32px;
         line-height: 32px;
-        .panle{
+        .panle {
           width: 140px;
         }
       }
-      &.small{
+      &.small {
         height: 24px;
         line-height: 24px;
         font-size: 12px;
-        .panle{
+        .panle {
           width: 33.3%;
         }
       }
-      .panle{
+      .panle {
         width: 180px;
         background-color: #f1f2f4;
         position: relative;
         text-align: center;
         cursor: pointer;
-        transition: all .3s;
-        &.active{
+        transition: all 0.3s;
+        &.active {
           background-color: #d2e9ff;
           color: #0074d7;
         }
-        &::after{
+        &::after {
           content: '';
           position: absolute;
           top: 50%;
@@ -45,29 +44,29 @@
           height: 50%;
           background-color: #aaa;
         }
-        &:last-child::after{
+        &:last-child::after {
           display: none;
         }
       }
     }
-    .ext-switch{
+    .ext-switch {
       padding: 0 14px;
       min-width: 300px;
-      &.small{
+      &.small {
         padding: 10px 0;
         min-width: '0';
-      .switch-test{
-        margin-left: 10px;
+        .switch-test {
+          margin-left: 10px;
+        }
       }
-      }
-      .switch-all{
-        span{
+      .switch-all {
+        span {
           color: #606879;
           word-break: keep-all;
         }
       }
-      .switch-test{
-        span{
+      .switch-test {
+        span {
           color: #ff4446;
           word-break: keep-all;
         }
