@@ -1,18 +1,13 @@
-import React, { FC, Suspense, lazy, LazyExoticComponent } from 'react';
+import {  Suspense, LazyExoticComponent } from 'react';
 
-const LazyConfig: FC<any> = (comp:any) => (
-  <Suspense fallback={<div>loading...</div>}>
-    {React.createElement(lazy(comp))}
-  </Suspense>
-)
-
+// 路由懒加载
 const LazyImportComponent = (props: {
   lazyChildren: LazyExoticComponent<() => JSX.Element>;
 }) => {
   return (
-    <React.Suspense fallback={<div>loading...</div>}>
+    <Suspense fallback={<div>loading...</div>}>
       <props.lazyChildren />
-    </React.Suspense>
+    </Suspense>
   );
 };
 

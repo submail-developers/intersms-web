@@ -1,21 +1,10 @@
+import { lazy } from 'react';
 import { RouteObject, createBrowserRouter, redirect, Navigate } from "react-router-dom";
 import Login from '@/pages/login/login';
-import Layout from '@/layout';
+import Layout from '@/layout/index';
 import Error from '@/pages/error';
-import SendList from '@/pages/console/sendList/sendList';
-import AccountInfo from '@/pages/console/accountInfo/accountInfo';
-import Channel from '@/pages/console/channel/channel';
-import Channels from '@/pages/console/channels/channels';
-import Country from '@/pages/console/country/country';
-import Network from '@/pages/console/network/network';
-import NumberChannelsRoute from '@/pages/console/numberAttribution/numberAttribution';
-import Warning from '@/pages/console/warning/warning';
-import NumberAttribution from '@/pages/console/numberAttribution/numberAttribution';
-import SensitiveWord from '@/pages/console/sensitiveWord/sensitiveWord';
-import CodeList from '@/pages/console/codeList/codeList';
-import BlackList from '@/pages/console/blackList/blackList';
-import Manage from '@/pages/manage/manage';
-import Test from '@/pages/test';
+import LazyImportComponent from './lazyConfig';
+
 
 /**
  * handle中拿到的参数
@@ -63,6 +52,11 @@ export const baseRouterList: RouteObject[] = [
   }, {
     path: '/manage',
     element: <Navigate to='/manage/center/index' />
+  }, {
+    path: '*',
+    loader: () => {
+      throw redirect('/login') // 重定向到登陆页面
+    }
   }
 ]
 
@@ -79,13 +73,13 @@ export const routerList:RouteObject[] = [
         children: [
           {
             path: 'sendlist',
-            element: <SendList />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/sendList/sendList'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '发送列表'}),
             handle: handleFn({alias: '发送列表'}),
           }, {
             path: 'accountinfo',
-            element: <AccountInfo />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/accountInfo/accountInfo'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '客户信息'}),
             handle: handleFn({alias: '客户信息'}),
@@ -98,12 +92,12 @@ export const routerList:RouteObject[] = [
         children: [
           {
             path: 'index',
-            element: <Channel />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/channel/channel'))} />,
             errorElement: <Error />,
             handle: handleFn({alias: '通道管理'}),
           }, {
             path: 'group',
-            element: <Channels />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/channels/channels'))} />,
             errorElement: <Error />,
             handle: handleFn({alias: '通道组管理'}),
           }, 
@@ -115,43 +109,43 @@ export const routerList:RouteObject[] = [
         children: [
           {
             path: 'country',
-            element: <Country />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/country/country'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '国家信息配置'}),
             handle: handleFn({alias: '国家信息配置'}),
           }, {
             path: 'network',
-            element: <Network />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/network/network'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '网络信息配置'}),
             handle: handleFn({alias: '网络信息配置'}),
           }, {
             path: 'numberchannelsroute',
-            element: <NumberChannelsRoute />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/numberAttribution/numberAttribution'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '号码通道路由'}),
             handle: handleFn({alias: '号码通道路由'}),
           }, {
             path: 'warning',
-            element: <Warning />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/warning/warning'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '报警设置'}),
             handle: handleFn({alias: '报警设置'}),
           }, {
             path: 'numberattribution',
-            element: <NumberAttribution />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/numberAttribution/numberAttribution'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '号码归属查询'}),
             handle: handleFn({alias: '号码归属查询'}),
           }, {
             path: 'sensitiveword',
-            element: <SensitiveWord />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/sensitiveWord/sensitiveWord'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '敏感词管理'}),
             handle: handleFn({alias: '敏感词管理'}),
           }, {
             path: 'codelist',
-            element: <CodeList />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/codeList/codeList'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '状态码对照表'}),
             handle: handleFn({alias: '状态码对照表'}),
@@ -164,7 +158,7 @@ export const routerList:RouteObject[] = [
         children: [
           {
             path: 'index',
-            element: <BlackList />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/console/blackList/blackList'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '黑名单'}),
             handle: handleFn({alias: '黑名单'}),
@@ -185,7 +179,7 @@ export const routerList:RouteObject[] = [
         children: [
           {
             path: 'index',
-            element: <Test />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/test'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '数据管理'}),
             handle: handleFn({alias: '数据管理'}),
@@ -206,7 +200,7 @@ export const routerList:RouteObject[] = [
         children: [
           {
             path: 'index',
-            element: <Test />,
+            element: <LazyImportComponent lazyChildren={lazy(() => import('@/pages/test'))} />,
             errorElement: <Error />,
             loader: loaderFn({name: '管理'}),
             handle: handleFn({alias: '管理中心'}),
