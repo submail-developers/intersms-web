@@ -19,7 +19,7 @@ export default () => {
   const columns: ColumnsType<DataType> = [
     {
       title: 'email',
-      dataIndex: 'email'
+      dataIndex: 'email',
     },
     {
       title: 'address',
@@ -32,7 +32,7 @@ export default () => {
 
 
   const data: DataType[] = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 100; i++) {
     data.push({
       key: i,
       email: `1581234123${i}`,
@@ -54,7 +54,9 @@ export default () => {
   }
 
   return (
-    <section data-class='account-left'>
+    <section data-class='account-left' className='fx-shrink' 
+      style={{minWidth: `${size==='small'?'100%':'510px'}`}}
+    >
       <Space.Compact size={size}>
         <Button type="primary" icon={<i className={`icon iconfont icon-xinzeng ${size}`} />}>新增</Button>
         <Button type='primary' danger icon={<i className={`icon iconfont icon-shanchu ${size}`} />}>删除</Button>
@@ -69,19 +71,16 @@ export default () => {
           />
         </div>
         <div className='table-title'>全部客户</div>
-        <div className='table-wrap fx-auto fx-shrink'>
+        <div className='table-wrap fx-shrink'>
           <ConfigProvider
             theme={{
               token: {
                 colorBgContainer: 'transparent',
-                // controlItemBgActive:'#0074d7', // 控制组件项在激活状态下的背景颜色。
-                // controlItemBgActiveHover:'#0074d7', //控制组件项在鼠标悬浮且激活状态下的背景颜色。
-                // controlItemBgHover:'#f0f6ff', // 控制组件项在鼠标悬浮时的背景颜色。
               }
             }}
           >
             <Table
-              rowClassName="tab-row"
+              size={size}
               showHeader={false}
               columns={columns}
               dataSource={data}
@@ -90,7 +89,7 @@ export default () => {
                 onClick: () => onSelectRow(record)
               })}
               pagination={false}
-              scroll={{ x: 'max-content', y: 'max-content' }}
+              scroll={{ x: 'max-content', y: 510 }}
             />
 
           </ConfigProvider>

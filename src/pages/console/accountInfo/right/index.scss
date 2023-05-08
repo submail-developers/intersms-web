@@ -21,7 +21,7 @@
         line-height: 24px;
         font-size: 12px;
         .panle{
-          width: 100px;
+          width: 33.3%;
         }
       }
       .panle{
@@ -52,6 +52,14 @@
     }
     .ext-switch{
       padding: 0 14px;
+      min-width: 300px;
+      &.small{
+        padding: 10px 0;
+        min-width: '0';
+      .switch-test{
+        margin-left: 10px;
+      }
+      }
       .switch-all{
         span{
           color: #606879;

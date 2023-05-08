@@ -16,11 +16,13 @@ export default () => {
   const columns: ColumnsType<DataType> = [
     {
       title: '国家名',
-      dataIndex: 'country'
+      dataIndex: 'country',
+      width: 120,
     },
     {
       title: '单价',
       dataIndex: 'price',
+      width: 120,
       render: (_, record) => (
         <div>{record.price}</div>
       )
@@ -62,7 +64,7 @@ export default () => {
   }
 
   return (
-    <div data-class='account-config-tabble'>
+    <div data-class='account-config-table'>
       <ConfigProvider
         theme={{
           token: {
@@ -77,8 +79,9 @@ export default () => {
             type: 'checkbox',
             getCheckboxProps: getCheckboxProps
           }}
+          sticky
           pagination={false}
-          scroll={{ x: 'max-content', y: 'max-content' }}
+          scroll={{ x: 'max-content'}}
         />
 
       </ConfigProvider>

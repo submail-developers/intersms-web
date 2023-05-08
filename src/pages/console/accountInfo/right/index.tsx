@@ -45,31 +45,32 @@ export default () => {
       console.log(checked)
     }
     return (
-      <div className='fx fx-wrap tabbar-head'>
-        <div className={`fx fx-shrink panle-list ${size}`}>
+      <div className={`tabbar-head ${size=='small'?'':'fx'}`}>
+        <div className={`fx panle-list ${size}`}>
           {
             items.map(item => (
               <div key={item.key} onClick={() => setactiveKey(item.key)} className={`panle ${size} ${item.key==activeKey?'active':''}`}>{item.label}</div>
             ))
           }
         </div>
-        <div className='fx-auto fx-shrink fx-between-center ext-switch'>
+        <div className={`fx-auto ext-switch fx-between-center ${size}`}>
           <div className='switch-all fx-shrink'>
             <Switch size={size=='small' ? 'small' : 'default'} onChange={changeALl}></Switch>
             <span> 开启全部营销</span>
           </div>
-          <div className='switch-test fx-shrink'>
+          <div className='switch-test'>
             <Switch size={size=='small' ? 'small' : 'default'} onChange={changeTest}></Switch>
             <span> 测试用户</span>
           </div>
         </div>
-
       </div>
     )
   }
 
   return (
-    <section data-class='account-right' className='right-wrap fx-auto'>
+    <section data-class='account-right' className='right-wrap fx-auto fx-shrink'
+      style={{minWidth: `${size==='small'?'100%':''}`}}
+    >
       <div className='fx-col'>
         <Space.Compact size={size}>
           <Button type="primary" icon={<i className={`icon iconfont icon-xinzeng ${size}`} />}>新增</Button>
