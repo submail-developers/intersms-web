@@ -3,7 +3,7 @@ import logo from '@/assets/img/logo.png'
 import './header.scss'
 import { useSize } from '@/hooks';
 
-export default () => {
+export default function Header() {
   const size = useSize()
   return (
     <div data-class='header-container' className={`fx-start-center fx-shrink ${size}`}>

@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { Space } from 'antd';
 import MenuTitle from '@/components/menuTitle/menuTitle';
 import LeftTab from './left';
@@ -5,7 +6,7 @@ import RightTab from './right';
 import { useSize } from '@/hooks';
 
 // 客户信息
-export default () => {
+export default function AccountInfo (){
   const size = useSize()
   return (
     <div data-class='accountinfo'>

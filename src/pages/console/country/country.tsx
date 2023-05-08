@@ -1,7 +1,7 @@
 import './country.scss';
 
 // 国家信息配置
-export default () => {
+export default function Fn() {
   return (
     <div data-class='country'>
       country

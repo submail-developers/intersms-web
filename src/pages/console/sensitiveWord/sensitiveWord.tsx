@@ -1,7 +1,7 @@
 import './sensitiveWord.scss';
 
 // 敏感词管理
-export default () => {
+export default function Fn() {
   return (
     <div data-class='sensitiveWord'>
       sensitiveWord

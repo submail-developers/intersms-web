@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Tabs, Button, Select, Form, Input, DatePicker, ConfigProvider, Table, Tooltip, Grid, Col, Row, Space, Divider, Switch } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TabsProps, } from 'antd';
@@ -9,7 +9,7 @@ import PriceConfig from './config/price';
 import './index.scss'
 
 
-export default () => {
+export default function Right(){
   const [activeKey, setactiveKey] = useState<string>('1')
   const onChange = (key: string) => {
     console.log(key);

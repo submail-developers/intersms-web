@@ -1,10 +1,10 @@
-import { NavLink, useLocation, redirect } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { routerList } from '@/routes'
 import './sideBar.scss';
 import user from '@/assets/img/user.png';
-import { routerList } from '@/routes'
 
 // 一级导航
-export default () => {
+export default function SizeBar() {
   return (
     <dl data-components='sidebar' className="fx-col-start-center fx-shrink">
       <dt className="fx-center-center">

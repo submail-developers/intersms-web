@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Button, Select, Form, Input, DatePicker, ConfigProvider, Table, Tooltip, Grid, Col, Row, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
@@ -12,7 +12,7 @@ interface DataType {
 }
 
 // 国家价格配置
-export default () => {
+export default function Price() {
   const columns: ColumnsType<DataType> = [
     {
       title: '国家名',

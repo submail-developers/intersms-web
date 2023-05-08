@@ -29,7 +29,7 @@ interface DataType {
 }
 
 // 发送列表
-export default () => {
+export default function Fn() {
   const { Option } = Select
   const { RangePicker } = DatePicker
 

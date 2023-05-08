@@ -1,7 +1,7 @@
 import './codeList.scss';
 
 // 状态码对照表
-export default () => {
+export default function Fn() {
   return (
     <div data-class='codeList'>
       codeList

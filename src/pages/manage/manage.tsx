@@ -1,5 +1,5 @@
 import { FC } from 'react';
-export default () => {
+export default function Fn() {
   return (
     <div>manage</div>
   )

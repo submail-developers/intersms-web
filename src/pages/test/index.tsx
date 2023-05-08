@@ -5,7 +5,7 @@ import { getPetInfo, createPet, getNumberList } from '@/api';
 import { useState } from 'react';
 import type RES from '@/api/response.d.ts'
 
-export default () => {
+export default function Fn() {
   const dispatch = useAppDispatch()
   const testStore = useAppSelector(testState)
 

@@ -6,7 +6,7 @@ import { menuCloseStatus } from '@/store/reducers/menu';
 import './sideMenu.scss';
 
 // 二级导航
-export default () => {
+export default function SideMenu() {
   const location = useLocation()
   const matchList = useMatches()
   const currentMatchBaseRouteObj = matchList.find(match => !match.id.includes('-'))

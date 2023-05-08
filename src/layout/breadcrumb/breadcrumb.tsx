@@ -6,7 +6,7 @@ import { changeClose, menuCloseStatus } from '@/store/reducers/menu';
 /**
  * 面包屑
 */
-export default () => {
+export default function BreadCrumb() {
   const status = useAppSelector(menuCloseStatus)
   const dispatch = useAppDispatch();
 

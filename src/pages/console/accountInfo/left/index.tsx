@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, FC } from 'react';
 import { Button, Select, Form, Input, DatePicker, ConfigProvider, Table, Tooltip, Grid, Col, Row, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
@@ -13,7 +13,7 @@ interface DataType {
 }
 
 // 客户信息
-export default () => {
+export default function Left(){
   const size = useSize()
 
   const columns: ColumnsType<DataType> = [

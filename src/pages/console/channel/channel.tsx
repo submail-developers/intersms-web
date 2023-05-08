@@ -1,7 +1,7 @@
 import './channel.scss';
 
 // 通道管理
-export default () => {
+export default function Fn() {
   return (
     <div data-class='channel'>
       channel

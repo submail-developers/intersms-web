@@ -1,7 +1,7 @@
 import './network.scss';
 
 // 网络信息配置
-export default () => {
+export default function Fn() {
   return (
     <div data-class='network'>
       network

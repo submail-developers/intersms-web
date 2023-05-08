@@ -4,7 +4,7 @@ import { loadingStatus } from '@/store/reducers/loading';
 
 import './loading.scss';
 
-export default () => {
+export default function Loading() {
   const show = useAppSelector(loadingStatus)
   return (
     <>
