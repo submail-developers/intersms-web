@@ -8,8 +8,8 @@ import Loading from '@/components/loading/loading';
 const App: FC = () => {
   return (
     <Provider store={store}>
-        <RouterProvider router={router} />
-        <Loading></Loading>
+      <RouterProvider router={router} />
+      <Loading></Loading>
     </Provider>
   )
 }
