@@ -1,15 +1,19 @@
 import request from './request'
-import type RES from './response.d.ts'
+import { Response, CreatePet, GetPetInfo, PetInfoRes } from './interface'
 
 // 示例接口-get
-export const getPetInfo = (params: API.PetInfo) => {
-  return request.get<any, API.Response<RES.PetInfoRes>, API.PetInfo>('/pet/', {
-    params,
-  })
+export const getPetInfo = (params: GetPetInfo.PetInfoParams) => {
+  return request.get<any, Response<PetInfoRes>, GetPetInfo.PetInfoParams>(
+    '/pet/',
+    {
+      params,
+    },
+  )
 }
+
 // 示例接口-post
-export const createPet = (data: API.CreatePet) => {
-  return request.post<any, API.Response<RES.PetInfoRes>, API.CreatePet>(
+export const createPet = (data: CreatePet.CreatePetParams) => {
+  return request.post<any, Response<PetInfoRes>, CreatePet.CreatePetParams>(
     '/pet',
     { ...data },
     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
@@ -18,7 +22,7 @@ export const createPet = (data: API.CreatePet) => {
 
 // 示例接口-get
 export const getNumberList = () => {
-  return request.get<any, API.Response<number[]>, API.PetInfo>(
+  return request.get<any, Response<number[]>, GetPetInfo.PetInfoParams>(
     'customer/zjhtest_get/',
   )
 }
