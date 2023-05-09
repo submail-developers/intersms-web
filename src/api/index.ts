@@ -28,10 +28,10 @@ export const getNumberList = () => {
 }
 
 // 获取发送列表
-export const getSendList = () => {
+export const getSendList = (data: API.GetSendListParams) => {
   return request.post<
     any,
     API.Response<API.SendListItem[]>,
     API.GetSendListParams
-  >('customer/get_send_list')
+  >('customer/get_send_list', { ...data })
 }

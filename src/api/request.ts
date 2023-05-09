@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { message } from '@/components/antd/staticFn/staticFn'
 import type {
   InternalAxiosRequestConfig,
   AxiosInstance,
@@ -19,9 +20,10 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 })
 // 后置拦截
 request.interceptors.response.use((res: AxiosResponse) => {
-  if ([200, 201].includes(res.status)) {
+  if ([200, 201].includes(res.status) && res.data.status === 'success') {
     return res.data
   } else {
+    message.error(res.data.message)
     return Promise.reject(res.data)
   }
 })

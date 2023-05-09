@@ -39,12 +39,12 @@ declare module 'apis' {
     // 发送列表参数
     interface GetSendListParams extends BaseParams {
       page?: string
-      start?: string
-      end?: string
-      channel?: string
-      group?: string
-      type?: string
-      keyword?: string
+      start: string // 开始时间
+      end?: string // 结束时间
+      channel?: string // 通道类型
+      group?: string // 通道组类型
+      type?: string // 短信类型
+      keyword?: string // 搜索关键字
     }
 
     // 发送列表
@@ -55,8 +55,8 @@ declare module 'apis' {
       title: string
       content: string
       type: string
-      send: string
-      sent: string
+      send: string // 发送时间
+      sent: string // 完成时间
       sender: string
       fee: string
       cost: string

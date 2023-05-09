@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import {
   Button,
   Select,
@@ -8,56 +8,113 @@ import {
   ConfigProvider,
   Table,
   Tooltip,
+  App,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import type { RangePickerProps } from 'antd/es/date-picker'
 
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
-import day from 'dayjs'
-
+import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs'
+import { getSendList } from '@/api'
 import { useSize } from '@/hooks'
+import { API } from 'apis'
 
 import './sendList.scss'
 
-interface DataType {
-  key: number
-  number: string
-  message: string
-  sendName: string
-  time: string
-  timer: string
-  return: string
-  country: string
-  route: string
-  routes: string
-  net: string
-  messageType: string
-  price: string
+interface DataType extends API.SendListItem {}
+interface FormValues {
+  channel: string
+  group: string
+  time: [Dayjs, Dayjs] | null
+  keyword: string
 }
 
 // 发送列表
-export default function Fn() {
+export default function SendList() {
   const { Option } = Select
   const { RangePicker } = DatePicker
-
   const size = useSize()
+  const [form] = Form.useForm()
+  const { message } = App.useApp()
 
-  const onFinish = (values: any) => {
-    console.log('Success:', values)
+  const channelList = [
+    { label: '全部通道', value: 'all' },
+    { label: '通道1', value: '1' },
+    { label: '通道2', value: '2' },
+  ]
+  const groupList = [
+    { label: '全部通道组', value: 'all' },
+    { label: '通道组1', value: '1' },
+    { label: '通道组2', value: '2' },
+  ]
+
+  // 初始化form的值
+  const initFormValues: FormValues = {
+    channel: 'all',
+    group: 'all',
+    time: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')],
+    keyword: '',
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
+  const onFinish = (values: FormValues) => {
+    formatSearchValue(values)
   }
 
-  const changeTime = (value: any) => {
-    console.log(value)
+  const formatSearchValue = (params: FormValues) => {
+    message.loading({
+      duration: 0,
+      content: '',
+    })
+    const { channel, group, time, keyword } = params
+    const start = (time && time[0].format('YYYY-MM-DD')) || ''
+    const end = (time && time[1].format('YYYY-MM-DD')) || ''
+    const searchParams = {
+      page: '1',
+      type: 'all',
+      start,
+      end,
+      channel,
+      group,
+      keyword,
+    }
+    searchEvent(searchParams)
   }
+
+  // 获取列表数据
+  const searchEvent = async (params: API.GetSendListParams) => {
+    const res = await getSendList(params)
+    settableData(res.data)
+    message.destroy()
+  }
+  const resetForm = () => {
+    form.resetFields()
+    formatSearchValue(initFormValues)
+  }
+
+  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+    return current && current >= dayjs().endOf('day') // 无法选择今天以后的日期
+  }
+  const rangePresets: {
+    label: string
+    value: [Dayjs, Dayjs]
+  }[] = [
+    { label: '最近7天', value: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')] },
+    { label: '最近14天', value: [dayjs().add(-15, 'd'), dayjs().add(-1, 'd')] },
+    { label: '最近30天', value: [dayjs().add(-31, 'd'), dayjs().add(-1, 'd')] },
+    { label: '最近90天', value: [dayjs().add(-91, 'd'), dayjs().add(-1, 'd')] },
+  ]
+
+  const [tableData, settableData] = useState<DataType[]>([])
+  useEffect(() => {
+    formatSearchValue(initFormValues)
+  }, [])
 
   const columns: ColumnsType<DataType> = [
     {
       title: '号码',
-      dataIndex: 'number',
+      dataIndex: 'mobile',
       width: 150,
     },
     {
@@ -65,14 +122,14 @@ export default function Fn() {
       dataIndex: 'message',
       width: 320,
       render: (_, record) => (
-        <Tooltip title={record.message} placement='bottom'>
-          <div className='g-ellipsis-2'>{record.message}</div>
+        <Tooltip title={record.content} placement='bottom'>
+          <div className='g-ellipsis-2'>{record.content}</div>
         </Tooltip>
       ),
     },
     {
       title: '发送名称',
-      dataIndex: 'sendName',
+      dataIndex: 'sender',
       width: 100,
     },
     {
@@ -80,12 +137,11 @@ export default function Fn() {
       dataIndex: 'time',
       width: 200,
       render: (_, recort) => {
-        const _time = recort.time.split(' - ')
         return (
           <span>
-            {_time[0]}
+            {recort.send}
             <br />
-            {_time[1]}
+            {recort.sent}
           </span>
         )
       },
@@ -95,37 +151,37 @@ export default function Fn() {
       dataIndex: 'timer',
       width: 100,
       render: (_, recort) => (
-        <span style={{ color: '#0074d7' }}>{recort.timer}</span>
+        <span style={{ color: '#0074d7' }}>{recort.send}</span>
       ),
     },
     {
       title: '回执',
-      dataIndex: 'return',
+      dataIndex: 'report_state',
       render: (_, recort) => (
-        <span style={{ color: '#00ae6f' }}>{recort.return}</span>
+        <span style={{ color: '#00ae6f' }}>{recort.report_state}</span>
       ),
     },
     {
       title: '国家',
-      dataIndex: 'country',
+      dataIndex: 'region_code',
     },
     {
       title: '通道',
-      dataIndex: 'route',
+      dataIndex: 'channel_name',
     },
     {
       title: '通道组',
-      dataIndex: 'routes',
+      dataIndex: 'group_name',
       width: 200,
     },
     {
       title: '网络类型',
-      dataIndex: 'net',
+      dataIndex: 'report_code',
       width: 100,
     },
     {
       title: '短信类型',
-      dataIndex: 'messageType',
+      dataIndex: 'type',
       width: 100,
     },
     {
@@ -133,40 +189,21 @@ export default function Fn() {
       dataIndex: 'price',
       width: 120,
       render: (_, recort) => {
-        const _price = recort.price.split(' - ')
         return (
           <span>
-            <span style={{ color: '#888888' }}>{_price[0]}</span>
+            <span style={{ color: '#888888' }}>{recort.fee}</span>
             <br />
-            {_price[1]}
+            {recort.cost}
           </span>
         )
       },
     },
   ]
 
-  const data: DataType[] = []
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      number: `1581234123${i}`,
-      message: `您已成功登記CLINIQUE皇牌淡斑去印精華體驗！請於3月27日到大埔超級城一田百貨 換領體驗裝: s.buys.hk/7l9eoINIQUE皇牌淡斑去印精華體驗！請於3月27日到大埔超級城一田百貨`,
-      sendName: 'eNotice',
-      time: '2023-04-12 15:00:41 - 2023-03-27 13:56:35',
-      timer: '30s',
-      return: 'DELIVRD',
-      country: '中国-香港',
-      route: '飞鸽',
-      routes: '8001-飞鸽行业通道组',
-      net: 'osifao',
-      messageType: '行业',
-      price: '0.330 - 0.330',
-    })
-  }
-
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
     [],
   )
+
   const rowSelection = {
     selectedRowKeys,
     onChange: () => {},
@@ -183,7 +220,7 @@ export default function Fn() {
   }
   // 点击整行选择
   const onSelectRow = (record: DataType) => {
-    setSelectedRowKeys([record.key])
+    setSelectedRowKeys([record.id])
   }
 
   return (
@@ -191,14 +228,15 @@ export default function Fn() {
       <MenuTitle title='发送列表'></MenuTitle>
       <Form
         name='basic'
+        form={form}
+        initialValues={initFormValues}
         layout={size == 'small' ? 'inline' : 'inline'}
         wrapperCol={{ span: 24 }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete='off'>
-        <Form.Item label='' name='route' style={{ marginBottom: 10 }}>
+        <Form.Item label='' name='channel' style={{ marginBottom: 10 }}>
           <Select
-            placeholder='请选择'
+            placeholder='请选择通道'
             style={{ width: 162 }}
             size={size}
             suffixIcon={
@@ -211,14 +249,16 @@ export default function Fn() {
                 }}
               />
             }>
-            <Option value='male'>male</Option>
-            <Option value='female'>female</Option>
-            <Option value='other'>other</Option>
+            {channelList.map((item) => (
+              <Option value={item.value} key={item.value}>
+                {item.label}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
-        <Form.Item label='' name='message' style={{ marginBottom: 10 }}>
+        <Form.Item label='' name='group' style={{ marginBottom: 10 }}>
           <Select
-            placeholder='请选择'
+            placeholder='请选择通道组'
             style={{ width: 162 }}
             size={size}
             suffixIcon={
@@ -231,9 +271,11 @@ export default function Fn() {
                 }}
               />
             }>
-            <Option value='male'>全部短信类型</Option>
-            <Option value='female'>female</Option>
-            <Option value='other'>other</Option>
+            {groupList.map((item) => (
+              <Option value={item.value} key={item.value}>
+                {item.label}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
 
@@ -245,11 +287,13 @@ export default function Fn() {
             <RangePicker
               size={size}
               bordered={false}
-              onChange={changeTime}
+              disabledDate={disabledDate}
+              presets={rangePresets}
+              clearIcon={false}
               style={{ width: size == 'small' ? 190 : 240 }}></RangePicker>
           </Form.Item>
         </MyFormItem>
-        <Form.Item label='' name='account' style={{ marginBottom: 10 }}>
+        <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
           <Input
             size={size}
             placeholder='账户/手机号/国家'
@@ -273,15 +317,18 @@ export default function Fn() {
           </ConfigProvider>
         </Form.Item>
         <Form.Item style={{ marginBottom: 10 }}>
-          <div className={`refresh fx-center-center ${size}`}>
+          <div
+            className={`refresh fx-center-center ${size}`}
+            onClick={resetForm}>
             <i className={`icon iconfont icon-shuaxin1`}></i>
           </div>
         </Form.Item>
       </Form>
       <Table
+        rowKey='id'
         columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 50 }}
+        dataSource={tableData}
+        pagination={false}
         sticky
         rowSelection={rowSelection}
         onRow={(record) => ({
