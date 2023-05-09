@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import {
   RouteObject,
-  createBrowserRouter,
+  createHashRouter,
   redirect,
   Navigate,
 } from 'react-router-dom'
@@ -315,6 +315,6 @@ export const routerList: RouteObject[] = [
   },
 ]
 
-const router = createBrowserRouter([...baseRouterList, ...routerList])
+const router = createHashRouter([...baseRouterList, ...routerList])
 
 export default router

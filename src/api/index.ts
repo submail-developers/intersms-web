@@ -1,9 +1,9 @@
 import request from './request'
-import { Response, CreatePet, GetPetInfo, PetInfoRes } from './interface'
+import { API } from 'apis'
 
 // 示例接口-get
-export const getPetInfo = (params: GetPetInfo.PetInfoParams) => {
-  return request.get<any, Response<PetInfoRes>, GetPetInfo.PetInfoParams>(
+export const getPetInfo = (params: API.PetInfoParams) => {
+  return request.get<any, API.Response<API.PetInfoRes>, API.PetInfoParams>(
     '/pet/',
     {
       params,
@@ -12,8 +12,8 @@ export const getPetInfo = (params: GetPetInfo.PetInfoParams) => {
 }
 
 // 示例接口-post
-export const createPet = (data: CreatePet.CreatePetParams) => {
-  return request.post<any, Response<PetInfoRes>, CreatePet.CreatePetParams>(
+export const createPet = (data: API.CreatePetParams) => {
+  return request.post<any, API.Response<API.PetInfoRes>, API.CreatePetParams>(
     '/pet',
     { ...data },
     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
@@ -22,7 +22,14 @@ export const createPet = (data: CreatePet.CreatePetParams) => {
 
 // 示例接口-get
 export const getNumberList = () => {
-  return request.get<any, Response<number[]>, GetPetInfo.PetInfoParams>(
+  return request.get<any, API.Response<number[]>, API.PetInfoParams>(
+    'customer/zjhtest_get/',
+  )
+}
+
+// 获取发送列表
+export const getSendList = () => {
+  return request.post<any, API.Response<number[]>, API.PetInfoParams>(
     'customer/zjhtest_get/',
   )
 }
