@@ -38,13 +38,13 @@ declare module 'apis' {
 
     // 发送列表参数
     interface GetSendListParams extends BaseParams {
-      page: string
-      start: string
-      end: string
-      channel: string
-      group: string
-      type: string
-      keyword: string
+      page?: string
+      start?: string
+      end?: string
+      channel?: string
+      group?: string
+      type?: string
+      keyword?: string
     }
 
     // 发送列表

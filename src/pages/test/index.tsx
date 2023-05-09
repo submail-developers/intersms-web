@@ -9,14 +9,14 @@ import {
 import { Button } from 'antd'
 import { getPetInfo, createPet, getNumberList } from '@/api'
 import { useState } from 'react'
-import { PetInfoRes } from '@/api/interface'
+import { API } from 'apis'
 
 export default function Fn() {
   const dispatch = useAppDispatch()
   const testStore = useAppSelector(testState)
 
-  const [petinfo, setpetInfo] = useState<PetInfoRes>()
-  const [createRes, setCreateRes] = useState<PetInfoRes>()
+  const [petinfo, setpetInfo] = useState<API.PetInfoRes>()
+  const [createRes, setCreateRes] = useState<API.PetInfoRes>()
   const [test, setTest] = useState<number[]>()
 
   const getDetail = () => {

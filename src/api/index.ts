@@ -29,7 +29,9 @@ export const getNumberList = () => {
 
 // 获取发送列表
 export const getSendList = () => {
-  return request.post<any, API.Response<number[]>, API.PetInfoParams>(
-    'customer/zjhtest_get/',
-  )
+  return request.post<
+    any,
+    API.Response<API.SendListItem[]>,
+    API.GetSendListParams
+  >('customer/get_send_list')
 }
