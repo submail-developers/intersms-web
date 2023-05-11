@@ -5,10 +5,17 @@ import './index.scss'
 import { useEffect } from 'react'
 
 interface DataType {
-  key: number
-  country: string
-  price: string
-  type: string
+  appid: string
+  region_code: string
+  sms_type: string
+  response_time: string
+  delivrd: string
+  undeliv: string
+  expired: string
+  accepted: string
+  unknown: string
+  rejected: string
+  spname: string
 }
 
 type Props = {
@@ -16,24 +23,55 @@ type Props = {
 }
 
 // 国家价格配置
-export default function Price(props: Props) {
+export default function Error(props: Props) {
   useEffect(() => {
     console.log(props.accountId, 'accountid')
   }, [props.accountId])
   const columns: ColumnsType<DataType> = [
     {
-      title: '国家名',
-      dataIndex: 'country',
+      title: 'appid',
+      dataIndex: 'appid',
     },
     {
-      title: '单价',
-      dataIndex: 'price',
-      render: (_, record) => <div>{record.price}</div>,
+      title: 'region_code',
+      dataIndex: 'region_code',
     },
     {
-      title: '短信类型',
-      dataIndex: 'type',
-      render: (_, record) => <div>{record.type}</div>,
+      title: 'sms_type',
+      dataIndex: 'sms_type',
+    },
+    {
+      title: 'response_time',
+      dataIndex: 'response_time',
+      width: 120,
+    },
+    {
+      title: 'delivrd',
+      dataIndex: 'delivrd',
+    },
+    {
+      title: 'undeliv',
+      dataIndex: 'undeliv',
+    },
+    {
+      title: 'expired',
+      dataIndex: 'expired',
+    },
+    {
+      title: 'accepted',
+      dataIndex: 'accepted',
+    },
+    {
+      title: 'unknown',
+      dataIndex: 'unknown',
+    },
+    {
+      title: 'rejected',
+      dataIndex: 'rejected',
+    },
+    {
+      title: 'spname',
+      dataIndex: 'spname',
     },
     {
       title: '操作',
@@ -52,16 +90,23 @@ export default function Price(props: Props) {
   const data: DataType[] = []
   for (let i = 0; i < 100; i++) {
     data.push({
-      key: i,
-      country: `中国`,
-      price: '0.08',
-      type: '国际短信',
+      appid: `id` + i,
+      region_code: 'string',
+      sms_type: 'string',
+      response_time: 'string',
+      delivrd: 'string',
+      undeliv: 'string',
+      expired: 'string',
+      accepted: 'string',
+      unknown: 'string',
+      rejected: 'string',
+      spname: 'string',
     })
   }
 
   const getCheckboxProps = (record: DataType) => {
     return {
-      name: record.country,
+      name: record.appid,
     }
   }
 
@@ -80,6 +125,7 @@ export default function Price(props: Props) {
             type: 'checkbox',
             getCheckboxProps: getCheckboxProps,
           }}
+          rowKey={'appid'}
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}

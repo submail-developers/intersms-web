@@ -35,3 +35,28 @@ export const getSendList = (data: API.GetSendListParams) => {
     API.GetSendListParams
   >('customer/get_send_list', { ...data })
 }
+
+// 获取客户列表
+export const getAccountList = (data: API.AccountListParams) => {
+  return request.post<
+    any,
+    API.Response<API.AccountListItem[]>,
+    API.AccountListParams
+  >('customer/get_sender_list', { ...data })
+}
+
+// 删除客户
+export const deleteAccount = (data: API.DeleteAccountParams) => {
+  return request.post<any, API.Response<any>, API.DeleteAccountParams>(
+    'customer/delete_sender_info',
+    { ...data },
+  )
+}
+
+// 新增客户
+export const addAccount = (data: API.AddAccountParams) => {
+  return request.post<any, API.Response<any>, API.AddAccountParams>(
+    'customer/add_sender_info',
+    { ...data },
+  )
+}

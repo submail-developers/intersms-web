@@ -84,8 +84,13 @@ export default function SendList() {
 
   // 获取列表数据
   const searchEvent = async (params: API.GetSendListParams) => {
-    const res = await getSendList(params)
-    settableData(res.data)
+    console.log('123123121321')
+    try {
+      const res = await getSendList(params)
+      settableData(res.data)
+    } catch (error) {
+      console.log(error)
+    }
     message.destroy()
   }
   const resetForm = () => {
@@ -297,6 +302,7 @@ export default function SendList() {
           <Input
             size={size}
             placeholder='账户/手机号/国家'
+            maxLength={20}
             style={{ width: 162 }}></Input>
         </Form.Item>
         <Form.Item style={{ marginBottom: 10 }}>

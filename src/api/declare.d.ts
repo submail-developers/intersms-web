@@ -4,8 +4,8 @@ declare module 'apis' {
       data: T
     }
     interface BaseParams {
-      loading?: boolean // 是否需要loading， 默认false
-      token?: boolean // 是否需要token， 默认为true
+      // loading?: boolean // 是否需要loading， 默认false
+      // token?: boolean // 是否需要token， 默认为true
       contentType?: string // 默认application/json
     }
 
@@ -67,6 +67,30 @@ declare module 'apis' {
       report_state: string
       report_code: string
       report_desc: string
+    }
+
+    // 获取客户列表参数
+    interface AccountListParams {
+      page?: string
+      keyword?: string
+    }
+    // 客户列表返回值
+    interface AccountListItem {
+      id: string
+      account: string
+      sender: string
+      region_code: string
+      channel_id: string
+      network: string
+    }
+    // 删除客户参数
+    interface DeleteAccountParams {
+      account: string
+    }
+    // 新增客户参数
+    interface AddAccountParams {
+      mail: string
+      name: string
     }
   }
 }

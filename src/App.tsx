@@ -2,7 +2,8 @@ import { RouterProvider } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import router from '@/routes'
 import { store } from '@/store'
-import Loading from '@/components/loading/loading'
+// 自定义loading组件，配合redux使用。项目目前使用的是默认的message.loading
+// import Loading from '@/components/loading/loading'
 import AntdStaticFn from '@/components/antd/staticFn/staticFn'
 
 // antd
@@ -22,7 +23,7 @@ export default function App() {
       <AntdApp style={{ width: '100%', height: '100%' }}>
         <Provider store={store}>
           <RouterProvider router={router} />
-          <Loading></Loading>
+          {/* <Loading></Loading> */}
         </Provider>
         {/* antd的静态方法。在路由拦截里可以使用message、notification、modal */}
         <AntdStaticFn />

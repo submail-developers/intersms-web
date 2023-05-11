@@ -5,10 +5,13 @@ import './index.scss'
 import { useEffect } from 'react'
 
 interface DataType {
-  key: number
+  appid: string
   country: string
-  price: string
+  channel_group: string
   type: string
+  sign: string
+  price: string
+  warning: string
 }
 
 type Props = {
@@ -16,24 +19,38 @@ type Props = {
 }
 
 // 国家价格配置
-export default function Price(props: Props) {
+export default function Channel(props: Props) {
   useEffect(() => {
     console.log(props.accountId, 'accountid')
   }, [props.accountId])
   const columns: ColumnsType<DataType> = [
     {
-      title: '国家名',
+      title: 'Appid',
+      dataIndex: 'appid',
+    },
+    {
+      title: '国家',
       dataIndex: 'country',
     },
     {
-      title: '单价',
-      dataIndex: 'price',
-      render: (_, record) => <div>{record.price}</div>,
+      title: '通道组',
+      dataIndex: 'channel_group',
     },
     {
       title: '短信类型',
       dataIndex: 'type',
-      render: (_, record) => <div>{record.type}</div>,
+    },
+    {
+      title: '签名',
+      dataIndex: 'sign',
+    },
+    {
+      title: '价格提醒',
+      dataIndex: 'price',
+    },
+    {
+      title: '提醒配置',
+      dataIndex: 'warning',
     },
     {
       title: '操作',
@@ -50,12 +67,15 @@ export default function Price(props: Props) {
   ]
 
   const data: DataType[] = []
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 10; i++) {
     data.push({
-      key: i,
-      country: `中国`,
-      price: '0.08',
-      type: '国际短信',
+      appid: 'string' + i,
+      country: 'string',
+      channel_group: 'string',
+      type: 'string',
+      sign: 'string',
+      price: 'string',
+      warning: 'string',
     })
   }
 
@@ -80,6 +100,7 @@ export default function Price(props: Props) {
             type: 'checkbox',
             getCheckboxProps: getCheckboxProps,
           }}
+          rowKey={'appid'}
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}

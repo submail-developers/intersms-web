@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import menuReducer from './reducers/menu'
 import testReducer from './reducers/test'
 import loadingReducer from './reducers/loading'
+import accountReducer from './reducers/accountInfo'
 
 // 合并切片
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     loadingReducer,
     menuReducer,
     testReducer,
+    accountReducer,
   },
 })
 
