@@ -1,7 +1,6 @@
 import { Button, ConfigProvider, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 
-import './index.scss'
 import { useEffect } from 'react'
 
 interface DataType {
@@ -74,6 +73,7 @@ export default function Price(props: Props) {
           },
         }}>
         <Table
+          className='theme-grid'
           columns={columns}
           dataSource={data}
           rowSelection={{

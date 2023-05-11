@@ -155,9 +155,7 @@ export default function SendList() {
       title: '下行耗时',
       dataIndex: 'timer',
       width: 100,
-      render: (_, recort) => (
-        <span style={{ color: '#0074d7' }}>{recort.send}</span>
-      ),
+      render: (_, recort) => <span style={{ color: '#0074d7' }}>3s</span>,
     },
     {
       title: '回执',
@@ -331,6 +329,7 @@ export default function SendList() {
         </Form.Item>
       </Form>
       <Table
+        className='theme-cell reset-theme'
         rowKey='id'
         columns={columns}
         dataSource={tableData}

@@ -25,7 +25,9 @@ import './index.scss'
 
 interface DataType extends API.AccountListItem {}
 
-// 客户信息
+/**
+ * 客户信息
+ */
 export default function Left() {
   const dialogRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
@@ -209,6 +211,7 @@ export default function Left() {
               },
             }}>
             <Table
+              className='theme-cell bg-gray'
               showHeader={false}
               columns={columns}
               dataSource={tableData}
