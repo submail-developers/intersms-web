@@ -1,4 +1,4 @@
-[data-class='account-left'] {
+[data-class='channels-left'] {
   margin-right: 20px;
   margin-bottom: 12px;
   height: fit-content;
@@ -52,10 +52,24 @@
     .ant-table-body table {
       tbody {
         tr {
+          & > td {
+            .ant-switch {
+              // background: #b9b9ba;
+            }
+          }
           &.ant-table-row-selected > td {
             border-color: transparent !important;
             background-color: #0074d7 !important;
             color: #fff;
+            .ant-switch {
+              // background: #d6d7d9;
+              &.ant-switch-checked {
+                background: #fff;
+                .ant-switch-handle::before {
+                  background-color: #0074d7;
+                }
+              }
+            }
             .ant-checkbox {
               .ant-checkbox-inner {
                 background-color: #fff;
