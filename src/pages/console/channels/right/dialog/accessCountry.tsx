@@ -15,22 +15,24 @@ import {
   Table,
   Checkbox,
   Popconfirm,
+  Switch,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useSize } from '@/hooks'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import './accessCountry.scss'
+import Left from '../../left'
 
 interface Props {
   // onSearch: () => void
 }
 interface DataType {
   id: string
-  channel_name: string
-  access_type: string
-  channel_type: string
-  speed: string
-  prefix: string
+  country_name: string
+  country_code: string
+  net_name: string
+  zindex: string
+  status: string
 }
 const Dialog = (props: Props, ref: any) => {
   const size = useSize()
@@ -57,9 +59,8 @@ const Dialog = (props: Props, ref: any) => {
   const columns: ColumnsType<DataType> = [
     {
       title: <Checkbox></Checkbox>,
-      dataIndex: 'checkbox',
       className: 'checkbox-wrap',
-      width: 60,
+      width: 80,
       render: (_, record) => (
         <Checkbox
           className='checkbox'
@@ -67,8 +68,10 @@ const Dialog = (props: Props, ref: any) => {
       ),
     },
     {
-      title: '通道名',
-      dataIndex: 'channel_name',
+      title: '国家名称',
+      dataIndex: 'country_name',
+      width: '20%',
+      ellipsis: true,
       onCell: (record: DataType) => {
         return {
           onClick: () => {
@@ -78,8 +81,8 @@ const Dialog = (props: Props, ref: any) => {
       },
     },
     {
-      title: '接入类型',
-      dataIndex: 'access_type',
+      title: '国家代码',
+      dataIndex: 'country_code',
       onCell: (record: DataType) => {
         return {
           onClick: () => {
@@ -89,8 +92,8 @@ const Dialog = (props: Props, ref: any) => {
       },
     },
     {
-      title: '通道类型',
-      dataIndex: 'channel_type',
+      title: '运营商网络',
+      dataIndex: 'net_name',
       onCell: (record: DataType) => {
         return {
           onClick: () => {
@@ -100,8 +103,9 @@ const Dialog = (props: Props, ref: any) => {
       },
     },
     {
-      title: '流速',
-      dataIndex: 'speed',
+      title: '权重',
+      dataIndex: 'zindex',
+      render: (_, record) => <span className='color'>{record.zindex}</span>,
       onCell: (record: DataType) => {
         return {
           onClick: () => {
@@ -111,8 +115,23 @@ const Dialog = (props: Props, ref: any) => {
       },
     },
     {
-      title: '号码前缀',
-      dataIndex: 'prefix',
+      title: '状态',
+      dataIndex: 'status',
+      width: 120,
+      render: (_, record) => {
+        return (
+          <>
+            <Switch size='small' checked={record.status === '1'} />
+            <span
+              style={{
+                marginLeft: '8px',
+                color: record.status === '1' ? '#888' : '#282b31',
+              }}>
+              {record.status == '1' ? '已启用' : '未启用'}
+            </span>
+          </>
+        )
+      },
       onCell: (record: DataType) => {
         return {
           onClick: () => {
@@ -120,15 +139,6 @@ const Dialog = (props: Props, ref: any) => {
           },
         }
       },
-    },
-    {
-      title: '关联国家',
-      dataIndex: 'actions',
-      render: (_, record) => (
-        <Button type='link' style={{ padding: 0 }}>
-          查看详情
-        </Button>
-      ),
     },
   ]
 
@@ -161,11 +171,11 @@ const Dialog = (props: Props, ref: any) => {
   for (let i = 0; i < 100; i++) {
     data.push({
       id: 'id' + i,
-      channel_name: 'string' + i,
-      access_type: 'string',
-      channel_type: 'string',
-      speed: 'string',
-      prefix: 'string',
+      country_name: 'string' + i,
+      country_code: 'string',
+      net_name: 'string',
+      zindex: '50',
+      status: i % 2 == 1 ? '1' : '2',
     })
   }
   const editEvent = () => {
@@ -182,7 +192,7 @@ const Dialog = (props: Props, ref: any) => {
       open={show}
       bodyStyle={{ backgroundColor: 'transparent' }}
       rootClassName='access-country-drawer'
-      width={'70vw'}>
+      width={'65vw'}>
       <div className='drawer-container access-country' onClick={close}>
         <div
           ref={tableref}
@@ -266,7 +276,7 @@ const Dialog = (props: Props, ref: any) => {
             </div>
             <div className='btn-group' style={{ marginLeft: '10px' }}>
               <Popconfirm
-                placement='bottom'
+                placement='top'
                 title='警告'
                 description='确定删除选中的客户吗？'
                 // onConfirm={deleteEvent}
