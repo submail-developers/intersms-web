@@ -60,3 +60,11 @@ export const addAccount = (data: API.AddAccountParams) => {
     { ...data },
   )
 }
+
+// 获取敏感词列表
+export const GetSensitiveWordList = (data: API.GetSensitiveWordListParams) => {
+  return request.post<any, API.Response<any>, API.GetSensitiveWordListParams>(
+    'customer/get_sensitive_keywords',
+    { ...data },
+  )
+}

@@ -92,5 +92,11 @@ declare module 'apis' {
       mail: string
       name: string
     }
+
+    // 获取敏感词
+     interface GetSensitiveWordListParams {
+      id: string
+      page: string
+    }
   }
 }
