@@ -38,6 +38,15 @@
         &:nth-child(3) {
           border-left: 1px solid #f7f8f9;
         }
+        .ant-form-item {
+          margin-bottom: 0;
+          .ant-form-item-control-input {
+            min-height: 24px;
+          }
+          input {
+            width: 100px;
+          }
+        }
       }
     }
   }
@@ -56,11 +65,12 @@
     }
   }
 
-  .delete-btn {
+  .action-btn {
     color: #0074d7;
     cursor: pointer;
     transition: color 0.3s;
     display: inline-block;
+    margin-right: 12px;
     &:hover {
       color: #006db6;
     }

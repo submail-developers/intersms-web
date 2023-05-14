@@ -1,4 +1,4 @@
-import { useState, useImperativeHandle, forwardRef } from 'react'
+import { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { Modal, Input, App, Row, Col, Checkbox, Select } from 'antd'
 import { addAccount } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
@@ -19,9 +19,9 @@ export interface Option {
 }
 
 interface CheckedObj {
-  A: CheckboxValueType[]
-  B: CheckboxValueType[]
-  C: CheckboxValueType[]
+  A?: CheckboxValueType[]
+  B?: CheckboxValueType[]
+  C?: CheckboxValueType[]
 }
 interface ListItem {
   label: 'A' | 'B' | 'C'
@@ -38,24 +38,8 @@ const Dialog = (props: Props, ref: any) => {
     }
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const open = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleOk = async () => {}
-
-  const handleCancel = () => {
-    setIsModalOpen(false)
-  }
-
-  const [checkedObj, setcheckedObj] = useState<CheckedObj>({
-    A: [],
-    B: [],
-    C: [],
-  })
-
-  const list: ListItem[] = [
+  const [isCheckedAll, setisCheckedAll] = useState(false)
+  const [list, setlist] = useState<ListItem[]>([
     {
       label: 'A',
       children: [
@@ -183,7 +167,23 @@ const Dialog = (props: Props, ref: any) => {
         },
       ],
     },
-  ]
+  ])
+
+  const open = () => {
+    setIsModalOpen(true)
+  }
+
+  const handleOk = async () => {}
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
+  const [checkedObj, setcheckedObj] = useState<CheckedObj>({
+    A: [],
+    B: [],
+    C: [],
+  })
 
   const onChange = (
     checkedValue: CheckboxValueType[],
@@ -192,7 +192,34 @@ const Dialog = (props: Props, ref: any) => {
     setcheckedObj({ ...checkedObj, [label]: checkedValue })
   }
 
-  const checkAll = () => {}
+  const checkAll = () => {
+    let checkAllobj: CheckedObj = {}
+    if (isCheckedAll) {
+      list.forEach((item) => {
+        checkAllobj[item.label] = []
+      })
+      setcheckedObj(checkAllobj)
+    } else {
+      list.forEach((item) => {
+        checkAllobj[item.label] = []
+        item.children.forEach((itm) => {
+          checkAllobj[item.label]?.push(itm.value)
+        })
+      })
+      setcheckedObj(checkAllobj)
+    }
+  }
+
+  useEffect(() => {
+    let allLength = 0,
+      checkedLength = 0
+    list.forEach((item) => {
+      allLength += item.children.length
+      checkedLength += checkedObj[item.label]!.length
+    })
+
+    setisCheckedAll(allLength === checkedLength)
+  }, [checkedObj, list])
 
   return (
     <Modal
@@ -226,7 +253,7 @@ const Dialog = (props: Props, ref: any) => {
       <div className='check-all-wrap fn16 fx-between-center'>
         <div>全部国家</div>
         <div className='color checkall' onClick={checkAll}>
-          全选
+          {isCheckedAll ? '取消全选' : '全选'}
         </div>
       </div>
       <div className='check-group'>
@@ -237,7 +264,7 @@ const Dialog = (props: Props, ref: any) => {
               <CheckGroup
                 label={item.label}
                 options={item.children}
-                checkedList={checkedObj[item.label]}
+                checkedList={checkedObj[item.label] || []}
                 onChange={onChange}
               />
             </div>
