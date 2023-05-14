@@ -264,7 +264,7 @@ const Dialog = (props: Props, ref: any) => {
                 <span>新增</span>
               </div>
             </div>
-            <div className='btn-group'>
+            <div className='btn-group' style={{ marginLeft: '10px' }}>
               <Popconfirm
                 placement='bottom'
                 title='警告'
