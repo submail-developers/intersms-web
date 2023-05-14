@@ -6,7 +6,7 @@
   .footer-btn {
     width: 96px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 14px;
     color: #282b31;
     font-weight: 400;
     text-align: center;
@@ -22,14 +22,14 @@
       background-color: #f2f4f6;
       &:hover {
         background-color: #e7e7e7;
-        color: #004bb0;
+        color: #0074d7;
       }
     }
     &.confirm {
       color: #fff;
-      background-color: #0f82e6;
+      background-color: #0074d7;
       &:hover {
-        background-color: #0074d7;
+        background-color: #006db6;
         color: #fff;
       }
     }

@@ -21,8 +21,11 @@ export default function Price(props: Props) {
   }, [props.accountId])
   const columns: ColumnsType<DataType> = [
     {
-      title: '国家名',
+      title: <div style={{ marginLeft: '20px' }}>国家名</div>,
       dataIndex: 'country',
+      render: (_, record) => (
+        <div style={{ marginLeft: '20px' }}>{record.country}</div>
+      ),
     },
     {
       title: '单价',
@@ -81,7 +84,7 @@ export default function Price(props: Props) {
             getCheckboxProps: getCheckboxProps,
           }}
           sticky
-          pagination={false}
+          pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>

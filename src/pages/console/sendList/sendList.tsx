@@ -8,7 +8,6 @@ import {
   ConfigProvider,
   Table,
   Tooltip,
-  App,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
@@ -37,7 +36,6 @@ export default function SendList() {
   const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
-  const { message } = App.useApp()
 
   const channelList = [
     { label: '全部通道', value: 'all' },
@@ -63,10 +61,6 @@ export default function SendList() {
   }
 
   const formatSearchValue = (params: FormValues) => {
-    message.loading({
-      duration: 0,
-      content: '',
-    })
     const { channel, group, time, keyword } = params
     const start = (time && time[0].format('YYYY-MM-DD')) || ''
     const end = (time && time[1].format('YYYY-MM-DD')) || ''
@@ -84,14 +78,12 @@ export default function SendList() {
 
   // 获取列表数据
   const searchEvent = async (params: API.GetSendListParams) => {
-    console.log('123123121321')
     try {
       const res = await getSendList(params)
       settableData(res.data)
     } catch (error) {
       console.log(error)
     }
-    message.destroy()
   }
   const resetForm = () => {
     form.resetFields()
@@ -229,105 +221,112 @@ export default function SendList() {
   return (
     <div data-class='sendlist'>
       <MenuTitle title='发送列表'></MenuTitle>
-      <Form
-        name='basic'
-        form={form}
-        initialValues={initFormValues}
-        layout={size == 'small' ? 'inline' : 'inline'}
-        wrapperCol={{ span: 24 }}
-        onFinish={onFinish}
-        autoComplete='off'>
-        <Form.Item label='' name='channel' style={{ marginBottom: 10 }}>
-          <Select
-            placeholder='请选择通道'
-            style={{ width: 162 }}
-            size={size}
-            suffixIcon={
-              <i
-                className='icon iconfont icon-xiala'
-                style={{
-                  color: '#000',
-                  fontSize: '12px',
-                  transform: 'scale(.45)',
-                }}
-              />
-            }>
-            {channelList.map((item) => (
-              <Option value={item.value} key={item.value}>
-                {item.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item label='' name='group' style={{ marginBottom: 10 }}>
-          <Select
-            placeholder='请选择通道组'
-            style={{ width: 162 }}
-            size={size}
-            suffixIcon={
-              <i
-                className='icon iconfont icon-xiala'
-                style={{
-                  color: '#000',
-                  fontSize: '12px',
-                  transform: 'scale(.45)',
-                }}
-              />
-            }>
-            {groupList.map((item) => (
-              <Option value={item.value} key={item.value}>
-                {item.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <MyFormItem
-          size={size}
-          label='注册时间'
-          style={{ marginBottom: '10px' }}>
-          <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
-            <RangePicker
+      <ConfigProvider
+        theme={{
+          token: {
+            controlHeight: 40,
+          },
+        }}>
+        <Form
+          name='basic'
+          form={form}
+          initialValues={initFormValues}
+          layout={size == 'small' ? 'inline' : 'inline'}
+          wrapperCol={{ span: 24 }}
+          onFinish={onFinish}
+          autoComplete='off'>
+          <Form.Item label='' name='channel' style={{ marginBottom: 10 }}>
+            <Select
+              placeholder='请选择通道'
+              style={{ width: 162 }}
               size={size}
-              bordered={false}
-              disabledDate={disabledDate}
-              presets={rangePresets}
-              clearIcon={false}
-              style={{ width: size == 'small' ? 190 : 240 }}></RangePicker>
+              suffixIcon={
+                <i
+                  className='icon iconfont icon-xiala'
+                  style={{
+                    color: '#000',
+                    fontSize: '12px',
+                    transform: 'scale(.45)',
+                  }}
+                />
+              }>
+              {channelList.map((item) => (
+                <Option value={item.value} key={item.value}>
+                  {item.label}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
-        </MyFormItem>
-        <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
-          <Input
-            size={size}
-            placeholder='账户/手机号/国家'
-            maxLength={20}
-            style={{ width: 162 }}></Input>
-        </Form.Item>
-        <Form.Item style={{ marginBottom: 10 }}>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#ff5e2d',
-                colorPrimaryHover: '#ff5e2d',
-              },
-            }}>
-            <Button
-              type='primary'
+          <Form.Item label='' name='group' style={{ marginBottom: 10 }}>
+            <Select
+              placeholder='请选择通道组'
+              style={{ width: 162 }}
               size={size}
-              htmlType='submit'
-              style={{ width: 110, marginLeft: 0 }}>
-              搜索
-            </Button>
-          </ConfigProvider>
-        </Form.Item>
-        <Form.Item style={{ marginBottom: 10 }}>
-          <div
-            className={`refresh fx-center-center ${size}`}
-            onClick={resetForm}>
-            <i className={`icon iconfont icon-shuaxin1`}></i>
-          </div>
-        </Form.Item>
-      </Form>
+              suffixIcon={
+                <i
+                  className='icon iconfont icon-xiala'
+                  style={{
+                    color: '#000',
+                    fontSize: '12px',
+                    transform: 'scale(.45)',
+                  }}
+                />
+              }>
+              {groupList.map((item) => (
+                <Option value={item.value} key={item.value}>
+                  {item.label}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <MyFormItem
+            size={size}
+            label='注册时间'
+            style={{ marginBottom: '10px' }}>
+            <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
+              <RangePicker
+                size={size}
+                bordered={false}
+                disabledDate={disabledDate}
+                presets={rangePresets}
+                clearIcon={false}
+                style={{ width: size == 'small' ? 190 : 240 }}></RangePicker>
+            </Form.Item>
+          </MyFormItem>
+          <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
+            <Input
+              size={size}
+              placeholder='账户/手机号/国家'
+              maxLength={20}
+              style={{ width: 162 }}></Input>
+          </Form.Item>
+          <Form.Item style={{ marginBottom: 10 }}>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#ff5e2d',
+                  colorPrimaryHover: '#ff5e2d',
+                },
+              }}>
+              <Button
+                type='primary'
+                size={size}
+                htmlType='submit'
+                style={{ width: 110, marginLeft: 0 }}>
+                搜索
+              </Button>
+            </ConfigProvider>
+          </Form.Item>
+          <Form.Item style={{ marginBottom: 10 }}>
+            <div
+              className={`refresh fx-center-center ${size}`}
+              onClick={resetForm}>
+              <i className={`icon iconfont icon-shuaxin1`}></i>
+            </div>
+          </Form.Item>
+        </Form>
+      </ConfigProvider>
       <Table
         className='theme-cell reset-theme'
         rowKey='id'

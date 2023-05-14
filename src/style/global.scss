@@ -82,6 +82,14 @@
   font-size: 30px;
 }
 
+.color {
+  color: #0074d7;
+}
+
+.bg-color {
+  background-color: #0074d7;
+}
+
 .g-ellipsis,
 .g-ellipsis-1 {
   overflow: hidden;
@@ -105,4 +113,64 @@
   line-clamp: 3;
   -webkit-box-orient: vertical;
   word-break: break-all;
+}
+
+// 自定义按钮样式
+.btn-group {
+  display: flex;
+  .btn {
+    min-width: 88px;
+    height: 32px;
+    padding: 6px 12px;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    background-color: #0074d7;
+    transition: background-color 0.3s;
+    color: #fff;
+    position: relative;
+    box-shadow: 0 2px 0 rgba(5, 175, 255, 0.1);
+    cursor: pointer;
+    &:hover {
+      background-color: #006bd6;
+    }
+    &:first-child {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+      &::before {
+        display: none;
+      }
+    }
+    &:last-child {
+      // border-radius: 0 4px 4px 0;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+    &.delete {
+      background-color: #ff4d4f;
+      box-shadow: 0 2px 0 rgba(255, 38, 5, 0.06);
+      &:hover {
+        background-color: #ff7875;
+      }
+      &::before {
+        display: none;
+      }
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      width: 0.8px;
+      height: 50%;
+      top: 50%;
+      left: 0;
+      opacity: 0.5;
+      background-color: #fff;
+      transform: translateY(-50%);
+    }
+    .icon.iconfont {
+      font-size: 12px;
+      margin-right: 6px;
+    }
+  }
 }

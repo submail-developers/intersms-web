@@ -44,7 +44,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   return (
     <Modal
       title='国家信息配置'
-      width={700}
+      width={640}
       closable={false}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}

@@ -1,8 +1,8 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
-import { Modal, Form, Input, App, Row, Col, Checkbox, Select } from 'antd'
+import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
 import { addAccount } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
-import type { CheckboxValueType } from 'antd/es/checkbox/Group'
+import type { RadioChangeEvent } from 'antd'
 
 interface Props {
   // onSearch: () => void
@@ -41,8 +41,8 @@ const Dialog = (props: Props, ref: any) => {
   const onFinish = () => {}
   const onFinishFailed = () => {}
 
-  const onChange = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues)
+  const onChange = (e: RadioChangeEvent) => {
+    console.log('checked = ', e)
   }
 
   const options = [
@@ -62,7 +62,7 @@ const Dialog = (props: Props, ref: any) => {
     <Modal
       data-class='dialog'
       title='失败处理配置'
-      width={700}
+      width={640}
       closable={false}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
@@ -121,7 +121,7 @@ const Dialog = (props: Props, ref: any) => {
               label='通道组类型'
               name='group_type'
               validateTrigger='onSubmit'>
-              <Checkbox.Group options={options} onChange={onChange} />
+              <Radio.Group options={options} onChange={onChange} />
             </Form.Item>
           </Col>
         </Row>

@@ -11,7 +11,7 @@ interface Props {
 const defaultProps: Props = {
   children: <></>,
   label: '',
-  size: 'large',
+  size: 'middle',
 }
 
 export default function MyFormItem(props: Props = defaultProps) {

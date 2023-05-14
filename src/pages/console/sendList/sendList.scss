@@ -1,22 +1,11 @@
 [data-class='sendlist'] {
-  color: #222;
-
   .refresh {
-    &.large {
+    &.middle {
       margin-left: 20px;
       width: 26px;
       height: 26px;
       .iconfont {
         font-size: 22px;
-      }
-    }
-
-    &.middle {
-      margin-left: 16px;
-      width: 22px;
-      height: 22px;
-      .iconfont {
-        font-size: 18px;
       }
     }
 

@@ -24,8 +24,11 @@ export default function Channel(props: Props) {
   }, [props.accountId])
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Appid',
+      title: <div style={{ marginLeft: '20px' }}>Appid</div>,
       dataIndex: 'appid',
+      render: (_, record) => (
+        <div style={{ marginLeft: '20px' }}>{record.appid}</div>
+      ),
     },
     {
       title: '国家',
@@ -102,7 +105,6 @@ export default function Channel(props: Props) {
           }}
           rowKey={'appid'}
           sticky
-          pagination={false}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>

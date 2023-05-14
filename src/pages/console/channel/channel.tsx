@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState, MutableRefObject, useRef } from 'react'
 import {
   Button,
   Select,
@@ -7,16 +7,17 @@ import {
   DatePicker,
   ConfigProvider,
   Table,
-  Tooltip,
   App,
   Row,
   Col,
   Space,
   Checkbox,
+  Popconfirm,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
-
+import AddChannel from './dialog/addChannel'
+import ChannelDetail from './dialog/channelDetail/channelDetail'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
@@ -44,6 +45,8 @@ interface FormValues {
 
 // 发送列表
 export default function Channel() {
+  const addChannelDialogRef: MutableRefObject<any> = useRef(null)
+  const detailRef: MutableRefObject<any> = useRef(null)
   const { Option } = Select
   const { RangePicker } = DatePicker
   const size = useSize()
@@ -69,36 +72,14 @@ export default function Channel() {
     keyword: '',
   }
 
-  const onFinish = (values: FormValues) => {
-    formatSearchValue(values)
-  }
-
-  const formatSearchValue = (params: FormValues) => {}
-
-  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    return current && current >= dayjs().endOf('day') // 无法选择今天以后的日期
-  }
-  const rangePresets: {
-    label: string
-    value: [Dayjs, Dayjs]
-  }[] = [
-    { label: '最近7天', value: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近14天', value: [dayjs().add(-15, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近30天', value: [dayjs().add(-31, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近90天', value: [dayjs().add(-91, 'd'), dayjs().add(-1, 'd')] },
-  ]
-
-  const [tableData, settableData] = useState<DataType[]>([])
-  useEffect(() => {
-    formatSearchValue(initFormValues)
-  }, [])
+  const onFinish = (values: FormValues) => {}
 
   const columns: ColumnsType<DataType> = [
     {
       title: <Checkbox></Checkbox>,
       dataIndex: 'checkbox',
       className: 'checkbox-wrap',
-      width: 34,
+      width: 60,
       render: (_, record) => (
         <Checkbox
           className='checkbox'
@@ -161,15 +142,15 @@ export default function Channel() {
       },
     },
     {
-      title: '操作',
+      title: '关联国家',
       dataIndex: 'actions',
       render: (_, record) => (
-        <div>
-          <Button type='link' style={{ paddingLeft: 0, paddingRight: 0 }}>
-            编辑
-          </Button>
-          <Button type='link'>删除</Button>
-        </div>
+        <Button
+          type='link'
+          onClick={() => showDetail(record)}
+          style={{ padding: 0 }}>
+          查看详情
+        </Button>
       ),
     },
   ]
@@ -200,7 +181,7 @@ export default function Channel() {
   }
 
   const data: DataType[] = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 100; i++) {
     data.push({
       id: 'id' + i,
       channel_name: 'string' + i,
@@ -211,111 +192,132 @@ export default function Channel() {
     })
   }
 
+  const addChannelEvent = () => {
+    addChannelDialogRef.current.open()
+  }
+  const showDetail = (record: DataType) => {
+    detailRef.current.open()
+  }
+
   return (
     <div data-class='channel'>
       <MenuTitle title='通道管理'></MenuTitle>
-      <Row justify='space-between' wrap>
+      <Row justify='space-between' wrap align={'bottom'}>
         <Col>
-          <Space.Compact size={size}>
-            <Button
-              type='primary'
-              icon={<i className={`icon iconfont icon-xinzeng ${size}`} />}>
-              新增
-            </Button>
-            <Button
-              type='primary'
-              icon={<i className={`icon iconfont icon-bianji ${size}`} />}>
-              编辑
-            </Button>
-            <Button
-              type='primary'
-              danger
-              icon={<i className={`icon iconfont icon-shanchu ${size}`} />}>
-              删除
-            </Button>
-          </Space.Compact>
+          <div className='btn-group' style={{ marginBottom: '10px' }}>
+            <div className='btn' onClick={addChannelEvent}>
+              <i className='icon iconfont icon-xinzeng'></i>
+              <span>新增</span>
+            </div>
+            <div className='btn'>
+              <i className='icon iconfont icon-bianji'></i>
+              <span>编辑</span>
+            </div>
+            <Popconfirm
+              placement='bottom'
+              title='警告'
+              description='确定删除选中的客户吗？'
+              // onConfirm={deleteEvent}
+              okText='确定'
+              cancelText='取消'>
+              <div className='btn delete'>
+                <i className='icon iconfont icon-shanchu'></i>
+                <span>删除</span>
+              </div>
+            </Popconfirm>
+          </div>
         </Col>
         <Col>
-          <Form
-            name='basic'
-            form={form}
-            initialValues={initFormValues}
-            layout={size == 'small' ? 'inline' : 'inline'}
-            wrapperCol={{ span: 24 }}
-            onFinish={onFinish}
-            autoComplete='off'>
-            <Form.Item label='' name='name' style={{ marginBottom: 10 }}>
-              <Input
-                size={size}
-                placeholder='通道名称'
-                maxLength={20}
-                style={{ width: 162 }}></Input>
-            </Form.Item>
-            <Form.Item label='' name='access_type' style={{ marginBottom: 10 }}>
-              <Select
-                placeholder='接入类型'
-                style={{ width: 162 }}
-                size={size}
-                suffixIcon={
-                  <i
-                    className='icon iconfont icon-xiala'
-                    style={{
-                      color: '#000',
-                      fontSize: '12px',
-                      transform: 'scale(.45)',
-                    }}
-                  />
-                }>
-                {channelList.map((item) => (
-                  <Option value={item.value} key={item.value}>
-                    {item.label}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label=''
-              name='channel_type'
-              style={{ marginBottom: 10 }}>
-              <Select
-                placeholder='通道类型'
-                style={{ width: 162 }}
-                size={size}
-                suffixIcon={
-                  <i
-                    className='icon iconfont icon-xiala'
-                    style={{
-                      color: '#000',
-                      fontSize: '12px',
-                      transform: 'scale(.45)',
-                    }}
-                  />
-                }>
-                {groupList.map((item) => (
-                  <Option value={item.value} key={item.value}>
-                    {item.label}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item style={{ marginBottom: 10 }}>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    colorPrimary: '#ff5e2d',
-                    colorPrimaryHover: '#ff5e2d',
-                  },
-                }}>
-                <Button
-                  type='primary'
+          <ConfigProvider
+            theme={{
+              token: {
+                controlHeight: 40,
+              },
+            }}>
+            <Form
+              name='basic'
+              form={form}
+              initialValues={initFormValues}
+              layout='inline'
+              wrapperCol={{ span: 24 }}
+              onFinish={onFinish}
+              autoComplete='off'>
+              <Form.Item label='' name='name' style={{ marginBottom: 10 }}>
+                <Input
                   size={size}
-                  htmlType='submit'
-                  style={{ width: 110, marginLeft: 0 }}>
-                  搜索
-                </Button>
-              </ConfigProvider>
-            </Form.Item>
-          </Form>
+                  placeholder='通道名称'
+                  maxLength={20}
+                  style={{ width: 162 }}></Input>
+              </Form.Item>
+              <Form.Item
+                label=''
+                name='access_type'
+                style={{ marginBottom: 10 }}>
+                <Select
+                  placeholder='接入类型'
+                  style={{ width: 162 }}
+                  size={size}
+                  suffixIcon={
+                    <i
+                      className='icon iconfont icon-xiala'
+                      style={{
+                        color: '#000',
+                        fontSize: '12px',
+                        transform: 'scale(.45)',
+                      }}
+                    />
+                  }>
+                  {channelList.map((item) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                label=''
+                name='channel_type'
+                style={{ marginBottom: 10 }}>
+                <Select
+                  placeholder='通道类型'
+                  style={{ width: 162 }}
+                  size={size}
+                  suffixIcon={
+                    <i
+                      className='icon iconfont icon-xiala'
+                      style={{
+                        color: '#000',
+                        fontSize: '12px',
+                        transform: 'scale(.45)',
+                      }}
+                    />
+                  }>
+                  {groupList.map((item) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item style={{ marginBottom: 10 }}>
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorPrimary: '#ff5e2d',
+                      colorPrimaryHover: '#ff5e2d',
+                    },
+                  }}>
+                  <Button
+                    type='primary'
+                    size={size}
+                    htmlType='submit'
+                    style={{ width: 110, marginLeft: 0 }}>
+                    搜索
+                  </Button>
+                </ConfigProvider>
+              </Form.Item>
+            </Form>
+          </ConfigProvider>
         </Col>
       </Row>
       <ConfigProvider
@@ -329,11 +331,14 @@ export default function Channel() {
           columns={columns}
           dataSource={data}
           rowSelection={rowSelection}
-          rowKey={'account'}
+          rowKey={'id'}
           sticky
           pagination={false}
+          scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
+      <AddChannel ref={addChannelDialogRef} />
+      <ChannelDetail ref={detailRef} />
     </div>
   )
 }

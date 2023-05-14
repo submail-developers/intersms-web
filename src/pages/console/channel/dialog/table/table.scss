@@ -1,0 +1,68 @@
+[class-data='my-table'] {
+  padding-bottom: 10px;
+  .thead {
+    width: 100%;
+    min-height: 54px;
+    background-color: #f1f2f4;
+    color: #505a63;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+  .tbody {
+    width: 100%;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin-top: 10px;
+    &.active {
+      border-color: #3461bb;
+    }
+    .tr {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      &:nth-child(2n) {
+        .td {
+          background-color: #f7f8f9;
+          &:nth-child(1),
+          &:nth-child(2) {
+            background-color: transparent;
+          }
+        }
+      }
+      .td {
+        height: 100%;
+        line-height: 1.57;
+        &:nth-child(3) {
+          border-left: 1px solid #f7f8f9;
+        }
+      }
+    }
+  }
+
+  .th,
+  .tr .td {
+    flex: 1;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    &:nth-child(1) {
+      padding-left: 50px;
+      font-weight: 500;
+    }
+    &:nth-child(3) {
+      padding-left: 50px;
+    }
+  }
+
+  .delete-btn {
+    color: #0074d7;
+    cursor: pointer;
+    transition: color 0.3s;
+    display: inline-block;
+    &:hover {
+      color: #006db6;
+    }
+  }
+}

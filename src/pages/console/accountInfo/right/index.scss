@@ -8,13 +8,6 @@
       line-height: 40px;
       overflow: hidden;
       font-size: 14px;
-      &.middle {
-        height: 32px;
-        line-height: 32px;
-        .panle {
-          width: 140px;
-        }
-      }
       &.small {
         height: 24px;
         line-height: 24px;
@@ -34,18 +27,22 @@
           background-color: #d2e9ff;
           color: #0074d7;
         }
-        &::after {
+        &.left-line::after,
+        &.right-line::after {
           content: '';
           position: absolute;
           top: 50%;
-          right: 0;
           transform: translateY(-50%);
           width: 1px;
           height: 50%;
           background-color: #aaa;
         }
-        &:last-child::after {
-          display: none;
+
+        &.left-line::after {
+          left: 0;
+        }
+        &.right-line::after {
+          right: 0;
         }
       }
     }

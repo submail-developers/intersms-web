@@ -7,6 +7,7 @@ import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import {
   Button,
   Input,
+  Affix,
   ConfigProvider,
   Table,
   Space,
@@ -142,23 +143,16 @@ export default function Left() {
   }
 
   return (
-    <section
-      data-class='account-left'
-      className='fx-shrink'
-      style={{ width: `${size === 'small' ? '100%' : '510px'}` }}>
-      <Space.Compact size={size == 'small' ? 'small' : 'middle'}>
-        <Button
-          type='primary'
-          onClick={openAddDialog}
-          icon={
-            <i
-              className={`icon iconfont icon-xinzeng ${
-                size == 'small' ? 'small' : 'middle'
-              }`}
-            />
-          }>
-          新增
-        </Button>
+    <section data-class='account-left' className={`${size}`}>
+      <div className='btn-group'>
+        <div className='btn' onClick={openAddDialog}>
+          <i className='icon iconfont icon-xinzeng'></i>
+          <span>新增</span>
+        </div>
+        {/* <div className='btn'>
+          <i className='icon iconfont icon-bianji'></i>
+          <span>编辑</span>
+        </div> */}
         <Popconfirm
           placement='bottom'
           title='警告'
@@ -166,26 +160,19 @@ export default function Left() {
           onConfirm={deleteEvent}
           okText='确定'
           cancelText='取消'>
-          <Button
-            type='primary'
-            danger
-            icon={
-              <i
-                className={`icon iconfont icon-shanchu ${
-                  size == 'small' ? 'small' : 'middle'
-                }`}
-              />
-            }>
-            删除
-          </Button>
+          <div className='btn delete'>
+            <i className='icon iconfont icon-shanchu'></i>
+            <span>删除</span>
+          </div>
         </Popconfirm>
-      </Space.Compact>
+      </div>
       <div className='filter-wrap fx-col'>
         <div className='input-wrap'>
           <Input
             bordered={false}
             placeholder='请输入关键字过滤'
             maxLength={20}
+            allowClear
             suffix={
               <i
                 onClick={search}
@@ -211,7 +198,7 @@ export default function Left() {
               },
             }}>
             <Table
-              className='theme-cell bg-gray'
+              className='theme-cell reset-theme bg-gray'
               showHeader={false}
               columns={columns}
               dataSource={tableData}

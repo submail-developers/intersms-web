@@ -1,6 +1,17 @@
 [data-class='account-left'] {
   margin-right: 20px;
   margin-bottom: 12px;
+  height: fit-content;
+  position: sticky;
+  top: -34px;
+  left: 0;
+  width: 510px;
+  flex-shrink: 0;
+  &.small {
+    position: relative;
+    top: 0;
+    width: 100%;
+  }
   .filter-wrap {
     border-radius: 6px;
     width: 100%;
@@ -32,7 +43,22 @@
 
     .table-title {
       font-weight: 500;
-      margin: 14px 10px 7px;
+      margin: 14px 10px 2px;
+    }
+  }
+
+  // 重置table的样式
+  .ant-table-wrapper.reset-theme {
+    .ant-table-body table {
+      tbody {
+        tr {
+          &.ant-table-row-selected > td {
+            border-color: transparent !important;
+            background-color: #0074d7 !important;
+            color: #fff;
+          }
+        }
+      }
     }
   }
 }

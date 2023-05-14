@@ -1,7 +1,7 @@
 import { useState, useRef, MutableRefObject } from 'react'
 import { useAppSelector } from '@/store/hook'
 import { accountInfoState } from '@/store/reducers/accountInfo'
-import { Tabs, Button, Space, Switch } from 'antd'
+import { Tabs, Button, Space, Switch, Popconfirm } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import type { TabsProps } from 'antd'
 import { useSize } from '@/hooks'
@@ -68,24 +68,24 @@ export default function Right() {
       console.log(checked)
     }
     return (
-      <div className={`tabbar-head ${size == 'small' ? '' : 'fx'}`}>
-        <div
-          className={`fx panle-list ${size == 'small' ? 'small' : 'middle'}`}>
+      <div className={`tabbar-head ${size == 'small' ? '' : 'fx fx-wrap'}`}>
+        <div className={`fx panle-list ${size}`}>
           {items.map((item) => (
             <div
               key={item.key}
               onClick={() => setactiveKey(item.key)}
-              className={`panle ${size == 'small' ? 'small' : 'middle'} ${
+              className={`panle ${size} ${
                 item.key == activeKey ? 'active' : ''
+              } ${
+                Number(item.key) - Number(activeKey) > 1 ? 'left-line' : ''
+              } ${
+                Number(item.key) - Number(activeKey) < -1 ? 'right-line' : ''
               }`}>
               {item.label}
             </div>
           ))}
         </div>
-        <div
-          className={`fx-auto ext-switch fx-between-center ${
-            size == 'small' ? 'small' : 'middle'
-          }`}>
+        <div className={`fx-auto ext-switch fx-between-center ${size}`}>
           {activeKey == '1' ? (
             <div className='switch-all fx-shrink'>
               <Switch size={'small'} onChange={changeALl}></Switch>
@@ -103,64 +103,47 @@ export default function Right() {
     )
   }
 
-  return (
-    accountInfoStore.activeAccountId && (
-      <section
-        data-class='account-right'
-        className='right-wrap fx-auto fx-shrink'
-        style={{ minWidth: `${size === 'small' ? '100%' : ''}` }}>
-        <div className='fx-col'>
-          <Space.Compact size={size == 'small' ? 'small' : 'middle'}>
-            <Button
-              type='primary'
-              onClick={showAddDialog}
-              icon={
-                <i
-                  className={`icon iconfont icon-xinzeng ${
-                    size == 'small' ? 'small' : 'middle'
-                  }`}
-                />
-              }>
-              新增
-            </Button>
-            <Button
-              type='primary'
-              icon={
-                <i
-                  className={`icon iconfont icon-bianji ${
-                    size == 'small' ? 'small' : 'middle'
-                  }`}
-                />
-              }>
-              编辑
-            </Button>
-            <Button
-              type='primary'
-              danger
-              icon={
-                <i
-                  className={`icon iconfont icon-shanchu ${
-                    size == 'small' ? 'small' : 'middle'
-                  }`}
-                />
-              }>
-              删除
-            </Button>
-          </Space.Compact>
-          <div className='tabs'>
-            <Tabs
-              type='card'
-              activeKey={activeKey}
-              items={items}
-              onChange={onChange}
-              renderTabBar={renderTabBar}
-            />
+  return accountInfoStore.activeAccountId ? (
+    <section
+      data-class='account-right'
+      className='right-wrap fx-auto fx-shrink'
+      style={{ minWidth: `${size === 'small' ? '100%' : ''}` }}>
+      <div className='fx-col'>
+        <div className='btn-group'>
+          <div className='btn' onClick={showAddDialog}>
+            <i className='icon iconfont icon-xinzeng'></i>
+            <span>新增</span>
           </div>
+          <div className='btn'>
+            <i className='icon iconfont icon-bianji'></i>
+            <span>编辑</span>
+          </div>
+          <Popconfirm
+            placement='bottom'
+            title='警告'
+            description='确定删除选中的客户吗？'
+            // onConfirm={deleteEvent}
+            okText='确定'
+            cancelText='取消'>
+            <div className='btn delete'>
+              <i className='icon iconfont icon-shanchu'></i>
+              <span>删除</span>
+            </div>
+          </Popconfirm>
         </div>
-        <PriceDialog ref={priceDialogRef} />
-        <ChannelDialog ref={channelDialogRef} />
-        <ErrorDialog ref={errorDialogRef} />
-      </section>
-    )
-  )
+        <div className='tabs'>
+          <Tabs
+            type='card'
+            activeKey={activeKey}
+            items={items}
+            onChange={onChange}
+            renderTabBar={renderTabBar}
+          />
+        </div>
+      </div>
+      <PriceDialog ref={priceDialogRef} />
+      <ChannelDialog ref={channelDialogRef} />
+      <ErrorDialog ref={errorDialogRef} />
+    </section>
+  ) : null
 }

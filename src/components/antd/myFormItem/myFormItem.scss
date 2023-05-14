@@ -5,14 +5,11 @@
   box-sizing: border-box;
   margin-inline-end: 16px;
   width: fit-content;
-  &.large {
+  &.middle {
     height: 40px;
   }
-  &.middle {
-    height: 32px;
-  }
   &.small {
-    height: 24px;
+    height: 32px;
     font-size: 12px;
   }
   .label {
