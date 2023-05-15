@@ -39,7 +39,7 @@ interface FormValues {
 }
 
 // 国家信息配置
-export default function Channel() {
+export default function Network() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
   const { Option } = Select
   const { RangePicker } = DatePicker

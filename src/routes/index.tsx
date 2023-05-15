@@ -176,7 +176,7 @@ export const routerList: RouteObject[] = [
                 lazyChildren={lazy(
                   () =>
                     import(
-                      '@/pages/console/numberAttribution/numberAttribution'
+                      '@/pages/console/numberChannelsRoute/numberChannelsRoute'
                     ),
                 )}
               />
