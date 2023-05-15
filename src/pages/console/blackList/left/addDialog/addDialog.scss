@@ -1,0 +1,13 @@
+[data-class='add-blacklist'] {
+  .ant-radio-group {
+    .ant-radio-wrapper {
+      &:last-child {
+        margin-left: 20px;
+        margin-right: 0;
+        span.ant-radio + * {
+          padding-inline-end: 0;
+        }
+      }
+    }
+  }
+}

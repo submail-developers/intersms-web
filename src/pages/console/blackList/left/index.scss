@@ -1,0 +1,84 @@
+[data-class='account-left'] {
+  margin-right: 20px;
+  margin-bottom: 12px;
+  height: fit-content;
+  position: sticky;
+  top: -34px;
+  left: 0;
+  width: 510px;
+  flex-shrink: 0;
+  &.small {
+    position: relative;
+    top: 0;
+    width: 100%;
+  }
+  .filter-wrap {
+    border-radius: 6px;
+    width: 100%;
+    max-height: 520px;
+    background-color: #f2f4f6;
+    margin-top: 12px;
+    padding: 16px 10px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+
+    .input-wrap {
+      height: 38px;
+      .search {
+        input {
+          border: none;
+          box-shadow: none;
+          background-color: transparent;
+          &:hover {
+            border: none;
+            box-shadow: none;
+          }
+        }
+        .ant-input-group-addon {
+          border: none;
+          background-color: transparent;
+        }
+      }
+    }
+
+    .table-title {
+      font-weight: 500;
+      margin: 14px 10px 2px;
+    }
+  }
+
+  // 重置table的样式
+  .ant-table-wrapper.reset-theme {
+    .ant-table-body table {
+      tbody {
+        tr {
+          &.ant-table-row-selected > td {
+            border-color: transparent !important;
+            background-color: #0074d7 !important;
+            color: #fff;
+            .ant-checkbox {
+              .ant-checkbox-inner {
+                background-color: #fff;
+                &::after {
+                  border-color: #0074d7;
+                }
+              }
+            }
+            .ant-switch {
+              background-color: #fff;
+              .ant-switch-handle {
+                &::before {
+                  background-color: #0074d7;
+                }
+              }
+              .ant-switch-inner-checked,
+              .ant-switch-inner-unchecked {
+                color: #0074d7;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
