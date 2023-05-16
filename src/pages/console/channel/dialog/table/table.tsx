@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Col, Row, Popconfirm, Form } from 'antd'
+import { Col, Button, Popconfirm, Form } from 'antd'
 import './table.scss'
 export default () => {
   const [form] = Form.useForm()
@@ -38,30 +38,26 @@ export default () => {
             <div className='td'>
               {editId == '1' ? (
                 <>
-                  <div className='action-btn' onClick={save}>
+                  <Button type='link' style={{ paddingLeft: 0 }} onClick={save}>
                     保存
-                  </div>
-                  <Popconfirm
-                    placement='bottom'
-                    title='警告'
-                    description='确定取消编辑的内容吗？'
-                    // onConfirm={deleteEvent}
-                    okText='确定'
-                    cancelText='取消'>
-                    <div className='action-btn'>取消</div>
-                  </Popconfirm>
+                  </Button>
+
+                  <Button type='link'>取消</Button>
                 </>
               ) : (
                 <>
-                  <div className='action-btn'>编辑</div>
+                  <Button type='link' style={{ paddingLeft: 0 }}>
+                    编辑
+                  </Button>
+
                   <Popconfirm
                     placement='bottom'
                     title='警告'
-                    description='确定删除选中的客户吗？'
+                    description='确定删除该通道吗？'
                     // onConfirm={deleteEvent}
                     okText='确定'
                     cancelText='取消'>
-                    <div className='action-btn'>删除</div>
+                    <Button type='link'>删除</Button>
                   </Popconfirm>
                 </>
               )}
@@ -74,16 +70,31 @@ export default () => {
             <div className='td'>0.05000</div>
             <div className='td'>0.05000</div>
             <div className='td'>
-              <div className='action-btn'>编辑</div>
-              <Popconfirm
-                placement='bottom'
-                title='警告'
-                description='确定删除选中的客户吗？'
-                // onConfirm={deleteEvent}
-                okText='确定'
-                cancelText='取消'>
-                <div className='action-btn'>删除</div>
-              </Popconfirm>
+              {editId == '2' ? (
+                <>
+                  <Button type='link' style={{ paddingLeft: 0 }} onClick={save}>
+                    保存
+                  </Button>
+
+                  <Button type='link'>取消</Button>
+                </>
+              ) : (
+                <>
+                  <Button type='link' style={{ paddingLeft: 0 }}>
+                    编辑
+                  </Button>
+
+                  <Popconfirm
+                    placement='bottom'
+                    title='警告'
+                    description='确定删除该通道吗？'
+                    // onConfirm={deleteEvent}
+                    okText='确定'
+                    cancelText='取消'>
+                    <Button type='link'>删除</Button>
+                  </Popconfirm>
+                </>
+              )}
             </div>
           </div>
           <div className='tr'>

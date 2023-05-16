@@ -87,7 +87,7 @@ export default function Channel() {
           <div title='关闭连接' className={`icon iconfont icon-duanlian`}></div>
         </Col>
         <Col>
-          <div title='删除配置' className={`icon iconfont icon-peizhi`}></div>
+          <div title='删除配置' className={`icon iconfont icon-huanyuan`}></div>
         </Col>
       </Row>
     )
@@ -147,15 +147,19 @@ export default function Channel() {
       width: 120,
       render: (_, record) => (
         <>
-          <Button
-            type='link'
-            onClick={() => showDetail(record)}
-            style={{ paddingLeft: 0 }}>
+          <Button type='link' style={{ paddingLeft: 0 }}>
             编辑
           </Button>
-          <Button type='link' onClick={() => showDetail(record)}>
-            删除
-          </Button>
+
+          <Popconfirm
+            placement='bottom'
+            title='警告'
+            description='确定删除该通道吗？'
+            // onConfirm={deleteEvent}
+            okText='确定'
+            cancelText='取消'>
+            <Button type='link'>删除</Button>
+          </Popconfirm>
         </>
       ),
     },
@@ -194,43 +198,43 @@ export default function Channel() {
         <Popconfirm
           placement='bottom'
           title='警告'
-          description='确定删除选中的客户吗？'
+          description='确定连接选中的通道吗？'
           // onConfirm={deleteEvent}
           okText='确定'
           cancelText='取消'>
           <div className='btn'>
-            <i className='icon iconfont icon-shanchu'></i>
+            <i className='icon iconfont icon-lianjie'></i>
             <span>连接</span>
           </div>
         </Popconfirm>
         <Popconfirm
           placement='bottom'
           title='警告'
-          description='确定删除选中的客户吗？'
+          description='确定断连选中的通道吗？'
           // onConfirm={deleteEvent}
           okText='确定'
           cancelText='取消'>
           <div className='btn'>
-            <i className='icon iconfont icon-shanchu'></i>
+            <i className='icon iconfont icon-duanlian'></i>
             <span>断连</span>
           </div>
         </Popconfirm>
         <Popconfirm
           placement='bottom'
           title='警告'
-          description='确定删除选中的客户吗？'
+          description='确定还原选中的通道吗？'
           // onConfirm={deleteEvent}
           okText='确定'
           cancelText='取消'>
           <div className='btn delete'>
-            <i className='icon iconfont icon-shanchu'></i>
+            <i className='icon iconfont icon-huanyuan'></i>
             <span>还原</span>
           </div>
         </Popconfirm>
         <Popconfirm
           placement='bottom'
           title='警告'
-          description='确定删除选中的客户吗？'
+          description='确定删除选中的通道吗？'
           // onConfirm={deleteEvent}
           okText='确定'
           cancelText='取消'>

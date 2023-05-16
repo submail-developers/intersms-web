@@ -145,7 +145,7 @@ export default function NumberChannelsRoute() {
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
             </div>
-            <div className='btn' onClick={updateCountryEvent}>
+            <div className='btn'>
               <i className='icon iconfont icon-tingyong'></i>
               <span>停用</span>
             </div>
