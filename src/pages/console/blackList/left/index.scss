@@ -52,7 +52,7 @@
     .ant-table-body table {
       tbody {
         tr {
-          &.ant-table-row-selected > td {
+          &.active > td {
             border-color: transparent !important;
             background-color: #0074d7 !important;
             color: #fff;

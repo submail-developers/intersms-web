@@ -31,7 +31,6 @@ import './channel.scss'
 interface DataType {
   id: string
   channel_name: string
-  access_type: string
   channel_type: string
   speed: string
   prefix: string
@@ -47,103 +46,75 @@ interface FormValues {
 export default function Channel() {
   const addChannelDialogRef: MutableRefObject<any> = useRef(null)
   const detailRef: MutableRefObject<any> = useRef(null)
-  const { Option } = Select
-  const { RangePicker } = DatePicker
-  const size = useSize()
-  const [form] = Form.useForm()
-  const { message } = App.useApp()
 
-  const channelList = [
-    { label: '全部通道', value: 'all' },
-    { label: '通道1', value: '1' },
-    { label: '通道2', value: '2' },
-  ]
-  const groupList = [
-    { label: '全部通道组', value: 'all' },
-    { label: '通道组1', value: '1' },
-    { label: '通道组2', value: '2' },
-  ]
-
-  // 初始化form的值
-  const initFormValues: FormValues = {
-    channel: 'all',
-    group: 'all',
-    time: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')],
-    keyword: '',
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
   }
 
-  const onFinish = (values: FormValues) => {}
+  const RenderConfig = (_: any, record: DataType) => {
+    return (
+      <Row gutter={16} className='config-wrap'>
+        <Col>
+          <div title='添加配置' className={`icon iconfont icon-peizhi`}></div>
+        </Col>
+        <Col>
+          <div title='建立连接' className={`icon iconfont icon-lianjie`}></div>
+        </Col>
+        <Col>
+          <div title='关闭连接' className={`icon iconfont icon-duanlian`}></div>
+        </Col>
+        <Col>
+          <div title='删除配置' className={`icon iconfont icon-peizhi`}></div>
+        </Col>
+      </Row>
+    )
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: <Checkbox></Checkbox>,
-      dataIndex: 'checkbox',
-      className: 'checkbox-wrap',
-      width: 60,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
       title: '通道名',
+      width: 120,
+      className: 'paddingL30',
       dataIndex: 'channel_name',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
-    },
-    {
-      title: '接入类型',
-      dataIndex: 'access_type',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '通道类型',
       dataIndex: 'channel_type',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '流速',
       dataIndex: 'speed',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '号码前缀',
       dataIndex: 'prefix',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '关联国家',
-      dataIndex: 'actions',
+      width: 100,
       render: (_, record) => (
         <Button
           type='link'
@@ -153,39 +124,48 @@ export default function Channel() {
         </Button>
       ),
     },
-  ]
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.id])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.id))
-    }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
+    {
+      title: '通道状态',
+      render: (_, record) => <div className='color-success'>已开启</div>,
     },
-  }
+    {
+      title: '连接状态',
+      render: (_, record) => <div className='color-success'>已开启</div>,
+    },
+    {
+      title: '链路数量',
+      width: 80,
+      render: (_, record) => <div>1</div>,
+    },
+    {
+      title: '配置',
+      width: 160,
+      render: RenderConfig,
+    },
+    {
+      title: '操作',
+      width: 120,
+      render: (_, record) => (
+        <>
+          <Button
+            type='link'
+            onClick={() => showDetail(record)}
+            style={{ padding: 0 }}>
+            编辑
+          </Button>
+          <Button type='link' onClick={() => showDetail(record)}>
+            删除
+          </Button>
+        </>
+      ),
+    },
+  ]
 
   const data: DataType[] = []
   for (let i = 0; i < 100; i++) {
     data.push({
       id: 'id' + i,
       channel_name: 'string' + i,
-      access_type: 'string',
       channel_type: 'string',
       speed: 'string',
       prefix: 'string',
@@ -202,124 +182,64 @@ export default function Channel() {
   return (
     <div data-class='channel'>
       <MenuTitle title='通道管理'></MenuTitle>
-      <Row justify='space-between' wrap align={'bottom'}>
-        <Col>
-          <div className='btn-group' style={{ marginBottom: '10px' }}>
-            <div className='btn' onClick={addChannelEvent}>
-              <i className='icon iconfont icon-xinzeng'></i>
-              <span>新增</span>
-            </div>
-            <div className='btn'>
-              <i className='icon iconfont icon-bianji'></i>
-              <span>编辑</span>
-            </div>
-            <Popconfirm
-              placement='bottom'
-              title='警告'
-              description='确定删除选中的客户吗？'
-              // onConfirm={deleteEvent}
-              okText='确定'
-              cancelText='取消'>
-              <div className='btn delete'>
-                <i className='icon iconfont icon-shanchu'></i>
-                <span>删除</span>
-              </div>
-            </Popconfirm>
+      <div className='btn-group' style={{ marginBottom: '10px' }}>
+        <div className='btn' onClick={addChannelEvent}>
+          <i className='icon iconfont icon-xinzeng'></i>
+          <span>新增</span>
+        </div>
+        <div className='btn'>
+          <i className='icon iconfont icon-bianji'></i>
+          <span>编辑</span>
+        </div>
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定删除选中的客户吗？'
+          // onConfirm={deleteEvent}
+          okText='确定'
+          cancelText='取消'>
+          <div className='btn'>
+            <i className='icon iconfont icon-shanchu'></i>
+            <span>连接</span>
           </div>
-        </Col>
-        <Col>
-          <ConfigProvider
-            theme={{
-              token: {
-                controlHeight: 40,
-              },
-            }}>
-            <Form
-              name='basic'
-              form={form}
-              initialValues={initFormValues}
-              layout='inline'
-              wrapperCol={{ span: 24 }}
-              onFinish={onFinish}
-              autoComplete='off'>
-              <Form.Item label='' name='name' style={{ marginBottom: 10 }}>
-                <Input
-                  size={size}
-                  placeholder='通道名称'
-                  maxLength={20}
-                  style={{ width: 162 }}></Input>
-              </Form.Item>
-              <Form.Item
-                label=''
-                name='access_type'
-                style={{ marginBottom: 10 }}>
-                <Select
-                  placeholder='接入类型'
-                  style={{ width: 162 }}
-                  size={size}
-                  suffixIcon={
-                    <i
-                      className='icon iconfont icon-xiala'
-                      style={{
-                        color: '#000',
-                        fontSize: '12px',
-                        transform: 'scale(.45)',
-                      }}
-                    />
-                  }>
-                  {channelList.map((item) => (
-                    <Option value={item.value} key={item.value}>
-                      {item.label}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item
-                label=''
-                name='channel_type'
-                style={{ marginBottom: 10 }}>
-                <Select
-                  placeholder='通道类型'
-                  style={{ width: 162 }}
-                  size={size}
-                  suffixIcon={
-                    <i
-                      className='icon iconfont icon-xiala'
-                      style={{
-                        color: '#000',
-                        fontSize: '12px',
-                        transform: 'scale(.45)',
-                      }}
-                    />
-                  }>
-                  {groupList.map((item) => (
-                    <Option value={item.value} key={item.value}>
-                      {item.label}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item style={{ marginBottom: 10 }}>
-                <ConfigProvider
-                  theme={{
-                    token: {
-                      colorPrimary: '#ff5e2d',
-                      colorPrimaryHover: '#ff5e2d',
-                    },
-                  }}>
-                  <Button
-                    type='primary'
-                    size={size}
-                    htmlType='submit'
-                    style={{ width: 110, marginLeft: 0 }}>
-                    搜索
-                  </Button>
-                </ConfigProvider>
-              </Form.Item>
-            </Form>
-          </ConfigProvider>
-        </Col>
-      </Row>
+        </Popconfirm>
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定删除选中的客户吗？'
+          // onConfirm={deleteEvent}
+          okText='确定'
+          cancelText='取消'>
+          <div className='btn'>
+            <i className='icon iconfont icon-shanchu'></i>
+            <span>断连</span>
+          </div>
+        </Popconfirm>
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定删除选中的客户吗？'
+          // onConfirm={deleteEvent}
+          okText='确定'
+          cancelText='取消'>
+          <div className='btn delete'>
+            <i className='icon iconfont icon-shanchu'></i>
+            <span>还原</span>
+          </div>
+        </Popconfirm>
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定删除选中的客户吗？'
+          // onConfirm={deleteEvent}
+          okText='确定'
+          cancelText='取消'>
+          <div className='btn delete line'>
+            <i className='icon iconfont icon-shanchu'></i>
+            <span>删除</span>
+          </div>
+        </Popconfirm>
+      </div>
       <ConfigProvider
         theme={{
           token: {
@@ -330,10 +250,14 @@ export default function Channel() {
           className='theme-cell bg-white'
           columns={columns}
           dataSource={data}
-          rowSelection={rowSelection}
-          rowKey={'id'}
           sticky
           pagination={false}
+          rowKey={'id'}
+          onRow={onRow}
+          rowSelection={rowSelection}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>

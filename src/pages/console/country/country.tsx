@@ -10,7 +10,6 @@ import {
   App,
   Row,
   Col,
-  Checkbox,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import UpdateCountryConfig from './dialog/updateCountry'
@@ -43,18 +42,20 @@ interface FormValues {
 // 国家信息配置
 export default function Channel() {
   const updateCountryDialogRef: MutableRefObject<any> = useRef(null)
-  const detailRef: MutableRefObject<any> = useRef(null)
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+    }
+  }
+
   const { Option } = Select
-  const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
-  const { message } = App.useApp()
-
-  const channelList = [
-    { label: '全部通道', value: 'all' },
-    { label: '通道1', value: '1' },
-    { label: '通道2', value: '2' },
-  ]
   const groupList = [
     { label: '全部通道组', value: 'all' },
     { label: '通道组1', value: '1' },
@@ -65,139 +66,63 @@ export default function Channel() {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: <Checkbox></Checkbox>,
-      dataIndex: 'checkbox',
-      className: 'checkbox-wrap',
-      width: 80,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
-      title: '国家名称',
+      title: <span style={{ paddingLeft: '40px' }}>国家</span>,
       dataIndex: 'country_name',
       width: 180,
       ellipsis: true,
       render: (_, record) => (
-        <span className='color'>{record.country_name}</span>
+        <span className='color' style={{ paddingLeft: '40px' }}>
+          {record.country_name}
+        </span>
       ),
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '国家英文',
       dataIndex: 'country_en',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '国家代码',
       dataIndex: 'country_code',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '国家区号',
       dataIndex: 'country_prefix',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '行业通道组',
       dataIndex: 'trade_channels',
       className: 'trade-0',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '行业s',
       className: 'trade-1',
       dataIndex: 'trade_s',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '营销通道组',
       dataIndex: 'sale_channels',
       className: 'sale-0',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '营销签名',
       dataIndex: 'sale_asign',
       className: 'sale-1',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
+    },
+    {
+      title: '操作',
+      width: 120,
+      render: (_, record) => (
+        <div>
+          <Button
+            type='link'
+            style={{ paddingLeft: 0, paddingRight: 0 }}
+            onClick={updateCountryEvent}>
+            编辑
+          </Button>
+        </div>
+      ),
     },
   ]
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.id])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.id))
-    }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
-    },
-  }
 
   const data: DataType[] = []
   for (let i = 0; i < 100; i++) {
@@ -217,22 +142,11 @@ export default function Channel() {
   const updateCountryEvent = () => {
     updateCountryDialogRef.current.open()
   }
-  const showDetail = (record: DataType) => {
-    detailRef.current.open()
-  }
 
   return (
     <div data-class='country'>
       <MenuTitle title='国家信息配置'></MenuTitle>
-      <Row justify='space-between' wrap align={'bottom'}>
-        <Col>
-          <div className='btn-group' style={{ marginBottom: '10px' }}>
-            <div className='btn' onClick={updateCountryEvent}>
-              <i className='icon iconfont icon-bianji'></i>
-              <span>编辑</span>
-            </div>
-          </div>
-        </Col>
+      <Row justify='end' wrap align={'bottom'}>
         <Col>
           <ConfigProvider
             theme={{
@@ -311,8 +225,11 @@ export default function Channel() {
           className='theme-cell bg-white reset-table'
           columns={columns}
           dataSource={data}
-          rowSelection={rowSelection}
           rowKey={'id'}
+          onRow={onRow}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}

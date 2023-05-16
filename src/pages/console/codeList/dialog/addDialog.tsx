@@ -74,7 +74,11 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ trade_group: '1', sale_group: '2' }}
+        initialValues={{
+          trade_group: '1',
+          sale_group: '2',
+          country_code: 'CN',
+        }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
@@ -127,7 +131,7 @@ const Dialog = (props: Props, ref: any) => {
           </Col>
           <Col span={12}>
             <Form.Item label='国家代码' name='country_code'>
-              <span className='disabled-value'>CN</span>
+              <Input disabled />
             </Form.Item>
           </Col>
         </Row>

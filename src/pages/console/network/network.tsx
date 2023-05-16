@@ -1,30 +1,17 @@
 import { useEffect, useState, MutableRefObject, useRef } from 'react'
-import {
-  Button,
-  Select,
-  Form,
-  Input,
-  DatePicker,
-  ConfigProvider,
-  Table,
-  App,
-  Row,
-  Col,
-  Checkbox,
-} from 'antd'
+import { Button, Form, Input, ConfigProvider, Table, Row, Col } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import './network.scss'
 
 interface DataType {
   id: string
-  net_type: string
+  net_name: string
   country_name: string
   country_code: string
   area_name: string
@@ -41,152 +28,103 @@ interface FormValues {
 // 国家信息配置
 export default function Network() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
-  const { Option } = Select
-  const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
-  const { message } = App.useApp()
 
-  const channelList = [
-    { label: '全部通道', value: 'all' },
-    { label: '通道1', value: '1' },
-    { label: '通道2', value: '2' },
-  ]
-  const groupList = [
-    { label: '全部通道组', value: 'all' },
-    { label: '通道组1', value: '1' },
-    { label: '通道组2', value: '2' },
-  ]
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
 
   const onFinish = (values: FormValues) => {}
 
   const columns: ColumnsType<DataType> = [
     {
-      title: <Checkbox></Checkbox>,
-      dataIndex: 'checkbox',
-      className: 'checkbox-wrap',
-      width: 80,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
-      title: '网络类型',
-      dataIndex: 'new_type',
+      title: '运营商网络',
+      dataIndex: 'net_name',
       width: 180,
+      className: 'paddingL30',
       ellipsis: true,
       render: (_, record) => (
         <span className='color'>{record.country_name}</span>
       ),
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '国家名称',
       dataIndex: 'country_name',
       width: 180,
       ellipsis: true,
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '国家代码',
       dataIndex: 'country_code',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '地区名称',
       dataIndex: 'area_name',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '成本价格',
       dataIndex: 'price1',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '建议零售价格',
       dataIndex: 'price2',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
+    },
+    {
+      title: '操作',
+      width: 120,
+      render: (_, record) => (
+        <div>
+          <Button
+            type='link'
+            style={{ paddingLeft: 0, paddingRight: 0 }}
+            onClick={() => updateCountryEvent(false, record)}>
+            编辑
+          </Button>
+          <Button type='link'>删除</Button>
+        </div>
+      ),
     },
   ]
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.id])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.id))
-    }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
-    },
-  }
 
   const data: DataType[] = []
   for (let i = 0; i < 100; i++) {
     data.push({
       id: 'id' + i,
-      net_type: 'Chain',
+      net_name: 'Chain',
       country_name: '中国' + i,
       country_code: 'CN',
       area_name: '+86',
-      price1: 'string',
-      price2: 'string',
+      price1: '0.0500',
+      price2: '0.0500',
     })
   }
 
-  const updateCountryEvent = () => {
-    addDialogRef.current.open()
+  const updateCountryEvent = (isAdd: boolean = true, record?: DataType) => {
+    addDialogRef.current.open({ isAdd, record })
   }
 
   return (
@@ -195,13 +133,9 @@ export default function Network() {
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div className='btn-group' style={{ marginBottom: '10px' }}>
-            <div className='btn' onClick={updateCountryEvent}>
+            <div className='btn' onClick={() => updateCountryEvent()}>
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
-            </div>
-            <div className='btn' onClick={updateCountryEvent}>
-              <i className='icon iconfont icon-bianji'></i>
-              <span>编辑</span>
             </div>
             <div className='btn delete'>
               <i className='icon iconfont icon-bianji'></i>
@@ -262,8 +196,12 @@ export default function Network() {
           className='theme-cell bg-white reset-table'
           columns={columns}
           dataSource={data}
-          rowSelection={rowSelection}
           rowKey={'id'}
+          onRow={onRow}
+          rowSelection={rowSelection}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}

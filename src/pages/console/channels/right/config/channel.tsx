@@ -1,9 +1,10 @@
 import { Button, ConfigProvider, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AccessCountryDrawer from '../dialog/accessCountry'
-import { useEffect, MutableRefObject, useRef } from 'react'
+import { useEffect, MutableRefObject, useRef, useState } from 'react'
 
 interface DataType {
+  id: string
   channel_name: string
   access_type: string
   channel_group: string
@@ -18,6 +19,28 @@ type Props = {
 // 国家价格配置
 export default function Channel(props: Props) {
   const drawerRef: MutableRefObject<any> = useRef(null)
+
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
 
   useEffect(() => {
     console.log(props.accountId, 'accountid')
@@ -70,6 +93,7 @@ export default function Channel(props: Props) {
   const data: DataType[] = []
   for (let i = 0; i < 10; i++) {
     data.push({
+      id: 'string' + i,
       channel_name: 'string' + i,
       access_type: 'string',
       channel_group: 'string',
@@ -96,11 +120,9 @@ export default function Channel(props: Props) {
           className='theme-grid'
           columns={columns}
           dataSource={data}
-          rowSelection={{
-            type: 'checkbox',
-            getCheckboxProps: getCheckboxProps,
-          }}
-          rowKey={'appid'}
+          rowKey={'id'}
+          onRow={onRow}
+          rowSelection={rowSelection}
           sticky
           scroll={{ x: 'max-content' }}
         />

@@ -40,12 +40,6 @@ export default function Right() {
 
   // 自定义tabs导航
   const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => {
-    const changeALl = (checked: boolean) => {
-      console.log(checked)
-    }
-    const changeTest = (checked: boolean) => {
-      console.log(checked)
-    }
     return (
       <div className={`tabbar-head ${size == 'small' ? '' : 'fx fx-wrap'}`}>
         <div className={`fx panle-list ${size}`}>
@@ -54,8 +48,6 @@ export default function Right() {
               key={item.key}
               onClick={() => setactiveKey(item.key)}
               className={`panle ${size} ${
-                item.key == activeKey ? 'active' : ''
-              } ${
                 Number(item.key) - Number(activeKey) > 1 ? 'left-line' : ''
               } ${
                 Number(item.key) - Number(activeKey) < -1 ? 'right-line' : ''

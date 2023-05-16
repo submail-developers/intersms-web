@@ -98,6 +98,10 @@
   color: #22019c;
 }
 
+.color-success {
+  color: #00a97b;
+}
+
 .bg-color {
   background-color: #0074d7;
 }
@@ -190,6 +194,9 @@
       opacity: 0.5;
       background-color: #fff;
       transform: translateY(-50%);
+    }
+    &.line::before {
+      display: block !important;
     }
     .icon.iconfont {
       font-size: 12px;

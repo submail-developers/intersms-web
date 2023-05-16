@@ -48,12 +48,12 @@ export default function Right() {
     xxl: 4,
   }
   const observerGutter = {
-    xs: [4, 6],
-    sm: [4, 6],
-    md: [4, 6],
-    lg: [6, 10],
-    xl: [8, 12],
-    xxl: [10, 14],
+    xs: 6,
+    sm: 6,
+    md: 8,
+    lg: 10,
+    xl: 12,
+    xxl: 14,
   }
   const showTotal: PaginationProps['showTotal'] = (total) =>
     `当前展示1-100/共${total}个`
@@ -143,7 +143,7 @@ export default function Right() {
       <Checkbox.Group
         style={{ width: '100%', marginTop: '10px' }}
         onChange={onChange}>
-        <Row wrap gutter={observerBle}>
+        <Row wrap gutter={observerGutter}>
           {data.map((item) => (
             <Col key={item.value} {...observerBle}>
               <div className='checkbox-item fx-between-center'>

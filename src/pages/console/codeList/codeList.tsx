@@ -1,25 +1,10 @@
 // 状态码对照表
 import { useEffect, useState, MutableRefObject, useRef } from 'react'
-import {
-  Button,
-  Select,
-  Form,
-  Input,
-  DatePicker,
-  ConfigProvider,
-  Table,
-  App,
-  Row,
-  Col,
-  Checkbox,
-} from 'antd'
+import { ConfigProvider, Table, Row, Col } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import type { Dayjs } from 'dayjs'
-import { useSize } from '@/hooks'
 import { API } from 'apis'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import './codeList.scss'
 
 interface DataType {
@@ -30,128 +15,63 @@ interface DataType {
   type: string
   update_time: string
 }
-interface FormValues {
-  channel: string
-  group: string
-  time: [Dayjs, Dayjs] | null
-  keyword: string
-}
 
 // 国家信息配置
 export default function CodeList() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
 
-  const channelList = [
-    { label: '全部通道', value: 'all' },
-    { label: '通道1', value: '1' },
-    { label: '通道2', value: '2' },
-  ]
-  const groupList = [
-    { label: '全部通道组', value: 'all' },
-    { label: '通道组1', value: '1' },
-    { label: '通道组2', value: '2' },
-  ]
-
-  const onFinish = (values: FormValues) => {}
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: <Checkbox></Checkbox>,
-      dataIndex: 'checkbox',
-      className: 'checkbox-wrap',
-      width: 80,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
       title: '错误码',
       dataIndex: 'error_code',
-      width: '18%',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
+      className: 'paddingL30',
+      width: 200,
     },
     {
       title: '错误信息',
       dataIndex: 'error_message',
-      width: '18%',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '错误码类型',
       dataIndex: 'code_type',
-      width: '18%',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '类型',
       dataIndex: 'type',
-      width: '18%',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '最后更新时间',
       dataIndex: 'update_time',
-      width: '18%',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
+      width: 200,
     },
   ]
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.id])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.id))
-    }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
-    },
-  }
 
   const data: DataType[] = []
   for (let i = 0; i < 100; i++) {
@@ -200,8 +120,12 @@ export default function CodeList() {
           className='theme-cell bg-white reset-table'
           columns={columns}
           dataSource={data}
-          rowSelection={rowSelection}
           rowKey={'id'}
+          onRow={onRow}
+          rowSelection={rowSelection}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}

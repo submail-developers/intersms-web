@@ -4,13 +4,10 @@ import {
   Select,
   Form,
   Input,
-  DatePicker,
   ConfigProvider,
   Table,
-  App,
   Row,
   Col,
-  Checkbox,
   Switch,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
@@ -19,7 +16,7 @@ import MenuTitle from '@/components/menuTitle/menuTitle'
 import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
 import './warning.scss'
 
 interface DataType {
@@ -42,93 +39,69 @@ interface FormValues {
 export default function NumberChannelsRoute() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
   const { Option } = Select
-  const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
-  const { message } = App.useApp()
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
 
   const typeList = [
     { label: '报警类型', value: 'all' },
     { label: '报警类型1', value: '1' },
     { label: '报警类型2', value: '2' },
   ]
-  const groupList = [
-    { label: '全部通道组', value: 'all' },
-    { label: '通道组1', value: '1' },
-    { label: '通道组2', value: '2' },
-  ]
 
   const onFinish = (values: FormValues) => {}
 
   const columns: ColumnsType<DataType> = [
     {
-      title: <Checkbox></Checkbox>,
-      className: 'checkbox-wrap',
-      width: 80,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
       title: '报警类型',
       dataIndex: 'warning_type',
+      className: 'paddingL30',
       width: '20%',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '名称',
       dataIndex: 'name',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '报警时间范围',
       dataIndex: 'times',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '报警最小条数',
       dataIndex: 'min_length',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '报警失败率',
       dataIndex: 'fail',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '报警开关',
+      width: 120,
       render: (_, record) => {
         return (
           <>
@@ -137,51 +110,8 @@ export default function NumberChannelsRoute() {
           </>
         )
       },
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
-    // {
-    //   title: '操作',
-    //   render: (_, record) => (
-    //     <div>
-    //       <Button type='link' style={{ paddingLeft: 0, paddingRight: 0 }}>
-    //         编辑
-    //       </Button>
-    //       <Button type='link'>删除</Button>
-    //     </div>
-    //   ),
-    // },
   ]
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.id])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.id))
-    }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
-    },
-  }
 
   const data: DataType[] = []
   for (let i = 0; i < 100; i++) {
@@ -302,8 +232,12 @@ export default function NumberChannelsRoute() {
           className='theme-cell bg-white reset-table'
           columns={columns}
           dataSource={data}
-          rowSelection={rowSelection}
           rowKey={'id'}
+          onRow={onRow}
+          rowSelection={rowSelection}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}

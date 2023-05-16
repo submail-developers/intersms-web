@@ -1,15 +1,20 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
-import { Modal, Form, Input, App, Row, Col, Select, Divider } from 'antd'
-import { addAccount } from '@/api'
+import { Modal, Form, Input, App, Row, Col, Select } from 'antd'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
-import type { RadioChangeEvent } from 'antd'
-import './addDialog.scss'
+import styled from 'styled-components'
 
 interface Props {
   // onSearch: () => void
 }
 
+const GroupTitle = styled.div`
+  font-size: 16px;
+  color: #b2b2b2;
+  margin-bottom: 10px;
+`
+
 const Dialog = (props: Props, ref: any) => {
+  const [isAdd, setisAdd] = useState<boolean>(true)
   const [form] = Form.useForm()
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
@@ -19,18 +24,23 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = () => {
+  const open = (params: any) => {
+    const { isAdd } = params
+    setisAdd(isAdd)
     form.resetFields()
+
+    form.setFieldsValue(params.record)
+    console.log(params.record)
     setIsModalOpen(true)
   }
 
   const handleOk = async () => {
     try {
-      const params = await form.validateFields()
-      const res = await addAccount(params)
-      if (res) {
-        message.success('保存成功！')
-      }
+      // const params = await form.validateFields()
+      // const res = await addAccount(params)
+      // if (res) {
+      //   message.success('保存成功！')
+      // }
       setIsModalOpen(false)
     } catch (error) {}
   }
@@ -42,15 +52,6 @@ const Dialog = (props: Props, ref: any) => {
   const onFinish = () => {}
   const onFinishFailed = () => {}
 
-  const onChange = (e: RadioChangeEvent) => {
-    console.log('checked = ', e)
-  }
-
-  const options = [
-    { label: '行业通道组', value: '1' },
-    { label: '营销通道组', value: '2' },
-  ]
-
   const onChange1 = (value: string) => {
     console.log(`selected ${value}`)
   }
@@ -61,7 +62,7 @@ const Dialog = (props: Props, ref: any) => {
 
   return (
     <Modal
-      title='网络信息配置'
+      title={isAdd ? '新增网络信息' : '编辑网络信息'}
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -74,30 +75,31 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ trade_group: '1', sale_group: '2' }}
         onFinish={onFinish}
+        initialValues={{ price1: '0.9' }}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
-            <Form.Item label='网络名称' name='name'>
-              <Input placeholder='请输入网络名称' />
+            <Form.Item label='网络名称' name='net_name'>
+              <Input disabled={!isAdd} placeholder='请输入网络名称' />
             </Form.Item>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <div className='group-title'>国家价格配置</div>
+            <GroupTitle>国家价格配置</GroupTitle>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item
               label='国家名称'
-              name='trade_group'
+              name='country_name'
               validateTrigger='onSubmit'>
               <Select
                 showSearch
+                disabled={!isAdd}
                 // bordered={false}
                 placeholder='请选择'
                 optionFilterProp='children'
@@ -127,7 +129,7 @@ const Dialog = (props: Props, ref: any) => {
           </Col>
           <Col span={12}>
             <Form.Item label='国家代码' name='country_code'>
-              <span className='disabled-value'>CN</span>
+              <Input type='text' disabled={!isAdd} />
             </Form.Item>
           </Col>
         </Row>
@@ -137,10 +139,7 @@ const Dialog = (props: Props, ref: any) => {
               label='成本价格'
               name='price1'
               validateTrigger='onSubmit'>
-              <div className='price-wrap'>
-                <Input placeholder='请输入成本价格' />
-                <span className='affix-text'>元</span>
-              </div>
+              <Input placeholder='请输入成本价格' suffix='元' />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -148,10 +147,7 @@ const Dialog = (props: Props, ref: any) => {
               label='建议零售价格'
               name='price2'
               validateTrigger='onSubmit'>
-              <div className='price-wrap'>
-                <Input placeholder='请输入建议零售价格' />
-                <span className='affix-text'>元</span>
-              </div>
+              <Input placeholder='请输入建议零售价格' suffix='元' />
             </Form.Item>
           </Col>
         </Row>

@@ -108,6 +108,16 @@ export default function SendList() {
     formatSearchValue(initFormValues)
   }, [])
 
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+    }
+  }
+
   const columns: ColumnsType<DataType> = [
     {
       title: '号码',
@@ -194,29 +204,6 @@ export default function SendList() {
       },
     },
   ]
-
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: () => {},
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: (
-      checked: boolean,
-      record: DataType,
-      index: number,
-      originNode: ReactNode,
-    ) => {
-      return null
-    },
-  }
-  // 点击整行选择
-  const onSelectRow = (record: DataType) => {
-    setSelectedRowKeys([record.id])
-  }
 
   return (
     <div data-class='sendlist'>
@@ -334,10 +321,8 @@ export default function SendList() {
         dataSource={tableData}
         pagination={false}
         sticky
-        rowSelection={rowSelection}
-        onRow={(record) => ({
-          onClick: () => onSelectRow(record),
-        })}
+        onRow={onRow}
+        rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
         scroll={{ x: 'max-content' }}
       />
     </div>

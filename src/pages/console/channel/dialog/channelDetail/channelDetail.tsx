@@ -5,18 +5,7 @@ import {
   forwardRef,
   useRef,
 } from 'react'
-import {
-  Modal,
-  Form,
-  Input,
-  App,
-  Row,
-  Col,
-  ConfigProvider,
-  Button,
-  Drawer,
-  Table,
-} from 'antd'
+import { Form, Input, ConfigProvider, Button, Drawer } from 'antd'
 import MyTable from '../table/table'
 import EditDetail from '../editDetail/editDetail'
 import type { ColumnsType } from 'antd/es/table'
@@ -40,7 +29,6 @@ const Dialog = (props: Props, ref: any) => {
 
   const tableref: MutableRefObject<any> = useRef(null)
   const editDetailRef: MutableRefObject<any> = useRef(null)
-  const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -56,98 +44,6 @@ const Dialog = (props: Props, ref: any) => {
     setShow(false)
   }
 
-  // In the fifth row, other columns are merged into first column
-  // by setting it's colSpan to be 0
-  const sharedOnCell = (_: DataType, index: number) => {
-    if (index === 1) {
-      return { colSpan: 0 }
-    }
-
-    return {}
-  }
-
-  const columns: ColumnsType<DataType> = [
-    {
-      title: '国家名称',
-      dataIndex: 'name',
-      onCell: (_, index) => ({
-        // colSpan: index === 1 ? 5 : 1,
-        rowSpan: 2,
-      }),
-    },
-    {
-      title: '国家代码',
-      dataIndex: 'name_code',
-      onCell: (_, index) => ({
-        // colSpan: index === 1 ? 5 : 1,
-        rowSpan: 0,
-      }),
-    },
-    {
-      title: '运营商网络类型',
-      dataIndex: 'type',
-    },
-    {
-      title: '行业价格',
-      dataIndex: 'price1',
-    },
-    {
-      title: '营销价格',
-      dataIndex: 'price2',
-    },
-    {
-      title: '操作',
-      render: (_, record) => (
-        <Button style={{ padding: '0' }} type='link'>
-          删除
-        </Button>
-      ),
-    },
-  ]
-
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: '中国',
-      name_code: 'CN',
-      type: '中国移动',
-      price1: '0.05000',
-      price2: '0.050001',
-    },
-    {
-      key: '2',
-      name: '中国',
-      name_code: 'CN',
-      type: '中国联通',
-      price1: '0.05000',
-      price2: '0.050001',
-    },
-    {
-      key: '3',
-      name: '中国',
-      name_code: 'CN',
-      type: '中国电信',
-      price1: '0.05000',
-      price2: '0.050001',
-    },
-    {
-      key: '4',
-      name: '美国',
-      name_code: 'UN',
-      type: '美国移动',
-      price1: '0.05000',
-      price2: '0.050001',
-    },
-    {
-      key: '4',
-      name: '美国',
-      name_code: 'UN',
-      type: '美国联通',
-      price1: '0.05000',
-      price2: '0.050001',
-    },
-  ]
-
   const editEvent = () => {
     editDetailRef.current.open()
     // close()
@@ -161,7 +57,6 @@ const Dialog = (props: Props, ref: any) => {
       closable={false}
       open={show}
       bodyStyle={{ backgroundColor: 'transparent' }}
-      // style={}
       rootClassName='drawer'
       width={'70vw'}>
       <div className='drawer-container' onClick={close}>

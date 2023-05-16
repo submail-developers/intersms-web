@@ -1,18 +1,13 @@
-import './numberChannelsRoute.scss'
-
 import { useEffect, useState, MutableRefObject, useRef } from 'react'
 import {
   Button,
   Select,
   Form,
   Input,
-  DatePicker,
   ConfigProvider,
   Table,
-  App,
   Row,
   Col,
-  Checkbox,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
@@ -20,7 +15,8 @@ import MenuTitle from '@/components/menuTitle/menuTitle'
 import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
+import './numberChannelsRoute.scss'
 
 interface DataType {
   id: string
@@ -36,14 +32,39 @@ interface FormValues {
   keyword: string
 }
 
-// 国家信息配置
+// 号码通道路由
 export default function NumberChannelsRoute() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
   const { Option } = Select
-  const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
-  const { message } = App.useApp()
+
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
 
   const messageList = [
     { label: '短信类型', value: 'all' },
@@ -60,63 +81,25 @@ export default function NumberChannelsRoute() {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: <Checkbox></Checkbox>,
-      dataIndex: 'checkbox',
-      className: 'checkbox-wrap',
-      width: 80,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
       title: '手机号码',
       dataIndex: 'mobile',
+      className: 'paddingL30',
       width: '20%',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '短信类型',
       width: '20%',
       dataIndex: 'message_type',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '通道组',
       width: '20%',
       dataIndex: 'channels',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '发送名',
       width: '20%',
       dataIndex: 'send_name',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '操作',
@@ -130,31 +113,6 @@ export default function NumberChannelsRoute() {
       ),
     },
   ]
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.id])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.id))
-    }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
-    },
-  }
 
   const data: DataType[] = []
   for (let i = 0; i < 100; i++) {
@@ -294,8 +252,12 @@ export default function NumberChannelsRoute() {
           className='theme-cell bg-white reset-table'
           columns={columns}
           dataSource={data}
-          rowSelection={rowSelection}
           rowKey={'id'}
+          onRow={onRow}
+          rowSelection={rowSelection}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}

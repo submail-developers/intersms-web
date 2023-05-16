@@ -74,19 +74,24 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ trade_group: '1', sale_group: '2' }}
+        initialValues={{
+          trade_group: '1',
+          sale_group: '2',
+          name: '中国',
+          country_code: 'CN',
+        }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item label='国家名称' name='name'>
-              <span className='disabled-value'>中国</span>
+              <Input disabled style={{ color: '#000' }} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label='国家代码' name='name'>
-              <span className='disabled-value'>CN</span>
+            <Form.Item label='国家代码' name='country_code'>
+              <Input disabled style={{ color: '#000' }} />
             </Form.Item>
           </Col>
         </Row>

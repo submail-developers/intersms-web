@@ -39,6 +39,27 @@
           &.active {
             border-bottom-color: #0074d7;
           }
+          &.ant-input-disabled {
+            background-color: transparent;
+            border: none;
+            color: #222;
+          }
+        }
+        // 输入框带后缀
+        .ant-input-affix-wrapper {
+          padding: 0;
+          border: none;
+          border-bottom: 1px solid #e7e7e7;
+          box-shadow: none;
+          .ant-input {
+            border: none;
+            height: 32px;
+          }
+          .ant-input-suffix,
+          .ant-input-prefix {
+            color: #999;
+            font-size: 16px;
+          }
         }
         // 下拉框
         .ant-select {
@@ -70,6 +91,18 @@
               border-radius: 0;
               border-bottom-color: #e7e7e7;
               box-shadow: none;
+            }
+          }
+          &.ant-select-disabled {
+            .ant-select-selector {
+              background-color: transparent;
+              border: none;
+              .ant-select-selection-item {
+                color: #222;
+              }
+            }
+            .ant-select-arrow {
+              opacity: 0;
             }
           }
         }
@@ -115,6 +148,9 @@
 // table样式1  ---  每一行是单数的格子，格子之间有间距
 
 .ant-table-wrapper.theme-cell {
+  .paddingL30 {
+    padding-left: 30px !important;
+  }
   // 顶部th
   .ant-table-header table,
   .ant-table-thead {
@@ -130,24 +166,6 @@
       &::before {
         display: none;
       }
-
-      &.checkbox-wrap {
-        padding: 0 0 0 8px;
-        .ant-checkbox {
-          .ant-checkbox-inner {
-            background-color: #fff;
-          }
-          &.ant-checkbox-checked {
-            .ant-checkbox-inner {
-              background-color: #1677ff;
-            }
-          }
-        }
-      }
-    }
-
-    .ant-table-selection-column {
-      background-color: #f1f2f4;
     }
   }
   // 默认背景色为白色
@@ -161,8 +179,8 @@
 
         & > td {
           padding: 14px 2px;
+          transition: background-color 0.3s, border-color 0.3s;
           background-color: #fff;
-          transition: background-color 0.3s;
           border-top: 1px solid #f0f0f0;
           border-bottom: 1px solid #f0f0f0;
 
@@ -177,24 +195,6 @@
             border-bottom-right-radius: 4px;
             border-right: 1px solid #f0f0f0;
           }
-
-          &.ant-table-selection-column {
-            width: 0;
-            padding: 0;
-          }
-          &.checkbox-wrap {
-            padding: 0 0 0 8px;
-            .ant-checkbox {
-              .ant-checkbox-inner {
-                background-color: #fff;
-              }
-              &.ant-checkbox-checked {
-                .ant-checkbox-inner {
-                  background-color: #1677ff;
-                }
-              }
-            }
-          }
           &.account-wrap {
             padding-right: 10px;
             color: #687279;
@@ -205,7 +205,7 @@
           background-color: #f0f6ff !important;
         }
 
-        &.ant-table-row-selected > td {
+        &.active > td {
           background-color: #f0f6ff !important;
           border-color: #3461bb !important;
           color: inherit;
@@ -243,9 +243,9 @@
       }
     }
 
-    .ant-table-selection-column {
-      background-color: transparent;
-    }
+    // .ant-table-selection-column {
+    //   background-color: transparent;
+    // }
   }
 
   .ant-table-body table {

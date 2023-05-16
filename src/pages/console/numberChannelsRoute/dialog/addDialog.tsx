@@ -74,7 +74,11 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ trade_group: '1', sale_group: '2' }}
+        initialValues={{
+          trade_group: '1',
+          sale_group: '2',
+          message_type: '行业/验证码',
+        }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
@@ -85,8 +89,8 @@ const Dialog = (props: Props, ref: any) => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label='短信类型'>
-              <span className='disabled-value'>行业/验证码</span>
+            <Form.Item label='短信类型' name='message_type'>
+              <Input disabled />
             </Form.Item>
           </Col>
         </Row>

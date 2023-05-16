@@ -35,49 +35,40 @@ export default function Left() {
   const dispatch = useAppDispatch()
   // const accountInfoStore = useAppSelector(accountInfoState)
   const size = useSize()
-  const [keyword, setkeyword] = useState<string>('')
   // 列表
   const [tableData, settableData] = useState<API.AccountListItem[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.account])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.account))
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
     }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
   }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'checkbox',
-      dataIndex: 'checkbox',
-      className: 'checkbox-wrap',
-      width: 34,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
       title: 'sender',
       dataIndex: 'sender',
       ellipsis: true,
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            dispatch(changeActiveAccountId(record.account))
-            setSelectedRowKeys([record.account])
-          },
-        }
-      },
     },
     {
       title: 'account',
@@ -117,41 +108,11 @@ export default function Left() {
       },
     ])
     dispatch(changeActiveAccountId('string'))
-    setSelectedRowKeys(['string'])
-
-    // const res = await getAccountList({
-    //   keyword,
-    //   page: '1',
-    // })
-    // settableData(res.data)
-    // if (res.data.length > 0) {
-    //   dispatch(changeActiveAccountId(res.data[0].account))
-    //   setSelectedRowKeys([res.data[0].account])
-    // } else {
-    //   dispatch(changeActiveAccountId(''))
-    //   setSelectedRowKeys([''])
-    // }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
-    },
+    setactiveIndex(0)
   }
 
   // 删除事件
-  const deleteEvent = async () => {
-    if (checkedIds.length === 0) {
-      message.warning('请勾选要删除的客户！')
-      return
-    }
-    const account = checkedIds.join(',')
-    await deleteAccount({ account })
-    await initData()
-  }
+  const deleteEvent = async () => {}
   // 开启dialog
   const openAddDialog = () => {
     dialogRef.current.open()
@@ -195,8 +156,12 @@ export default function Left() {
               showHeader={false}
               columns={columns}
               dataSource={tableData}
-              rowSelection={rowSelection}
               rowKey={'account'}
+              onRow={onRow}
+              rowSelection={rowSelection}
+              rowClassName={(record, index) =>
+                index == activeIndex ? 'active' : ''
+              }
               pagination={false}
               scroll={{ y: 510 }}
             />

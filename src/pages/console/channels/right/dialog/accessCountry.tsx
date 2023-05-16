@@ -21,7 +21,6 @@ import type { ColumnsType } from 'antd/es/table'
 import { useSize } from '@/hooks'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import './accessCountry.scss'
-import Left from '../../left'
 
 interface Props {
   // onSearch: () => void
@@ -40,7 +39,34 @@ const Dialog = (props: Props, ref: any) => {
 
   const tableref: MutableRefObject<any> = useRef(null)
   const editDetailRef: MutableRefObject<any> = useRef(null)
-  const { message } = App.useApp()
+
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
+
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -58,61 +84,24 @@ const Dialog = (props: Props, ref: any) => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: <Checkbox></Checkbox>,
-      className: 'checkbox-wrap',
-      width: 80,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
       title: '国家名称',
       dataIndex: 'country_name',
       width: '20%',
+      className: 'paddingL30',
       ellipsis: true,
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '国家代码',
       dataIndex: 'country_code',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '运营商网络',
       dataIndex: 'net_name',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '权重',
       dataIndex: 'zindex',
       render: (_, record) => <span className='color'>{record.zindex}</span>,
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '状态',
@@ -132,40 +121,8 @@ const Dialog = (props: Props, ref: any) => {
           </>
         )
       },
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
   ]
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.id])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.id))
-    }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
-    },
-  }
 
   const data: DataType[] = []
   for (let i = 0; i < 100; i++) {
@@ -259,8 +216,12 @@ const Dialog = (props: Props, ref: any) => {
                 className='theme-cell bg-white'
                 columns={columns}
                 dataSource={data}
-                rowSelection={rowSelection}
                 rowKey={'id'}
+                onRow={onRow}
+                rowSelection={rowSelection}
+                rowClassName={(record, index) =>
+                  index == activeIndex ? 'active' : ''
+                }
                 sticky
                 pagination={false}
                 scroll={{ x: 'max-content' }}
