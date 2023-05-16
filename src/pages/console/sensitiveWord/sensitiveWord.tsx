@@ -22,7 +22,11 @@ import ChannelDetail from './dialog/channelDetail/channelDetail'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import { GetSensitiveWordList,DeleteSensitiveWordList,SensitiveWordListStopUsing } from '@/api'
+import {
+  GetSensitiveWordList,
+  DeleteSensitiveWordList,
+  SensitiveWordListStopUsing,
+} from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
@@ -50,7 +54,6 @@ export default function Channel() {
     search()
   }, [])
 
-  
   const search = async () => {
     const res = await GetSensitiveWordList({
       id: '',
@@ -77,7 +80,7 @@ export default function Channel() {
   interface DataType extends API.GetSensitiveWordListItems {}
 
   // 启用 停用事件
-  const setSwicth=()=>{
+  const setSwicth = () => {
     // console.log(checked)
   }
 
@@ -134,17 +137,9 @@ export default function Channel() {
       dataIndex: 'enabled',
       width: 160,
       render: (_, record: DataType) => (
-        // record.enabled == '0' ? <div className='switch-all fx-shrink'>
-        //                             <Switch size={'small'}></Switch>
-        //                             <span> 未启用</span>
-        //                         </div>
-        //                       : 
-        //                       <div className='switch-all fx-shrink'>
-        //                         <Switch size={'small'} checked></Switch>
-        //                         <span> 已启用</span>
-        //                       </div>()=>this.handle_delete(id)
-        <div className='switch-all fx-shrink' onClick={()=>setSwicth()}>
-          <Switch size={'small'} checked={record.enabled == '1'} ></Switch> &nbsp;
+        <div className='switch-all fx-shrink' onClick={() => setSwicth()}>
+          <Switch size={'small'} checked={record.enabled == '1'}></Switch>{' '}
+          &nbsp;
           <span>{record.enabled == '1' ? '已启用' : '未启用'}</span>
         </div>
       ),
@@ -193,16 +188,14 @@ export default function Channel() {
     }
     const id = checkedIds.join(',')
     const status = '0'
-    await SensitiveWordListStopUsing({ id,status })
+    await SensitiveWordListStopUsing({ id, status })
     await search()
   }
-
 
   const addSensitiveEvent = () => {
     addSensitiveWordListRef.current.open()
   }
 
-  
   return (
     <div data-class='channel'>
       <MenuTitle title='敏感词管理'></MenuTitle>
@@ -218,7 +211,6 @@ export default function Channel() {
               <span>修改</span>
             </div>
 
-
             <Popconfirm
               placement='bottom'
               title='警告'
@@ -231,8 +223,6 @@ export default function Channel() {
                 <span>停用</span>
               </div>
             </Popconfirm>
-            
-
 
             <Popconfirm
               placement='bottom'
@@ -266,7 +256,7 @@ export default function Channel() {
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
-      <AddSensitive ref={addSensitiveWordListRef} onSearch={search}/>
+      <AddSensitive ref={addSensitiveWordListRef} onSearch={search} />
       {/* <ChannelDetail ref={detailRef} /> */}
     </div>
   )
