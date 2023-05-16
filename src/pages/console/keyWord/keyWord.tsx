@@ -10,7 +10,7 @@ import {
   Button,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import AddSensitive from './dialog/addSensitiveWord'
+import AddKeyword from './dialog/addKeyword'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import {
   GetSensitiveWordList,
@@ -18,8 +18,6 @@ import {
   SensitiveWordListStopUsing,
 } from '@/api'
 import { API } from 'apis'
-
-import './sensitiveWord.scss'
 
 // 发送列表
 export default function Channel() {
@@ -150,7 +148,7 @@ export default function Channel() {
 
   return (
     <div data-class='channel'>
-      <MenuTitle title='敏感词管理'></MenuTitle>
+      <MenuTitle title='关键词管理'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div className='btn-group' style={{ marginBottom: '10px' }}>
@@ -206,7 +204,7 @@ export default function Channel() {
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
-      <AddSensitive ref={addSensitiveWordListRef} onSearch={search} />
+      <AddKeyword ref={addSensitiveWordListRef} onSearch={search} />
     </div>
   )
 }

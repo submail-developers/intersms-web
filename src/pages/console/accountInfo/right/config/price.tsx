@@ -40,9 +40,10 @@ export default function Price(props: Props) {
     {
       title: '操作',
       dataIndex: 'actions',
+      width: '25%',
       render: (_, record) => (
         <div>
-          <Button type='link' style={{ paddingLeft: 0, paddingRight: 0 }}>
+          <Button type='link' style={{ paddingLeft: 0 }}>
             编辑
           </Button>
           <Button type='link'>删除</Button>

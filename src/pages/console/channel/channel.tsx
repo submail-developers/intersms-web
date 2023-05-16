@@ -150,7 +150,7 @@ export default function Channel() {
           <Button
             type='link'
             onClick={() => showDetail(record)}
-            style={{ padding: 0 }}>
+            style={{ paddingLeft: 0 }}>
             编辑
           </Button>
           <Button type='link' onClick={() => showDetail(record)}>
