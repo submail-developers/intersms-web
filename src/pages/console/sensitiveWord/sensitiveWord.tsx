@@ -137,6 +137,7 @@ export default function Channel() {
   const singleDeleteEvent = async (id: any) => {
     await DeleteSensitiveWordList({ id })
     await search()
+    setSelectedRowKeys([])
   }
   // 批量删除事件
   const deleteEvent = async () => {
@@ -147,6 +148,7 @@ export default function Channel() {
     const id = selectedRowKeys.join(',')
     await DeleteSensitiveWordList({ id })
     await search()
+    setSelectedRowKeys([])
   }
   //单独启用 停用事件
   const setSwicth = async (record:any,checked:any) => {
@@ -155,10 +157,12 @@ export default function Channel() {
       const status = '1'
       await SensitiveWordListStopUsing({ id, status })
       await search()
+      setSelectedRowKeys([])
     }else{
       const status = '0'
       await SensitiveWordListStopUsing({ id, status })
       await search()
+      setSelectedRowKeys([])
     }
   }
   //批量停用
@@ -171,6 +175,7 @@ export default function Channel() {
     const status = '0'
     await SensitiveWordListStopUsing({ id, status })
     await search()
+    setSelectedRowKeys([])
   }
 
   const addSensitiveEvent = (isAdd: boolean = true, record?: DataType) => {
