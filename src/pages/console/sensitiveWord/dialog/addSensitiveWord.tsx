@@ -10,6 +10,7 @@ interface Props {
 }
 
 const Dialog = ({ onSearch }: Props, ref: any) => {
+  const [isAdd, setisAdd] = useState<boolean>(true)
   const [form] = Form.useForm()
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
@@ -19,8 +20,12 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = () => {
+  const open = (params: any) => {
+    const { isAdd } = params
+    setisAdd(isAdd)
     form.resetFields()
+
+    form.setFieldsValue(params.record)
     setIsModalOpen(true)
   }
 

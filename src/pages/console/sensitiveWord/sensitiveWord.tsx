@@ -86,6 +86,7 @@ export default function Channel() {
       title: '类目名称',
       dataIndex: 'name',
       width: 160,
+      className: 'paddingL30',
     },
     {
       title: '敏感词',
@@ -114,14 +115,34 @@ export default function Channel() {
       width: 120,
       render: (_, record) => (
         <>
-          <Button type='link' style={{ padding: '0 20px 0 0' }}>
+          <Button 
+          type='link'
+           onClick={() => addSensitiveEvent(false, record)}
+           >
             编辑
           </Button>
-          <Button type='link'>删除</Button>
+          <Button type='link'>
+          <Popconfirm
+              placement='left'
+              title='警告'
+              description='确定删除该条敏感词吗？'
+              onConfirm={()=>singleDeleteEvent(record.id)}
+              okText='确定'
+              cancelText='取消'>
+              <div className='btn delete'>
+                <span>删除</span>
+              </div>
+            </Popconfirm>
+          </Button>
         </>
       ),
     },
   ]
+  // 单独删除事件
+  const singleDeleteEvent = async (id:any)=>{
+    await DeleteSensitiveWordList({ id })
+    await search()
+  }
   // 删除事件
   const deleteEvent = async () => {
     if (selectedRowKeys.length === 0) {
@@ -144,9 +165,11 @@ export default function Channel() {
     await search()
   }
 
-  const addSensitiveEvent = () => {
-    addSensitiveWordListRef.current.open()
+  const addSensitiveEvent = (isAdd: boolean = true, record?: DataType) => {
+    addSensitiveWordListRef.current.open({ isAdd, record })
   }
+
+
 
   return (
     <div data-class='channel'>
@@ -154,7 +177,7 @@ export default function Channel() {
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div className='btn-group' style={{ marginBottom: '10px' }}>
-            <div className='btn' onClick={addSensitiveEvent}>
+            <div className='btn' onClick={() => addSensitiveEvent()}>
               <i className='icon iconfont icon-xinzeng'></i>
               <span>新增</span>
             </div>
