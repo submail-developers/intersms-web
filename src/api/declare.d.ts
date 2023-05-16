@@ -3,6 +3,7 @@ declare module 'apis' {
     interface Response<T = any> {
       data: T
     }
+
     interface BaseParams {
       // loading?: boolean // 是否需要loading， 默认false
       // token?: boolean // 是否需要token， 默认为true
