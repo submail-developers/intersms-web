@@ -1,55 +1,55 @@
-import { ReactNode, useEffect, useState, MutableRefObject, useRef } from 'react'
+import { useEffect, useState, MutableRefObject, useRef } from 'react'
 import {
-  Button,
-  Select,
-  Form,
-  Input,
-  DatePicker,
   ConfigProvider,
   Table,
   App,
   Row,
   Col,
-  Space,
-  Checkbox,
   Popconfirm,
   Switch,
+  Button,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import type { RangePickerProps } from 'antd/es/date-picker'
 import AddSensitive from './dialog/addSensitiveWord'
-import ChannelDetail from './dialog/channelDetail/channelDetail'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import dayjs from 'dayjs'
-import type { Dayjs } from 'dayjs'
 import {
   GetSensitiveWordList,
   DeleteSensitiveWordList,
   SensitiveWordListStopUsing,
 } from '@/api'
-import { useSize } from '@/hooks'
 import { API } from 'apis'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import './sensitiveWord.scss'
 
-interface DataType {
-  id: string
-  channel_name: string
-  access_type: string
-  channel_type: string
-  speed: string
-  prefix: string
-}
-interface FormValues {
-  channel: string
-  group: string
-  time: [Dayjs, Dayjs] | null
-  keyword: string
-}
-
 // 发送列表
 export default function Channel() {
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 选中的keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onClick: () => {
+        setactiveIndex(index)
+      },
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
+
   useEffect(() => {
     search()
   }, [])
@@ -72,9 +72,6 @@ export default function Channel() {
     [],
   )
   const addSensitiveWordListRef: MutableRefObject<any> = useRef(null)
-  // const detailRef: MutableRefObject<any> = useRef(null)
-  const size = useSize()
-  const [form] = Form.useForm()
   const { message } = App.useApp()
 
   interface DataType extends API.GetSensitiveWordListItems {}
@@ -86,51 +83,19 @@ export default function Channel() {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: <Checkbox></Checkbox>,
-      dataIndex: 'checkbox',
-      className: 'checkbox-wrap',
-      width: 60,
-      render: (_, record) => (
-        <Checkbox
-          className='checkbox'
-          onChange={(e) => onChange(e, record)}></Checkbox>
-      ),
-    },
-    {
       title: '类目名称',
       dataIndex: 'name',
       width: 160,
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '敏感词',
       width: 600,
       dataIndex: 'keywords',
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '备注',
       dataIndex: 'comment',
       width: 160,
-      onCell: (record: DataType) => {
-        return {
-          onClick: () => {
-            setSelectedRowKeys([record.id])
-          },
-        }
-      },
     },
     {
       title: '启用状态',
@@ -144,49 +109,36 @@ export default function Channel() {
         </div>
       ),
     },
-  ]
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[] | string[]>(
-    [],
-  )
-  // checkbox勾选的客户
-  const [checkedIds, setcheckedIds] = useState<string[]>([])
-
-  // checkbox勾选的事件
-  const onChange = (e: CheckboxChangeEvent, record: DataType) => {
-    if (e.target.checked) {
-      setcheckedIds([...checkedIds, record.id])
-    } else {
-      setcheckedIds(checkedIds.filter((account) => account !== record.id))
-    }
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    hideSelectAll: true,
-    columnWidth: 4,
-    renderCell: () => {
-      return null
+    {
+      title: '操作',
+      width: 120,
+      render: (_, record) => (
+        <>
+          <Button type='link' style={{ padding: '0 20px 0 0' }}>
+            编辑
+          </Button>
+          <Button type='link'>删除</Button>
+        </>
+      ),
     },
-  }
+  ]
   // 删除事件
   const deleteEvent = async () => {
-    if (checkedIds.length === 0) {
+    if (selectedRowKeys.length === 0) {
       message.warning('请勾选要删除的客户！')
       return
     }
-    const id = checkedIds.join(',')
+    const id = selectedRowKeys.join(',')
     await DeleteSensitiveWordList({ id })
     await search()
   }
   // 批量停用
   const batchDeactivation = async () => {
-    if (checkedIds.length === 0) {
+    if (selectedRowKeys.length === 0) {
       message.warning('请勾选要停用的客户！')
       return
     }
-    const id = checkedIds.join(',')
+    const id = selectedRowKeys.join(',')
     const status = '0'
     await SensitiveWordListStopUsing({ id, status })
     await search()
@@ -206,11 +158,6 @@ export default function Channel() {
               <i className='icon iconfont icon-xinzeng'></i>
               <span>新增</span>
             </div>
-            <div className='btn'>
-              <i className='icon iconfont icon-bianji'></i>
-              <span>修改</span>
-            </div>
-
             <Popconfirm
               placement='bottom'
               title='警告'
@@ -223,7 +170,6 @@ export default function Channel() {
                 <span>停用</span>
               </div>
             </Popconfirm>
-
             <Popconfirm
               placement='bottom'
               title='警告'
@@ -249,15 +195,18 @@ export default function Channel() {
           className='theme-cell bg-white'
           columns={columns}
           dataSource={tableData}
-          rowSelection={rowSelection}
           rowKey={'id'}
+          onRow={onRow}
+          rowSelection={rowSelection}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
       <AddSensitive ref={addSensitiveWordListRef} onSearch={search} />
-      {/* <ChannelDetail ref={detailRef} /> */}
     </div>
   )
 }
