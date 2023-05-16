@@ -33,6 +33,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     try {
       const params = await form.validateFields()
       const res = await AddSensitiveWordList(params)
+      console.log(params, '.....')
       if (res) {
         message.success('保存成功！')
       }
@@ -47,7 +48,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   const onFinish = () => {}
   const onFinishFailed = () => {}
-
 
   return (
     <Modal
@@ -69,18 +69,22 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         autoComplete='off'>
         <Row>
           <Col span={24}>
+            <Form.Item label='id' name='id' hidden>
+              <Input placeholder='id' maxLength={30} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
             <Form.Item label='类目名称' name='name'>
               <Input placeholder='请输入类目名称' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
-        
+
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
-            <Form.Item
-              label='敏感词'
-              labelCol={{ span: 24 }}
-              name='keywords'>
+            <Form.Item label='敏感词' labelCol={{ span: 24 }} name='keywords'>
               <Input placeholder='请输入IP地址' maxLength={30} />
             </Form.Item>
           </Col>
@@ -92,7 +96,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
             </Form.Item>
           </Col>
         </Row>
-        
       </Form>
     </Modal>
   )
