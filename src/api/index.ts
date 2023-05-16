@@ -68,3 +68,27 @@ export const GetSensitiveWordList = (data: API.GetSensitiveWordListParams) => {
     { ...data },
   )
 }
+
+
+// 新增敏感词列表
+export const AddSensitiveWordList = (data: API.AddSensitiveWordListParams) => {
+  return request.post<any, API.Response<any>, API.AddSensitiveWordListParams>(
+    'customer/save_sensitive_keywords',
+    { ...data },
+  )
+}
+
+// 删除敏感词列表
+export const DeleteSensitiveWordList = (data: API.DeleteSensitiveWordListParams) => {
+  return request.post<any, API.Response<any>, API.DeleteSensitiveWordListParams>(
+    'customer/delete_sensitive_keywords',
+    { ...data },
+  )
+}
+// 敏感词批量启用/停用
+export const SensitiveWordListStopUsing = (data: API.SensitiveWordListStopUsingParams) => {
+  return request.post<any, API.Response<any>, API.SensitiveWordListStopUsingParams>(
+    'customer/update_sensitive_keywords_status',
+    { ...data },
+  )
+}

@@ -94,9 +94,33 @@ declare module 'apis' {
     }
 
     // 获取敏感词
-     interface GetSensitiveWordListParams {
+    interface GetSensitiveWordListParams {
       id: string
       page: string
+    }
+    // 获取敏感词返回数据
+    interface GetSensitiveWordListItems {
+      comment: string
+      enabled: string
+      id: string
+      keywords: string
+      name: string
+    }
+    // 新增敏感词列表参数
+    interface AddSensitiveWordListParams {
+      id: string
+      name: string
+      keywords: string
+      comment: string
+    }
+    // 删除敏感词列表参数
+    interface DeleteSensitiveWordListParams {
+      id: string
+    }
+    //敏感词批量启用/停用  0关闭 1启用
+    interface SensitiveWordListStopUsingParams {
+      id: string
+      status: string
     }
   }
 }

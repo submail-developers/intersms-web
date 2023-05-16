@@ -1,15 +1,15 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
-import { addAccount } from '@/api'
+import { AddSensitiveWordList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import type { RadioChangeEvent } from 'antd'
 
 interface Props {
-  // onSearch: () => void
+  onSearch: () => void
 }
 
-const Dialog = (props: Props, ref: any) => {
+const Dialog = ({ onSearch }: Props, ref: any) => {
   const [form] = Form.useForm()
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
@@ -27,11 +27,12 @@ const Dialog = (props: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await addAccount(params)
+      const res = await AddSensitiveWordList(params)
       if (res) {
         message.success('保存成功！')
       }
       setIsModalOpen(false)
+      onSearch()
     } catch (error) {}
   }
 
@@ -42,22 +43,6 @@ const Dialog = (props: Props, ref: any) => {
   const onFinish = () => {}
   const onFinishFailed = () => {}
 
-  const onChange = (e: RadioChangeEvent) => {
-    console.log('checked = ', e)
-  }
-
-  const options = [
-    { label: '行业通道组', value: '1' },
-    { label: '营销通道组', value: '2' },
-  ]
-
-  const onChange1 = (value: string) => {
-    console.log(`selected ${value}`)
-  }
-
-  const onSearch = (value: string) => {
-    console.log('search:', value)
-  }
 
   return (
     <Modal
@@ -80,7 +65,7 @@ const Dialog = (props: Props, ref: any) => {
         <Row>
           <Col span={24}>
             <Form.Item label='类目名称' name='name'>
-              <Input placeholder='请输入手机号码' maxLength={30} />
+              <Input placeholder='请输入类目名称' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
@@ -90,14 +75,14 @@ const Dialog = (props: Props, ref: any) => {
             <Form.Item
               label='敏感词'
               labelCol={{ span: 24 }}
-              name='group_type'>
+              name='keywords'>
               <Input placeholder='请输入IP地址' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <Form.Item label='备注' name='name'>
+            <Form.Item label='备注' name='comment'>
               <Input placeholder='请输入备注' maxLength={30} />
             </Form.Item>
           </Col>
