@@ -95,12 +95,12 @@ export default function Network() {
     },
     {
       title: '操作',
-      width: 120,
+      width: 140,
       render: (_, record) => (
         <div>
           <Button
             type='link'
-            style={{ paddingLeft: 0, paddingRight: 0 }}
+            style={{ paddingLeft: 0 }}
             onClick={() => updateCountryEvent(false, record)}>
             编辑
           </Button>

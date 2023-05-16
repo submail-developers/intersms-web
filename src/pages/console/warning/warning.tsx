@@ -24,7 +24,6 @@ interface DataType {
   warning_type: string
   name: string
   times: string
-  min_length: string
   fail: string
   status: string
 }
@@ -92,16 +91,11 @@ export default function NumberChannelsRoute() {
       dataIndex: 'times',
     },
     {
-      title: '报警最小条数',
-      dataIndex: 'min_length',
-    },
-    {
       title: '报警失败率',
       dataIndex: 'fail',
     },
     {
       title: '报警开关',
-      width: 120,
       render: (_, record) => {
         return (
           <>
@@ -110,6 +104,18 @@ export default function NumberChannelsRoute() {
           </>
         )
       },
+    },
+    {
+      title: '操作',
+      width: 140,
+      render: (_, record) => (
+        <>
+          <Button type='link' style={{ paddingLeft: 0 }}>
+            编辑
+          </Button>
+          <Button type='link'>删除</Button>
+        </>
+      ),
     },
   ]
 
@@ -120,7 +126,6 @@ export default function NumberChannelsRoute() {
       warning_type: '国家报警',
       name: '中国' + i,
       times: '10分钟',
-      min_length: '1->100',
       fail: '2%',
       status: '' + (i % 2),
     })
@@ -139,10 +144,6 @@ export default function NumberChannelsRoute() {
             <div className='btn' onClick={updateCountryEvent}>
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
-            </div>
-            <div className='btn' onClick={updateCountryEvent}>
-              <i className='icon iconfont icon-bianji'></i>
-              <span>编辑</span>
             </div>
             <div className='btn' onClick={updateCountryEvent}>
               <i className='icon iconfont icon-tingyong'></i>

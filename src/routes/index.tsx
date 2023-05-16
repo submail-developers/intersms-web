@@ -228,6 +228,19 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '敏感词管理' }),
           },
           {
+            path: 'keyword',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/console/keyWord/keyWord'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '关键词管理' }),
+            handle: handleFn({ alias: '关键词管理' }),
+          },
+          {
             path: 'codelist',
             element: (
               <LazyImportComponent
