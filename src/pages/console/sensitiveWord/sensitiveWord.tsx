@@ -76,8 +76,6 @@ export default function Channel() {
 
   interface DataType extends API.GetSensitiveWordListItems {}
 
-
-
   const columns: ColumnsType<DataType> = [
     {
       title: '类目名称',
@@ -101,8 +99,11 @@ export default function Channel() {
       width: 160,
       render: (_, record: DataType) => (
         <div className='switch-all fx-shrink'>
-          <Switch size={'small'} checked={record.enabled == '1'} onChange={(checked)=>setSwicth(record,checked)}></Switch>{' '}
-            &nbsp;
+          <Switch
+            size={'small'}
+            checked={record.enabled == '1'}
+            onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
+          &nbsp;
           <span>{record.enabled == '1' ? '已启用' : '未启用'}</span>
         </div>
       ),
@@ -151,14 +152,14 @@ export default function Channel() {
     setSelectedRowKeys([])
   }
   //单独启用 停用事件
-  const setSwicth = async (record:any,checked:any) => {
+  const setSwicth = async (record: any, checked: any) => {
     let id = record.id
-    if(checked == true){
+    if (checked == true) {
       const status = '1'
       await SensitiveWordListStopUsing({ id, status })
       await search()
       setSelectedRowKeys([])
-    }else{
+    } else {
       const status = '0'
       await SensitiveWordListStopUsing({ id, status })
       await search()
