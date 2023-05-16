@@ -76,10 +76,7 @@ export default function Channel() {
 
   interface DataType extends API.GetSensitiveWordListItems {}
 
-  // 启用 停用事件
-  const setSwicth = () => {
-    // console.log(checked)
-  }
+
 
   const columns: ColumnsType<DataType> = [
     {
@@ -103,9 +100,9 @@ export default function Channel() {
       dataIndex: 'enabled',
       width: 160,
       render: (_, record: DataType) => (
-        <div className='switch-all fx-shrink' onClick={() => setSwicth()}>
-          <Switch size={'small'} checked={record.enabled == '1'}></Switch>{' '}
-          &nbsp;
+        <div className='switch-all fx-shrink'>
+          <Switch size={'small'} checked={record.enabled == '1'} onChange={(checked)=>setSwicth(record,checked)}></Switch>{' '}
+            &nbsp;
           <span>{record.enabled == '1' ? '已启用' : '未启用'}</span>
         </div>
       ),
@@ -141,7 +138,7 @@ export default function Channel() {
     await DeleteSensitiveWordList({ id })
     await search()
   }
-  // 删除事件
+  // 批量删除事件
   const deleteEvent = async () => {
     if (selectedRowKeys.length === 0) {
       message.warning('请勾选要删除的客户！')
@@ -151,7 +148,20 @@ export default function Channel() {
     await DeleteSensitiveWordList({ id })
     await search()
   }
-  // 批量停用
+  //单独启用 停用事件
+  const setSwicth = async (record:any,checked:any) => {
+    let id = record.id
+    if(checked == true){
+      const status = '1'
+      await SensitiveWordListStopUsing({ id, status })
+      await search()
+    }else{
+      const status = '0'
+      await SensitiveWordListStopUsing({ id, status })
+      await search()
+    }
+  }
+  //批量停用
   const batchDeactivation = async () => {
     if (selectedRowKeys.length === 0) {
       message.warning('请勾选要停用的客户！')
