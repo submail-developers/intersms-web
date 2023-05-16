@@ -202,12 +202,13 @@
         }
 
         &:hover > td {
-          background-color: #f0f6ff !important;
+          background-color: #f4f6f8 !important;
+          border-color: #f4f6f8 !important;
         }
 
         &.active > td {
-          background-color: #f0f6ff !important;
-          border-color: #3461bb !important;
+          background-color: #f4f6f8 !important;
+          border-color: #f4f6f8 !important;
           color: inherit;
         }
       }

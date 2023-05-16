@@ -9,6 +9,10 @@ declare module 'apis' {
       contentType?: string // 默认application/json
     }
 
+    /**
+     * 示例接口及测试接口start
+     */
+
     type Tag = {
       id: number
       name: string
@@ -35,6 +39,14 @@ declare module 'apis' {
       name: string
       status: string
     }
+
+    /**
+     * 示例接口及测试接口end
+     */
+
+    /**
+     * 发送列表start
+     */
 
     // 发送列表参数
     interface GetSendListParams extends BaseParams {
@@ -69,6 +81,14 @@ declare module 'apis' {
       report_desc: string
     }
 
+    /**
+     * 发送列表end
+     */
+
+    /**
+     * 客户信息start
+     */
+
     // 获取客户列表参数
     interface AccountListParams {
       page?: string
@@ -92,6 +112,78 @@ declare module 'apis' {
       mail: string
       name: string
     }
+
+    /**
+     * 客户信息end
+     */
+
+    /**
+     * 通道组管理start
+     */
+
+    /**
+     * 通道组管理end
+     */
+
+    /**
+     * 通道管理start
+     */
+
+    /**
+     * 通道管理end
+     */
+
+    /**
+     * 通道管理start
+     */
+
+    /**
+     * 通道管理end
+     */
+
+    /**
+     * 国家信息配置start
+     */
+
+    /**
+     * 国家信息配置end
+     */
+
+    /**
+     * 网络信息配置start
+     */
+
+    /**
+     * 网络信息配置end
+     */
+
+    /**
+     * 号码通道路由start
+     */
+
+    /**
+     * 号码通道路由end
+     */
+
+    /**
+     * 报警设置start
+     */
+
+    /**
+     * 报警设置end
+     */
+
+    /**
+     * 号码归属查询start
+     */
+
+    /**
+     * 号码归属查询end
+     */
+
+    /**
+     * 敏感词管理start
+     */
 
     // 获取敏感词
     interface GetSensitiveWordListParams {
@@ -122,5 +214,40 @@ declare module 'apis' {
       id: string
       status: string
     }
+    /**
+     * 敏感词管理end
+     */
+
+    /**
+     * 关键词管理start
+     */
+
+    /**
+     * 关键词管理end
+     */
+
+    /**
+     * 状态码对照表start
+     */
+
+    /**
+     * 状态码对照表end
+     */
+
+    /**
+     * 黑名单管理start
+     */
+
+    /**
+     * 黑名单管理end
+     */
+
+    /**
+     * 登陆start
+     */
+
+    /**
+     * 登陆end
+     */
   }
 }
