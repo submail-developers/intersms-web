@@ -115,23 +115,21 @@ export default function Channel() {
       width: 120,
       render: (_, record) => (
         <>
-          <Button 
-          type='link'
-           onClick={() => addSensitiveEvent(false, record)}
-           >
+          <Button
+            type='link'
+            onClick={() => addSensitiveEvent(false, record)}
+            style={{ paddingLeft: 0 }}>
             编辑
           </Button>
           <Button type='link'>
-          <Popconfirm
+            <Popconfirm
               placement='left'
               title='警告'
               description='确定删除该条敏感词吗？'
-              onConfirm={()=>singleDeleteEvent(record.id)}
+              onConfirm={() => singleDeleteEvent(record.id)}
               okText='确定'
               cancelText='取消'>
-              <div className='btn delete'>
-                <span>删除</span>
-              </div>
+              删除
             </Popconfirm>
           </Button>
         </>
@@ -139,7 +137,7 @@ export default function Channel() {
     },
   ]
   // 单独删除事件
-  const singleDeleteEvent = async (id:any)=>{
+  const singleDeleteEvent = async (id: any) => {
     await DeleteSensitiveWordList({ id })
     await search()
   }
@@ -168,8 +166,6 @@ export default function Channel() {
   const addSensitiveEvent = (isAdd: boolean = true, record?: DataType) => {
     addSensitiveWordListRef.current.open({ isAdd, record })
   }
-
-
 
   return (
     <div data-class='channel'>
