@@ -108,7 +108,7 @@ export default function Channel() {
             onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
           &nbsp;
           {record.enabled == '1' ? (
-            <span className='color'>已启用</span>
+            <span className='color-gray'>已启用</span>
           ) : (
             <span>未启用</span>
           )}
