@@ -222,7 +222,35 @@ declare module 'apis' {
     /**
      * 关键词管理start
      */
-
+    // 获取关键词
+    interface GetkeyWordParams {
+      id: string
+      page: string
+    }
+    // 获取关键词返回数据
+    interface GetkeyWordItems {
+      id: string
+      name: string
+      comment: string
+      keywords: string
+      enabled: string
+    }
+    // 新增关键词列表参数
+    interface AddkeyWordParams {
+      id: string
+      name: string
+      keywords: string
+      comment: string
+    }
+    // 删除关键词列表参数
+    interface DeletekeyWordParams {
+      id: string
+    }
+    //关键词批量启用/停用  0关闭 1启用
+    interface keyWordStopUsingParams {
+      id: string
+      status: string
+    }
     /**
      * 关键词管理end
      */

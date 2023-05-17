@@ -12,11 +12,7 @@ import {
 import type { ColumnsType } from 'antd/es/table'
 import AddKeyword from './dialog/addKeyword'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import {
-  GetSensitiveWordList,
-  DeleteSensitiveWordList,
-  SensitiveWordListStopUsing,
-} from '@/api'
+import { GetkeyWord, DeletekeyWord, keyWordStopUsing } from '@/api'
 import { API } from 'apis'
 
 // 发送列表
@@ -53,7 +49,7 @@ export default function Channel() {
   }, [])
 
   const search = async () => {
-    const res = await GetSensitiveWordList({
+    const res = await GetkeyWord({
       id: '',
       page: '1',
     })
@@ -66,18 +62,11 @@ export default function Channel() {
       // setSelectedRowKeys([''])
     }
   }
-  const [tableData, settableData] = useState<API.GetSensitiveWordListItems[]>(
-    [],
-  )
+  const [tableData, settableData] = useState<API.GetkeyWordItems[]>([])
   const addSensitiveWordListRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
 
-  interface DataType extends API.GetSensitiveWordListItems {}
-
-  // 启用 停用事件
-  const setSwicth = () => {
-    // console.log(checked)
-  }
+  interface DataType extends API.GetkeyWordItems {}
 
   const columns: ColumnsType<DataType> = [
     {
@@ -100,8 +89,11 @@ export default function Channel() {
       dataIndex: 'enabled',
       width: 160,
       render: (_, record: DataType) => (
-        <div className='switch-all fx-shrink' onClick={() => setSwicth()}>
-          <Switch size={'small'} checked={record.enabled == '1'}></Switch>{' '}
+        <div className='switch-all fx-shrink'>
+          <Switch
+            size={'small'}
+            checked={record.enabled == '1'}
+            onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
           &nbsp;
           <span>{record.enabled == '1' ? '已启用' : '未启用'}</span>
         </div>
@@ -112,23 +104,54 @@ export default function Channel() {
       width: 120,
       render: (_, record) => (
         <>
-          <Button type='link' style={{ paddingLeft: 0 }}>
+          <Button
+            type='link'
+            onClick={() => addSensitiveEvent(false, record)}
+            style={{ paddingLeft: 0 }}>
             编辑
           </Button>
-          <Button type='link'>删除</Button>
+          <Button type='link'>
+            <Popconfirm
+              placement='left'
+              title='警告'
+              description='确定删除该条关键词吗？'
+              onConfirm={() => singleDeleteEvent(record.id)}
+              okText='确定'
+              cancelText='取消'>
+              删除
+            </Popconfirm>
+          </Button>
         </>
       ),
     },
   ]
-  // 删除事件
+  // 单独删除事件
+  const singleDeleteEvent = async (id: any) => {
+    await DeletekeyWord({ id })
+    await search()
+  }
+  // 批量删除事件
   const deleteEvent = async () => {
     if (selectedRowKeys.length === 0) {
       message.warning('请勾选要删除的客户！')
       return
     }
     const id = selectedRowKeys.join(',')
-    await DeleteSensitiveWordList({ id })
+    await DeletekeyWord({ id })
     await search()
+  }
+  //单独启用 停用事件
+  const setSwicth = async (record: any, checked: any) => {
+    let id = record.id
+    if (checked == true) {
+      const status = '1'
+      await keyWordStopUsing({ id, status })
+      await search()
+    } else {
+      const status = '0'
+      await keyWordStopUsing({ id, status })
+      await search()
+    }
   }
   // 批量停用
   const batchDeactivation = async () => {
@@ -138,12 +161,13 @@ export default function Channel() {
     }
     const id = selectedRowKeys.join(',')
     const status = '0'
-    await SensitiveWordListStopUsing({ id, status })
+    await keyWordStopUsing({ id, status })
     await search()
+    setSelectedRowKeys([])
   }
 
-  const addSensitiveEvent = () => {
-    addSensitiveWordListRef.current.open()
+  const addSensitiveEvent = (isAdd: boolean = true, record?: DataType) => {
+    addSensitiveWordListRef.current.open({ isAdd, record })
   }
 
   return (
@@ -152,7 +176,7 @@ export default function Channel() {
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div className='btn-group' style={{ marginBottom: '10px' }}>
-            <div className='btn' onClick={addSensitiveEvent}>
+            <div className='btn' onClick={() => addSensitiveEvent()}>
               <i className='icon iconfont icon-xinzeng'></i>
               <span>新增</span>
             </div>
@@ -171,7 +195,7 @@ export default function Channel() {
             <Popconfirm
               placement='bottom'
               title='警告'
-              description='确定删除选中敏感词吗？'
+              description='确定删除选中的关键词吗？'
               onConfirm={deleteEvent}
               okText='确定'
               cancelText='取消'>

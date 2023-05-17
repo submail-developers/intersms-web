@@ -188,6 +188,7 @@ export const SensitiveWordListStopUsing = (
     API.SensitiveWordListStopUsingParams
   >('customer/update_sensitive_keywords_status', { ...data })
 }
+
 /**
  * 敏感词管理end
  */
@@ -195,7 +196,35 @@ export const SensitiveWordListStopUsing = (
 /**
  * 关键词管理start
  */
+// 获取关键词列表
+export const GetkeyWord = (data: API.GetkeyWordParams) => {
+  return request.post<any, API.Response<any>, API.GetkeyWordParams>(
+    'customer/get_keywords_route',
+    { ...data },
+  )
+}
 
+// 新增关键词列表
+export const AddkeyWord = (data: API.AddkeyWordParams) => {
+  return request.post<any, API.Response<any>, API.AddkeyWordParams>(
+    'customer/save_keywords_route',
+    { ...data },
+  )
+}
+// 删除关键词列表
+export const DeletekeyWord = (data: API.DeletekeyWordParams) => {
+  return request.post<any, API.Response<any>, API.DeletekeyWordParams>(
+    'customer/delete_keywords_route',
+    { ...data },
+  )
+}
+// 关键词批量启用/停用
+export const keyWordStopUsing = (data: API.keyWordStopUsingParams) => {
+  return request.post<any, API.Response<any>, API.keyWordStopUsingParams>(
+    'customer/update_keywords_route_status',
+    { ...data },
+  )
+}
 /**
  * 关键词管理end
  */
