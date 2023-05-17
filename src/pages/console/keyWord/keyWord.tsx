@@ -75,7 +75,15 @@ export default function Channel() {
       width: 160,
     },
     {
-      title: '敏感词',
+      title: (
+        <span>
+          关键词{' '}
+          <span style={{ fontSize: '12px', paddingLeft: '10px' }}>
+            {' '}
+            特定格式: (赌博|股票)
+          </span>{' '}
+        </span>
+      ),
       width: 600,
       dataIndex: 'keywords',
     },
