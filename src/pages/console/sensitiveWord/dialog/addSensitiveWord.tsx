@@ -1,15 +1,16 @@
-import { useState, useImperativeHandle, forwardRef } from 'react'
+import { useState, useImperativeHandle, forwardRef, useRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
 import { AddSensitiveWordList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
-import type { CheckboxValueType } from 'antd/es/checkbox/Group'
-import type { RadioChangeEvent } from 'antd'
+import type { InputRef } from 'antd'
 
 interface Props {
   onSearch: () => void
 }
 
 const Dialog = ({ onSearch }: Props, ref: any) => {
+  const inputRef = useRef<InputRef>(null)
+
   const [isAdd, setisAdd] = useState<boolean>(true)
   const [form] = Form.useForm()
   const { message } = App.useApp()
@@ -27,6 +28,10 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
     form.setFieldsValue(params.record)
     setIsModalOpen(true)
+    console.log(inputRef, '///')
+    inputRef.current!.focus({
+      cursor: 'start',
+    })
   }
 
   const handleOk = async () => {
@@ -48,7 +53,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   const onFinish = () => {}
   const onFinishFailed = () => {}
-
+  const { TextArea } = Input
   return (
     <Modal
       title='添加敏感词'
@@ -85,10 +90,11 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
             <Form.Item label='敏感词' labelCol={{ span: 24 }} name='keywords'>
-              <Input
+              {/* <Input
                 placeholder='请输入敏感词 特定格式: (赌博|股票)'
                 maxLength={30}
-              />
+              /> */}
+              <TextArea rows={4} className='color-words' ref={inputRef} />
             </Form.Item>
           </Col>
         </Row>
