@@ -1,4 +1,10 @@
-import { useState, useImperativeHandle, forwardRef, useRef } from 'react'
+import {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useRef,
+  useEffect,
+} from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
 import { AddSensitiveWordList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
@@ -28,11 +34,15 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
     form.setFieldsValue(params.record)
     setIsModalOpen(true)
-    console.log(inputRef, '///')
-    inputRef.current!.focus({
-      cursor: 'start',
-    })
   }
+  useEffect(() => {
+    if (isModalOpen) {
+      console.log(inputRef, '///')
+      inputRef.current!.focus({
+        cursor: 'start',
+      })
+    }
+  }, [isModalOpen])
 
   const handleOk = async () => {
     try {
