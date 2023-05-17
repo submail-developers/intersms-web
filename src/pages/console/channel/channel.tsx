@@ -1,51 +1,34 @@
-import { ReactNode, useEffect, useState, MutableRefObject, useRef } from 'react'
-import {
-  Button,
-  Select,
-  Form,
-  Input,
-  DatePicker,
-  ConfigProvider,
-  Table,
-  App,
-  Row,
-  Col,
-  Space,
-  Checkbox,
-  Popconfirm,
-} from 'antd'
+import { useEffect, useState, MutableRefObject, useRef } from 'react'
+import { Button, ConfigProvider, Table, Row, Col, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import AddChannel from './dialog/addChannel'
 import ChannelDetail from './dialog/channelDetail/channelDetail'
+import BindSeneitiveWord from './dialog/bindSensitiveWord/bindSensitiveWord'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import { getSendList } from '@/api'
-import { useSize } from '@/hooks'
+import { getChannelList, deleteChannel } from '@/api'
 import { API } from 'apis'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import {
+  mobileTypeOptions,
+  getOptionsLabel,
+  channelTypeOptions,
+} from '@/utils/options'
 
+// console.log(API.ChannelType)
 import './channel.scss'
 
-interface DataType {
-  id: string
-  channel_name: string
-  channel_type: string
-  speed: string
-  prefix: string
-}
-interface FormValues {
-  channel: string
-  group: string
-  time: [Dayjs, Dayjs] | null
-  keyword: string
-}
+interface DataType extends API.ChannelItem {}
 
 // 发送列表
 export default function Channel() {
+  const { message } = App.useApp()
   const addChannelDialogRef: MutableRefObject<any> = useRef(null)
   const detailRef: MutableRefObject<any> = useRef(null)
+  const bindSeneitiveWordRef: MutableRefObject<any> = useRef(null)
+  const [list, setlist] = useState<DataType[]>([])
 
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
@@ -92,29 +75,32 @@ export default function Channel() {
       </Row>
     )
   }
-
   const columns: ColumnsType<DataType> = [
     {
       title: '通道名',
-      width: 120,
+      width: '12%',
       className: 'paddingL30',
-      dataIndex: 'channel_name',
+      dataIndex: 'name',
     },
     {
       title: '通道类型',
-      dataIndex: 'channel_type',
+      dataIndex: 'type',
+      render: (_, record: DataType) => (
+        <>{getOptionsLabel(channelTypeOptions, record.type)}</>
+      ),
     },
     {
       title: '流速',
-      dataIndex: 'speed',
+      render: (_, record: DataType) => <>{record.flow}t/s</>,
     },
     {
       title: '号码前缀',
-      dataIndex: 'prefix',
+      render: (_, record: DataType) => {
+        return <>{getOptionsLabel(mobileTypeOptions, record.mobile_type)}</>
+      },
     },
     {
       title: '关联国家',
-      width: 100,
       render: (_, record) => (
         <Button
           type='link'
@@ -125,21 +111,31 @@ export default function Channel() {
       ),
     },
     {
-      title: '通道状态',
-      render: (_, record) => <div className='color-success'>已开启</div>,
+      title: '敏感词绑定',
+      render: (_, record) => (
+        <div className='bind-wrap color-gray'>
+          <span className='text'>未绑定</span>
+          <div
+            className='icon-wrap fx-center-center'
+            onClick={() => bindSeneitiveWordRef.current.open(record)}>
+            <span className='icon iconfont icon-bangding fn14'></span>
+          </div>
+        </div>
+      ),
     },
     {
       title: '连接状态',
-      render: (_, record) => <div className='color-success'>已开启</div>,
+      render: (_, record) => (
+        <div className='color-success'>{record.access_type}-已开启</div>
+      ),
     },
     {
       title: '链路数量',
-      width: 80,
+      width: '10%',
       render: (_, record) => <div>1</div>,
     },
     {
       title: '配置',
-      width: 160,
       render: RenderConfig,
     },
     {
@@ -147,15 +143,18 @@ export default function Channel() {
       width: 120,
       render: (_, record) => (
         <>
-          <Button type='link' style={{ paddingLeft: 0 }}>
+          <Button
+            type='link'
+            style={{ paddingLeft: 0 }}
+            onClick={() => editChannelEvent(record)}>
             编辑
           </Button>
 
           <Popconfirm
-            placement='bottom'
+            placement='left'
             title='警告'
             description='确定删除该通道吗？'
-            // onConfirm={deleteEvent}
+            onConfirm={() => deleteEvent(record.id)}
             okText='确定'
             cancelText='取消'>
             <Button type='link'>删除</Button>
@@ -165,22 +164,44 @@ export default function Channel() {
     },
   ]
 
-  const data: DataType[] = []
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      id: 'id' + i,
-      channel_name: 'string' + i,
-      channel_type: 'string',
-      speed: 'string',
-      prefix: 'string',
-    })
-  }
-
   const addChannelEvent = () => {
-    addChannelDialogRef.current.open()
+    addChannelDialogRef.current.open({ isAdd: true })
+  }
+  const editChannelEvent = (record: DataType) => {
+    addChannelDialogRef.current.open({ isAdd: false, record })
   }
   const showDetail = (record: DataType) => {
-    detailRef.current.open()
+    detailRef.current.open(record.id)
+  }
+
+  useEffect(() => {
+    initData()
+  }, [])
+
+  // 获取列表
+  const initData = async () => {
+    try {
+      const res = await getChannelList({ id: '' })
+      setlist(res.data)
+    } catch (error) {}
+  }
+  // 删除通道
+  const deleteEvent = async (ids: string | React.Key[]) => {
+    let id = ''
+    if (typeof ids == 'string') {
+      id = ids
+    } else {
+      if (ids.length === 0) {
+        message.warning('请选择删除的通道！')
+        return
+      }
+      id = ids.join(',')
+    }
+    try {
+      await deleteChannel({ id })
+      message.success('删除成功')
+      initData()
+    } catch (error) {}
   }
 
   return (
@@ -192,8 +213,8 @@ export default function Channel() {
           <span>新增</span>
         </div>
         <div className='btn'>
-          <i className='icon iconfont icon-bianji'></i>
-          <span>编辑</span>
+          <i className='icon iconfont icon-peizhi'></i>
+          <span>配置</span>
         </div>
         <Popconfirm
           placement='bottom'
@@ -235,7 +256,7 @@ export default function Channel() {
           placement='bottom'
           title='警告'
           description='确定删除选中的通道吗？'
-          // onConfirm={deleteEvent}
+          onConfirm={() => deleteEvent(selectedRowKeys)}
           okText='确定'
           cancelText='取消'>
           <div className='btn delete line'>
@@ -253,7 +274,7 @@ export default function Channel() {
         <Table
           className='theme-cell bg-white'
           columns={columns}
-          dataSource={data}
+          dataSource={list}
           sticky
           pagination={false}
           rowKey={'id'}
@@ -265,8 +286,9 @@ export default function Channel() {
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
-      <AddChannel ref={addChannelDialogRef} />
+      <AddChannel ref={addChannelDialogRef} initData={initData} />
       <ChannelDetail ref={detailRef} />
+      <BindSeneitiveWord ref={bindSeneitiveWordRef} />
     </div>
   )
 }
