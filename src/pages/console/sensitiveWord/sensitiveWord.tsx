@@ -138,7 +138,6 @@ export default function Channel() {
   const singleDeleteEvent = async (id: any) => {
     await DeleteSensitiveWordList({ id })
     await search()
-    setSelectedRowKeys([])
   }
   // 批量删除事件
   const deleteEvent = async () => {
@@ -158,12 +157,10 @@ export default function Channel() {
       const status = '1'
       await SensitiveWordListStopUsing({ id, status })
       await search()
-      setSelectedRowKeys([])
     } else {
       const status = '0'
       await SensitiveWordListStopUsing({ id, status })
       await search()
-      setSelectedRowKeys([])
     }
   }
   //批量停用
@@ -208,7 +205,7 @@ export default function Channel() {
             <Popconfirm
               placement='bottom'
               title='警告'
-              description='确定删除选中敏感词吗？'
+              description='确定删除选中的敏感词吗？'
               onConfirm={deleteEvent}
               okText='确定'
               cancelText='取消'>
