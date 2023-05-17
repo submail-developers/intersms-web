@@ -73,6 +73,7 @@ export default function Channel() {
       title: '类目名称',
       dataIndex: 'name',
       width: 160,
+      className: 'paddingL30',
     },
     {
       title: (
