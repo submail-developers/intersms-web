@@ -192,7 +192,7 @@ export default function Channel() {
             <Popconfirm
               placement='bottom'
               title='警告'
-              description='确定停用选中的敏感词吗？'
+              description='确定停用选中的关键词吗？'
               onConfirm={batchDeactivation}
               okText='确定'
               cancelText='取消'>
@@ -233,7 +233,7 @@ export default function Channel() {
             index == activeIndex ? 'active' : ''
           }
           sticky
-          pagination={false}
+          pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
