@@ -76,8 +76,8 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         </Row>
         <Row>
           <Col span={24}>
-            <Form.Item label='类目名称' name='name'>
-              <Input placeholder='请输入类目名称' maxLength={30} />
+            <Form.Item label='条目名称' name='name'>
+              <Input placeholder='请输入条目名称' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
@@ -85,7 +85,10 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
             <Form.Item label='敏感词' labelCol={{ span: 24 }} name='keywords'>
-              <Input placeholder='请输入敏感词' maxLength={30} />
+              <Input
+                placeholder='请输入敏感词 特定格式: (赌博|股票)'
+                maxLength={30}
+              />
             </Form.Item>
           </Col>
         </Row>
