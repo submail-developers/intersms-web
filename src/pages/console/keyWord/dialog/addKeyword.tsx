@@ -50,7 +50,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   return (
     <Modal
-      title='添加关键词'
+      title='添加关键字'
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -86,8 +86,8 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
-            <Form.Item label='关键词' labelCol={{ span: 24 }} name='keywords'>
-              <Input placeholder='请输入关键词' maxLength={30} />
+            <Form.Item label='关键字' labelCol={{ span: 24 }} name='keywords'>
+              <Input placeholder='请输入关键字' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
