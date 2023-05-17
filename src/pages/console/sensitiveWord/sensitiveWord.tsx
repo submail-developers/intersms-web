@@ -78,23 +78,18 @@ export default function Channel() {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: '类目名称',
+      title: '条目名称',
       dataIndex: 'name',
       width: 160,
       className: 'paddingL30',
     },
     {
-      title: (
-        <span>
-          敏感词{' '}
-          <span style={{ fontSize: '12px', paddingLeft: '10px' }}>
-            特定格式: (赌博|股票)
-          </span>{' '}
-        </span>
-      ),
+      title: '敏感词',
       width: 600,
       dataIndex: 'keywords',
-      render: (_, record) => <span className='color'>{record.keywords}</span>,
+      render: (_, record) => (
+        <span className='color-words'>{record.keywords}</span>
+      ),
     },
     {
       title: '备注',
