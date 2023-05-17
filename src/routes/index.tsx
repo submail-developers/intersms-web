@@ -240,19 +240,6 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '关键词管理' }),
             handle: handleFn({ alias: '关键词管理' }),
           },
-          {
-            path: 'codelist',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(
-                  () => import('@/pages/console/codeList/codeList'),
-                )}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: '状态码对照表' }),
-            handle: handleFn({ alias: '状态码对照表' }),
-          },
         ],
       },
       {
