@@ -4,4 +4,27 @@
       cursor: pointer;
     }
   }
+  .bind-wrap {
+    width: fit-content;
+    position: relative;
+    .text {
+    }
+
+    .icon-wrap {
+      display: none;
+      position: absolute;
+      top: 0;
+      right: -30px;
+      width: 30px;
+      cursor: pointer;
+      &:hover {
+        color: #0074d7;
+      }
+    }
+  }
+  tr:hover {
+    .icon-wrap {
+      display: flex;
+    }
+  }
 }

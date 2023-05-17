@@ -74,7 +74,7 @@ export const deleteAccount = (data: API.DeleteAccountParams) => {
 
 // 新增客户
 export const addAccount = (data: API.AddAccountParams) => {
-  return request.post<any, API.Response<any>, API.AddAccountParams>(
+  return request.post<any, API.Response<API.ChannelItem>, API.AddAccountParams>(
     'customer/add_sender_info',
     { ...data },
   )
@@ -104,6 +104,34 @@ export const addAccount = (data: API.AddAccountParams) => {
  * 通道管理start
  */
 
+// 获取通道列表
+export const getChannelList = (data: API.Ids) => {
+  return request.post<any, API.Response<API.ChannelItem[]>, API.Ids>(
+    'customer/get_channel',
+    { ...data },
+  )
+}
+// 新增/修改通道
+export const saveChannel = (data: API.AddChannelParams) => {
+  return request.post<any, API.Response<any>, API.AddChannelParams>(
+    'customer/save_channel',
+    { ...data },
+  )
+}
+// 新增/修改通道
+export const deleteChannel = (data: API.Ids) => {
+  return request.post<any, API.Response<any>, API.Ids>(
+    'customer/delete_channel',
+    { ...data },
+  )
+}
+// 获取通道关联的国家
+export const getChannelCountryList = (data: API.getChannelCountryParams) => {
+  return request.post<any, API.Response<any>, API.getChannelCountryParams>(
+    'customer/get_channel_related_country_network',
+    { ...data },
+  )
+}
 /**
  * 通道管理end
  */
@@ -156,6 +184,16 @@ export const addAccount = (data: API.AddAccountParams) => {
 export const GetSensitiveWordList = (data: API.GetSensitiveWordListParams) => {
   return request.post<any, API.Response<any>, API.GetSensitiveWordListParams>(
     'customer/get_sensitive_keywords',
+    { ...data },
+  )
+}
+
+// 获取开启状态的敏感词列表
+export const GetOpenSensitiveWordList = (
+  data: API.GetSensitiveWordListParams,
+) => {
+  return request.post<any, API.Response<any>, API.GetSensitiveWordListParams>(
+    'customer/get_all_sensitive_keywords_list',
     { ...data },
   )
 }

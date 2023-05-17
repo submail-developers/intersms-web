@@ -46,6 +46,18 @@ declare module 'apis' {
      */
 
     /**
+     * 通用start
+     */
+
+    interface Ids {
+      id: string
+    }
+
+    /**
+     * 通用end
+     */
+
+    /**
      * 发送列表start
      */
 
@@ -137,7 +149,28 @@ declare module 'apis' {
     /**
      * 通道管理start
      */
-
+    interface ChannelItem {
+      id: string
+      name: string // 通道名称
+      access_type: string // 接入类型 0smpp  1http
+      type: '1' | '2' // 通道类型  1行业  2营销
+      smsc_ip: string // SMSC服务方ip地址
+      smsc_port: string // smpp模式必填,端口号
+      http_url: string // http接口地址
+      sysid: string // smpp 用户名
+      password: string // smpp  用户密码
+      service_type: string // CMT，服务类型
+      system_type: string // cp， 项目类型
+      flow: string // 流速
+      udh: string // 是否使用udh模式，1是0否
+      mobile_type: string // 0:无前缀, 1:+前缀, 2:00前缀, 3:0前缀
+    }
+    // 新增/修改通道
+    interface AddChannelParams extends ChannelItem {}
+    // 获取通道关联的国家
+    interface getChannelCountryParams {
+      channel: string
+    }
     /**
      * 通道管理end
      */

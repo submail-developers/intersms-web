@@ -10,6 +10,9 @@ import MyTable from '../table/table'
 import EditDetail from '../editDetail/editDetail'
 import type { ColumnsType } from 'antd/es/table'
 import { useSize } from '@/hooks'
+
+import { getChannelCountryList } from '@/api'
+
 import './channelDetail.scss'
 
 interface Props {
@@ -36,7 +39,7 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [show, setShow] = useState(false)
 
-  const open = () => {
+  const open = (id: string) => {
     setShow(true)
   }
 
