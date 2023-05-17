@@ -243,7 +243,7 @@ export default function Channel() {
             index == activeIndex ? 'active' : ''
           }
           sticky
-          pagination={false}
+          pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
