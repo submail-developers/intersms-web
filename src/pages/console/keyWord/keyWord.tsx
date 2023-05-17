@@ -76,7 +76,7 @@ export default function Channel() {
       className: 'paddingL30',
     },
     {
-      title: '关键词',
+      title: '关键字',
       width: 600,
       dataIndex: 'keywords',
       render: (_, record) => (
@@ -122,7 +122,7 @@ export default function Channel() {
             <Popconfirm
               placement='left'
               title='警告'
-              description='确定删除该条关键词吗？'
+              description='确定删除该条关键字吗？'
               onConfirm={() => singleDeleteEvent(record.id)}
               okText='确定'
               cancelText='取消'>
@@ -180,7 +180,7 @@ export default function Channel() {
 
   return (
     <div data-class='channel'>
-      <MenuTitle title='关键词管理'></MenuTitle>
+      <MenuTitle title='关键字管理'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div className='btn-group' style={{ marginBottom: '10px' }}>
@@ -191,7 +191,7 @@ export default function Channel() {
             <Popconfirm
               placement='bottom'
               title='警告'
-              description='确定停用选中的关键词吗？'
+              description='确定停用选中的关键字吗？'
               onConfirm={batchDeactivation}
               okText='确定'
               cancelText='取消'>
@@ -203,7 +203,7 @@ export default function Channel() {
             <Popconfirm
               placement='bottom'
               title='警告'
-              description='确定删除选中的关键词吗？'
+              description='确定删除选中的关键字吗？'
               onConfirm={deleteEvent}
               okText='确定'
               cancelText='取消'>
