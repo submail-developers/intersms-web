@@ -87,9 +87,13 @@ export default function Channel() {
       ),
       width: 600,
       dataIndex: 'keywords',
+<<<<<<< HEAD
       render: (_, record) => (
         <span className='color-words'>{record.keywords}</span>
       ),
+=======
+      render: (_, record) => <span className='color'>{record.keywords}</span>,
+>>>>>>> 1fa56c0 (关键词 敏感词 文字添加颜色)
     },
     {
       title: '备注',

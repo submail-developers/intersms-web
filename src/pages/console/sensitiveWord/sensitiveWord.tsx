@@ -76,7 +76,6 @@ export default function Channel() {
 
   interface DataType extends API.GetSensitiveWordListItems {}
 
-  const small_tip = `<div>123</div>`
   const columns: ColumnsType<DataType> = [
     {
       title: '条目名称',
@@ -93,7 +92,6 @@ export default function Channel() {
           </span>{' '}
         </span>
       ),
-
       width: 600,
       dataIndex: 'keywords',
       render: (_, record) => (
@@ -117,7 +115,11 @@ export default function Channel() {
             onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
           &nbsp;
           {record.enabled == '1' ? (
+<<<<<<< HEAD
             <span className='color-gray'>已启用</span>
+=======
+            <span className='color'>已启用</span>
+>>>>>>> 1fa56c0 (关键词 敏感词 文字添加颜色)
           ) : (
             <span>未启用</span>
           )}
