@@ -87,6 +87,7 @@ export default function Channel() {
       ),
       width: 600,
       dataIndex: 'keywords',
+      render: (_, record) => <span className='color'>{record.keywords}</span>,
     },
     {
       title: '备注',
@@ -104,7 +105,11 @@ export default function Channel() {
             checked={record.enabled == '1'}
             onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
           &nbsp;
-          <span>{record.enabled == '1' ? '已启用' : '未启用'}</span>
+          {record.enabled == '1' ? (
+            <span className='color'>已启用</span>
+          ) : (
+            <span>未启用</span>
+          )}
         </div>
       ),
     },
