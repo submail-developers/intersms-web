@@ -85,7 +85,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
             <Form.Item label='敏感词' labelCol={{ span: 24 }} name='keywords'>
-              <Input placeholder='请输入IP地址' maxLength={30} />
+              <Input placeholder='请输入敏感词' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
