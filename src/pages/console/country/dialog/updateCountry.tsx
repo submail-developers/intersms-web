@@ -3,13 +3,17 @@ import { Modal, Form, Input, App, Row, Col, Select } from 'antd'
 import { addAccount } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
+import { API } from 'apis'
 import './updateCountry.scss'
 
 interface Props {
+  allGruopData: API.GetAllGroupIdItems[]
   // onSearch: () => void
 }
 
 const Dialog = (props: Props, ref: any) => {
+  const { Option } = Select
+
   const [form] = Form.useForm()
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
@@ -112,14 +116,13 @@ const Dialog = (props: Props, ref: any) => {
                 optionFilterProp='children'
                 onChange={onChange1}
                 onSearch={onSearch}
-                // filterOption={(input, option) =>
-                //   (option?.label ?? '')
-                //     // .toLowerCase()
-                //     // .includes(input.toLowerCase())
-                // }
-                // options={
-
-                // }
+                options={props.allGruopData}
+                fieldNames={{ label: 'name', value: 'id' }}
+                filterOption={(input, option) =>
+                  (option?.name ?? '')
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
               />
             </Form.Item>
           </Col>

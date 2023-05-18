@@ -153,7 +153,7 @@ export default function Channel() {
           <Button
             type='link'
             style={{ paddingLeft: 0, paddingRight: 0 }}
-            onClick={() => updateCountryEvent(record, allGruopData)}>
+            onClick={() => updateCountryEvent(record)}>
             编辑
           </Button>
         </div>
@@ -161,8 +161,8 @@ export default function Channel() {
     },
   ]
 
-  const updateCountryEvent = (record: DataType, allGruopData: any) => {
-    updateCountryDialogRef.current.open({ record, allGruopData })
+  const updateCountryEvent = (record: DataType) => {
+    updateCountryDialogRef.current.open({ record })
   }
 
   return (
@@ -254,7 +254,10 @@ export default function Channel() {
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
-      <UpdateCountryConfig ref={updateCountryDialogRef} />
+      <UpdateCountryConfig
+        allGruopData={allGruopData}
+        ref={updateCountryDialogRef}
+      />
     </div>
   )
 }
