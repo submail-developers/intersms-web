@@ -152,7 +152,7 @@ export default function Left() {
               },
             }}>
             <Table
-              className='theme-cell reset-theme bg-gray'
+              className='theme-cell bg-gray'
               showHeader={false}
               columns={columns}
               dataSource={tableData}

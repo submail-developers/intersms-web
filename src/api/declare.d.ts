@@ -170,6 +170,18 @@ declare module 'apis' {
       mke_group: string
       mke_sender: string
     }
+    interface GetChannelGroupListParams {
+      id: string
+      keyword: string
+      page: string
+    }
+
+    interface GetChannelGroupListItem {
+      id: string
+      name: string // 通道组名称
+      type: '1' | '0' // 通道行业属性  0行业 1营销
+      enabled: '0' | '1' // 是否启用 0关闭  1启用
+    }
 
     /**
      * 通道组管理end

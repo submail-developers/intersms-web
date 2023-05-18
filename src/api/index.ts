@@ -110,7 +110,7 @@ export const addAccount = (data: API.AddAccountParams) => {
 /**
  * 通道组管理start
  */
-// 获取通道组
+// 获取通道组id
 export const GetAllGroupId = (data: API.GetAllGroupIdParams) => {
   return request.post<any, API.Response<any>, API.GetAllGroupIdParams>(
     'customer/get_all_group_ids',
@@ -123,6 +123,14 @@ export const SaveGroup = (data: API.SaveGroupParams) => {
     'customer/save_country',
     { ...data },
   )
+}
+// 获取通道列表
+export const getChannelGroupList = (data: API.GetChannelGroupListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetChannelGroupListItem[]>,
+    API.GetChannelGroupListParams
+  >('customer/get_group', { ...data })
 }
 
 /**

@@ -46,39 +46,4 @@
       margin: 14px 10px 2px;
     }
   }
-
-  // 重置table的样式
-  .ant-table-wrapper.reset-theme {
-    .ant-table-body table {
-      tbody {
-        tr {
-          &.active > td {
-            border-color: transparent !important;
-            background-color: #0074d7 !important;
-            color: #fff;
-            .ant-checkbox {
-              .ant-checkbox-inner {
-                background-color: #fff;
-                &::after {
-                  border-color: #0074d7;
-                }
-              }
-            }
-            .ant-switch {
-              background-color: #fff;
-              .ant-switch-handle {
-                &::before {
-                  background-color: #0074d7;
-                }
-              }
-              .ant-switch-inner-checked,
-              .ant-switch-inner-unchecked {
-                color: #0074d7;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
 }
