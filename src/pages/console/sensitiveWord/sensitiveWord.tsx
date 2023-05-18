@@ -115,11 +115,7 @@ export default function Channel() {
             onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
           &nbsp;
           {record.enabled == '1' ? (
-<<<<<<< HEAD
             <span className='color-gray'>已启用</span>
-=======
-            <span className='color'>已启用</span>
->>>>>>> 1fa56c0 (关键词 敏感词 文字添加颜色)
           ) : (
             <span>未启用</span>
           )}

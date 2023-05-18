@@ -94,6 +94,13 @@ export const GetAllGroupId = (data: API.GetAllGroupIdParams) => {
     { ...data },
   )
 }
+// 保存通道组
+export const SaveGroup = (data: API.SaveGroupParams) => {
+  return request.post<any, API.Response<any>, API.SaveGroupParams>(
+    'customer/save_country',
+    { ...data },
+  )
+}
 
 /**
  * 通道组管理end

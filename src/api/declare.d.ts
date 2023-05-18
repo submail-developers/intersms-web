@@ -140,6 +140,18 @@ declare module 'apis' {
       id: string
       name: string
     }
+    // 保存通道组参数
+    interface SaveGroupParams {
+      id: string
+      country: string
+      country_area_code: string
+      country_cn: string
+      region_code: string
+      tra_group: string
+      tra_sender: string
+      mke_group: string
+      mke_sender: string
+    }
 
     /**
      * 通道组管理end

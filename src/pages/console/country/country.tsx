@@ -98,7 +98,7 @@ export default function Channel() {
     {
       title: <span style={{ paddingLeft: '40px' }}>国家</span>,
       dataIndex: 'country_cn',
-      width: 120,
+      width: 160,
       ellipsis: true,
       render: (_, record) => (
         <span style={{ paddingLeft: '40px' }}>{record.country_cn}</span>
@@ -107,28 +107,28 @@ export default function Channel() {
     {
       title: '国家英文',
       dataIndex: 'country',
-      width: 140,
+      width: 220,
     },
     {
       title: '国家代码',
       dataIndex: 'region_code',
-      width: 120,
+      width: 80,
       className: 'paddingL30',
     },
     {
       title: '国家区号',
       dataIndex: 'country_area_code',
-      width: 120,
+      width: 80,
       render: (_, record) => <span>+{record.country_area_code}</span>,
     },
     {
       title: '行业通道组',
       dataIndex: 'tra_group',
       className: 'trade-0',
-      width: 160,
+      width: 90,
     },
     {
-      title: '行业s',
+      title: '行业Sender',
       className: 'trade-1',
       dataIndex: 'tra_sender',
       width: 160,
@@ -137,10 +137,10 @@ export default function Channel() {
       title: '营销通道组',
       dataIndex: 'mke_group',
       className: 'sale-0',
-      width: 160,
+      width: 90,
     },
     {
-      title: '营销签名',
+      title: '营销Sender',
       dataIndex: 'mke_sender',
       className: 'sale-1',
       width: 160,

@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select } from 'antd'
-import { addAccount } from '@/api'
+import { SaveGroup } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
 import { API } from 'apis'
@@ -24,8 +24,6 @@ const Dialog = (props: Props, ref: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const open = (params: any) => {
-    console.log(params)
-
     form.resetFields()
     form.setFieldsValue(params.record)
 
@@ -35,7 +33,8 @@ const Dialog = (props: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await addAccount(params)
+      const res = await SaveGroup(params)
+      console.log(params)
       if (res) {
         message.success('保存成功！')
       }
@@ -53,11 +52,6 @@ const Dialog = (props: Props, ref: any) => {
   const onChange = (e: RadioChangeEvent) => {
     console.log('checked = ', e)
   }
-
-  const options = [
-    { label: '行业通道组', value: '1' },
-    { label: '营销通道组', value: '2' },
-  ]
 
   const onChange1 = (value: string) => {
     console.log(`selected ${value}`)
@@ -86,6 +80,30 @@ const Dialog = (props: Props, ref: any) => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
+        <Row>
+          <Col span={24}>
+            <Form.Item label='id' name='id' hidden>
+              <Input placeholder='id' maxLength={30} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <Form.Item label='country' name='country' hidden>
+              <Input placeholder='country' maxLength={30} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <Form.Item
+              label='country_area_code'
+              name='country_area_code'
+              hidden>
+              <Input placeholder='country_area_code' maxLength={30} />
+            </Form.Item>
+          </Col>
+        </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item label='国家名称' name='country_cn'>
@@ -153,25 +171,13 @@ const Dialog = (props: Props, ref: any) => {
                 optionFilterProp='children'
                 onChange={onChange1}
                 onSearch={onSearch}
+                options={props.allGruopData}
+                fieldNames={{ label: 'name', value: 'id' }}
                 filterOption={(input, option) =>
-                  (option?.label ?? '')
+                  (option?.name ?? '')
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={[
-                  {
-                    value: '1',
-                    label: '0001-AutoSubList',
-                  },
-                  {
-                    value: '2',
-                    label: '0002-AutoSubList',
-                  },
-                  {
-                    value: '3',
-                    label: '0003-AutoSubList',
-                  },
-                ]}
               />
             </Form.Item>
           </Col>
