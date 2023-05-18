@@ -76,7 +76,15 @@ export default function Channel() {
       className: 'paddingL30',
     },
     {
-      title: '关键字',
+      title: (
+        <span>
+          关键词{' '}
+          <span style={{ fontSize: '12px', paddingLeft: '10px' }}>
+            {' '}
+            特定格式: (赌博|股票)
+          </span>{' '}
+        </span>
+      ),
       width: 600,
       dataIndex: 'keywords',
       render: (_, record) => (
