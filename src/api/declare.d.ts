@@ -133,6 +133,13 @@ declare module 'apis' {
     /**
      * 通道组管理start
      */
+    // 获取通道组
+    interface GetAllGroupIdParams {}
+    // 获取通道组返回的数据
+    interface GetAllGroupIdItems {
+      id: string
+      name: string
+    }
 
     /**
      * 通道组管理end
@@ -178,6 +185,25 @@ declare module 'apis' {
     /**
      * 国家信息配置start
      */
+    // 获取国家信息
+    interface GetCountryListParams {
+      id: string
+      keyword: string
+      group_id: string
+      page: string
+    }
+    // 获取国家信息返回的数据
+    interface GetCountryListItems {
+      id: string
+      country: string
+      country_cn: string
+      country_area_code: string
+      region_code: string
+      tra_group: string
+      tra_sender: string
+      mke_group: string
+      mke_sender: string
+    }
 
     /**
      * 国家信息配置end

@@ -19,8 +19,12 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = () => {
+  const open = (params: any) => {
+    console.log(params)
+
     form.resetFields()
+    form.setFieldsValue(params.record)
+
     setIsModalOpen(true)
   }
 
@@ -74,23 +78,18 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{
-          trade_group: '1',
-          sale_group: '2',
-          name: '中国',
-          country_code: 'CN',
-        }}
+        initialValues={{}}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='国家名称' name='name'>
+            <Form.Item label='国家名称' name='country_cn'>
               <Input disabled style={{ color: '#000' }} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label='国家代码' name='country_code'>
+            <Form.Item label='国家代码' name='region_code'>
               <Input disabled style={{ color: '#000' }} />
             </Form.Item>
           </Col>
@@ -104,7 +103,7 @@ const Dialog = (props: Props, ref: any) => {
           <Col span={12}>
             <Form.Item
               label='默认通道组'
-              name='trade_group'
+              name='tra_group'
               validateTrigger='onSubmit'>
               <Select
                 showSearch
@@ -113,32 +112,21 @@ const Dialog = (props: Props, ref: any) => {
                 optionFilterProp='children'
                 onChange={onChange1}
                 onSearch={onSearch}
-                filterOption={(input, option) =>
-                  (option?.label ?? '')
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={[
-                  {
-                    value: '1',
-                    label: '0001-AutoSubList',
-                  },
-                  {
-                    value: '2',
-                    label: '0002-AutoSubList',
-                  },
-                  {
-                    value: '3',
-                    label: '0003-AutoSubList',
-                  },
-                ]}
+                // filterOption={(input, option) =>
+                //   (option?.label ?? '')
+                //     // .toLowerCase()
+                //     // .includes(input.toLowerCase())
+                // }
+                // options={
+
+                // }
               />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               label='行业Sender'
-              name='trade_sender'
+              name='tra_sender'
               validateTrigger='onSubmit'>
               <Input placeholder='请输入行业Sender' maxLength={30} />
             </Form.Item>
@@ -153,7 +141,7 @@ const Dialog = (props: Props, ref: any) => {
           <Col span={12}>
             <Form.Item
               label='默认通道组'
-              name='sale_group'
+              name='mke_group'
               validateTrigger='onSubmit'>
               <Select
                 showSearch
@@ -187,7 +175,7 @@ const Dialog = (props: Props, ref: any) => {
           <Col span={12}>
             <Form.Item
               label='营销Sender'
-              name='sale_sender'
+              name='mke_sender'
               validateTrigger='onSubmit'>
               <Input placeholder='请输入营销Sender' maxLength={30} />
             </Form.Item>

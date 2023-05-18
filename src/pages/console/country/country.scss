@@ -1,4 +1,7 @@
 [data-class='country'] {
+  .ant-select-selection-placeholder {
+    color: #282b31;
+  }
   .ant-table-wrapper.reset-table {
     .trade-0,
     .sale-0 {
@@ -54,7 +57,7 @@
         top: 50%;
         transform: translateY(-50%);
         left: 0;
-        width: 3px;
+        width: 4px;
         height: 100%;
         background-color: #0074d7;
       }
@@ -68,7 +71,7 @@
         top: 50%;
         transform: translateY(-50%);
         left: 0;
-        width: 3px;
+        width: 4px;
         height: 100%;
         background-color: #ff5e2d;
       }

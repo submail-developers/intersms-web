@@ -87,6 +87,13 @@ export const addAccount = (data: API.AddAccountParams) => {
 /**
  * 通道组管理start
  */
+// 获取通道组
+export const GetAllGroupId = (data: API.GetAllGroupIdParams) => {
+  return request.post<any, API.Response<any>, API.GetAllGroupIdParams>(
+    'customer/get_all_group_ids',
+    { ...data },
+  )
+}
 
 /**
  * 通道组管理end
@@ -139,6 +146,13 @@ export const getChannelCountryList = (data: API.getChannelCountryParams) => {
 /**
  * 国家信息配置start
  */
+// 获取国家信息列表
+export const getCountryList = (data: API.GetCountryListParams) => {
+  return request.post<any, API.Response<any>, API.GetCountryListParams>(
+    'customer/get_country',
+    { ...data },
+  )
+}
 
 /**
  * 国家信息配置end
