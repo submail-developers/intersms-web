@@ -50,7 +50,11 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const { TextArea } = Input
   return (
     <Modal
+<<<<<<< HEAD
       title='添加关键字'
+=======
+      title='添加关键词'
+>>>>>>> e2584bc (关键词管理)
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -75,14 +79,20 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         </Row>
         <Row>
           <Col span={24}>
+<<<<<<< HEAD
             <Form.Item label='条目名称' name='name'>
               <Input placeholder='请输入条目名称' maxLength={30} />
+=======
+            <Form.Item label='类目名称' name='name'>
+              <Input placeholder='请输入类目名称' maxLength={30} />
+>>>>>>> e2584bc (关键词管理)
             </Form.Item>
           </Col>
         </Row>
 
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
+<<<<<<< HEAD
             <Form.Item
               label={
                 <div>
@@ -101,6 +111,10 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
                 className='color-words'
                 style={{ fontSize: '16px' }}
               />
+=======
+            <Form.Item label='关键词' labelCol={{ span: 24 }} name='keywords'>
+              <Input placeholder='请输入关键词' maxLength={30} />
+>>>>>>> e2584bc (关键词管理)
             </Form.Item>
           </Col>
         </Row>
