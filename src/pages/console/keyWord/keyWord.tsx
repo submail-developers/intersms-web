@@ -76,7 +76,15 @@ export default function Channel() {
       className: 'paddingL30',
     },
     {
-      title: '关键字',
+      title: (
+        <span>
+          关键词{' '}
+          <span style={{ fontSize: '12px', paddingLeft: '10px' }}>
+            {' '}
+            特定格式: (赌博|股票)
+          </span>{' '}
+        </span>
+      ),
       width: 600,
       dataIndex: 'keywords',
       render: (_, record) => (
@@ -100,7 +108,11 @@ export default function Channel() {
             onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
           &nbsp;
           {record.enabled == '1' ? (
+<<<<<<< HEAD
             <span className='color'>已启用</span>
+=======
+            <span className='color-gray'>已启用</span>
+>>>>>>> origin/main
           ) : (
             <span>未启用</span>
           )}

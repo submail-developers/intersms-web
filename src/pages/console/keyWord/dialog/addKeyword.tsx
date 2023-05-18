@@ -47,7 +47,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   const onFinish = () => {}
   const onFinishFailed = () => {}
-
+  const { TextArea } = Input
   return (
     <Modal
       title='添加关键字'
@@ -76,18 +76,35 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         <Row>
           <Col span={24}>
             <Form.Item label='条目名称' name='name'>
-              <Input
+              {/* <Input
                 placeholder='请输入条目名称 特定格式: (赌博|股票)'
                 maxLength={30}
-              />
+              /> */}
+              <Input placeholder='请输入条目名称' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
 
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
-            <Form.Item label='关键字' labelCol={{ span: 24 }} name='keywords'>
-              <Input placeholder='请输入关键字' maxLength={30} />
+            <Form.Item
+              label={
+                <div>
+                  关键字
+                  <span
+                    className='color-gray'
+                    style={{ fontSize: '12px', paddingLeft: '20px' }}>
+                    关键字格式为（关键字|关键字|关键字）
+                  </span>
+                </div>
+              }
+              labelCol={{ span: 24 }}
+              name='keywords'>
+              <TextArea
+                rows={4}
+                className='color-words'
+                style={{ fontSize: '16px' }}
+              />
             </Form.Item>
           </Col>
         </Row>

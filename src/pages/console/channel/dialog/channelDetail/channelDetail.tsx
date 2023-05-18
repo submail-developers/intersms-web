@@ -46,9 +46,13 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [show, setShow] = useState(false)
 
+<<<<<<< HEAD
   const open = async (id: string) => {
     setchannelId(id)
     tableref && tableref.current?.cancel()
+=======
+  const open = (id: string) => {
+>>>>>>> origin/main
     setShow(true)
   }
 
