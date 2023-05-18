@@ -108,8 +108,8 @@ export default function Right() {
                 <ConfigProvider
                   theme={{
                     token: {
-                      colorPrimary: '#ff5e2d',
-                      colorPrimaryHover: '#ff5e2d',
+                      colorPrimary: '#ff4d4f',
+                      colorPrimaryHover: '#ff4d4f',
                     },
                   }}>
                   <Button

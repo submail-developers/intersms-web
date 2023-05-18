@@ -36,6 +36,29 @@ export const getNumberList = () => {
  */
 
 /**
+ * 全局公共接口start
+ */
+// 获取全部国家
+export const getAllCountry = (
+  data: API.GetCountryParams = { country_cn: '' },
+) => {
+  return request.post<
+    any,
+    API.Response<API.GetCountryItem[]>,
+    API.GetCountryParams
+  >('customer/get_all_country_network_list', { ...data })
+}
+// 获取全部已配置网络的国家
+export const getAllNetCountry = () => {
+  return request.post<any, API.Response<any>, null>(
+    'customer/get_all_country_network_list',
+  )
+}
+/**
+ * 全局公共接口end
+ */
+
+/**
  * 发送列表start
  */
 
@@ -131,6 +154,36 @@ export const getChannelCountryList = (data: API.getChannelCountryParams) => {
     'customer/get_channel_related_country_network',
     { ...data },
   )
+}
+// 修改通道关联国家及网络，已存在的关联国家直接跳过
+export const updateChannelCountryNetwork = (
+  data: API.UpdateChannelCountryNetworkParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.UpdateChannelCountryNetworkParams
+  >('customer/update_channel_related_country_network', { ...data })
+}
+// 修改通道关联国家及网络，已存在的关联国家直接跳过
+export const updateChannelCountryNetworkPrice = (
+  data: API.UpdateChannelCountryNetworkPriceParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.UpdateChannelCountryNetworkPriceParams
+  >('customer/update_channel_related_country_network_prices', { ...data })
+}
+// 批量启用禁用通道关联国家及网络
+export const updateChannelCountryNetworkStatus = (
+  data: API.UpdateChannelCountryNetworkStatusParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.UpdateChannelCountryNetworkStatusParams
+  >('customer/update_channel_related_country_network_status', { ...data })
 }
 /**
  * 通道管理end

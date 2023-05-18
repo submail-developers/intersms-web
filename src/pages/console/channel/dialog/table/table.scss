@@ -9,42 +9,51 @@
     display: flex;
     align-items: center;
   }
+  .tr.bg-gray {
+    .td {
+      background-color: #f7f8f9;
+      &:nth-child(1),
+      &:nth-child(2) {
+        background-color: transparent;
+      }
+    }
+  }
   .tbody {
     width: 100%;
     border: 1px solid #f0f0f0;
     border-radius: 4px;
     box-sizing: border-box;
     overflow: hidden;
-    margin-top: 10px;
-    &.active {
-      border-color: #3461bb;
-    }
+    margin-top: 5px;
     .tr {
       width: 100%;
       display: flex;
       align-items: center;
-      &:nth-child(2n) {
-        .td {
-          background-color: #f7f8f9;
-          &:nth-child(1),
-          &:nth-child(2) {
-            background-color: transparent;
-          }
-        }
-      }
       .td {
-        height: 100%;
-        line-height: 1.57;
+        height: 48px;
+        line-height: 1;
+        position: relative;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
         &:nth-child(3) {
           border-left: 1px solid #f7f8f9;
         }
         .ant-form-item {
           margin-bottom: 0;
           .ant-form-item-control-input {
-            min-height: 24px;
           }
-          input {
+          .ant-input {
             width: 100px;
+            height: 20px;
+            padding: 0;
+            box-sizing: border-box;
+          }
+        }
+        &.action-wrap {
+          .btn {
+            margin-right: 20px;
+            cursor: pointer;
           }
         }
       }
@@ -59,9 +68,22 @@
     &:nth-child(1) {
       padding-left: 50px;
       font-weight: 500;
+      width: 120px;
+    }
+    &:nth-child(2) {
+      min-width: 80px;
     }
     &:nth-child(3) {
       padding-left: 50px;
+    }
+    &:nth-child(4) {
+      min-width: 160px;
+    }
+    &:nth-child(5) {
+      min-width: 160px;
+    }
+    &:last-child {
+      min-width: 160px;
     }
   }
 
@@ -73,5 +95,18 @@
     &:hover {
       color: #006db6;
     }
+  }
+
+  .null-table {
+    width: 100%;
+    margin-top: 5px;
+    height: 80px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #f7f8f9;
+    border-radius: 4px;
+    color: #d6d7d9;
   }
 }

@@ -146,7 +146,7 @@ export default function Channel() {
   return (
     <div data-class='country'>
       <MenuTitle title='国家信息配置'></MenuTitle>
-      <Row justify='end' wrap align={'bottom'}>
+      <Row wrap align={'bottom'}>
         <Col>
           <ConfigProvider
             theme={{
@@ -198,8 +198,8 @@ export default function Channel() {
                 <ConfigProvider
                   theme={{
                     token: {
-                      colorPrimary: '#ff5e2d',
-                      colorPrimaryHover: '#ff5e2d',
+                      colorPrimary: '#ff4d4f',
+                      colorPrimaryHover: '#ff4d4f',
                     },
                   }}>
                   <Button

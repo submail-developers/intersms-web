@@ -1,14 +1,129 @@
-import { useState } from 'react'
-import { Col, Button, Popconfirm, Form } from 'antd'
+import React, {
+  useEffect,
+  useImperativeHandle,
+  useState,
+  forwardRef,
+} from 'react'
+import { Col, Input, Switch, Form } from 'antd'
+import { groupBy } from '@/utils'
 import './table.scss'
-export default () => {
+import {
+  updateChannelCountryNetworkPrice,
+  updateChannelCountryNetworkStatus,
+} from '@/api'
+import { API } from 'apis'
+
+interface Props {
+  tableData: API.ChannelCountryConfigItem[][]
+  search: () => void
+}
+
+interface TdProps {
+  itm: API.ChannelCountryConfigItem
+  indexs: [number, number]
+}
+
+interface EnbledProps {
+  enabled: '0' | '1'
+  id: string
+}
+
+const Table = (props: Props, ref: any) => {
+  useImperativeHandle(ref, () => {
+    return {
+      cancel,
+    }
+  })
+  let len = 0 // 控制tr的背景色
   const [form] = Form.useForm()
-  form.setFieldsValue({ price1: '0.05000', price2: '0.05000' })
-  const [editId, setEditId] = useState('1')
-  const save = async () => {
-    let value = await form.validateFields()
-    console.log(value)
+  const [editIndex, seteditIndex] = useState<[number, number]>([-1, -1])
+  // 取消
+  const cancel = () => {
+    seteditIndex([-1, -1])
   }
+
+  const Enbled = (enbledProps: EnbledProps) => {
+    const [loading, setLoading] = useState(false)
+    const checkEnbled = async () => {
+      setLoading(true)
+      await updateChannelCountryNetworkStatus({
+        id: enbledProps.id,
+        enabled: enbledProps.enabled == '0' ? '1' : '0',
+      })
+      await props.search()
+      setLoading(false)
+    }
+    return (
+      <Switch
+        checked={enbledProps.enabled == '1'}
+        onChange={checkEnbled}
+        loading={loading}
+        size='small'
+      />
+    )
+  }
+
+  // 编辑价格组件
+  const EditTd = (editProps: TdProps) => {
+    // 编辑保存
+    const save = async () => {
+      let value = await form.validateFields()
+      await updateChannelCountryNetworkPrice({ ...value, id: editProps.itm.id })
+      await props.search()
+      cancel()
+    }
+    return (
+      <>
+        <div className='td'>
+          <Form.Item name='price_tra'>
+            <Input type='number' />
+          </Form.Item>
+        </div>
+        <div className='td'>
+          <Form.Item name='price_mke'>
+            <Input type='number' />
+          </Form.Item>
+        </div>
+        <div className='td'>
+          <Enbled id={editProps.itm.id} enabled={editProps.itm.enabled} />
+        </div>
+        <div className='td fx action-wrap'>
+          <div className='btn color' onClick={save}>
+            保存
+          </div>
+
+          <div className='btn color' onClick={cancel}>
+            取消
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  const DefaultTd = (defprops: TdProps) => {
+    const edit = () => {
+      seteditIndex(defprops.indexs)
+      form.setFieldsValue({
+        price_tra: defprops.itm.price_tra,
+        price_mke: defprops.itm.price_mke,
+      })
+    }
+    return (
+      <>
+        <div className='td'>{defprops.itm.price_tra}</div>
+        <div className='td'>{defprops.itm.price_mke}</div>
+        <div className='td'>
+          <Enbled id={defprops.itm.id} enabled={defprops.itm.enabled} />
+        </div>
+        <div className='td fx action-wrap'>
+          <div className='btn color' onClick={edit}>
+            编辑
+          </div>
+        </div>
+      </>
+    )
+  }
+
   return (
     <Form component={false} form={form}>
       <div class-data='my-table'>
@@ -18,203 +133,41 @@ export default () => {
           <div className='th net-type'>运营商网络类型</div>
           <div className='th'>行业价格</div>
           <div className='th'>营销价格</div>
+          <div className='th'>状态</div>
           <div className='th'>操作</div>
         </div>
-        <div className='tbody active'>
-          <div className='tr'>
-            <div className='td name'>中国</div>
-            <div className='td'>CN</div>
-            <div className='td '>中国移动</div>
-            <div className='td'>
-              <Form.Item name='price1'>
-                <input type='text' />
-              </Form.Item>
+        {props.tableData.map((item, index) => {
+          return (
+            <div className='tbody' key={index}>
+              {item.map((itm, indx) => {
+                let trClassName = ''
+                if (len % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                len += 1
+                return (
+                  <div className={`tr ${trClassName}`} key={itm.id}>
+                    <div className='td name g-ellipsis'>
+                      {indx == 0 ? itm.country_cn : ''}
+                    </div>
+                    <div className='td'>{indx == 0 ? itm.region_code : ''}</div>
+                    <div className='td '>{itm.network}</div>
+                    {editIndex[0] == index && editIndex[1] == indx ? (
+                      <EditTd itm={itm} indexs={[index, indx]} />
+                    ) : (
+                      <DefaultTd itm={itm} indexs={[index, indx]} />
+                    )}
+                  </div>
+                )
+              })}
             </div>
-            <div className='td'>
-              <Form.Item name='price2'>
-                <input type='text' />
-              </Form.Item>
-            </div>
-            <div className='td'>
-              {editId == '1' ? (
-                <>
-                  <Button type='link' style={{ paddingLeft: 0 }} onClick={save}>
-                    保存
-                  </Button>
-
-                  <Button type='link'>取消</Button>
-                </>
-              ) : (
-                <>
-                  <Button type='link' style={{ paddingLeft: 0 }}>
-                    编辑
-                  </Button>
-
-                  <Popconfirm
-                    placement='bottom'
-                    title='警告'
-                    description='确定删除该通道吗？'
-                    // onConfirm={deleteEvent}
-                    okText='确定'
-                    cancelText='取消'>
-                    <Button type='link'>删除</Button>
-                  </Popconfirm>
-                </>
-              )}
-            </div>
-          </div>
-          <div className='tr'>
-            <div className='td name'></div>
-            <div className='td'></div>
-            <div className='td'>中国移动</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>
-              {editId == '2' ? (
-                <>
-                  <Button type='link' style={{ paddingLeft: 0 }} onClick={save}>
-                    保存
-                  </Button>
-
-                  <Button type='link'>取消</Button>
-                </>
-              ) : (
-                <>
-                  <Button type='link' style={{ paddingLeft: 0 }}>
-                    编辑
-                  </Button>
-
-                  <Popconfirm
-                    placement='bottom'
-                    title='警告'
-                    description='确定删除该通道吗？'
-                    // onConfirm={deleteEvent}
-                    okText='确定'
-                    cancelText='取消'>
-                    <Button type='link'>删除</Button>
-                  </Popconfirm>
-                </>
-              )}
-            </div>
-          </div>
-          <div className='tr'>
-            <div className='td name'></div>
-            <div className='td'></div>
-            <div className='td'>中国移动</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>
-              <div className='action-btn'>编辑</div>
-              <Popconfirm
-                placement='bottom'
-                title='警告'
-                description='确定删除选中的客户吗？'
-                // onConfirm={deleteEvent}
-                okText='确定'
-                cancelText='取消'>
-                <div className='action-btn'>删除</div>
-              </Popconfirm>
-            </div>
-          </div>
-          <div className='tr'>
-            <div className='td name'></div>
-            <div className='td'></div>
-            <div className='td'>中国移动</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>
-              <div className='action-btn'>编辑</div>
-              <Popconfirm
-                placement='bottom'
-                title='警告'
-                description='确定删除选中的客户吗？'
-                // onConfirm={deleteEvent}
-                okText='确定'
-                cancelText='取消'>
-                <div className='action-btn'>删除</div>
-              </Popconfirm>
-            </div>
-          </div>
-        </div>
-        <div className='tbody'>
-          <div className='tr'>
-            <div className='td name'>中国</div>
-            <div className='td'>CN</div>
-            <div className='td'>中国移动</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>
-              <div className='action-btn'>编辑</div>
-              <Popconfirm
-                placement='bottom'
-                title='警告'
-                description='确定删除选中的客户吗？'
-                // onConfirm={deleteEvent}
-                okText='确定'
-                cancelText='取消'>
-                <div className='action-btn'>删除</div>
-              </Popconfirm>
-            </div>
-          </div>
-          <div className='tr'>
-            <div className='td name'></div>
-            <div className='td'></div>
-            <div className='td'>中国移动</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>
-              <div className='action-btn'>编辑</div>
-              <Popconfirm
-                placement='bottom'
-                title='警告'
-                description='确定删除选中的客户吗？'
-                // onConfirm={deleteEvent}
-                okText='确定'
-                cancelText='取消'>
-                <div className='action-btn'>删除</div>
-              </Popconfirm>
-            </div>
-          </div>
-          <div className='tr'>
-            <div className='td name'></div>
-            <div className='td'></div>
-            <div className='td'>中国移动</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>
-              <div className='action-btn'>编辑</div>
-              <Popconfirm
-                placement='bottom'
-                title='警告'
-                description='确定删除选中的客户吗？'
-                // onConfirm={deleteEvent}
-                okText='确定'
-                cancelText='取消'>
-                <div className='action-btn'>删除</div>
-              </Popconfirm>
-            </div>
-          </div>
-          <div className='tr'>
-            <div className='td name'></div>
-            <div className='td'></div>
-            <div className='td'>中国移动</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>0.05000</div>
-            <div className='td'>
-              <div className='action-btn'>编辑</div>
-              <Popconfirm
-                placement='bottom'
-                title='警告'
-                description='确定删除选中的客户吗？'
-                // onConfirm={deleteEvent}
-                okText='确定'
-                cancelText='取消'>
-                <div className='action-btn'>删除</div>
-              </Popconfirm>
-            </div>
-          </div>
-        </div>
+          )
+        })}
+        {props.tableData.length == 0 && (
+          <div className='null-table'>暂无数据</div>
+        )}
       </div>
     </Form>
   )
 }
+export default forwardRef(Table)

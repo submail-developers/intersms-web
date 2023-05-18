@@ -3,10 +3,10 @@ import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import { Option } from './editDetail'
 
 interface Props {
-  label: 'A' | 'B' | 'C'
+  label: string
   options: Option[]
   checkedList: CheckboxValueType[] // 选中的value列表
-  onChange: (checkedValue: CheckboxValueType[], label: 'A' | 'B' | 'C') => void
+  onChange: (checkedValue: CheckboxValueType[], label: string) => void
 }
 
 const CheckboxGroup = Checkbox.Group

@@ -58,6 +58,24 @@ declare module 'apis' {
      */
 
     /**
+     * 全局公共接口start
+     */
+    // 获取全部国家
+    interface GetCountryParams {
+      country_cn: string // 为空时获取所有
+    }
+    interface GetCountryItem {
+      country_cn: string
+      country: string
+      country_code: string
+      country_area_code: string
+    }
+
+    /**
+     * 全局公共接口end
+     */
+
+    /**
      * 发送列表start
      */
 
@@ -170,6 +188,34 @@ declare module 'apis' {
     // 获取通道关联的国家
     interface getChannelCountryParams {
       channel: string
+    }
+    // 修改通道关联国家及网络，已存在的关联国家直接跳过
+    interface UpdateChannelCountryNetworkParams {
+      channel: string
+      region_code_list: string
+    }
+    interface ChannelCountryConfigItem {
+      channel_id: string
+      country_cn: string
+      id: string
+      enabled: '1' | '0' // 是否启用   1是  0否
+      network: string // 运营商网络
+      price_mke: string // 营销价格
+      price_tra: string // 行业价格
+      region_code: string
+      cost_price: string
+      sug_price: string
+    }
+    // 修改通道关联国家及网络接口参数
+    interface UpdateChannelCountryNetworkPriceParams {
+      channel_id: string
+      price_mke: string // 营销价格
+      price_tra: string // 行业价格
+    }
+    // 批量启用禁用通道关联国家及网络
+    interface UpdateChannelCountryNetworkStatusParams {
+      id: string
+      enabled: '1' | '0' // 是否启用   1是  0否
     }
     /**
      * 通道管理end

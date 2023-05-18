@@ -4,14 +4,17 @@ import {
   MutableRefObject,
   forwardRef,
   useRef,
+  useEffect,
 } from 'react'
 import { Form, Input, ConfigProvider, Button, Drawer } from 'antd'
 import MyTable from '../table/table'
 import EditDetail from '../editDetail/editDetail'
 import type { ColumnsType } from 'antd/es/table'
+import { groupBy } from '@/utils'
 import { useSize } from '@/hooks'
 
 import { getChannelCountryList } from '@/api'
+import { API } from 'apis'
 
 import './channelDetail.scss'
 
@@ -29,6 +32,10 @@ interface DataType {
 const Dialog = (props: Props, ref: any) => {
   const size = useSize()
   const [form] = Form.useForm()
+  const [channelId, setchannelId] = useState<string>('') // 通道ID
+  const [tableData, setTableData] = useState<API.ChannelCountryConfigItem[][]>(
+    [],
+  )
 
   const tableref: MutableRefObject<any> = useRef(null)
   const editDetailRef: MutableRefObject<any> = useRef(null)
@@ -39,8 +46,24 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [show, setShow] = useState(false)
 
-  const open = (id: string) => {
+  const open = async (id: string) => {
+    setchannelId(id)
+    tableref && tableref.current?.cancel()
     setShow(true)
+  }
+
+  useEffect(() => {
+    if (channelId) {
+      search()
+    }
+  }, [channelId])
+
+  const search = async () => {
+    const res = await getChannelCountryList({ channel: channelId })
+    const groupData = Object.values(
+      groupBy(res.data, 'region_code'),
+    ) as API.ChannelCountryConfigItem[][]
+    setTableData(groupData)
   }
 
   const close = () => {
@@ -48,8 +71,13 @@ const Dialog = (props: Props, ref: any) => {
   }
 
   const editEvent = () => {
-    editDetailRef.current.open()
-    // close()
+    let checkedCountry: string[] = []
+    tableData.forEach((item) => {
+      checkedCountry.push(item[0].region_code)
+    })
+    console.log(checkedCountry, '1')
+    tableref && tableref.current?.cancel()
+    editDetailRef.current.open(checkedCountry)
   }
 
   return (
@@ -63,10 +91,7 @@ const Dialog = (props: Props, ref: any) => {
       rootClassName='drawer'
       width={'70vw'}>
       <div className='drawer-container' onClick={close}>
-        <div
-          ref={tableref}
-          className='drawer-content'
-          onClick={(e) => e.stopPropagation()}>
+        <div className='drawer-content' onClick={(e) => e.stopPropagation()}>
           <header className='drawer-header fx-between-center'>
             <div className='fx-y-center'>
               <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
@@ -90,7 +115,7 @@ const Dialog = (props: Props, ref: any) => {
                 <Form.Item label='' name='name'>
                   <Input
                     size={size}
-                    placeholder='通道名称'
+                    placeholder='国家名称/代码'
                     maxLength={20}
                     style={{ width: 162 }}></Input>
                 </Form.Item>
@@ -98,11 +123,12 @@ const Dialog = (props: Props, ref: any) => {
                   <ConfigProvider
                     theme={{
                       token: {
-                        colorPrimary: '#ff5e2d',
-                        colorPrimaryHover: '#ff5e2d',
+                        colorPrimary: '#ff4d4f',
+                        colorPrimaryHover: '#ff4d4f',
                       },
                     }}>
                     <Button
+                      onClick={search}
                       type='primary'
                       size={size}
                       htmlType='submit'
@@ -118,7 +144,7 @@ const Dialog = (props: Props, ref: any) => {
             </ConfigProvider>
           </header>
           <div className='drawer-table-wrap'>
-            <MyTable />
+            <MyTable ref={tableref} search={search} tableData={tableData} />
           </div>
           <footer className='drawer-footer'>
             <div className='btn-group'>
@@ -130,7 +156,7 @@ const Dialog = (props: Props, ref: any) => {
           </footer>
         </div>
       </div>
-      <EditDetail ref={editDetailRef} />
+      <EditDetail search={search} channelId={channelId} ref={editDetailRef} />
     </Drawer>
   )
 }
