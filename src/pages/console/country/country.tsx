@@ -60,7 +60,11 @@ export default function Channel() {
     keyword: '',
   }
 
-  const onFinish = (values: FormValues) => {
+  // const onFinish = (values: FormValues) => {
+  //   formatSearchValue(values)
+  // }
+  const search = async () => {
+    const values = await form.getFieldsValue()
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
@@ -182,7 +186,6 @@ export default function Channel() {
               initialValues={{ channels_type: 'all' }}
               layout='inline'
               wrapperCol={{ span: 24 }}
-              onFinish={onFinish}
               autoComplete='off'>
               <Form.Item label='' name='group_id' style={{ marginBottom: 10 }}>
                 <Select
@@ -225,6 +228,7 @@ export default function Channel() {
                     type='primary'
                     size={size}
                     htmlType='submit'
+                    onClick={search}
                     style={{ width: 110, marginLeft: 0 }}>
                     搜索
                   </Button>
@@ -255,6 +259,7 @@ export default function Channel() {
         />
       </ConfigProvider>
       <UpdateCountryConfig
+        onSearch={search}
         allGruopData={allGruopData}
         ref={updateCountryDialogRef}
       />

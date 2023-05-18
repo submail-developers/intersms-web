@@ -8,7 +8,7 @@ import './updateCountry.scss'
 
 interface Props {
   allGruopData: API.GetAllGroupIdItems[]
-  // onSearch: () => void
+  onSearch: () => void
 }
 
 const Dialog = (props: Props, ref: any) => {
@@ -39,6 +39,7 @@ const Dialog = (props: Props, ref: any) => {
         message.success('保存成功！')
       }
       setIsModalOpen(false)
+      props.onSearch()
     } catch (error) {}
   }
 
