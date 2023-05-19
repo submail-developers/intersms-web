@@ -102,28 +102,32 @@ export default function Channel() {
     {
       title: <span style={{ paddingLeft: '40px' }}>国家</span>,
       dataIndex: 'country_cn',
-      width: 160,
+      width: 180,
       ellipsis: true,
       render: (_, record) => (
-        <span style={{ paddingLeft: '40px' }}>{record.country_cn}</span>
+        <div style={{ paddingLeft: '40px' }}>
+          <div>{record.country_cn}</div>
+          <div className='color-gray'>{record.country}</div>
+        </div>
       ),
     },
-    {
-      title: '国家英文',
-      dataIndex: 'country',
-      width: 220,
-    },
+
     {
       title: '国家代码',
       dataIndex: 'region_code',
       width: 80,
-      className: 'paddingL30',
     },
     {
       title: '国家区号',
       dataIndex: 'country_area_code',
       width: 80,
       render: (_, record) => <span>+{record.country_area_code}</span>,
+    },
+    {
+      title: '洲属',
+      dataIndex: '美洲',
+      width: 80,
+      render: (_, record) => <span>美洲</span>,
     },
     {
       title: '行业通道组',

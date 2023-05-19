@@ -2,6 +2,9 @@
   .ant-select-selection-placeholder {
     color: #282b31;
   }
+  .ant-table-wrapper.theme-cell table tbody.ant-table-tbody tr > td {
+    padding: 7px 16px !important;
+  }
   .ant-table-wrapper.reset-table {
     .trade-0,
     .sale-0 {
