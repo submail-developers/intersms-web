@@ -35,14 +35,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     form.setFieldsValue(params.record)
     setIsModalOpen(true)
   }
-  useEffect(() => {
-    if (isModalOpen) {
-      console.log(inputRef, '///')
-      inputRef.current!.focus({
-        cursor: 'start',
-      })
-    }
-  }, [isModalOpen])
 
   const handleOk = async () => {
     try {

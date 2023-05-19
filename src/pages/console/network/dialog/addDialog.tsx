@@ -2,10 +2,10 @@ import { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select } from 'antd'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import styled from 'styled-components'
-import { GetRegioncodeByCountry } from '@/api'
+import { GetRegioncodeByCountry, saveNetWorkList } from '@/api'
 import { API } from 'apis'
 interface Props {
-  // onSearch: () => void
+  onSearch: () => void
 }
 
 const GroupTitle = styled.div`
@@ -14,21 +14,27 @@ const GroupTitle = styled.div`
   margin-bottom: 10px;
 `
 
+interface InitOpen {
+  isAdd: boolean
+  record?: API.GetNetWorkListItems
+}
+
 const Dialog = (props: Props, ref: any) => {
-  useEffect(() => {
-    countryName()
-  }, [])
   const [CountryNameData, setCountryNameData] = useState<
     API.GetRegioncodeByCountryItems[]
   >([])
+  const [record, setrecord] = useState<API.GetNetWorkListItems | null>(null)
   const countryName = async () => {
     const res = await GetRegioncodeByCountry({
       country_cn: '',
       keyword: '',
     })
-    setCountryNameData(res.data)
+    let arr: any = []
+    res.data.map((item: any) => {
+      arr = [...arr, ...item.children]
+    })
+    setCountryNameData(arr)
   }
-  console.log(CountryNameData)
 
   const [isAdd, setisAdd] = useState<boolean>(true)
   const [form] = Form.useForm()
@@ -40,23 +46,52 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = (initValues: any) => {
-    const { isAdd } = initValues
+  const open = (initValues: InitOpen) => {
+    const { isAdd, record } = initValues
     setisAdd(isAdd)
     form.resetFields()
 
     form.setFieldsValue(initValues.record)
     setIsModalOpen(true)
+    if (isAdd) {
+      countryName()
+    } else {
+      if (record) {
+        let arr: API.GetRegioncodeByCountryItems[] = [
+          {
+            label: record.country_cn,
+            value: record.region_code,
+          },
+        ]
+        setCountryNameData(arr)
+        setrecord(record)
+      }
+    }
   }
 
+  let area: string
+  let region_code: string
+  let country_cn: string
+  const seleCountry = (value: string, option: any) => {
+    country_cn = option.label
+    area = option.area
+    region_code = option.value
+  }
   const handleOk = async () => {
     try {
-      // const params = await form.validateFields()
-      // const res = await addAccount(params)
-      // if (res) {
-      //   message.success('保存成功！')
-      // }
+      const params = await form.validateFields()
+      let newParams
+      if (isAdd) {
+        newParams = { country_cn, area, region_code, ...params }
+      } else {
+        if (record) newParams = { ...record, ...params }
+      }
+      const res = await saveNetWorkList(newParams)
+      if (res) {
+        message.success('保存成功！')
+      }
       setIsModalOpen(false)
+      props.onSearch()
     } catch (error) {}
   }
 
@@ -66,10 +101,6 @@ const Dialog = (props: Props, ref: any) => {
 
   const onFinish = () => {}
   const onFinishFailed = () => {}
-
-  const onChange1 = (value: string) => {
-    console.log(`selected ${value}`)
-  }
 
   const onSearch = (value: string) => {
     console.log('search:', value)
@@ -94,16 +125,23 @@ const Dialog = (props: Props, ref: any) => {
         initialValues={{ price1: '0.9' }}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
+        <Row>
+          <Col span={24}>
+            <Form.Item label='id' name='id' hidden>
+              <Input placeholder='id' maxLength={30} />
+            </Form.Item>
+          </Col>
+        </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='网络名称' name='net_name'>
+            <Form.Item label='网络名称' name='name'>
               <Input disabled={!isAdd} placeholder='请输入网络名称' />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label='国家名称'
-              name='country_name'
+              label='国家/地区名称'
+              name={isAdd ? '' : 'country_cn'}
               validateTrigger='onSubmit'>
               <Select
                 showSearch
@@ -111,27 +149,15 @@ const Dialog = (props: Props, ref: any) => {
                 // bordered={false}
                 placeholder='请选择'
                 optionFilterProp='children'
-                onChange={onChange1}
+                onChange={seleCountry}
                 onSearch={onSearch}
+                fieldNames={{ label: 'label', value: 'value' }}
                 filterOption={(input, option) =>
                   (option?.label ?? '')
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={[
-                  {
-                    value: '1',
-                    label: '中国',
-                  },
-                  {
-                    value: '2',
-                    label: '美国',
-                  },
-                  {
-                    value: '3',
-                    label: '阿富汗',
-                  },
-                ]}
+                options={CountryNameData}
               />
             </Form.Item>
           </Col>
@@ -145,7 +171,7 @@ const Dialog = (props: Props, ref: any) => {
           <Col span={12}>
             <Form.Item
               label='成本价格'
-              name='price1'
+              name='cost_price'
               validateTrigger='onSubmit'>
               <Input placeholder='请输入成本价格' suffix='元' />
             </Form.Item>
@@ -153,7 +179,7 @@ const Dialog = (props: Props, ref: any) => {
           <Col span={12}>
             <Form.Item
               label='建议零售价格'
-              name='price2'
+              name='sug_price'
               validateTrigger='onSubmit'>
               <Input placeholder='请输入建议零售价格' suffix='元' />
             </Form.Item>

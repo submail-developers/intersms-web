@@ -71,6 +71,16 @@ declare module 'apis' {
       country_area_code: string
     }
 
+    interface CountryItem {
+      area: string
+      label: string
+      value: string
+    }
+    interface LetterCountryItem {
+      letter: string
+      children: CountryItem[]
+    }
+
     /**
      * 全局公共接口end
      */
@@ -340,6 +350,20 @@ declare module 'apis' {
       name: string
       cost_price: string
       sug_price: string
+    }
+    // 保存网络信息列表
+    interface SaveNetWorkParams {
+      id: string
+      country_cn: string
+      region_code: string
+      area: string
+      name: string
+      cost_price: string
+      sug_price: string
+    }
+    // 删除网络信息
+    interface DeleteNetWorkParams {
+      id: string
     }
     /**
      * 网络信息配置end

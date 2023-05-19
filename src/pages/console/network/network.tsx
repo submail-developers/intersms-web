@@ -1,24 +1,24 @@
 import { useEffect, useState, MutableRefObject, useRef } from 'react'
-import { Button, Form, Input, ConfigProvider, Table, Row, Col } from 'antd'
+import {
+  Button,
+  Form,
+  Input,
+  ConfigProvider,
+  Table,
+  Row,
+  Col,
+  Popconfirm,
+  App,
+} from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
-import { getNetWorkList } from '@/api'
+import { getNetWorkList, deleteNetWorkList } from '@/api'
 import { API } from 'apis'
 
 import './network.scss'
-
-// interface DataType {
-//   id: string
-//   net_name: string
-//   country_name: string
-//   country_code: string
-//   area_name: string
-//   price1: string
-//   price2: string
-// }
 
 interface DataType extends API.GetNetWorkListItems {}
 interface FormValues {
@@ -101,7 +101,7 @@ export default function Network() {
       className: 'paddingL30',
     },
     {
-      title: '国家名称',
+      title: '国家/地区名称',
       dataIndex: 'country_cn',
       width: 140,
       ellipsis: true,
@@ -113,7 +113,7 @@ export default function Network() {
     },
     {
       title: '洲属',
-      dataIndex: 'area_name',
+      dataIndex: 'area',
       width: 80,
     },
     {
@@ -147,6 +147,19 @@ export default function Network() {
     addDialogRef.current.open({ isAdd, record })
   }
 
+  const { message } = App.useApp()
+  // 批量删除网络信息
+  const deleteEvent = async () => {
+    if (selectedRowKeys.length === 0) {
+      message.warning('请勾选要删除的网络！')
+      return
+    }
+    const id = selectedRowKeys.join(',')
+    await deleteNetWorkList({ id })
+    await search()
+    setSelectedRowKeys([])
+  }
+
   return (
     <div data-class='network'>
       <MenuTitle title='网络信息配置'></MenuTitle>
@@ -157,10 +170,18 @@ export default function Network() {
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
             </div>
-            <div className='btn delete'>
-              <i className='icon iconfont icon-bianji'></i>
-              <span>删除</span>
-            </div>
+            <Popconfirm
+              placement='bottom'
+              title='警告'
+              description='确定删除选中的网络吗？'
+              onConfirm={deleteEvent}
+              okText='确定'
+              cancelText='取消'>
+              <div className='btn delete'>
+                <i className='icon iconfont icon-shanchu'></i>
+                <span>删除</span>
+              </div>
+            </Popconfirm>
           </div>
         </Col>
         <Col>
@@ -226,7 +247,7 @@ export default function Network() {
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
-      <AddDialog ref={addDialogRef} />
+      <AddDialog onSearch={search} ref={addDialogRef} />
     </div>
   )
 }
