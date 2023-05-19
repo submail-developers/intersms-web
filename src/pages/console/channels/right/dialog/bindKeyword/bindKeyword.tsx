@@ -50,9 +50,6 @@ const Dialog = (props: Props, ref: any) => {
     setIsModalOpen(false)
   }
 
-  const onFinish = () => {}
-  const onFinishFailed = () => {}
-
   const onChange = async (value: string, option: any) => {
     let formvalues = await form.getFieldsValue()
     form.setFieldsValue({ ...formvalues, keywords: option.keywords })
@@ -73,8 +70,6 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
