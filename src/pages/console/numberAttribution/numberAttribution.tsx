@@ -142,6 +142,7 @@ export default function NumberAttr() {
               className='reset-theme'
               columns={columns}
               dataSource={tableData}
+              rowKey={'id'}
               pagination={false}
               scroll={{ y: 510, x: 'max-content' }}
             />

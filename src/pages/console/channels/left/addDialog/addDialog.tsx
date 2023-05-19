@@ -1,24 +1,27 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio } from 'antd'
-import { addAccount } from '@/api'
+import { updateChannelGroup } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
-
+import { channelsTypeOptions, enableTypeOptions } from '@/utils/options'
+import { API } from 'apis'
 interface Props {
   onSearch: () => void
 }
+interface OpenParams {
+  rowData?: API.GetChannelGroupListItem
+}
 
-const options1 = [
-  { label: '启用', value: '1' },
-  { label: '禁用', value: '2' },
-]
-
-const options2 = [
-  { label: '行业通道组', value: '1' },
-  { label: '营销通道组', value: '2' },
-]
+const initFomeValue = {
+  id: '',
+  name: '',
+  type: '0',
+  enabled: '1',
+}
 
 const Dialog = ({ onSearch }: Props, ref: any) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAdd, setisAdd] = useState<boolean>()
   const [form] = Form.useForm()
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
@@ -26,31 +29,31 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       open,
     }
   })
-  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = () => {
-    form.resetFields()
+  // 新增/编辑
+  const open = (params: OpenParams) => {
+    const rowData = params?.rowData
+    if (rowData) {
+      setisAdd(false)
+      form.setFieldsValue(rowData)
+    } else {
+      setisAdd(true)
+      form.setFieldsValue(initFomeValue)
+    }
     setIsModalOpen(true)
   }
 
   const handleOk = async () => {
-    try {
-      const params = await form.validateFields()
-      const res = await addAccount(params)
-      if (res) {
-        message.success('保存成功！')
-      }
-      setIsModalOpen(false)
-      onSearch()
-    } catch (error) {}
+    const values = await form.getFieldsValue()
+    const res = await updateChannelGroup(values)
+    onSearch()
+    message.success('保存成功')
+    setIsModalOpen(false)
   }
 
   const handleCancel = () => {
     setIsModalOpen(false)
   }
-
-  const onFinish = () => {}
-  const onFinishFailed = () => {}
 
   const onChange = (e: RadioChangeEvent) => {
     console.log('checked = ', e)
@@ -69,10 +72,10 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ status: '1', type: '1' }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete='off'>
+        <Form.Item label='id' hidden name='id'>
+          <Input placeholder='' maxLength={30} />
+        </Form.Item>
         <Row>
           <Col span={24}>
             <Form.Item
@@ -87,8 +90,8 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='状态' name='status' validateTrigger='onSubmit'>
-              <Radio.Group options={options1} onChange={onChange} />
+            <Form.Item label='状态' name='enabled' validateTrigger='onSubmit'>
+              <Radio.Group options={enableTypeOptions} onChange={onChange} />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -96,7 +99,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
               label='通道组类型'
               name='type'
               validateTrigger='onSubmit'>
-              <Radio.Group options={options2} onChange={onChange} />
+              <Radio.Group options={channelsTypeOptions} onChange={onChange} />
             </Form.Item>
           </Col>
         </Row>

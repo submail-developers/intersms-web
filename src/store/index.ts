@@ -3,6 +3,7 @@ import menuReducer from './reducers/menu'
 import testReducer from './reducers/test'
 import loadingReducer from './reducers/loading'
 import accountReducer from './reducers/accountInfo'
+import channelsReducer from './reducers/channels'
 
 // 合并切片
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     menuReducer,
     testReducer,
     accountReducer,
+    channelsReducer,
   },
 })
 

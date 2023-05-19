@@ -124,7 +124,7 @@ export const SaveGroup = (data: API.SaveGroupParams) => {
     { ...data },
   )
 }
-// 获取通道列表
+// 获取通道组列表(包含敏感词信息)
 export const getChannelGroupList = (data: API.GetChannelGroupListParams) => {
   return request.post<
     any,
@@ -132,7 +132,41 @@ export const getChannelGroupList = (data: API.GetChannelGroupListParams) => {
     API.GetChannelGroupListParams
   >('customer/get_group', { ...data })
 }
+// 新增/修改通道组
+export const updateChannelGroup = (data: API.UpdateChannelGroupParams) => {
+  return request.post<any, API.Response<any>, API.UpdateChannelGroupParams>(
+    'customer/save_group',
+    { ...data },
+  )
+}
+// 保存通道组
+export const deleteChannelGroup = (data: API.Ids) => {
+  return request.post<any, API.Response<any>, API.Ids>(
+    'customer/delete_group',
+    { ...data },
+  )
+}
+// 通道组关联敏感词
+export const channelGroupBindSensitiveWord = (
+  data: API.ChannelGroupBindSensitiveWord,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.ChannelGroupBindSensitiveWord
+  >('customer/save_group_related_sensitive_keywords', { ...data })
+}
 
+// 获取通道组关联数据（通道+权重+关键字路由）
+export const getChannelGroupRelatedData = (
+  data: API.GetChannelGroupRelatedDataParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.GetChannelGroupRelatedDataParams
+  >('customer/get_group_related_data', { ...data })
+}
 /**
  * 通道组管理end
  */

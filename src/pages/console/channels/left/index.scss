@@ -15,12 +15,13 @@
   .filter-wrap {
     border-radius: 6px;
     width: 100%;
-    max-height: 520px;
+    height: fit-content;
     background-color: #f2f4f6;
     margin-top: 12px;
     padding: 16px 10px;
     box-sizing: border-box;
     transition: all 0.3s;
+    overflow-y: hidden;
 
     .input-wrap {
       height: 38px;
@@ -44,6 +45,17 @@
     .table-title {
       font-weight: 500;
       margin: 14px 10px 2px;
+    }
+    .table-wrap {
+      height: fit-content;
+    }
+  }
+  .color-gray {
+    color: #888;
+  }
+  tr.active {
+    .color-gray {
+      color: #fff;
     }
   }
 }

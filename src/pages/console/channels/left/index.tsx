@@ -1,93 +1,87 @@
 import { useAppDispatch, useAppSelector } from '@/store/hook'
-import {
-  changeActiveAccountId,
-  //  accountInfoState
-} from '@/store/reducers/accountInfo'
+import { changeActiveAccountId } from '@/store/reducers/accountInfo'
+import { changeActiveChannels } from '@/store/reducers/channels'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import {
-  Button,
-  Input,
-  Affix,
-  ConfigProvider,
-  Table,
-  Switch,
-  Checkbox,
-  Popconfirm,
-  App,
-} from 'antd'
+import { Input, ConfigProvider, Table, Switch, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import AddDialog from './addDialog/addDialog'
+import BindSensitiveWordDialog from './bindSensitiveWordDialog/bindSensitiveWordDialog'
 
 import { useSize } from '@/hooks'
-import { getChannelGroupList, deleteAccount } from '@/api'
+import {
+  getChannelGroupList,
+  deleteChannelGroup,
+  updateChannelGroup,
+} from '@/api'
 import { API } from 'apis'
 import './index.scss'
 
 interface DataType extends API.GetChannelGroupListItem {}
-
+interface SwitchProps {
+  record: DataType
+}
 /**
  * 客户信息
  */
 export default function Left() {
   const dialogRef: MutableRefObject<any> = useRef(null)
+  const bindSensitiveWordDialogRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
   const size = useSize()
   const [keyword, setkeyword] = useState<string>('')
   // 列表
-  const [tableData, settableData] = useState<API.GetChannelGroupListItem[]>([])
+  const [tableData, settableData] = useState<DataType[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
-  const [activeIndex, setactiveIndex] = useState<number>()
-  // 选中的keys
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const [activeRow, setactiveRow] = useState<DataType | null>(null)
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
-        setactiveIndex(index)
-      },
-      onDoubleClick: () => {
-        if (selectedRowKeys.includes(record.id)) {
-          setSelectedRowKeys(
-            selectedRowKeys.filter((item) => item != record.id),
-          )
-        } else {
-          setSelectedRowKeys([...selectedRowKeys, record.id])
-        }
+        setactiveRow(record)
+        dispatch(changeActiveChannels(record))
       },
     }
   }
-  const rowSelection = {
-    selectedRowKeys: selectedRowKeys,
-    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-      setSelectedRowKeys(selectedRowKeys)
-    },
+
+  // switch
+  const SwitchNode = (props: SwitchProps) => {
+    const [loading, setloading] = useState(false)
+    // 修改开启状态
+    const changeState = async (_: any, event: any) => {
+      event.stopPropagation()
+      setloading(true)
+      await updateChannelGroup({
+        ...props.record,
+        enabled: props.record.enabled == '1' ? '0' : '1',
+      })
+      await search(true)
+      setloading(false)
+    }
+    return (
+      <Switch
+        size='small'
+        checked={props.record.enabled == '1'}
+        loading={loading}
+        onClick={(_, event) => changeState(_, event)}></Switch>
+    )
   }
 
   const columns: ColumnsType<DataType> = [
     {
       title: '通道组名称',
       dataIndex: 'name',
-      ellipsis: true,
+      className: 'paddingL30',
     },
     {
-      title: '通道组类型',
-      ellipsis: true,
+      title: '敏感词绑定',
       width: 100,
-      render: (_, record) => (
-        <div>{record.type == '0' ? '行业通道' : '营销通道'}</div>
-      ),
+      render: (_, record) => <div className='color-gray'>敏感词</div>,
     },
     {
       title: '状态',
       dataIndex: 'status',
       width: 50,
-      render: (_, record) => (
-        <Switch
-          checkedChildren='on'
-          unCheckedChildren='off'
-          size='small'></Switch>
-      ),
+      render: (_, record) => <SwitchNode record={record}></SwitchNode>,
     },
   ]
 
@@ -99,25 +93,49 @@ export default function Left() {
     search()
   }, [])
 
-  const search = async () => {
-    const res = await getChannelGroupList({ page: '1', id: '', keyword: '' })
+  // noResetActive是否重置当前选中项
+  const search = async (noResetActive?: boolean) => {
+    const res = await getChannelGroupList({ page: '1', id: '', keyword })
     settableData(res.data)
-    // dispatch(changeActiveAccountId('string'))
-    setactiveIndex(0)
+    if (noResetActive) return
+    if (res.data.length > 0) {
+      dispatch(changeActiveChannels(res.data[0]))
+      setactiveRow(res.data[0])
+    } else {
+      dispatch(changeActiveChannels(null))
+      setactiveRow(null)
+    }
   }
 
-  // 删除事件
+  // 删除通道组
   const deleteEvent = async () => {
-    if (selectedRowKeys.length === 0) {
-      message.warning('请勾选要删除的客户！')
-      return
+    if (activeRow) {
+      await deleteChannelGroup({
+        id: activeRow.id,
+      })
+      await search()
+    } else {
+      message.warning('请选择通道组！')
     }
-    // const id = selectedRowKeys.join(',')
-    await search()
   }
-  // 开启dialog
+  // 新增通道组-弹框
   const openAddDialog = () => {
     dialogRef.current.open()
+  }
+  // 编辑通道组-弹框
+  const editEvent = () => {
+    if (activeRow) {
+      dialogRef.current.open({ rowData: activeRow })
+    } else {
+      message.warning('请选择通道组！')
+    }
+  }
+  const showBindDialog = () => {
+    if (activeRow) {
+      bindSensitiveWordDialogRef.current.open({ rowData: activeRow })
+    } else {
+      message.warning('请选择通道组！')
+    }
   }
 
   return (
@@ -127,9 +145,13 @@ export default function Left() {
           <i className='icon iconfont icon-xinzeng'></i>
           <span>新增</span>
         </div>
-        <div className='btn'>
+        <div className='btn' onClick={editEvent}>
           <i className='icon iconfont icon-bianji'></i>
           <span>编辑</span>
+        </div>
+        <div className='btn' onClick={showBindDialog}>
+          <i className='icon iconfont icon-bangding'></i>
+          <span>敏感词绑定</span>
         </div>
         <Popconfirm
           placement='bottom'
@@ -153,12 +175,12 @@ export default function Left() {
             allowClear
             suffix={
               <i
-                onClick={search}
+                onClick={() => search()}
                 className='icon iconfont icon-sousuo fn12'
                 style={{ color: '#888', cursor: 'pointer' }}></i>
             }
             onChange={setValue}
-            onPressEnter={search}
+            onPressEnter={() => search()}
             value={keyword}
             style={{
               height: '38px',
@@ -168,31 +190,29 @@ export default function Left() {
           />
         </div>
         <div className='table-title'>全部通道组</div>
-        <div className='table-wrap fx-shrink'>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorBgContainer: 'transparent',
-              },
-            }}>
-            <Table
-              className='theme-cell bg-gray'
-              showHeader={false}
-              columns={columns}
-              dataSource={tableData}
-              rowKey={'id'}
-              onRow={onRow}
-              rowSelection={rowSelection}
-              rowClassName={(record, index) =>
-                index == activeIndex ? 'active' : ''
-              }
-              pagination={false}
-              scroll={{ y: 510 }}
-            />
-          </ConfigProvider>
-        </div>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorBgContainer: 'transparent',
+            },
+          }}>
+          <Table
+            className='theme-cell bg-gray'
+            showHeader={false}
+            columns={columns}
+            dataSource={tableData}
+            rowKey={'id'}
+            onRow={onRow}
+            rowClassName={(record) =>
+              record.id == activeRow?.id ? 'active' : ''
+            }
+            pagination={false}
+            scroll={{ y: 450 }}
+          />
+        </ConfigProvider>
       </div>
       <AddDialog ref={dialogRef} onSearch={search} />
+      <BindSensitiveWordDialog ref={bindSensitiveWordDialogRef} />
     </section>
   )
 }

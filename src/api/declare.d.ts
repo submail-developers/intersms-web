@@ -176,23 +176,36 @@ declare module 'apis' {
       page: string
     }
 
-    interface GetChannelGroupListItem {
+    interface UpdateChannelGroupParams {
       id: string
       name: string // 通道组名称
       type: '1' | '0' // 通道行业属性  0行业 1营销
       enabled: '0' | '1' // 是否启用 0关闭  1启用
     }
-
+    // 获取通道组列表
+    interface GetChannelGroupListItem extends UpdateChannelGroupParams {}
+    // 获取通道组关联数据（通道+权重+关键字路由+敏感词）
+    interface GetChannelGroupRelatedDataItem {
+      group_id: string
+      channel_id: string
+      channel_name: string
+      channel_access_type: '0' | '1' // 接入类型 0smpp  1http
+      channel_type: '1' | '2' // 通道类型  1行业  2营销
+      channel_flow: string // 流速
+      channel_udh: '1' // 是否使用udh模式，1是0否
+      channel_mobile_type: '0' // 0:无前缀, 1:+前缀, 2:00前缀, 3:0前缀
+      keyroute_list: any[]
+      network_list: any[]
+    }
+    interface ChannelGroupBindSensitiveWord {
+      group_id: string
+      sens_id: string
+    }
+    interface GetChannelGroupRelatedDataParams {
+      group_id: string
+    }
     /**
      * 通道组管理end
-     */
-
-    /**
-     * 通道管理start
-     */
-
-    /**
-     * 通道管理end
      */
 
     /**
@@ -201,7 +214,7 @@ declare module 'apis' {
     interface ChannelItem {
       id: string
       name: string // 通道名称
-      access_type: string // 接入类型 0smpp  1http
+      access_type: '0' | '1' // 接入类型 0smpp  1http
       type: '1' | '2' // 通道类型  1行业  2营销
       smsc_ip: string // SMSC服务方ip地址
       smsc_port: string // smpp模式必填,端口号

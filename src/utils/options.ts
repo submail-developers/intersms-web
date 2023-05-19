@@ -53,6 +53,18 @@ export const channelTypeOptions = [
     value: '2',
   },
 ]
+
+// 通道组类型
+export const channelsTypeOptions = [
+  { label: '行业通道组', value: '0' },
+  { label: '营销通道组', value: '1' },
+]
+
+// 启用与禁用
+export const enableTypeOptions = [
+  { label: '启用', value: '1' },
+  { label: '禁用', value: '0' },
+]
 export const TestTypeOptions = []
 
 // 根据value获取label值

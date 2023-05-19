@@ -42,12 +42,11 @@ const Dialog = (props: Props, ref: any) => {
     }
   })
 
-  const open = (initValues: any) => {
-    const { isAdd } = initValues
+  const open = (initFomeValue: any) => {
+    const { isAdd } = initFomeValue
     setisAdd(!!isAdd)
     form.resetFields()
-    console.log(initValues.record)
-    form.setFieldsValue(!!isAdd ? initialValues : initValues.record)
+    form.setFieldsValue(!!isAdd ? initialValues : initFomeValue.record)
     setIsModalOpen(true)
   }
 

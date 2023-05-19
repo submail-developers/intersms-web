@@ -26,35 +26,19 @@ export default function Left() {
 
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
-  // 选中的keys
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
         setactiveIndex(index)
       },
-      onDoubleClick: () => {
-        if (selectedRowKeys.includes(record.account)) {
-          setSelectedRowKeys(
-            selectedRowKeys.filter((item) => item != record.account),
-          )
-        } else {
-          setSelectedRowKeys([...selectedRowKeys, record.account])
-        }
-      },
     }
-  }
-  const rowSelection = {
-    selectedRowKeys: selectedRowKeys,
-    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-      setSelectedRowKeys(selectedRowKeys)
-    },
   }
 
   const columns: ColumnsType<DataType> = [
     {
       title: 'sender',
       dataIndex: 'sender',
+      className: 'paddingL30',
       ellipsis: true,
     },
     {
@@ -90,13 +74,8 @@ export default function Left() {
 
   // 删除事件
   const deleteEvent = async () => {
-    if (selectedRowKeys.length === 0) {
-      message.warning('请勾选要删除的客户！')
-      return
-    }
-    const account = selectedRowKeys.join(',')
-    await deleteAccount({ account })
-    await search()
+    // await deleteAccount({ account })
+    // await search()
   }
   // 开启dialog
   const openAddDialog = () => {
@@ -151,29 +130,26 @@ export default function Left() {
           />
         </div>
         <div className='table-title'>全部客户</div>
-        <div className='table-wrap fx-shrink'>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorBgContainer: 'transparent',
-              },
-            }}>
-            <Table
-              className='theme-cell bg-gray'
-              showHeader={false}
-              columns={columns}
-              dataSource={tableData}
-              rowKey={'account'}
-              onRow={onRow}
-              rowSelection={rowSelection}
-              rowClassName={(record, index) =>
-                index == activeIndex ? 'active' : ''
-              }
-              pagination={false}
-              scroll={{ y: 510 }}
-            />
-          </ConfigProvider>
-        </div>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorBgContainer: 'transparent',
+            },
+          }}>
+          <Table
+            className='theme-cell bg-gray'
+            showHeader={false}
+            columns={columns}
+            dataSource={tableData}
+            rowKey={'account'}
+            onRow={onRow}
+            rowClassName={(record, index) =>
+              index == activeIndex ? 'active' : ''
+            }
+            pagination={false}
+            scroll={{ y: 450 }}
+          />
+        </ConfigProvider>
       </div>
       <AddDialog ref={dialogRef} onSearch={search} />
     </section>

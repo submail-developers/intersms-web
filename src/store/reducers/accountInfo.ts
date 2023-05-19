@@ -12,7 +12,7 @@ const initialState: Account = {
 }
 
 export const accountSlice = createSlice({
-  name: 'menu',
+  name: 'account',
   initialState,
   reducers: {
     changeActiveAccountId: (state, actions: PayloadAction<string>) => {
