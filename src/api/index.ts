@@ -57,14 +57,15 @@ export const getAllNetCountry = () => {
 /**
  * 常用-国家中文名称+地区代码start
  */
-// 获取国家中文名称
+
 export const GetRegioncodeByCountry = (
   data: API.GetRegioncodeByCountryParams,
 ) => {
-  return request.post<any, API.Response<any>, API.GetRegioncodeByCountryParams>(
-    'customer/get_regioncode_by_country',
-    { ...data },
-  )
+  return request.post<
+    any,
+    API.Response<API.LetterCountryItem[]>,
+    API.GetRegioncodeByCountryParams
+  >('customer/get_regioncode_by_country', { ...data })
 }
 
 /**
@@ -241,6 +242,20 @@ export const getCountryList = (data: API.GetCountryListParams) => {
 export const getNetWorkList = (data: API.GetNetWorkParams) => {
   return request.post<any, API.Response<any>, API.GetNetWorkParams>(
     'customer/get_network',
+    { ...data },
+  )
+}
+// 保存网络信息
+export const saveNetWorkList = (data: API.SaveNetWorkParams) => {
+  return request.post<any, API.Response<any>, API.SaveNetWorkParams>(
+    'customer/save_network',
+    { ...data },
+  )
+}
+// 删除网络信息
+export const deleteNetWorkList = (data: API.DeleteNetWorkParams) => {
+  return request.post<any, API.Response<any>, API.DeleteNetWorkParams>(
+    'customer/delete_network',
     { ...data },
   )
 }
