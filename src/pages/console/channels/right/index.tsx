@@ -17,7 +17,7 @@ import { useSize } from '@/hooks'
 import { getChannelGroupRelatedData } from '@/api'
 import ChannelDialog from './dialog/channelDialog'
 import { API } from 'apis'
-import AccessCountryDrawer from './dialog/accessCountry'
+import AccessCountryDrawer from './dialog/drawer/accessCountry'
 import { channelTypeOptions, getOptionsLabel } from '@/utils/options'
 
 import './index.scss'
@@ -34,6 +34,7 @@ export default function Right() {
   const channlesStore = useAppSelector(channelsState)
   const channelDialogRef: MutableRefObject<any> = useRef(null)
   const bindKeywordRef: MutableRefObject<any> = useRef(null)
+  const drawerRef: MutableRefObject<any> = useRef(null)
   const size = useSize()
   // 展示新增弹框
   const showAddDialog = () => {
@@ -52,8 +53,6 @@ export default function Right() {
     })
     settableData(Array.isArray(res.data) ? res.data : Object.values(res.data))
   }
-
-  const drawerRef: MutableRefObject<any> = useRef(null)
 
   // 选中的keys
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
@@ -77,8 +76,8 @@ export default function Right() {
     },
   }
 
-  const openDrawer = () => {
-    drawerRef.current.open()
+  const openDrawer = (record: DataType) => {
+    drawerRef.current.open(record)
   }
   const columns: ColumnsType<DataType> = [
     {
@@ -118,7 +117,7 @@ export default function Right() {
         <Button
           type='link'
           style={{ paddingLeft: 0, paddingRight: 0 }}
-          onClick={openDrawer}>
+          onClick={() => openDrawer(record)}>
           查看详情
         </Button>
       ),

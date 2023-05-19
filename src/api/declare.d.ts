@@ -198,6 +198,14 @@ declare module 'apis' {
     }
     // 获取通道组列表
     interface GetChannelGroupListItem extends UpdateChannelGroupParams {}
+    // 通道组下的通道关联国家的网络类型
+    interface ChannelsChannelNetworkItem {
+      country_cn: string
+      network_id: string
+      network_name: string
+      network_weight: string // 权重
+      region_code: string
+    }
     // 获取通道组关联数据（通道+权重+关键字路由+敏感词）
     interface GetChannelGroupRelatedDataItem {
       group_id: string
@@ -209,7 +217,7 @@ declare module 'apis' {
       channel_udh: '1' // 是否使用udh模式，1是0否
       channel_mobile_type: '0' // 0:无前缀, 1:+前缀, 2:00前缀, 3:0前缀
       keyroute_list: any[]
-      network_list: any[]
+      network_list: ChannelsChannelNetworkItem[]
     }
     interface ChannelGroupBindSensitiveWord {
       group_id: string
@@ -251,6 +259,15 @@ declare module 'apis' {
     interface UpdateChannelCountryNetworkParams {
       channel: string
       region_code_list: string
+    }
+    interface CountryItem {
+      area: string
+      label: string
+      value: string
+    }
+    interface LetterCountryItem {
+      letter: string
+      children: CountryItem[]
     }
     interface ChannelCountryConfigItem {
       channel_id: string

@@ -50,7 +50,7 @@ export const getAllCountry = (
 }
 // 获取全部已配置网络的国家
 export const getAllNetCountry = () => {
-  return request.post<any, API.Response<any>, null>(
+  return request.post<any, API.Response<API.LetterCountryItem[]>, null>(
     'customer/get_all_country_network_list',
   )
 }
@@ -222,10 +222,11 @@ export const deleteChannel = (data: API.Ids) => {
 }
 // 获取通道关联的国家
 export const getChannelCountryList = (data: API.getChannelCountryParams) => {
-  return request.post<any, API.Response<any>, API.getChannelCountryParams>(
-    'customer/get_channel_related_country_network',
-    { ...data },
-  )
+  return request.post<
+    any,
+    API.Response<API.ChannelCountryConfigItem[]>,
+    API.getChannelCountryParams
+  >('customer/get_channel_related_country_network', { ...data })
 }
 // 修改通道关联国家及网络，已存在的关联国家直接跳过
 export const updateChannelCountryNetwork = (
