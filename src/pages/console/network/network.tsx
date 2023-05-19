@@ -5,31 +5,31 @@ import AddDialog from './dialog/addDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
+import { getNetWorkList } from '@/api'
 import { API } from 'apis'
 
 import './network.scss'
 
-interface DataType {
-  id: string
-  net_name: string
-  country_name: string
-  country_code: string
-  area_name: string
-  price1: string
-  price2: string
-}
+// interface DataType {
+//   id: string
+//   net_name: string
+//   country_name: string
+//   country_code: string
+//   area_name: string
+//   price1: string
+//   price2: string
+// }
+
+interface DataType extends API.GetNetWorkListItems {}
 interface FormValues {
-  channel: string
-  group: string
-  time: [Dayjs, Dayjs] | null
+  id: string
   keyword: string
+  page: string
 }
 
 // 国家信息配置
 export default function Network() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
-  const size = useSize()
-  const [form] = Form.useForm()
 
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
@@ -58,44 +58,77 @@ export default function Network() {
     },
   }
 
-  const onFinish = (values: FormValues) => {}
+  const size = useSize()
+  const [form] = Form.useForm()
+  const [tableData, settableData] = useState<API.GetNetWorkListItems[]>([])
+  // 初始化form的值
+  const initFormValues: FormValues = {
+    id: '',
+    page: '1',
+    keyword: '',
+  }
+  const search = async () => {
+    const values = await form.getFieldsValue()
+    formatSearchValue(values)
+  }
+  const formatSearchValue = (params: FormValues) => {
+    const { id, page, keyword } = params
+    const searchParams = {
+      id: '',
+      page: '1',
+      keyword,
+    }
+    searchEvent(searchParams)
+  }
+  const searchEvent = async (params: API.GetNetWorkParams) => {
+    try {
+      const res = await getNetWorkList(params)
+      settableData(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    formatSearchValue(initFormValues)
+  }, [])
 
   const columns: ColumnsType<DataType> = [
     {
       title: '运营商网络',
-      dataIndex: 'net_name',
-      width: 180,
+      dataIndex: 'name',
+      width: 120,
       className: 'paddingL30',
-      ellipsis: true,
-      render: (_, record) => (
-        <span className='color'>{record.country_name}</span>
-      ),
     },
     {
       title: '国家名称',
-      dataIndex: 'country_name',
-      width: 180,
+      dataIndex: 'country_cn',
+      width: 140,
       ellipsis: true,
     },
     {
       title: '国家代码',
-      dataIndex: 'country_code',
+      dataIndex: 'region_code',
+      width: 80,
     },
     {
-      title: '地区名称',
+      title: '洲属',
       dataIndex: 'area_name',
+      width: 80,
     },
     {
       title: '成本价格',
-      dataIndex: 'price1',
+      dataIndex: 'cost_price',
+      width: 80,
     },
     {
       title: '建议零售价格',
-      dataIndex: 'price2',
+      dataIndex: 'sug_price',
+      width: 80,
     },
     {
       title: '操作',
-      width: 140,
+      width: 120,
       render: (_, record) => (
         <div>
           <Button
@@ -109,19 +142,6 @@ export default function Network() {
       ),
     },
   ]
-
-  const data: DataType[] = []
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      id: 'id' + i,
-      net_name: 'Chain',
-      country_name: '中国' + i,
-      country_code: 'CN',
-      area_name: '+86',
-      price1: '0.0500',
-      price2: '0.0500',
-    })
-  }
 
   const updateCountryEvent = (isAdd: boolean = true, record?: DataType) => {
     addDialogRef.current.open({ isAdd, record })
@@ -156,7 +176,6 @@ export default function Network() {
               initialValues={{ channels_type: 'all' }}
               layout='inline'
               wrapperCol={{ span: 24 }}
-              onFinish={onFinish}
               autoComplete='off'>
               <Form.Item label='' name='country' style={{ marginBottom: 10 }}>
                 <Input
@@ -195,7 +214,7 @@ export default function Network() {
         <Table
           className='theme-cell bg-white reset-table'
           columns={columns}
-          dataSource={data}
+          dataSource={tableData}
           rowKey={'id'}
           onRow={onRow}
           rowSelection={rowSelection}

@@ -1,8 +1,9 @@
-import { useState, useImperativeHandle, forwardRef } from 'react'
+import { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select } from 'antd'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import styled from 'styled-components'
-
+import { GetRegioncodeByCountry } from '@/api'
+import { API } from 'apis'
 interface Props {
   // onSearch: () => void
 }
@@ -14,6 +15,21 @@ const GroupTitle = styled.div`
 `
 
 const Dialog = (props: Props, ref: any) => {
+  useEffect(() => {
+    countryName()
+  }, [])
+  const [CountryNameData, setCountryNameData] = useState<
+    API.GetRegioncodeByCountryItems[]
+  >([])
+  const countryName = async () => {
+    const res = await GetRegioncodeByCountry({
+      country_cn: '',
+      keyword: '',
+    })
+    setCountryNameData(res.data)
+  }
+  console.log(CountryNameData)
+
   const [isAdd, setisAdd] = useState<boolean>(true)
   const [form] = Form.useForm()
   const { message } = App.useApp()
@@ -79,18 +95,11 @@ const Dialog = (props: Props, ref: any) => {
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Row justify='space-between' gutter={30}>
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item label='网络名称' name='net_name'>
               <Input disabled={!isAdd} placeholder='请输入网络名称' />
             </Form.Item>
           </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <GroupTitle>国家价格配置</GroupTitle>
-          </Col>
-        </Row>
-        <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item
               label='国家名称'
@@ -126,10 +135,10 @@ const Dialog = (props: Props, ref: any) => {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item label='国家代码' name='country_code'>
-              <Input type='text' disabled={!isAdd} />
-            </Form.Item>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <GroupTitle>国家价格配置</GroupTitle>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>

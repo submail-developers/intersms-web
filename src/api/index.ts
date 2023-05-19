@@ -55,6 +55,22 @@ export const getAllNetCountry = () => {
   )
 }
 /**
+ * 常用-国家中文名称+地区代码start
+ */
+// 获取国家中文名称
+export const GetRegioncodeByCountry = (
+  data: API.GetRegioncodeByCountryParams,
+) => {
+  return request.post<any, API.Response<any>, API.GetRegioncodeByCountryParams>(
+    'customer/get_regioncode_by_country',
+    { ...data },
+  )
+}
+
+/**
+ * 常用-国家中文名称+地区代码end
+ */
+/**
  * 全局公共接口end
  */
 
@@ -221,7 +237,13 @@ export const getCountryList = (data: API.GetCountryListParams) => {
 /**
  * 网络信息配置start
  */
-
+// 获取网络信息列表
+export const getNetWorkList = (data: API.GetNetWorkParams) => {
+  return request.post<any, API.Response<any>, API.GetNetWorkParams>(
+    'customer/get_network',
+    { ...data },
+  )
+}
 /**
  * 网络信息配置end
  */

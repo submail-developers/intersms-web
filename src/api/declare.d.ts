@@ -78,6 +78,20 @@ declare module 'apis' {
     /**
      * 发送列表start
      */
+    // 获取国家中文名称
+    interface GetRegioncodeByCountryParams {
+      country_cn: string
+      keyword: string
+    }
+    // 获取国家中文名称返回的数据
+    interface GetRegioncodeByCountryItems {
+      label: string
+      value: string
+    }
+
+    /**
+     * 发送列表start
+     */
 
     // 发送列表参数
     interface GetSendListParams extends BaseParams {
@@ -270,7 +284,21 @@ declare module 'apis' {
     /**
      * 网络信息配置start
      */
-
+    // 获取网络信息
+    interface GetNetWorkParams {
+      id: string
+      keyword: string
+      page: string
+    }
+    // 获取网络信息返回的数据
+    interface GetNetWorkListItems {
+      id: string
+      country_cn: string
+      region_code: string
+      name: string
+      cost_price: string
+      sug_price: string
+    }
     /**
      * 网络信息配置end
      */
