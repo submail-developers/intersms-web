@@ -8,6 +8,7 @@ import {
   Popconfirm,
   Switch,
   Button,
+  Tooltip,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddSensitive from './dialog/addSensitiveWord'
@@ -84,24 +85,21 @@ export default function Channel() {
       className: 'paddingL30',
     },
     {
-      title: (
-        <span>
-          敏感词{' '}
-          <span style={{ fontSize: '12px', paddingLeft: '10px' }}>
-            特定格式: (赌博|股票)
-          </span>{' '}
-        </span>
-      ),
+      title: '敏感词',
       width: 600,
       dataIndex: 'keywords',
       render: (_, record) => (
-        <span className='color-words'>{record.keywords}</span>
+        <span className='color-words g-ellipsis-2'>{record.keywords}</span>
+        // <Tooltip title={record.keywords} placement='bottom'>
+        //   <div className='g-ellipsis-2'>{record.keywords}</div>
+        // </Tooltip>
       ),
     },
     {
       title: '备注',
       dataIndex: 'comment',
       width: 160,
+      className: 'paddingL50',
     },
     {
       title: '启用状态',
@@ -177,15 +175,26 @@ export default function Channel() {
       await search()
     }
   }
-  //批量停用
-  const batchDeactivation = async () => {
-    if (selectedRowKeys.length === 0) {
-      message.warning('请勾选要停用的客户！')
-      return
+  //批量停用/启用
+  const batchDeactivation = async (isOnOff: any) => {
+    if (isOnOff === '0') {
+      if (selectedRowKeys.length === 0) {
+        message.warning('请勾选要停用的敏感词！')
+        return
+      }
+      const status = '0'
+      const id = selectedRowKeys.join(',')
+      await SensitiveWordListStopUsing({ id, status })
+    } else {
+      if (selectedRowKeys.length === 0) {
+        message.warning('请勾选要启用的敏感词！')
+        return
+      }
+      const status = '1'
+      const id = selectedRowKeys.join(',')
+      await SensitiveWordListStopUsing({ id, status })
     }
-    const id = selectedRowKeys.join(',')
-    const status = '0'
-    await SensitiveWordListStopUsing({ id, status })
+
     await search()
     setSelectedRowKeys([])
   }
@@ -207,8 +216,20 @@ export default function Channel() {
             <Popconfirm
               placement='bottom'
               title='警告'
+              description='确定启用选中的敏感词吗？'
+              onConfirm={() => batchDeactivation('1')}
+              okText='确定'
+              cancelText='取消'>
+              <div className='btn'>
+                <i className='icon iconfont icon-qiyong'></i>
+                <span>启用</span>
+              </div>
+            </Popconfirm>
+            <Popconfirm
+              placement='bottom'
+              title='警告'
               description='确定停用选中的敏感词吗？'
-              onConfirm={batchDeactivation}
+              onConfirm={() => batchDeactivation('0')}
               okText='确定'
               cancelText='取消'>
               <div className='btn'>

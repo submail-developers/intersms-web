@@ -47,11 +47,6 @@ export default function Channel() {
   const { Option } = Select
   const size = useSize()
   const [form] = Form.useForm()
-  // const groupList = [
-  //   { label: '全部通道组', value: 'all' },
-  //   { label: '通道组1', value: '1' },
-  //   { label: '通道组2', value: '2' },
-  // ]
   // 初始化form的值
   const initFormValues: FormValues = {
     id: '',
@@ -59,10 +54,6 @@ export default function Channel() {
     group_id: 'all',
     keyword: '',
   }
-
-  // const onFinish = (values: FormValues) => {
-  //   formatSearchValue(values)
-  // }
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
@@ -77,7 +68,6 @@ export default function Channel() {
     }
     searchEvent(searchParams)
   }
-
   const searchEvent = async (params: API.GetCountryListParams) => {
     try {
       const res = await getCountryList(params)
@@ -89,7 +79,7 @@ export default function Channel() {
 
   const allGroupId = async () => {
     const res = await GetAllGroupId('')
-    setallGruopData(res.data)
+    setallGruopData([{ id: '', name: '全部通道组' }, ...res.data])
   }
   useEffect(() => {
     formatSearchValue(initFormValues)
@@ -105,19 +95,22 @@ export default function Channel() {
       width: 160,
       ellipsis: true,
       render: (_, record) => (
-        <span style={{ paddingLeft: '40px' }}>{record.country_cn}</span>
+        <div style={{ paddingLeft: '40px' }}>
+          <span>{record.country_cn}</span> <br />
+          <span className='color-gray'>{record.country}</span>
+        </div>
+        // <span style={{ paddingLeft: '40px' }}>{record.country_cn}</span>
       ),
     },
-    {
-      title: '国家英文',
-      dataIndex: 'country',
-      width: 220,
-    },
+    // {
+    //   title: '国家英文',
+    //   dataIndex: 'country',
+    //   width: 220,
+    // },
     {
       title: '国家代码',
       dataIndex: 'region_code',
       width: 80,
-      className: 'paddingL30',
     },
     {
       title: '国家区号',
@@ -126,28 +119,33 @@ export default function Channel() {
       render: (_, record) => <span>+{record.country_area_code}</span>,
     },
     {
+      title: '洲属',
+      dataIndex: 'area',
+      width: 80,
+    },
+    {
       title: '行业通道组',
       dataIndex: 'tra_group',
       className: 'trade-0',
-      width: 90,
+      width: 160,
     },
     {
       title: '行业Sender',
       className: 'trade-1',
       dataIndex: 'tra_sender',
-      width: 160,
+      width: 90,
     },
     {
       title: '营销通道组',
       dataIndex: 'mke_group',
       className: 'sale-0',
-      width: 90,
+      width: 160,
     },
     {
       title: '营销Sender',
       dataIndex: 'mke_sender',
       className: 'sale-1',
-      width: 160,
+      width: 90,
     },
     {
       title: '操作',
@@ -189,7 +187,7 @@ export default function Channel() {
               autoComplete='off'>
               <Form.Item label='' name='group_id' style={{ marginBottom: 10 }}>
                 <Select
-                  placeholder='通道组类型'
+                  placeholder='全部通道组'
                   style={{ width: 162 }}
                   size={size}
                   suffixIcon={
