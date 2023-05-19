@@ -89,7 +89,7 @@ export default function Channel() {
 
   const allGroupId = async () => {
     const res = await GetAllGroupId('')
-    setallGruopData(res.data)
+    setallGruopData([{ id: '', name: '全部通道组' }, ...res.data])
   }
   useEffect(() => {
     formatSearchValue(initFormValues)
@@ -189,7 +189,7 @@ export default function Channel() {
               autoComplete='off'>
               <Form.Item label='' name='group_id' style={{ marginBottom: 10 }}>
                 <Select
-                  placeholder='通道组类型'
+                  placeholder='全部通道组'
                   style={{ width: 162 }}
                   size={size}
                   suffixIcon={
