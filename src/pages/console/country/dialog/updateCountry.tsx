@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select } from 'antd'
-import { SaveGroup } from '@/api'
+import { SaveCountry } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
 import { API } from 'apis'
@@ -33,7 +33,7 @@ const Dialog = (props: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await SaveGroup(params)
+      const res = await SaveCountry(params)
       console.log(params)
       if (res) {
         message.success('保存成功！')

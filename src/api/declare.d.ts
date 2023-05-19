@@ -159,7 +159,7 @@ declare module 'apis' {
       name: string
     }
     // 保存通道组参数
-    interface SaveGroupParams {
+    interface SaveCountryParams {
       id: string
       country: string
       country_area_code: string
