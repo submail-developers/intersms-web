@@ -14,13 +14,16 @@ const GroupTitle = styled.div`
   margin-bottom: 10px;
 `
 
+interface InitOpen {
+  isAdd: boolean
+  record?: API.GetNetWorkListItems
+}
+
 const Dialog = (props: Props, ref: any) => {
-  useEffect(() => {
-    countryName()
-  }, [])
   const [CountryNameData, setCountryNameData] = useState<
     API.GetRegioncodeByCountryItems[]
   >([])
+  const [record, setrecord] = useState<API.GetNetWorkListItems | null>(null)
   const countryName = async () => {
     const res = await GetRegioncodeByCountry({
       country_cn: '',
@@ -43,13 +46,27 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = (initValues: any) => {
-    const { isAdd } = initValues
+  const open = (initValues: InitOpen) => {
+    const { isAdd, record } = initValues
     setisAdd(isAdd)
     form.resetFields()
 
     form.setFieldsValue(initValues.record)
     setIsModalOpen(true)
+    if (isAdd) {
+      countryName()
+    } else {
+      if (record) {
+        let arr: API.GetRegioncodeByCountryItems[] = [
+          {
+            label: record.country_cn,
+            value: record.region_code,
+          },
+        ]
+        setCountryNameData(arr)
+        setrecord(record)
+      }
+    }
   }
 
   let area: string
@@ -63,7 +80,12 @@ const Dialog = (props: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      let newParams = { country_cn, area, region_code, ...params }
+      let newParams
+      if (isAdd) {
+        newParams = { country_cn, area, region_code, ...params }
+      } else {
+        if (record) newParams = { ...record, ...params }
+      }
       const res = await saveNetWorkList(newParams)
       if (res) {
         message.success('保存成功！')
