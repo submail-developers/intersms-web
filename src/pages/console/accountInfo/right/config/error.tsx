@@ -1,3 +1,4 @@
+import { useImperativeHandle, forwardRef } from 'react'
 import { Button, ConfigProvider, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 
@@ -21,11 +22,14 @@ type Props = {
   accountId: string
 }
 
-// 国家价格配置
-export default function Error(props: Props) {
-  useEffect(() => {
-    console.log(props.accountId, 'accountid')
-  }, [props.accountId])
+// 失败处理配置
+function Error(props: Props, ref: any) {
+  useImperativeHandle(ref, () => {
+    return {
+      updateTableData,
+    }
+  })
+  const updateTableData = () => {}
   const columns: ColumnsType<DataType> = [
     {
       title: 'appid',
@@ -134,3 +138,4 @@ export default function Error(props: Props) {
     </div>
   )
 }
+export default forwardRef(Error)

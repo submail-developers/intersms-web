@@ -43,7 +43,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   return (
     <Modal
-      title='国家信息配置'
+      title='新增客户信息配置'
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -63,13 +63,20 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
           name='mail'
           validateTrigger='onSubmit'
           rules={[
-            { message: '请输入' },
+            { message: '请输入客户邮箱!' },
             {
               type: 'email',
               message: '请输入正确邮箱!',
             },
           ]}>
           <Input placeholder='请输入客户邮箱' maxLength={30} />
+        </Form.Item>
+        <Form.Item
+          label='客户名称'
+          name='name'
+          validateTrigger='onSubmit'
+          rules={[{ message: '请输入客户名称!' }]}>
+          <Input placeholder='请输入客户名称' maxLength={30} />
         </Form.Item>
       </Form>
     </Modal>

@@ -42,7 +42,6 @@ export default function Right() {
   }
 
   useEffect(() => {
-    console.log(channlesStore.activeChannels, '当前通道组')
     if (channlesStore.activeChannels) {
       getList()
     }

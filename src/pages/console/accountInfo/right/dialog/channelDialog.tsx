@@ -1,35 +1,89 @@
-import { useState, useImperativeHandle, forwardRef } from 'react'
+import { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
-import { addAccount } from '@/api'
+import { updateAccountChannel, getChannelGroupList, getAppid } from '@/api'
+import { useAppSelector } from '@/store/hook'
+import { accountInfoState } from '@/store/reducers/accountInfo'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
-import type { RadioChangeEvent } from 'antd'
-
+import { API } from 'apis'
+import { channelsTypeOptions2 } from '@/utils/options'
 interface Props {
-  // onSearch: () => void
+  onUpdateTable: () => void
 }
 
+interface FormType extends API.UpdateAccountChannelParams {}
+
+// 新增时初始化的值
+const initialValues: FormType = {
+  id: '', // 客户ID
+  sender: '', // 客户account
+  appid: '', // 0所有
+  group_type: '1', // 通道类型   1行业通道  2营销通道
+  signature: '', // 签名 需带【】
+  country_cn: '', // 国家中文名称
+  group_id: '', // 通道组id
+}
 const Dialog = (props: Props, ref: any) => {
-  const [form] = Form.useForm()
+  const accountInfoStore = useAppSelector(accountInfoState)
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
       open,
     }
   })
+  const [form] = Form.useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAdd, setisAdd] = useState(false)
+  const [channelsList, setchannelsList] = useState<
+    API.GetChannelGroupListItem[]
+  >([])
+  const [appidList, setappidList] = useState<API.GetAppidItem[]>([])
 
-  const open = () => {
+  const open = (record: API.UpdateAccountChannelParams = initialValues) => {
     form.resetFields()
+    if (record) {
+      // 编辑
+      setisAdd(false)
+      const _initValues: FormType = {
+        ...initialValues,
+        ...record,
+      }
+      form.setFieldsValue(_initValues)
+    } else {
+      setisAdd(true)
+      form.setFieldsValue(initialValues)
+    }
     setIsModalOpen(true)
+    getChannelsList()
+    getAppidList()
+  }
+
+  const getChannelsList = async () => {
+    const res = await getChannelGroupList({ page: '1' })
+    const enabledchannelsList = res.data.filter((item) => item.enabled == '1')
+    setchannelsList(enabledchannelsList)
+  }
+  const getAppidList = async () => {
+    const res = await getAppid({
+      sender: accountInfoStore.activeAccount?.account || '',
+    })
+    let list = [...res.data]
+    list.unshift({
+      id: '0',
+      app: '全部',
+    })
+    setappidList(list)
   }
 
   const handleOk = async () => {
     try {
-      const params = await form.validateFields()
-      const res = await addAccount(params)
-      if (res) {
-        message.success('保存成功！')
+      const formvalues = await form.getFieldsValue()
+      let params = {
+        ...formvalues,
+        sender: accountInfoStore.activeAccount?.account,
       }
+      await updateAccountChannel(params)
+      message.success('保存成功！')
+      props.onUpdateTable()
       setIsModalOpen(false)
     } catch (error) {}
   }
@@ -38,30 +92,10 @@ const Dialog = (props: Props, ref: any) => {
     setIsModalOpen(false)
   }
 
-  const onFinish = () => {}
-  const onFinishFailed = () => {}
-
-  const onChange = (e: RadioChangeEvent) => {
-    console.log('checked = ', e)
-  }
-
-  const options = [
-    { label: '行业通道组', value: '1' },
-    { label: '营销通道组', value: '2' },
-  ]
-
-  const onChange1 = (value: string) => {
-    console.log(`selected ${value}`)
-  }
-
-  const onSearch = (value: string) => {
-    console.log('search:', value)
-  }
-
   return (
     <Modal
       data-class='dialog'
-      title='国家通道配置'
+      title={`${isAdd ? '新增' : '编辑'}国家通道配置`}
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -73,96 +107,56 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ group: '1', group_type: ['1'] }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete='off'>
-        <Form.Item
-          label='国家名称'
-          name='name'
-          validateTrigger='onSubmit'
-          rules={[{ message: '请输入' }]}>
+        <Form.Item label='id' name='id' hidden>
+          <Input />
+        </Form.Item>
+        <Form.Item label='国家名称' name='country_cn'>
           <Input placeholder='请输入国家名称' maxLength={30} />
         </Form.Item>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='通道组' name='group' validateTrigger='onSubmit'>
+            <Form.Item label='通道组' name='group_id'>
               <Select
                 showSearch
                 // bordered={false}
                 placeholder='请选择'
                 optionFilterProp='children'
-                onChange={onChange1}
-                onSearch={onSearch}
+                fieldNames={{ label: 'name', value: 'id' }}
                 filterOption={(input, option) =>
-                  (option?.label ?? '')
+                  (option?.name ?? '')
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={[
-                  {
-                    value: '1',
-                    label: '通道组1',
-                  },
-                  {
-                    value: '2',
-                    label: '通道组2',
-                  },
-                  {
-                    value: '3',
-                    label: '通道组3',
-                  },
-                ]}
+                options={channelsList}
               />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              label='通道组类型'
-              name='group_type'
-              validateTrigger='onSubmit'>
-              <Radio.Group options={options} onChange={onChange} />
+            <Form.Item label='通道组类型' name='group_type'>
+              <Radio.Group options={channelsTypeOptions2} />
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='APPID' name='appid' validateTrigger='onSubmit'>
+            <Form.Item label='APPID' name='appid'>
               <Select
                 showSearch
-                // bordered={false}
                 placeholder='请选择'
                 optionFilterProp='children'
-                onChange={onChange1}
-                onSearch={onSearch}
+                fieldNames={{ label: 'app', value: 'id' }}
                 filterOption={(input, option) =>
-                  (option?.label ?? '')
+                  (option?.app ?? '')
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={[
-                  {
-                    value: 'all',
-                    label: '全部',
-                  },
-                  {
-                    value: '1',
-                    label: 'appid1',
-                  },
-                  {
-                    value: '2',
-                    label: 'appid2',
-                  },
-                ]}
+                options={appidList}
               />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              label='签名'
-              name='sign'
-              validateTrigger='onSubmit'
-              rules={[{ message: '请输入签名' }]}>
+            <Form.Item label='签名' name='signature'>
               <Input placeholder='请输入签名' maxLength={30} />
             </Form.Item>
           </Col>

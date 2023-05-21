@@ -80,6 +80,13 @@ declare module 'apis' {
       letter: string
       children: CountryItem[]
     }
+    interface GetAppidParams {
+      sender: string // 用户account字段， 32位随机码id
+    }
+    interface GetAppidItem {
+      id: string
+      app: string
+    }
 
     /**
      * 全局公共接口end
@@ -167,6 +174,79 @@ declare module 'apis' {
       mail: string
       name: string
     }
+    // 客户信息-国家价格配置/国家通道配置/失败处理配置列表
+    interface GetAccountConfigListParams {
+      sender: string // 客户account
+      page: string
+    }
+    // 客户信息-新增/修改国家价格配置
+    interface UpdateAccountPriceParams {
+      id: string // 客户ID
+      sender: string // 客户account
+      price_tra: string // 行业价格
+      price_mke: string // 营销价格
+      country_cn: string // 国家中文名称
+    }
+    // 客户信息-新增/修改国家通道配置
+    interface UpdateAccountChannelParams {
+      id: string // 客户ID
+      sender: string // 客户account
+      appid: string // 0所有
+      group_type: '1' | '2' // 通道类型   1行业通道  2营销通道
+      signature: string // 签名 需带【】
+      country_cn: string // 国家中文名称
+      group_id: string // 通道组id
+    }
+    // 客户信息-新增/修改失败处理配置
+    interface UpdateAccountErrorParams {
+      id: string // 客户ID
+      sender: string // 客户account
+      appid: string // 0所有
+      sms_type: '1' | '2' // 通道类型   1行业通道  2营销通道
+      response_time: string
+      delivrd: string
+      undeliv: string
+      expired: string
+      accepted: string
+      unknown: string
+      rejected: string
+      spname: string
+    }
+    // 客户信息-价格配置item
+    interface AccountPriceItem {
+      id: string
+      region_code: string
+      country_cn: string
+      price_tra: string // 行业价格
+      price_mke: string // 营销价格
+      date: string
+    }
+    // 客户信息-通道配置item
+    interface AccountChannelItem {
+      id: string
+      sender: string
+      country_cn: string
+      region_code: string
+      group_id: string
+      group_type: '1' | '2' // 通道类型   1行业通道  2营销通道
+      appid: string // 0所有
+      signature: string // 签名
+    }
+    // 客户信息-通道配置item
+    interface AccountErrorItem {
+      id: string // 客户ID
+      sender: string // 客户account
+      appid: string // 0所有
+      sms_type: '1' | '2' // 通道类型   1行业通道  2营销通道
+      response_time: string
+      delivrd: string
+      undeliv: string
+      expired: string
+      accepted: string
+      unknown: string
+      rejected: string
+      spname: string
+    }
 
     /**
      * 客户信息end
@@ -195,8 +275,8 @@ declare module 'apis' {
       mke_sender: string
     }
     interface GetChannelGroupListParams {
-      id: string
-      keyword: string
+      id?: string
+      keyword?: string
       page: string
     }
 

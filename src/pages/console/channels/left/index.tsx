@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from '@/store/hook'
-import { changeActiveAccountId } from '@/store/reducers/accountInfo'
 import { changeActiveChannels } from '@/store/reducers/channels'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import { Input, ConfigProvider, Table, Switch, Popconfirm, App } from 'antd'
@@ -91,6 +90,11 @@ export default function Left() {
 
   useEffect(() => {
     search()
+    return () => {
+      // 清除副作用，切换到其他页面时清空store
+      dispatch(changeActiveChannels(null))
+      setactiveRow(null)
+    }
   }, [])
 
   // noResetActive是否重置当前选中项

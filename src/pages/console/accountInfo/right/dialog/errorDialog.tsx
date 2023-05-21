@@ -41,22 +41,16 @@ const Dialog = (props: Props, ref: any) => {
   const onFinish = () => {}
   const onFinishFailed = () => {}
 
-  const onChange = (e: RadioChangeEvent) => {
-    console.log('checked = ', e)
-  }
+  const onChange = (e: RadioChangeEvent) => {}
 
   const options = [
     { label: '行业通道组', value: '1' },
     { label: '营销通道组', value: '2' },
   ]
 
-  const onChange1 = (value: string) => {
-    console.log(`selected ${value}`)
-  }
+  const onChange1 = (value: string) => {}
 
-  const onSearch = (value: string) => {
-    console.log('search:', value)
-  }
+  const onSearch = (value: string) => {}
 
   return (
     <Modal

@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/store/hook'
-import { changeActiveAccountId } from '@/store/reducers/accountInfo'
+import { changeActiveAccount } from '@/store/reducers/accountInfo'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import { Input, ConfigProvider, Table, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
@@ -20,16 +20,14 @@ export default function Left() {
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
   const size = useSize()
-  const [keyword, setkeyword] = useState<string>('')
-  // 列表
-  const [tableData, settableData] = useState<API.AccountListItem[]>([])
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [activeIndex, setactiveIndex] = useState<number>()
+  const [keyword, setkeyword] = useState<string>('') // 搜索关键字
+  const [tableData, settableData] = useState<API.AccountListItem[]>([]) // table列表
+  const [activeRow, setactiveRow] = useState<DataType | null>(null) // 被点击的客户(不是被checkbox选中的客户)
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
-        setactiveIndex(index)
+        setactiveRow(record)
+        dispatch(changeActiveAccount(record))
       },
     }
   }
@@ -40,13 +38,14 @@ export default function Left() {
       dataIndex: 'sender',
       className: 'paddingL30',
       ellipsis: true,
+      width: '50%',
     },
     {
       title: 'account',
       dataIndex: 'account',
-      className: 'account-wrap',
+      className: 'paddingR30',
       ellipsis: true,
-      width: 210,
+      width: '50%',
     },
   ]
 
@@ -64,18 +63,23 @@ export default function Left() {
     })
     settableData(res.data)
     if (res.data.length > 0) {
-      dispatch(changeActiveAccountId(res.data[0].account))
-      setactiveIndex(0)
+      dispatch(changeActiveAccount(res.data[0]))
+      setactiveRow(res.data[0])
     } else {
-      dispatch(changeActiveAccountId(''))
-      setactiveIndex(0)
+      dispatch(changeActiveAccount(null))
+      setactiveRow(null)
     }
   }
 
   // 删除事件
   const deleteEvent = async () => {
-    // await deleteAccount({ account })
-    // await search()
+    if (activeRow) {
+      await deleteAccount({ account: activeRow.account })
+      await search()
+      message.warning('删除成功！')
+    } else {
+      message.warning('请选择客户！')
+    }
   }
   // 开启dialog
   const openAddDialog = () => {
@@ -89,10 +93,10 @@ export default function Left() {
           <i className='icon iconfont icon-xinzeng'></i>
           <span>新增</span>
         </div>
-        {/* <div className='btn'>
+        <div className='btn'>
           <i className='icon iconfont icon-bianji'></i>
           <span>编辑</span>
-        </div> */}
+        </div>
         <Popconfirm
           placement='bottom'
           title='警告'
@@ -144,7 +148,7 @@ export default function Left() {
             rowKey={'account'}
             onRow={onRow}
             rowClassName={(record, index) =>
-              index == activeIndex ? 'active' : ''
+              record.account == activeRow?.account ? 'active' : ''
             }
             pagination={false}
             scroll={{ y: 450 }}

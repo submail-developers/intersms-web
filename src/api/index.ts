@@ -54,6 +54,14 @@ export const getAllNetCountry = () => {
     'customer/get_all_country_network_list',
   )
 }
+// 获取该用户账户下的国际短信appid, 参数 sender  用户account字段， 32位随机码id
+export const getAppid = (data: API.GetAppidParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetAppidItem[]>,
+    API.GetAppidParams
+  >('customer/get_account_all_intersms_app', { ...data })
+}
 /**
  * 常用-国家中文名称+地区代码start
  */
@@ -116,6 +124,72 @@ export const deleteAccount = (data: API.DeleteAccountParams) => {
 export const addAccount = (data: API.AddAccountParams) => {
   return request.post<any, API.Response<API.ChannelItem>, API.AddAccountParams>(
     'customer/add_sender_info',
+    { ...data },
+  )
+}
+// 客户信息-获取国家价格配置列表
+export const getAccountPriceList = (data: API.GetAccountConfigListParams) => {
+  return request.post<
+    any,
+    API.Response<API.AccountPriceItem[]>,
+    API.GetAccountConfigListParams
+  >('customer/get_sender_country', { ...data })
+}
+// 客户信息-获取国家通道配置列表
+export const getAccountChannelList = (data: API.GetAccountConfigListParams) => {
+  return request.post<
+    any,
+    API.Response<API.AccountChannelItem[]>,
+    API.GetAccountConfigListParams
+  >('customer/get_sender_country_channel', { ...data })
+}
+// 客户信息-获取失败处理配置列表
+export const getAccountErrorList = (data: API.GetAccountConfigListParams) => {
+  return request.post<
+    any,
+    API.Response<API.AccountErrorItem[]>,
+    API.GetAccountConfigListParams
+  >('customer/get_sender_error_handle', { ...data })
+}
+// 客户信息-新增/修改国家价格配置
+export const updateAccountPrice = (data: API.UpdateAccountPriceParams) => {
+  return request.post<any, API.Response<any>, API.UpdateAccountPriceParams>(
+    'customer/save_sender_country',
+    { ...data },
+  )
+}
+// 客户信息-新增/修改国家通道配置
+export const updateAccountChannel = (data: API.UpdateAccountChannelParams) => {
+  return request.post<any, API.Response<any>, API.UpdateAccountChannelParams>(
+    'customer/save_sender_country_channel',
+    { ...data },
+  )
+}
+// 客户信息-新增/修改失败处理配置
+export const updateAccountError = (data: API.UpdateAccountErrorParams) => {
+  return request.post<any, API.Response<any>, API.UpdateAccountErrorParams>(
+    'customer/save_sender_error_handle',
+    { ...data },
+  )
+}
+// 客户信息-删除-国家价格配置
+export const deleteAccountPrice = (data: API.Ids) => {
+  return request.post<any, API.Response<any>, API.Ids>(
+    'customer/delete_sender_country',
+    { ...data },
+  )
+}
+// 客户信息-删除-国家通道配置
+export const deleteAccountChannel = (data: API.Ids) => {
+  return request.post<any, API.Response<any>, API.Ids>(
+    'customer/delete_sender_country_channel',
+    { ...data },
+  )
+}
+// 客户信息-删除-失败处理配置
+export const deleteAccountError = (data: API.Ids) => {
+  return request.post<any, API.Response<any>, API.Ids>(
+    'customer/delete_sender_error_handle',
     { ...data },
   )
 }

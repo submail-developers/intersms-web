@@ -1,35 +1,78 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio } from 'antd'
-import { addAccount } from '@/api'
+import { updateAccountPrice } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
-// import type { RadioValueType } from 'antd/es/radio/Group'
-import type { RadioChangeEvent } from 'antd'
+import { useAppSelector } from '@/store/hook'
+import { accountInfoState } from '@/store/reducers/accountInfo'
+import { ProFormDependency } from '@ant-design/pro-components'
+import { channelPriceTypeOptions } from '@/utils/options'
+import { API } from 'apis'
 interface Props {
-  // onSearch: () => void
+  onUpdateTable: () => void
 }
 
+interface FormType extends API.UpdateAccountPriceParams {
+  type: '1' | '2' // 通道类型   1行业通道  2营销通道
+}
+
+// 新增时初始化的值
+const initialValues: FormType = {
+  id: '',
+  sender: '',
+  price_tra: '',
+  price_mke: '',
+  country_cn: '',
+  type: '1',
+}
 const Dialog = (props: Props, ref: any) => {
-  const [form] = Form.useForm()
+  const accountInfoStore = useAppSelector(accountInfoState)
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
       open,
     }
   })
+  const [form] = Form.useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAdd, setisAdd] = useState(false)
 
-  const open = () => {
+  const open = (record: API.UpdateAccountPriceParams = initialValues) => {
     form.resetFields()
+    if (record) {
+      // 编辑
+      setisAdd(false)
+      const _initValues: FormType = {
+        ...initialValues,
+        ...record,
+        type: Number(record.price_mke) > 0 ? '2' : '1',
+      }
+      form.setFieldsValue(_initValues)
+    } else {
+      setisAdd(true)
+      form.setFieldsValue(initialValues)
+    }
     setIsModalOpen(true)
   }
 
   const handleOk = async () => {
     try {
-      const params = await form.validateFields()
-      const res = await addAccount(params)
-      if (res) {
-        message.success('保存成功！')
+      const formvalues = await form.getFieldsValue()
+      let params = {
+        ...formvalues,
+        sender: accountInfoStore.activeAccount?.account,
       }
+      // 因为table列表里没有类型字段，所以需要非该类型的值清空
+      if (params.type == '1') {
+        // 1行业通道
+        params.price_mke = ''
+      } else {
+        // 2营销通道
+        params.price_tra = ''
+      }
+      delete params.type
+      await updateAccountPrice(params)
+      message.success('保存成功！')
+      props.onUpdateTable()
       setIsModalOpen(false)
     } catch (error) {}
   }
@@ -38,22 +81,10 @@ const Dialog = (props: Props, ref: any) => {
     setIsModalOpen(false)
   }
 
-  const onFinish = () => {}
-  const onFinishFailed = () => {}
-
-  const onChange = (e: RadioChangeEvent) => {
-    console.log('checked = ', e)
-  }
-
-  const options = [
-    { label: '行业短信', value: '1' },
-    { label: '营销短信', value: '2' },
-  ]
-
   return (
     <Modal
       data-class='dialog'
-      title='新增客户'
+      title={`${isAdd ? '新增' : '编辑'}国家价格配置`}
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -65,13 +96,13 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ type: ['1'] }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete='off'>
+        <Form.Item label='id' hidden name='id'>
+          <Input />
+        </Form.Item>
         <Form.Item
           label='国家名称'
-          name='name'
+          name='country_cn'
           validateTrigger='onSubmit'
           rules={[{ message: '请输入' }]}>
           <Input placeholder='请输入国家名称' maxLength={30} />
@@ -79,24 +110,46 @@ const Dialog = (props: Props, ref: any) => {
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item label='短信类型' name='type' validateTrigger='onSubmit'>
-              <Radio.Group options={options} onChange={onChange} />
+              <Radio.Group options={channelPriceTypeOptions} />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item
-              label='价格'
-              name='price'
-              validateTrigger='onSubmit'
-              rules={[
-                { message: '请输入' },
-                {
-                  type: 'number',
-                  message: '请输入正确的数字!',
-                },
-              ]}>
-              <Input placeholder='请输入价格' maxLength={30} />
-            </Form.Item>
-          </Col>
+
+          <ProFormDependency name={['type']}>
+            {({ type }) => {
+              return (
+                <Col span={12}>
+                  <Form.Item
+                    hidden={type != '1'}
+                    label='行业价格'
+                    name='price_tra'
+                    validateTrigger='onSubmit'
+                    rules={[
+                      { message: '请输入' },
+                      {
+                        type: 'number',
+                        message: '请输入正确的数字!',
+                      },
+                    ]}>
+                    <Input placeholder='请输入价格' maxLength={30} />
+                  </Form.Item>
+                  <Form.Item
+                    hidden={type != '2'}
+                    label='营销价格'
+                    name='price_mke'
+                    validateTrigger='onSubmit'
+                    rules={[
+                      { message: '请输入' },
+                      {
+                        type: 'number',
+                        message: '请输入正确的数字!',
+                      },
+                    ]}>
+                    <Input placeholder='请输入价格' maxLength={30} />
+                  </Form.Item>
+                </Col>
+              )
+            }}
+          </ProFormDependency>
         </Row>
       </Form>
     </Modal>
