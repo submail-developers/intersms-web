@@ -265,7 +265,20 @@ export const getChannelGroupRelatedData = (
 /**
  * 通道管理start
  */
-
+// 获取通道id
+export const getAllChannelId = (data: API.GetAllChannelIdParams) => {
+  return request.post<any, API.Response<any>, API.GetAllChannelIdParams>(
+    'customer/get_all_channel_ids',
+    { ...data },
+  )
+}
+// 获取通道
+export const getChannelList = (data: API.Ids) => {
+  return request.post<any, API.Response<API.ChannelItem[]>, API.Ids>(
+    'customer/get_channel',
+    { ...data },
+  )
+}
 /**
  * 通道管理end
  */
@@ -273,14 +286,6 @@ export const getChannelGroupRelatedData = (
 /**
  * 通道管理start
  */
-
-// 获取通道列表
-export const getChannelList = (data: API.Ids) => {
-  return request.post<any, API.Response<API.ChannelItem[]>, API.Ids>(
-    'customer/get_channel',
-    { ...data },
-  )
-}
 // 新增/修改通道
 export const saveChannel = (data: API.AddChannelParams) => {
   return request.post<any, API.Response<any>, API.AddChannelParams>(
@@ -383,7 +388,29 @@ export const deleteNetWorkList = (data: API.DeleteNetWorkParams) => {
 /**
  * 号码通道路由start
  */
-
+// 获取号码通道路由
+export const getMobileRouteList = (data: API.GetMobileRouteListParams) => {
+  return request.post<any, API.Response<any>, API.GetMobileRouteListParams>(
+    'customer/get_mobile_route',
+    { ...data },
+  )
+}
+// 保存号码通道路由
+export const saveMobileRouteList = (data: API.SaveMobileRouteParams) => {
+  return request.post<any, API.Response<any>, API.SaveMobileRouteParams>(
+    'customer/save_mobile_route',
+    { ...data },
+  )
+}
+// 删除号码通道路由配置
+export const deleteMobileRouteList = (
+  data: API.DeleteMobileRouteListParams,
+) => {
+  return request.post<any, API.Response<any>, API.DeleteMobileRouteListParams>(
+    'customer/delete_mobile_route',
+    { ...data },
+  )
+}
 /**
  * 号码通道路由end
  */

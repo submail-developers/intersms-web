@@ -321,6 +321,14 @@ declare module 'apis' {
     /**
      * 通道管理start
      */
+    // 获取通道id
+    interface GetAllChannelIdParams {}
+    // 获取通道返回的数据
+    interface GetAllChannelIdParamsItems {
+      id: string
+      name: string
+    }
+    //
     interface ChannelItem {
       id: string
       name: string // 通道名称
@@ -450,7 +458,33 @@ declare module 'apis' {
     /**
      * 号码通道路由start
      */
-
+    // 获取号码通道路由
+    interface GetMobileRouteListParams {
+      mobile: string
+      type: string
+      keyword: string
+      channel: string
+      page: string
+    }
+    // 获取号码通道路由的数据
+    interface GetMobileRouteListItems {
+      mobile: string
+      name: string
+      type: string
+      channel: string
+      datetime: string
+    }
+    // 保存号码通道路由
+    interface SaveMobileRouteParams {
+      mobile: string
+      name: string
+      type: string
+      channel: string
+    }
+    //删除号码通道路由
+    interface DeleteMobileRouteListParams {
+      mobile: string
+    }
     /**
      * 号码通道路由end
      */
