@@ -137,7 +137,17 @@ export default function Network() {
             onClick={() => updateCountryEvent(false, record)}>
             编辑
           </Button>
-          <Button type='link'>删除</Button>
+          <Button type='link'>
+            <Popconfirm
+              placement='left'
+              title='警告'
+              description='确定删除该条网络信息吗？'
+              onConfirm={() => singleDeleteEvent(record.id)}
+              okText='确定'
+              cancelText='取消'>
+              删除
+            </Popconfirm>
+          </Button>
         </div>
       ),
     },
@@ -148,6 +158,11 @@ export default function Network() {
   }
 
   const { message } = App.useApp()
+  // 单独删除事件
+  const singleDeleteEvent = async (id: any) => {
+    await deleteNetWorkList({ id })
+    await search()
+  }
   // 批量删除网络信息
   const deleteEvent = async () => {
     if (selectedRowKeys.length === 0) {
@@ -198,7 +213,7 @@ export default function Network() {
               layout='inline'
               wrapperCol={{ span: 24 }}
               autoComplete='off'>
-              <Form.Item label='' name='country' style={{ marginBottom: 10 }}>
+              <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
                 <Input
                   size={size}
                   placeholder='网络名称/国家/国家代码'
@@ -216,6 +231,7 @@ export default function Network() {
                   <Button
                     type='primary'
                     size={size}
+                    onClick={search}
                     htmlType='submit'
                     style={{ width: 110, marginLeft: 0 }}>
                     搜索
@@ -243,7 +259,7 @@ export default function Network() {
             index == activeIndex ? 'active' : ''
           }
           sticky
-          pagination={false}
+          pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
