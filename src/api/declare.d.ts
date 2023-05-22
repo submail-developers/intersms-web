@@ -169,10 +169,9 @@ declare module 'apis' {
     interface DeleteAccountParams {
       account: string
     }
-    // 新增客户参数
+    // 新增客户参数/客户只能删除不能编辑
     interface AddAccountParams {
       mail: string
-      name: string
     }
     // 客户信息-国家价格配置/国家通道配置/失败处理配置列表
     interface GetAccountConfigListParams {
@@ -235,7 +234,6 @@ declare module 'apis' {
     // 客户信息-通道配置item
     interface AccountErrorItem {
       id: string // 客户ID
-      sender: string // 客户account
       appid: string // 0所有
       sms_type: '1' | '2' // 通道类型   1行业通道  2营销通道
       response_time: string

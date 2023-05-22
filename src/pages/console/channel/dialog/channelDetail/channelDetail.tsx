@@ -96,7 +96,7 @@ const Dialog = (props: Props, ref: any) => {
             <div className='fx-y-center'>
               <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
               <span className='fn20' style={{ marginLeft: '10px' }}>
-                通道关联国家
+                通道关联国家/地区
               </span>
             </div>
 
@@ -115,7 +115,7 @@ const Dialog = (props: Props, ref: any) => {
                 <Form.Item label='' name='name'>
                   <Input
                     size={size}
-                    placeholder='国家名称/代码'
+                    placeholder='国家或地区名称/代码'
                     maxLength={20}
                     style={{ width: 162 }}></Input>
                 </Form.Item>

@@ -101,13 +101,13 @@ export default function Network() {
       className: 'paddingL30',
     },
     {
-      title: '国家/地区名称',
+      title: '国家/地区名',
       dataIndex: 'country_cn',
       width: 140,
       ellipsis: true,
     },
     {
-      title: '国家代码',
+      title: '代码',
       dataIndex: 'region_code',
       width: 80,
     },
@@ -201,7 +201,7 @@ export default function Network() {
               <Form.Item label='' name='country' style={{ marginBottom: 10 }}>
                 <Input
                   size={size}
-                  placeholder='网络名称/国家/国家代码'
+                  placeholder='网络名称/国家/地区/国家代码'
                   maxLength={20}
                   style={{ width: 220 }}></Input>
               </Form.Item>

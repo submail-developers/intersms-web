@@ -1,8 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/store/hook'
-import {
-  changeActiveAccountId,
-  //  accountInfoState
-} from '@/store/reducers/accountInfo'
+// import {changeActiveAccountId,} from '@/store/reducers/accountInfo'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import {
   Button,
@@ -91,7 +88,7 @@ export default function Left() {
         network: 'string',
       },
     ])
-    dispatch(changeActiveAccountId('string'))
+    // dispatch(changeActiveAccountId('string'))
     setactiveIndex(0)
   }
 

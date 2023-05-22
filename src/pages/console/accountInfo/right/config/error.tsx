@@ -1,35 +1,89 @@
-import { useImperativeHandle, forwardRef } from 'react'
-import { Button, ConfigProvider, Table } from 'antd'
+import { useImperativeHandle, forwardRef, useState, useEffect } from 'react'
+import { Button, ConfigProvider, App, Table, Popconfirm } from 'antd'
+import { useAppSelector } from '@/store/hook'
+import { accountInfoState } from '@/store/reducers/accountInfo'
 import type { ColumnsType } from 'antd/es/table'
+import { getAccountErrorList, deleteAccountError } from '@/api'
+import { API } from 'apis'
 
-import { useEffect } from 'react'
-
-interface DataType {
-  appid: string
-  region_code: string
-  sms_type: string
-  response_time: string
-  delivrd: string
-  undeliv: string
-  expired: string
-  accepted: string
-  unknown: string
-  rejected: string
-  spname: string
-}
+interface DataType extends API.AccountErrorItem {}
 
 type Props = {
-  accountId: string
+  activeKey: string
+  selfKey: string
+  showEdit: (params: DataType) => void
 }
 
 // 失败处理配置
 function Error(props: Props, ref: any) {
   useImperativeHandle(ref, () => {
     return {
-      updateTableData,
+      updateTableData, // 更行table
+      getRowSelectKeys, // 获取选中的rowKey
     }
   })
-  const updateTableData = () => {}
+  const [tableData, settableData] = useState<DataType[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const { message } = App.useApp()
+
+  const accountInfoStore = useAppSelector(accountInfoState)
+  useEffect(() => {
+    if (props.activeKey == props.selfKey && accountInfoStore.activeAccount) {
+      updateTableData()
+    }
+  }, [props.activeKey, accountInfoStore.activeAccount])
+  // 修改客户后-清空选中项
+  useEffect(() => {
+    if (accountInfoStore.activeAccount) {
+      setSelectedRowKeys([])
+    }
+  }, [accountInfoStore.activeAccount])
+  const updateTableData = async () => {
+    try {
+      const res = await getAccountErrorList({
+        sender: accountInfoStore.activeAccount?.account || '', // 客户account
+        page: '1',
+      })
+      settableData(res.data)
+    } catch (error) {}
+  }
+  // 编辑弹框
+  const editEvent = (record: DataType) => {
+    props.showEdit(record)
+  }
+  // 删除
+  const deleteEvent = async (id: string) => {
+    try {
+      await deleteAccountError({ id })
+      message.success('删除成功')
+      updateTableData()
+    } catch (error) {}
+  }
+
+  const getRowSelectKeys = () => {
+    return selectedRowKeys
+  }
+
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeys,
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys)
+    },
+  }
+
+  const onRow = (record: DataType, index?: number) => {
+    return {
+      onDoubleClick: () => {
+        if (selectedRowKeys.includes(record.id)) {
+          setSelectedRowKeys(
+            selectedRowKeys.filter((item) => item != record.id),
+          )
+        } else {
+          setSelectedRowKeys([...selectedRowKeys, record.id])
+        }
+      },
+    }
+  }
   const columns: ColumnsType<DataType> = [
     {
       title: 'appid',
@@ -37,11 +91,14 @@ function Error(props: Props, ref: any) {
     },
     {
       title: 'region_code',
-      dataIndex: 'region_code',
+      render: (_, record) => <div>缺少该字段</div>,
     },
     {
       title: 'sms_type',
       dataIndex: 'sms_type',
+      render: (_, record) => (
+        <div>{record.sms_type == '1' ? '短信通道组' : '营销通道组'}</div>
+      ),
     },
     {
       title: 'response_time',
@@ -79,42 +136,31 @@ function Error(props: Props, ref: any) {
     {
       title: '操作',
       dataIndex: 'actions',
+      width: 140,
       render: (_, record) => (
         <div>
-          <Button type='link' style={{ paddingLeft: 0 }}>
+          <Button
+            type='link'
+            style={{ paddingLeft: 0 }}
+            onClick={() => editEvent(record)}>
             编辑
           </Button>
-          <Button type='link'>删除</Button>
+          <Popconfirm
+            placement='bottom'
+            title='警告'
+            description='确定删除选中的客户吗？'
+            onConfirm={() => deleteEvent(record.id)}
+            okText='确定'
+            cancelText='取消'>
+            <Button type='link'>删除</Button>
+          </Popconfirm>
         </div>
       ),
     },
   ]
 
-  const data: DataType[] = []
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      appid: `id` + i,
-      region_code: 'string',
-      sms_type: 'string',
-      response_time: 'string',
-      delivrd: 'string',
-      undeliv: 'string',
-      expired: 'string',
-      accepted: 'string',
-      unknown: 'string',
-      rejected: 'string',
-      spname: 'string',
-    })
-  }
-
-  const getCheckboxProps = (record: DataType) => {
-    return {
-      name: record.appid,
-    }
-  }
-
   return (
-    <div data-class='account-config-table'>
+    <div>
       <ConfigProvider
         theme={{
           token: {
@@ -124,14 +170,12 @@ function Error(props: Props, ref: any) {
         <Table
           className='theme-grid'
           columns={columns}
-          dataSource={data}
-          rowSelection={{
-            type: 'checkbox',
-            getCheckboxProps: getCheckboxProps,
-          }}
-          rowKey={'appid'}
+          dataSource={tableData}
+          rowKey={'id'}
+          rowSelection={rowSelection}
+          onRow={onRow}
           sticky
-          pagination={false}
+          pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>

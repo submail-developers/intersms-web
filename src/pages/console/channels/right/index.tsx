@@ -110,7 +110,7 @@ export default function Right() {
       ),
     },
     {
-      title: '关联国家',
+      title: '关联国家/地区',
       dataIndex: 'actions',
       render: (_, record) => (
         <Button

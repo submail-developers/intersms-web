@@ -67,7 +67,7 @@ export const getAppid = (data: API.GetAppidParams) => {
  */
 
 export const GetRegioncodeByCountry = (
-  data: API.GetRegioncodeByCountryParams,
+  data: API.GetRegioncodeByCountryParams = { country_cn: '', keyword: '' },
 ) => {
   return request.post<
     any,

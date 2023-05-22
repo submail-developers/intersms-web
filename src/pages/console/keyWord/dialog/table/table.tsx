@@ -4,8 +4,8 @@ export default () => {
   return (
     <div class-data='my-table'>
       <div className='thead fn14'>
-        <div className='th name'>国家名称</div>
-        <div className='th'>国家代码</div>
+        <div className='th name'>国家/地区名称</div>
+        <div className='th'>国家/地区代码</div>
         <div className='th net-type'>运营商网络类型</div>
         <div className='th'>行业价格</div>
         <div className='th'>营销价格</div>

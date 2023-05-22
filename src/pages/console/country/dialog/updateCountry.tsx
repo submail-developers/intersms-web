@@ -64,7 +64,7 @@ const Dialog = (props: Props, ref: any) => {
 
   return (
     <Modal
-      title='国家信息配置'
+      title='国家/地区信息配置'
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -107,12 +107,12 @@ const Dialog = (props: Props, ref: any) => {
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='国家名称' name='country_cn'>
+            <Form.Item label='国家/地区名称' name='country_cn'>
               <Input disabled style={{ color: '#000' }} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label='国家代码' name='region_code'>
+            <Form.Item label='国家/地区代码' name='region_code'>
               <Input disabled style={{ color: '#000' }} />
             </Form.Item>
           </Col>

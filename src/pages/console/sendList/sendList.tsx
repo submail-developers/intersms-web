@@ -167,7 +167,7 @@ export default function SendList() {
       ),
     },
     {
-      title: '国家',
+      title: '国家/地区',
       dataIndex: 'region_code',
     },
     {
@@ -284,7 +284,7 @@ export default function SendList() {
           <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
             <Input
               size={size}
-              placeholder='账户/手机号/国家'
+              placeholder='账户/手机号/国家/地区'
               maxLength={20}
               style={{ width: 162 }}></Input>
           </Form.Item>

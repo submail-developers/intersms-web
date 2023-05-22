@@ -93,10 +93,6 @@ export default function Left() {
           <i className='icon iconfont icon-xinzeng'></i>
           <span>新增</span>
         </div>
-        <div className='btn'>
-          <i className='icon iconfont icon-bianji'></i>
-          <span>编辑</span>
-        </div>
         <Popconfirm
           placement='bottom'
           title='警告'

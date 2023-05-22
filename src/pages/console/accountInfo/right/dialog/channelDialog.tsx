@@ -7,6 +7,7 @@ import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import { API } from 'apis'
 import { channelsTypeOptions2 } from '@/utils/options'
 interface Props {
+  allCountry: API.CountryItem[]
   onUpdateTable: () => void
 }
 
@@ -111,8 +112,17 @@ const Dialog = (props: Props, ref: any) => {
         <Form.Item label='id' name='id' hidden>
           <Input />
         </Form.Item>
-        <Form.Item label='国家名称' name='country_cn'>
-          <Input placeholder='请输入国家名称' maxLength={30} />
+        <Form.Item label='国家/地区名称' name='country_cn'>
+          <Select
+            showSearch
+            placeholder='请选择'
+            fieldNames={{ value: 'label' }}
+            optionFilterProp='children'
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            options={props.allCountry}
+          />
         </Form.Item>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>

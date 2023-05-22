@@ -2,7 +2,6 @@ import { useState, useRef, MutableRefObject, useEffect } from 'react'
 import { useAppSelector } from '@/store/hook'
 import { accountInfoState } from '@/store/reducers/accountInfo'
 import { Tabs, Button, App, Switch, Popconfirm } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
 import type { TabsProps } from 'antd'
 import { useSize } from '@/hooks'
 
@@ -17,6 +16,7 @@ import {
   deleteAccountPrice,
   deleteAccountChannel,
   deleteAccountError,
+  GetRegioncodeByCountry,
 } from '@/api'
 import { API } from 'apis'
 import './index.scss'
@@ -26,6 +26,7 @@ export default function Right() {
   const accountInfoStore = useAppSelector(accountInfoState)
   const size = useSize()
   const [activeKey, setactiveKey] = useState<string>('1')
+  const [allCountry, setallCountry] = useState<API.CountryItem[]>([])
 
   const priceTableRef: MutableRefObject<any> = useRef(null)
   const channelTableRef: MutableRefObject<any> = useRef(null)
@@ -36,6 +37,9 @@ export default function Right() {
 
   // 展示新增弹框
   const showAddDialog = () => {
+    if (allCountry.length == 0) {
+      getCountryList()
+    }
     switch (activeKey) {
       case '1':
         priceDialogRef.current.open()
@@ -55,6 +59,9 @@ export default function Right() {
       | API.AccountChannelItem
       | API.AccountErrorItem,
   ) => {
+    if (allCountry.length == 0) {
+      getCountryList()
+    }
     switch (activeKey) {
       case '1':
         priceDialogRef.current.open(record)
@@ -63,7 +70,7 @@ export default function Right() {
         channelDialogRef.current.open(record)
         break
       case '3':
-        errorTableRef.current.open(record)
+        errorDialogRef.current.open(record)
         break
     }
   }
@@ -124,8 +131,8 @@ export default function Right() {
       label: '国家价格配置',
       children: (
         <PriceConfig
-          showEdit={showEditDialog}
           ref={priceTableRef}
+          showEdit={showEditDialog}
           activeKey={activeKey}
           selfKey='1'
         />
@@ -149,15 +156,21 @@ export default function Right() {
       children: (
         <ErrorConfig
           ref={errorTableRef}
-          accountId={
-            accountInfoStore.activeAccount
-              ? accountInfoStore.activeAccount?.account
-              : ''
-          }
+          showEdit={showEditDialog}
+          activeKey={activeKey}
+          selfKey='3'
         />
       ),
     },
   ]
+  const getCountryList = async () => {
+    const res = await GetRegioncodeByCountry()
+    let countrys: API.CountryItem[] = []
+    res.data.forEach((item) => {
+      countrys = [...countrys, ...item.children]
+    })
+    setallCountry(countrys)
+  }
 
   // 自定义tabs导航
   const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => {
@@ -232,9 +245,21 @@ export default function Right() {
           />
         </div>
       </div>
-      <PriceDialog onUpdateTable={updateTable} ref={priceDialogRef} />
-      <ChannelDialog onUpdateTable={updateTable} ref={channelDialogRef} />
-      <ErrorDialog ref={errorDialogRef} />
+      <PriceDialog
+        onUpdateTable={updateTable}
+        ref={priceDialogRef}
+        allCountry={allCountry}
+      />
+      <ChannelDialog
+        onUpdateTable={updateTable}
+        ref={channelDialogRef}
+        allCountry={allCountry}
+      />
+      <ErrorDialog
+        onUpdateTable={updateTable}
+        ref={errorDialogRef}
+        allCountry={allCountry}
+      />
     </section>
   ) : null
 }

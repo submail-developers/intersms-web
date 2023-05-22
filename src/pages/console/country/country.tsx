@@ -90,7 +90,7 @@ export default function Channel() {
   const [tableData, settableData] = useState<API.GetCountryListItems[]>([])
   const columns: ColumnsType<DataType> = [
     {
-      title: <span style={{ paddingLeft: '40px' }}>国家</span>,
+      title: <span style={{ paddingLeft: '40px' }}>国家/地区名</span>,
       dataIndex: 'country_cn',
       width: 160,
       ellipsis: true,
@@ -103,17 +103,17 @@ export default function Channel() {
       ),
     },
     // {
-    //   title: '国家英文',
+    //   title: '国家/地区英文',
     //   dataIndex: 'country',
     //   width: 220,
     // },
     {
-      title: '国家代码',
+      title: '代码',
       dataIndex: 'region_code',
       width: 80,
     },
     {
-      title: '国家区号',
+      title: '区号',
       dataIndex: 'country_area_code',
       width: 80,
       render: (_, record) => <span>+{record.country_area_code}</span>,

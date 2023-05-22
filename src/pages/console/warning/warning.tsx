@@ -123,7 +123,7 @@ export default function NumberChannelsRoute() {
   for (let i = 0; i < 100; i++) {
     data.push({
       id: 'id' + i,
-      warning_type: '国家报警',
+      warning_type: '国家/地区报警',
       name: '中国' + i,
       times: '10分钟',
       fail: '2%',
@@ -173,7 +173,7 @@ export default function NumberChannelsRoute() {
               <Form.Item label='' name='country' style={{ marginBottom: 10 }}>
                 <Input
                   size={size}
-                  placeholder='国家/通道/账号'
+                  placeholder='国家/地区/通道/账号'
                   maxLength={20}
                   style={{ width: 220 }}></Input>
               </Form.Item>

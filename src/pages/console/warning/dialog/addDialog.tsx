@@ -102,7 +102,7 @@ const Dialog = (props: Props, ref: any) => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label='选择国家'>
+            <Form.Item label='选择国家/地区'>
               <Select
                 showSearch
                 // bordered={false}

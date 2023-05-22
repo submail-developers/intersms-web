@@ -164,7 +164,7 @@ const Dialog = (props: Props, ref: any) => {
         </Row>
         <Row>
           <Col span={24}>
-            <GroupTitle>国家价格配置</GroupTitle>
+            <GroupTitle>国家/地区价格配置</GroupTitle>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>

@@ -71,13 +71,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
           ]}>
           <Input placeholder='请输入客户邮箱' maxLength={30} />
         </Form.Item>
-        <Form.Item
-          label='客户名称'
-          name='name'
-          validateTrigger='onSubmit'
-          rules={[{ message: '请输入客户名称!' }]}>
-          <Input placeholder='请输入客户名称' maxLength={30} />
-        </Form.Item>
       </Form>
     </Modal>
   )

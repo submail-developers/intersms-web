@@ -130,7 +130,7 @@ const Dialog = (props: Props, ref: any) => {
       <div className='input-wrap'>
         <Input
           bordered={false}
-          placeholder='请输入国家名称'
+          placeholder='请输入国家/地区名称'
           maxLength={20}
           allowClear
           suffix={
@@ -150,7 +150,7 @@ const Dialog = (props: Props, ref: any) => {
         />
       </div>
       <div className='check-all-wrap fn16 fx-between-center'>
-        <div>全部国家</div>
+        <div>全部国家/地区</div>
         <div className='color checkall' onClick={checkAll}>
           {isCheckedAll ? '取消全选' : '全选'}
         </div>

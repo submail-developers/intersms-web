@@ -61,7 +61,7 @@ const Dialog = (props: Props, ref: any) => {
   return (
     <Modal
       data-class='dialog'
-      title='国家通道配置'
+      title='国家/地区通道配置'
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -78,11 +78,11 @@ const Dialog = (props: Props, ref: any) => {
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Form.Item
-          label='国家名称'
+          label='国家/地区名称'
           name='name'
           validateTrigger='onSubmit'
           rules={[{ message: '请输入' }]}>
-          <Input placeholder='请输入国家名称' maxLength={30} />
+          <Input placeholder='请输入国家/地区名称' maxLength={30} />
         </Form.Item>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>

@@ -1,5 +1,5 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
-import { Modal, Form, Input, App, Row, Col, Radio } from 'antd'
+import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
 import { updateAccountPrice } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import { useAppSelector } from '@/store/hook'
@@ -8,6 +8,7 @@ import { ProFormDependency } from '@ant-design/pro-components'
 import { channelPriceTypeOptions } from '@/utils/options'
 import { API } from 'apis'
 interface Props {
+  allCountry: API.CountryItem[]
   onUpdateTable: () => void
 }
 
@@ -100,12 +101,17 @@ const Dialog = (props: Props, ref: any) => {
         <Form.Item label='id' hidden name='id'>
           <Input />
         </Form.Item>
-        <Form.Item
-          label='国家名称'
-          name='country_cn'
-          validateTrigger='onSubmit'
-          rules={[{ message: '请输入' }]}>
-          <Input placeholder='请输入国家名称' maxLength={30} />
+        <Form.Item label='国家/地区名称' name='country_cn'>
+          <Select
+            showSearch
+            placeholder='请选择'
+            optionFilterProp='children'
+            fieldNames={{ value: 'label' }}
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            options={props.allCountry}
+          />
         </Form.Item>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>

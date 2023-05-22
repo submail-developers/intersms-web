@@ -86,7 +86,7 @@ function Price(props: Props, ref: any) {
   }
   const columns: ColumnsType<DataType> = [
     {
-      title: <div style={{ marginLeft: '20px' }}>国家名</div>,
+      title: <div style={{ marginLeft: '20px' }}>国家/地区</div>,
       render: (_, record) => (
         <div style={{ marginLeft: '20px' }}>{record.country_cn}</div>
       ),
@@ -143,7 +143,7 @@ function Price(props: Props, ref: any) {
   ]
 
   return (
-    <div data-class='account-config-table'>
+    <div>
       <ConfigProvider
         theme={{
           token: {

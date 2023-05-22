@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/store/hook'
-import { changeActiveAccountId } from '@/store/reducers/accountInfo'
+// import { changeActiveAccountId } from '@/store/reducers/accountInfo'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import { Input, ConfigProvider, Table, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
@@ -42,13 +42,13 @@ export default function NumberAttr() {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: '国家',
+      title: '国家/地区',
       ellipsis: true,
       width: '120px',
       render: (_, record) => <div>中国</div>,
     },
     {
-      title: '国家代码',
+      title: '国家/地区代码',
       render: (_, record) => <div>CN</div>,
     },
     {
@@ -72,10 +72,10 @@ export default function NumberAttr() {
     })
     settableData(res.data)
     if (res.data.length > 0) {
-      dispatch(changeActiveAccountId(res.data[0].account))
+      // dispatch(changeActiveAccountId(res.data[0].account))
       setSelectedRowKeys([res.data[0].account])
     } else {
-      dispatch(changeActiveAccountId(''))
+      // dispatch(changeActiveAccountId(''))
       setSelectedRowKeys([''])
     }
   }
@@ -112,7 +112,7 @@ export default function NumberAttr() {
         <div className='input-wrap'>
           <Input
             bordered={false}
-            placeholder='请输入国家名称或国家代码'
+            placeholder='请输入国家/地区/国家代码'
             maxLength={20}
             allowClear
             suffix={

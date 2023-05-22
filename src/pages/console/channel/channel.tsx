@@ -100,7 +100,7 @@ export default function Channel() {
       },
     },
     {
-      title: '关联国家',
+      title: '关联国家/地区',
       render: (_, record) => (
         <Button
           type='link'

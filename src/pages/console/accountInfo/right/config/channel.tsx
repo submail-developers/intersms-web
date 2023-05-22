@@ -5,6 +5,7 @@ import { accountInfoState } from '@/store/reducers/accountInfo'
 import type { ColumnsType } from 'antd/es/table'
 import { getAccountChannelList, deleteAccountChannel } from '@/api'
 import { API } from 'apis'
+import { channelsTypeOptions2, getOptionsLabel } from '@/utils/options'
 
 interface DataType extends API.AccountChannelItem {}
 
@@ -93,7 +94,7 @@ function Channel(props: Props, ref: any) {
       ),
     },
     {
-      title: '国家',
+      title: '国家/地区',
       dataIndex: 'country_cn',
     },
     {
@@ -102,7 +103,10 @@ function Channel(props: Props, ref: any) {
     },
     {
       title: '短信类型',
-      dataIndex: 'group_type',
+      render: (_, record) => (
+        // <div>{getOptionsLabel(channelsTypeOptions2, record.group_type)}</div>
+        <div>{record.group_type == '1' ? '行业' : '营销'}</div>
+      ),
     },
     {
       title: '签名',
@@ -143,7 +147,7 @@ function Channel(props: Props, ref: any) {
   ]
 
   return (
-    <div data-class='account-config-table'>
+    <div>
       <ConfigProvider
         theme={{
           token: {

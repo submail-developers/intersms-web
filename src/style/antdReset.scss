@@ -275,6 +275,8 @@
       color: #888;
       font-weight: 400;
       padding: 12px;
+      word-break: keep-all;
+      word-wrap: normal;
       &::before {
         display: none;
       }
