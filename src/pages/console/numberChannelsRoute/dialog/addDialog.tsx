@@ -65,7 +65,7 @@ const Dialog = (props: Props, ref: any) => {
     { label: '营销通道组', value: '2' },
   ]
   const smsType = [
-    { label: '短信类型', value: 'all' },
+    // { label: '短信类型', value: 'all' },
     { label: '行业短信', value: '1' },
     { label: '营销短信', value: '2' },
   ]
@@ -80,7 +80,7 @@ const Dialog = (props: Props, ref: any) => {
 
   return (
     <Modal
-      title={isAdd ? '号码通道路由配置' : '编辑号码通道路由配置'}
+      title={isAdd ? '新增号码通道路由' : '编辑号码通道路由'}
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -114,7 +114,8 @@ const Dialog = (props: Props, ref: any) => {
                 showSearch
                 placeholder='请选择短信类型'
                 optionFilterProp='children'
-                options={props.messageList}
+                // options={props.messageList}
+                options={smsType}
                 onChange={onChange1}
               />
             </Form.Item>
@@ -122,13 +123,13 @@ const Dialog = (props: Props, ref: any) => {
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='通道组' name='channel' validateTrigger='onSubmit'>
+            <Form.Item label='通道' name='channel' validateTrigger='onSubmit'>
               <Select
                 showSearch
                 // bordered={false}
-                placeholder='请选择'
+                placeholder='请选择通道'
                 optionFilterProp='children'
-                options={props.allChannelData}
+                options={props.allChannelData.slice(1)}
                 fieldNames={{ label: 'name', value: 'id' }}
                 onChange={onChange1}
                 onSearch={onSearch}

@@ -64,7 +64,7 @@ const Dialog = (props: Props, ref: any) => {
 
   return (
     <Modal
-      title='国家/地区信息配置'
+      title='编辑国家/地区信息配置'
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -135,7 +135,7 @@ const Dialog = (props: Props, ref: any) => {
                 optionFilterProp='children'
                 onChange={onChange1}
                 onSearch={onSearch}
-                options={props.allGruopData}
+                options={props.allGruopData.slice(1)}
                 fieldNames={{ label: 'name', value: 'id' }}
                 filterOption={(input, option) =>
                   (option?.name ?? '')
@@ -167,12 +167,11 @@ const Dialog = (props: Props, ref: any) => {
               validateTrigger='onSubmit'>
               <Select
                 showSearch
-                // bordered={false}
                 placeholder='请选择'
                 optionFilterProp='children'
                 onChange={onChange1}
                 onSearch={onSearch}
-                options={props.allGruopData}
+                options={props.allGruopData.slice(1)}
                 fieldNames={{ label: 'name', value: 'id' }}
                 filterOption={(input, option) =>
                   (option?.name ?? '')

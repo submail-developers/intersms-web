@@ -418,7 +418,13 @@ export const deleteMobileRouteList = (
 /**
  * 报警设置start
  */
-
+// 获取报警设置
+export const getalArmConfigList = (data: API.GetalArmConfigListParams) => {
+  return request.post<any, API.Response<any>, API.GetalArmConfigListParams>(
+    'customer/get_alarm_config',
+    { ...data },
+  )
+}
 /**
  * 报警设置end
  */

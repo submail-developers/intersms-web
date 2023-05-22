@@ -91,11 +91,15 @@ const Dialog = (props: Props, ref: any) => {
                 options={[
                   {
                     value: '1',
-                    label: '国家报警',
+                    label: '账号报警',
                   },
                   {
                     value: '2',
                     label: '通道报警',
+                  },
+                  {
+                    value: '4',
+                    label: '国家报警',
                   },
                 ]}
               />

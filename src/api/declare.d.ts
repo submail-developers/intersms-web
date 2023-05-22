@@ -492,7 +492,25 @@ declare module 'apis' {
     /**
      * 报警设置start
      */
-
+    // 获取报警设置
+    interface GetalArmConfigListParams {
+      id: string
+      type: string
+      keyword: string
+      page: string
+    }
+    // 获取报警设置的数据
+    interface GetalArmConfigListItems {
+      id: string
+      type: string
+      country_cn: string
+      region_code: string
+      time: string
+      row: string
+      fail: string
+      status: string
+      datetime: string
+    }
     /**
      * 报警设置end
      */

@@ -57,7 +57,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const { TextArea } = Input
   return (
     <Modal
-      title='添加敏感词'
+      title={isAdd ? '添加敏感词' : '编辑敏感词'}
       width={640}
       closable={false}
       wrapClassName='modal-reset'

@@ -135,7 +135,7 @@ export default function NumberChannelsRoute() {
       ),
     },
     {
-      title: '通道组',
+      title: '通道',
       width: '20%',
       dataIndex: 'channel',
     },
@@ -192,7 +192,7 @@ export default function NumberChannelsRoute() {
   }
   return (
     <div data-class='numberChannelsRoute'>
-      <MenuTitle title='号码通道路由配置'></MenuTitle>
+      <MenuTitle title='号码通道路由'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div className='btn-group' style={{ marginBottom: '10px' }}>

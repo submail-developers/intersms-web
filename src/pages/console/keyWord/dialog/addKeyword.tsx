@@ -50,7 +50,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const { TextArea } = Input
   return (
     <Modal
-      title='添加关键字'
+      title={isAdd ? '添加关键字' : '编辑关键字'}
       width={640}
       closable={false}
       wrapClassName='modal-reset'

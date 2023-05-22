@@ -9,37 +9,31 @@ import {
   Row,
   Col,
   Switch,
+  Popconfirm,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
+import { getalArmConfigList } from '@/api'
 import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 
 import './warning.scss'
 
-interface DataType {
-  id: string
-  warning_type: string
-  name: string
-  times: string
-  fail: string
-  status: string
-}
+interface DataType extends API.GetalArmConfigListItems {}
 interface FormValues {
-  channel: string
-  group: string
-  time: [Dayjs, Dayjs] | null
+  id: string
+  type: string
   keyword: string
+  page: string
 }
 
 // 国家信息配置
 export default function NumberChannelsRoute() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
   const { Option } = Select
-  const size = useSize()
-  const [form] = Form.useForm()
+
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
   // 选中的keys
@@ -66,6 +60,41 @@ export default function NumberChannelsRoute() {
       setSelectedRowKeys(selectedRowKeys)
     },
   }
+  const size = useSize()
+  const [form] = Form.useForm()
+  const [tableData, settableData] = useState<API.GetalArmConfigListItems[]>([])
+  // 初始化form的值
+  const initFormValues: FormValues = {
+    id: '',
+    type: 'all',
+    keyword: '',
+    page: '1',
+  }
+  const search = async () => {
+    const values = await form.getFieldsValue()
+    formatSearchValue(values)
+  }
+  const formatSearchValue = (params: FormValues) => {
+    const { id, type, page, keyword } = params
+    const searchParams = {
+      id: '',
+      type: 'all',
+      keyword: '',
+      page: '1',
+    }
+    searchEvent(searchParams)
+  }
+  const searchEvent = async (params: API.GetalArmConfigListParams) => {
+    try {
+      const res = await getalArmConfigList(params)
+      settableData(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    formatSearchValue(initFormValues)
+  }, [])
 
   const typeList = [
     { label: '报警类型', value: 'all' },
@@ -80,26 +109,46 @@ export default function NumberChannelsRoute() {
       title: '报警类型',
       dataIndex: 'warning_type',
       className: 'paddingL30',
-      width: '20%',
+      width: 120,
+      render: (_, record) => {
+        return (
+          <>
+            <span>
+              {record.type == '1'
+                ? '账号报警'
+                : record.type == '2'
+                ? '通道报警'
+                : record.type == '3'
+                ? '状态报警'
+                : '国家报警'}
+            </span>
+          </>
+        )
+      },
     },
     {
       title: '名称',
-      dataIndex: 'name',
+      dataIndex: 'country_cn',
+      width: 120,
     },
     {
       title: '报警时间范围',
-      dataIndex: 'times',
+      dataIndex: 'time',
+      width: 120,
     },
     {
       title: '报警失败率',
       dataIndex: 'fail',
+      width: 120,
     },
     {
       title: '报警开关',
+      width: 120,
       render: (_, record) => {
         return (
           <>
             <Switch size='small' checked={record.status == '1'} />
+            &nbsp;
             <span>{record.status == '1' ? '已启用' : '未启用'}</span>
           </>
         )
@@ -107,7 +156,7 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '操作',
-      width: 140,
+      width: 120,
       render: (_, record) => (
         <>
           <Button type='link' style={{ paddingLeft: 0 }}>
@@ -118,18 +167,6 @@ export default function NumberChannelsRoute() {
       ),
     },
   ]
-
-  const data: DataType[] = []
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      id: 'id' + i,
-      warning_type: '国家/地区报警',
-      name: '中国' + i,
-      times: '10分钟',
-      fail: '2%',
-      status: '' + (i % 2),
-    })
-  }
 
   const updateCountryEvent = () => {
     addDialogRef.current.open()
@@ -145,6 +182,18 @@ export default function NumberChannelsRoute() {
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
             </div>
+            <Popconfirm
+              placement='bottom'
+              title='警告'
+              description='确定启用选中的敏感词吗？'
+              // onConfirm={() => batchDeactivation('1')}
+              okText='确定'
+              cancelText='取消'>
+              <div className='btn'>
+                <i className='icon iconfont icon-qiyong'></i>
+                <span>启用</span>
+              </div>
+            </Popconfirm>
             <div className='btn'>
               <i className='icon iconfont icon-tingyong'></i>
               <span>停用</span>
@@ -232,7 +281,7 @@ export default function NumberChannelsRoute() {
         <Table
           className='theme-cell bg-white reset-table'
           columns={columns}
-          dataSource={data}
+          dataSource={tableData}
           rowKey={'id'}
           onRow={onRow}
           rowSelection={rowSelection}
