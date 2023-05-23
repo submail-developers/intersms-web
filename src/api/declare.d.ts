@@ -511,6 +511,17 @@ declare module 'apis' {
       status: string
       datetime: string
     }
+    // 保存报警设置
+    interface SaveAlarmConfigListParams {
+      id: string
+      type: string
+      country_cn: string
+      region_code: string
+      time: string
+      row: string
+      fail: string
+      status: string
+    }
     /**
      * 报警设置end
      */

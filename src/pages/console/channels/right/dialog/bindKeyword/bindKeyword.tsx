@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
-import { GetOpenSensitiveWordList } from '@/api'
+import { getOpenSensitiveWordList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
 import { API } from 'apis'
@@ -35,7 +35,7 @@ const Dialog = (props: Props, ref: any) => {
     initWord()
   }
   const initWord = async () => {
-    const res = await GetOpenSensitiveWordList({ id: '', page: '1' })
+    const res = await getOpenSensitiveWordList({ id: '', page: '1' })
     setWordList(res.data)
   }
 

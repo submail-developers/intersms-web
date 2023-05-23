@@ -16,7 +16,7 @@ import UpdateCountryConfig from './dialog/updateCountry'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
-import { getCountryList, GetAllGroupId } from '@/api'
+import { getCountryList, getAllGroupId } from '@/api'
 import { API } from 'apis'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
@@ -78,7 +78,7 @@ export default function Channel() {
   }
 
   const allGroupId = async () => {
-    const res = await GetAllGroupId('')
+    const res = await getAllGroupId('')
     setallGruopData([{ id: '', name: '全部通道组' }, ...res.data])
   }
   useEffect(() => {

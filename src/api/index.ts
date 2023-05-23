@@ -202,19 +202,14 @@ export const deleteAccountError = (data: API.Ids) => {
  * 通道组管理start
  */
 // 获取通道组id
-export const GetAllGroupId = (data: API.GetAllGroupIdParams) => {
-  return request.post<any, API.Response<any>, API.GetAllGroupIdParams>(
-    'customer/get_all_group_ids',
-    { ...data },
-  )
+export const getAllGroupId = (data: API.GetAllGroupIdParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetAllGroupIdItems[]>,
+    API.GetAllGroupIdParams
+  >('customer/get_all_group_ids', { ...data })
 }
-// 保存通道组
-export const SaveCountry = (data: API.SaveCountryParams) => {
-  return request.post<any, API.Response<any>, API.SaveCountryParams>(
-    'customer/save_country',
-    { ...data },
-  )
-}
+
 // 获取通道组列表(包含敏感词信息)
 export const getChannelGroupList = (data: API.GetChannelGroupListParams) => {
   return request.post<
@@ -267,10 +262,11 @@ export const getChannelGroupRelatedData = (
  */
 // 获取通道id
 export const getAllChannelId = (data: API.GetAllChannelIdParams) => {
-  return request.post<any, API.Response<any>, API.GetAllChannelIdParams>(
-    'customer/get_all_channel_ids',
-    { ...data },
-  )
+  return request.post<
+    any,
+    API.Response<API.GetAllChannelIdParamsItems[]>,
+    API.GetAllChannelIdParams
+  >('customer/get_all_channel_ids', { ...data })
 }
 // 获取通道
 export const getChannelList = (data: API.Ids) => {
@@ -347,8 +343,16 @@ export const updateChannelCountryNetworkStatus = (
  */
 // 获取国家信息列表
 export const getCountryList = (data: API.GetCountryListParams) => {
-  return request.post<any, API.Response<any>, API.GetCountryListParams>(
-    'customer/get_country',
+  return request.post<
+    any,
+    API.Response<API.GetCountryListItems>,
+    API.GetCountryListParams
+  >('customer/get_country', { ...data })
+}
+// 保存国家信息
+export const saveCountry = (data: API.SaveCountryParams) => {
+  return request.post<any, API.Response<any>, API.SaveCountryParams>(
+    'customer/save_country',
     { ...data },
   )
 }
@@ -362,10 +366,11 @@ export const getCountryList = (data: API.GetCountryListParams) => {
  */
 // 获取网络信息列表
 export const getNetWorkList = (data: API.GetNetWorkParams) => {
-  return request.post<any, API.Response<any>, API.GetNetWorkParams>(
-    'customer/get_network',
-    { ...data },
-  )
+  return request.post<
+    any,
+    API.Response<API.GetNetWorkListItems[]>,
+    API.GetNetWorkParams
+  >('customer/get_network', { ...data })
 }
 // 保存网络信息
 export const saveNetWorkList = (data: API.SaveNetWorkParams) => {
@@ -390,10 +395,11 @@ export const deleteNetWorkList = (data: API.DeleteNetWorkParams) => {
  */
 // 获取号码通道路由
 export const getMobileRouteList = (data: API.GetMobileRouteListParams) => {
-  return request.post<any, API.Response<any>, API.GetMobileRouteListParams>(
-    'customer/get_mobile_route',
-    { ...data },
-  )
+  return request.post<
+    any,
+    API.Response<API.GetMobileRouteListItems[]>,
+    API.GetMobileRouteListParams
+  >('customer/get_mobile_route', { ...data })
 }
 // 保存号码通道路由
 export const saveMobileRouteList = (data: API.SaveMobileRouteParams) => {
@@ -420,8 +426,16 @@ export const deleteMobileRouteList = (
  */
 // 获取报警设置
 export const getalArmConfigList = (data: API.GetalArmConfigListParams) => {
-  return request.post<any, API.Response<any>, API.GetalArmConfigListParams>(
-    'customer/get_alarm_config',
+  return request.post<
+    any,
+    API.Response<API.GetalArmConfigListItems[]>,
+    API.GetalArmConfigListParams
+  >('customer/get_alarm_config', { ...data })
+}
+// 保存报警设置
+export const saveAlarmConfigList = (data: API.SaveAlarmConfigListParams) => {
+  return request.post<any, API.Response<any>, API.SaveAlarmConfigListParams>(
+    'customer/save_alarm_config',
     { ...data },
   )
 }
@@ -442,15 +456,16 @@ export const getalArmConfigList = (data: API.GetalArmConfigListParams) => {
  */
 
 // 获取敏感词列表
-export const GetSensitiveWordList = (data: API.GetSensitiveWordListParams) => {
-  return request.post<any, API.Response<any>, API.GetSensitiveWordListParams>(
-    'customer/get_sensitive_keywords',
-    { ...data },
-  )
+export const getSensitiveWordList = (data: API.GetSensitiveWordListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetSensitiveWordListItems[]>,
+    API.GetSensitiveWordListParams
+  >('customer/get_sensitive_keywords', { ...data })
 }
 
 // 获取开启状态的敏感词列表
-export const GetOpenSensitiveWordList = (
+export const getOpenSensitiveWordList = (
   data: API.GetSensitiveWordListParams,
 ) => {
   return request.post<any, API.Response<any>, API.GetSensitiveWordListParams>(
@@ -460,7 +475,7 @@ export const GetOpenSensitiveWordList = (
 }
 
 // 新增敏感词列表
-export const AddSensitiveWordList = (data: API.AddSensitiveWordListParams) => {
+export const addSensitiveWordList = (data: API.AddSensitiveWordListParams) => {
   return request.post<any, API.Response<any>, API.AddSensitiveWordListParams>(
     'customer/save_sensitive_keywords',
     { ...data },
@@ -468,7 +483,7 @@ export const AddSensitiveWordList = (data: API.AddSensitiveWordListParams) => {
 }
 
 // 删除敏感词列表
-export const DeleteSensitiveWordList = (
+export const deleteSensitiveWordList = (
   data: API.DeleteSensitiveWordListParams,
 ) => {
   return request.post<
@@ -478,7 +493,7 @@ export const DeleteSensitiveWordList = (
   >('customer/delete_sensitive_keywords', { ...data })
 }
 // 敏感词批量启用/停用
-export const SensitiveWordListStopUsing = (
+export const sensitiveWordListStopUsing = (
   data: API.SensitiveWordListStopUsingParams,
 ) => {
   return request.post<
@@ -496,22 +511,23 @@ export const SensitiveWordListStopUsing = (
  * 关键词管理start
  */
 // 获取关键词列表
-export const GetkeyWord = (data: API.GetkeyWordParams) => {
-  return request.post<any, API.Response<any>, API.GetkeyWordParams>(
-    'customer/get_keywords_route',
-    { ...data },
-  )
+export const getkeyWord = (data: API.GetkeyWordParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetkeyWordItems[]>,
+    API.GetkeyWordParams
+  >('customer/get_keywords_route', { ...data })
 }
 
 // 新增关键词列表
-export const AddkeyWord = (data: API.AddkeyWordParams) => {
+export const addkeyWord = (data: API.AddkeyWordParams) => {
   return request.post<any, API.Response<any>, API.AddkeyWordParams>(
     'customer/save_keywords_route',
     { ...data },
   )
 }
 // 删除关键词列表
-export const DeletekeyWord = (data: API.DeletekeyWordParams) => {
+export const deletekeyWord = (data: API.DeletekeyWordParams) => {
   return request.post<any, API.Response<any>, API.DeletekeyWordParams>(
     'customer/delete_keywords_route',
     { ...data },

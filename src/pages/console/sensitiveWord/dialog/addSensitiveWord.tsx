@@ -6,7 +6,7 @@ import {
   useEffect,
 } from 'react'
 import { Modal, Form, Input, App, Row, Col } from 'antd'
-import { AddSensitiveWordList } from '@/api'
+import { addSensitiveWordList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { InputRef } from 'antd'
 
@@ -39,7 +39,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await AddSensitiveWordList(params)
+      const res = await addSensitiveWordList(params)
       if (res) {
         message.success('保存成功！')
       }

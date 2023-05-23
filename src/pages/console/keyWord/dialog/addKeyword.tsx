@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
-import { AddkeyWord } from '@/api'
+import { addkeyWord } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import type { RadioChangeEvent } from 'antd'
@@ -32,7 +32,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await AddkeyWord(params)
+      const res = await addkeyWord(params)
       if (res) {
         message.success('保存成功！')
       }

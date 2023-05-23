@@ -14,14 +14,14 @@ import type { ColumnsType } from 'antd/es/table'
 import AddSensitive from './dialog/addSensitiveWord'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import {
-  GetSensitiveWordList,
-  DeleteSensitiveWordList,
-  SensitiveWordListStopUsing,
+  getSensitiveWordList,
+  deleteSensitiveWordList,
+  sensitiveWordListStopUsing,
 } from '@/api'
 import { API } from 'apis'
 
 import './sensitiveWord.scss'
-
+interface DataType extends API.GetSensitiveWordListItems {}
 // 发送列表
 export default function Channel() {
   // 被点击的客户(不是被checkbox选中的客户)
@@ -56,26 +56,24 @@ export default function Channel() {
   }, [])
 
   const search = async () => {
-    const res = await GetSensitiveWordList({
+    const res = await getSensitiveWordList({
       id: '',
       page: '1',
     })
     settableData(res.data)
-    if (res.data.length > 0) {
-      // dispatch(changeActiveAccountId(res.data[0].account))
-      // setSelectedRowKeys([res.data[0].account])
-    } else {
-      // dispatch(changeActiveAccountId(''))
-      // setSelectedRowKeys([''])
-    }
+    // if (res.data.length > 0) {
+    // dispatch(changeActiveAccountId(res.data[0].account))
+    // setSelectedRowKeys([res.data[0].account])
+    // } else {
+    // dispatch(changeActiveAccountId(''))
+    // setSelectedRowKeys([''])
+    // }
   }
   const [tableData, settableData] = useState<API.GetSensitiveWordListItems[]>(
     [],
   )
   const addSensitiveWordListRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
-
-  interface DataType extends API.GetSensitiveWordListItems {}
 
   const columns: ColumnsType<DataType> = [
     {
@@ -148,7 +146,7 @@ export default function Channel() {
   ]
   // 单独删除事件
   const singleDeleteEvent = async (id: any) => {
-    await DeleteSensitiveWordList({ id })
+    await deleteSensitiveWordList({ id })
     await search()
   }
   // 批量删除事件
@@ -158,7 +156,7 @@ export default function Channel() {
       return
     }
     const id = selectedRowKeys.join(',')
-    await DeleteSensitiveWordList({ id })
+    await deleteSensitiveWordList({ id })
     await search()
     setSelectedRowKeys([])
   }
@@ -167,11 +165,11 @@ export default function Channel() {
     let id = record.id
     if (checked == true) {
       const status = '1'
-      await SensitiveWordListStopUsing({ id, status })
+      await sensitiveWordListStopUsing({ id, status })
       await search()
     } else {
       const status = '0'
-      await SensitiveWordListStopUsing({ id, status })
+      await sensitiveWordListStopUsing({ id, status })
       await search()
     }
   }
@@ -184,7 +182,7 @@ export default function Channel() {
       }
       const status = '0'
       const id = selectedRowKeys.join(',')
-      await SensitiveWordListStopUsing({ id, status })
+      await sensitiveWordListStopUsing({ id, status })
     } else {
       if (selectedRowKeys.length === 0) {
         message.warning('请勾选要启用的敏感词！')
@@ -192,7 +190,7 @@ export default function Channel() {
       }
       const status = '1'
       const id = selectedRowKeys.join(',')
-      await SensitiveWordListStopUsing({ id, status })
+      await sensitiveWordListStopUsing({ id, status })
     }
 
     await search()

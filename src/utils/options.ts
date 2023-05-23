@@ -53,6 +53,21 @@ export const channelTypeOptions = [
     value: '2',
   },
 ]
+// 报警类型
+export const waringTypeOptions = [
+  {
+    value: '1',
+    label: '账号报警',
+  },
+  {
+    value: '2',
+    label: '通道报警',
+  },
+  {
+    value: '4',
+    label: '国家报警',
+  },
+]
 // 通道类型-价格
 export const channelPriceTypeOptions = [
   { label: '行业短信', value: '1' },

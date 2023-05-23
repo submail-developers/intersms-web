@@ -1,8 +1,10 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
-import { addAccount } from '@/api'
+import { saveAlarmConfigList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
+import { waringTypeOptions } from '@/utils/options'
+import { ProFormDependency } from '@ant-design/pro-components'
 import './addDialog.scss'
 
 interface Props {
@@ -27,11 +29,12 @@ const Dialog = (props: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await addAccount(params)
-      if (res) {
-        message.success('保存成功！')
-      }
-      setIsModalOpen(false)
+      // const res = await saveAlarmConfigList(params)
+      console.log(params, '?????')
+      // if (res) {
+      //   message.success('保存成功！')
+      // }
+      // setIsModalOpen(false)
     } catch (error) {}
   }
 
@@ -53,6 +56,9 @@ const Dialog = (props: Props, ref: any) => {
   const onSearch = (value: string) => {
     console.log('search:', value)
   }
+  const selTab = (value: string) => {
+    console.log('selTab:', value)
+  }
 
   return (
     <Modal
@@ -69,13 +75,13 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ type: '1', status: '1' }}
+        initialValues={{ status: '1', access_type: '1' }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='报警类型' name='type'>
+            <Form.Item label='报警类型' name='access_type'>
               <Select
                 showSearch
                 // bordered={false}
@@ -88,24 +94,40 @@ const Dialog = (props: Props, ref: any) => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={[
-                  {
-                    value: '1',
-                    label: '账号报警',
-                  },
-                  {
-                    value: '2',
-                    label: '通道报警',
-                  },
-                  {
-                    value: '4',
-                    label: '国家报警',
-                  },
-                ]}
+                options={waringTypeOptions}
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <ProFormDependency name={['access_type']}>
+            {({ access_type }) => {
+              return (
+                <>
+                  <Col span={12}>
+                    <Form.Item
+                      hidden={access_type != '1'}
+                      name='type'
+                      label='账号报警'>
+                      <Input placeholder='请输入账号' maxLength={30} />
+                    </Form.Item>
+                    <Form.Item
+                      hidden={access_type != '2'}
+                      label='通道报警'
+                      name='type'>
+                      <Input placeholder='请输入通道' maxLength={30} />
+                    </Form.Item>
+                    <Form.Item
+                      label='国家报警'
+                      name='type'
+                      hidden={access_type != '4'}>
+                      <Input placeholder='请输入国家地区' maxLength={30} />
+                    </Form.Item>
+                  </Col>
+                </>
+              )
+            }}
+          </ProFormDependency>
+
+          {/* <Col span={12}>
             <Form.Item label='选择国家/地区'>
               <Select
                 showSearch
@@ -131,7 +153,7 @@ const Dialog = (props: Props, ref: any) => {
                 ]}
               />
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
         <Row>
           <Col span={24}>
