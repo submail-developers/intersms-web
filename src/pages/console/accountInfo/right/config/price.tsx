@@ -5,6 +5,7 @@ import { accountInfoState } from '@/store/reducers/accountInfo'
 import type { ColumnsType } from 'antd/es/table'
 import { getAccountPriceList, deleteAccountPrice } from '@/api'
 import { API } from 'apis'
+import { channelPriceTypeOptions, getOptionsLabel } from '@/utils/options'
 
 interface DataType extends API.AccountPriceItem {}
 
@@ -19,7 +20,7 @@ function Price(props: Props, ref: any) {
   useImperativeHandle(ref, () => {
     return {
       updateTableData, // 更行table
-      getRowSelectKeys, // 获取选中的rowKey
+      deleteSelectEvent, // 获取选中的rowKey
     }
   })
   const [tableData, settableData] = useState<DataType[]>([])
@@ -56,12 +57,22 @@ function Price(props: Props, ref: any) {
     try {
       await deleteAccountPrice({ id })
       message.success('删除成功')
+      setSelectedRowKeys(selectedRowKeys.filter((item) => item != id))
       updateTableData()
     } catch (error) {}
   }
-
-  const getRowSelectKeys = () => {
-    return selectedRowKeys
+  // 删除选中的
+  const deleteSelectEvent = async () => {
+    if (selectedRowKeys.length == 0) {
+      message.warning('请选择要删除的配置项！')
+      return
+    }
+    try {
+      await deleteAccountPrice({ id: selectedRowKeys.join(',') })
+      setSelectedRowKeys([])
+      message.success('删除成功')
+      updateTableData()
+    } catch (error) {}
   }
 
   const rowSelection = {
@@ -94,26 +105,14 @@ function Price(props: Props, ref: any) {
     {
       title: '单价',
       render: (_, record) => {
-        let text = ''
-        if (Number(record.price_tra) > 0) {
-          text = record.price_tra
-        } else if (Number(record.price_mke) > 0) {
-          text = record.price_mke
-        } else {
-          text = '-'
-        }
-        return (
-          <>
-            {Number(record.price_mke) > 0 ? record.price_mke : record.price_tra}
-          </>
-        )
+        return <>{record.type == '1' ? record.price_mke : record.price_tra}</>
       },
     },
     {
       title: '短信类型',
       dataIndex: 'type',
       render: (_, record) => {
-        return <>{Number(record.price_mke) > 0 ? '营销短信' : '行业短信'}</>
+        return <>{getOptionsLabel(channelPriceTypeOptions, record.type)}</>
       },
     },
     {

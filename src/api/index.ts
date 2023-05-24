@@ -193,6 +193,20 @@ export const deleteAccountError = (data: API.Ids) => {
     { ...data },
   )
 }
+// 客户信息-价格配置-开启/关闭全部营销
+export const changeMkState = (data: API.ChangeMkStateParams) => {
+  return request.post<any, API.Response<any>, API.ChangeMkStateParams>(
+    'customer/switch_sender_market_status',
+    { ...data },
+  )
+}
+// 客户信息-测试账户标记
+export const changeTestState = (data: API.ChangeTestStateParams) => {
+  return request.post<any, API.Response<any>, API.ChangeTestStateParams>(
+    'customer/switch_sender_test_status',
+    { ...data },
+  )
+}
 
 /**
  * 客户信息end
@@ -216,7 +230,9 @@ export const SaveCountry = (data: API.SaveCountryParams) => {
   )
 }
 // 获取通道组列表(包含敏感词信息)
-export const getChannelGroupList = (data: API.GetChannelGroupListParams) => {
+export const getChannelGroupList = (
+  data: API.GetChannelGroupListParams = { page: '1' },
+) => {
   return request.post<
     any,
     API.Response<API.GetChannelGroupListItem[]>,
@@ -239,12 +255,12 @@ export const deleteChannelGroup = (data: API.Ids) => {
 }
 // 通道组关联敏感词
 export const channelGroupBindSensitiveWord = (
-  data: API.ChannelGroupBindSensitiveWord,
+  data: API.updateChannelsBindSensitiveWordParams,
 ) => {
   return request.post<
     any,
     API.Response<any>,
-    API.ChannelGroupBindSensitiveWord
+    API.updateChannelsBindSensitiveWordParams
   >('customer/save_group_related_sensitive_keywords', { ...data })
 }
 
@@ -257,6 +273,45 @@ export const getChannelGroupRelatedData = (
     API.Response<any>,
     API.GetChannelGroupRelatedDataParams
   >('customer/get_group_related_data', { ...data })
+}
+// 通道组添加通道
+export const channelGroupAddChannel = (
+  data: API.ChannelGroupAddChannelParams,
+) => {
+  return request.post<any, API.Response<any>, API.ChannelGroupAddChannelParams>(
+    'customer/save_group_related_channel',
+    { ...data },
+  )
+}
+// 通道组删除通道
+export const channelGroupDeleteChannel = (
+  data: API.ChannelGroupDeleteChannelParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.ChannelGroupDeleteChannelParams
+  >('customer/delete_group_related_channel', { ...data })
+}
+// 通道组-通道修改关键字
+export const channelGroupUpdateKeyword = (
+  data: API.ChannelGroupUpdateKeywordParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.ChannelGroupUpdateKeywordParams
+  >('customer/save_group_related_keywords_route', { ...data })
+}
+// 修改通道组关联通道-国家网络权重
+export const updateChannelsCountryNetworkWeight = (
+  data: API.UpdateChannelCountryNetworkStatusParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.UpdateChannelCountryNetworkStatusParams
+  >('customer/update_countrynetwork_weight', { ...data })
 }
 /**
  * 通道组管理end
@@ -275,7 +330,7 @@ export const getChannelGroupRelatedData = (
  */
 
 // 获取通道列表
-export const getChannelList = (data: API.Ids) => {
+export const getChannelList = (data: API.Ids = { id: '' }) => {
   return request.post<any, API.Response<API.ChannelItem[]>, API.Ids>(
     'customer/get_channel',
     { ...data },
@@ -467,6 +522,12 @@ export const GetkeyWord = (data: API.GetkeyWordParams) => {
   return request.post<any, API.Response<any>, API.GetkeyWordParams>(
     'customer/get_keywords_route',
     { ...data },
+  )
+}
+// 获取可用关键词列表
+export const getKeywordEnabledList = () => {
+  return request.post<any, API.Response<API.GetKeywordEnabledItems[]>>(
+    'customer/get_all_keywords_route_list',
   )
 }
 

@@ -55,8 +55,8 @@ export const channelTypeOptions = [
 ]
 // 通道类型-价格
 export const channelPriceTypeOptions = [
-  { label: '行业短信', value: '1' },
-  { label: '营销短信', value: '2' },
+  { label: '行业短信', value: '2' },
+  { label: '营销短信', value: '1' },
 ]
 
 // 通道组类型
@@ -75,7 +75,17 @@ export const enableTypeOptions = [
   { label: '启用', value: '1' },
   { label: '禁用', value: '0' },
 ]
-export const TestTypeOptions = []
+// 绑定与取消绑定
+export const bindTypeOptions = [
+  {
+    label: '绑定',
+    value: '1',
+  },
+  {
+    label: '取消绑定',
+    value: '0',
+  },
+]
 
 // 根据value获取label值
 export const getOptionsLabel = (options: any[], value: string | number) => {

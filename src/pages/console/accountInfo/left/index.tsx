@@ -1,6 +1,16 @@
-import { useAppDispatch } from '@/store/hook'
-import { changeActiveAccount } from '@/store/reducers/accountInfo'
-import { useState, useEffect, useRef, MutableRefObject } from 'react'
+import { useAppDispatch, useAppSelector } from '@/store/hook'
+import {
+  changeActiveAccount,
+  accountInfoState,
+} from '@/store/reducers/accountInfo'
+import {
+  useState,
+  useEffect,
+  useRef,
+  MutableRefObject,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
 import { Input, ConfigProvider, Table, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
@@ -15,7 +25,13 @@ interface DataType extends API.AccountListItem {}
 /**
  * 客户信息
  */
-export default function Left() {
+function Left(props: any, ref: any) {
+  useImperativeHandle(ref, () => {
+    return {
+      forceSearch: () => search(accountInfoStore.activeAccount?.account),
+    }
+  })
+  const accountInfoStore = useAppSelector(accountInfoState)
   const dialogRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
@@ -38,33 +54,58 @@ export default function Left() {
       dataIndex: 'sender',
       className: 'paddingL30',
       ellipsis: true,
-      width: '50%',
+      width: '45%',
     },
     {
       title: 'account',
-      dataIndex: 'account',
-      className: 'paddingR30',
+      className: 'paddingL30',
       ellipsis: true,
-      width: '50%',
+      width: '45%',
+      render: (_, record) => <span className='color-gray'>{record.name}</span>,
+    },
+    {
+      title: 'qizi',
+      width: '10%',
+      align: 'right',
+      render: (_, record) => (
+        <div className='qizi'>
+          {record.test_flg == '1' ? (
+            <span
+              className='icon iconfont icon-a-biaoji2'
+              title='测试用户'></span>
+          ) : (
+            <></>
+          )}
+        </div>
+      ),
     },
   ]
 
   useEffect(() => {
     search()
+    return () => {
+      dispatch(changeActiveAccount(null))
+    }
   }, [])
 
   const setValue = (e: any) => {
     setkeyword(e.target.value)
   }
-  const search = async () => {
+  const search = async (activeAccountId: string = '') => {
     const res = await getAccountList({
       keyword,
       page: '1',
     })
     settableData(res.data)
     if (res.data.length > 0) {
-      dispatch(changeActiveAccount(res.data[0]))
-      setactiveRow(res.data[0])
+      let defaultIndex = 0
+      if (activeAccountId) {
+        defaultIndex = res.data.findIndex(
+          (item) => item.account == activeAccountId,
+        )
+      }
+      dispatch(changeActiveAccount(res.data[defaultIndex]))
+      setactiveRow(res.data[defaultIndex])
     } else {
       dispatch(changeActiveAccount(null))
       setactiveRow(null)
@@ -115,12 +156,12 @@ export default function Left() {
             allowClear
             suffix={
               <i
-                onClick={search}
+                onClick={() => search()}
                 className='icon iconfont icon-sousuo fn12'
                 style={{ color: '#888', cursor: 'pointer' }}></i>
             }
             onChange={setValue}
-            onPressEnter={search}
+            onPressEnter={() => search()}
             value={keyword}
             style={{
               height: '38px',
@@ -155,3 +196,5 @@ export default function Left() {
     </section>
   )
 }
+
+export default forwardRef(Left)

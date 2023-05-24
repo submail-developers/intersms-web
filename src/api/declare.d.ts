@@ -125,22 +125,24 @@ declare module 'apis' {
     interface SendListItem {
       id: string
       mobile: string
-      account: string
-      title: string
+      account: string // 账户ID
+      title: string // 发送名称
       content: string
-      type: string
+      type: '0' | '1' // 短信类型
+      net_type: '0' | '1' // 网络类型
       send: string // 发送时间
       sent: string // 完成时间
       sender: string
-      fee: string
-      cost: string
-      group_name: string
-      channel_name: string
-      country_cn: string
+      fee: string // 计费
+      cost: string // 成本
+      group_name: string //通道组
+      channel_name: string // 通道
+      country_cn: string //国家名称
       region_code: string
-      report_state: string
-      report_code: string
-      report_desc: string
+      report_state: string // 发送状态
+      report_code: string // 状态码
+      report_desc: string // 状态描述
+      downlink_time: string // 下行耗时
     }
 
     /**
@@ -164,6 +166,9 @@ declare module 'apis' {
       region_code: string
       channel_id: string
       network: string
+      name: string
+      mke_flg: '0' | '1' // 是否开启全部营销 0关闭1开启
+      test_flg: '0' | '1' // 是否是测试账户 0关闭1开启
     }
     // 删除客户参数
     interface DeleteAccountParams {
@@ -185,6 +190,7 @@ declare module 'apis' {
       price_tra: string // 行业价格
       price_mke: string // 营销价格
       country_cn: string // 国家中文名称
+      type: '1' | '2' // 短信类型  1营销2行业
     }
     // 客户信息-新增/修改国家通道配置
     interface UpdateAccountChannelParams {
@@ -216,6 +222,7 @@ declare module 'apis' {
       id: string
       region_code: string
       country_cn: string
+      type: '1' | '2' // 1营销2行业
       price_tra: string // 行业价格
       price_mke: string // 营销价格
       date: string
@@ -244,6 +251,16 @@ declare module 'apis' {
       unknown: string
       rejected: string
       spname: string
+    }
+    // 客户信息-价格配置-开启/关闭全部营销
+    interface ChangeMkStateParams {
+      account: string // 账户ID
+      mke_flg: '0' | '1' // 0否1是
+    }
+    // 客户信息-测试账户标记
+    interface ChangeTestStateParams {
+      account: string // 账户ID
+      test_flg: '0' | '1' // 0否1是
     }
 
     /**
@@ -285,7 +302,9 @@ declare module 'apis' {
       enabled: '0' | '1' // 是否启用 0关闭  1启用
     }
     // 获取通道组列表
-    interface GetChannelGroupListItem extends UpdateChannelGroupParams {}
+    interface GetChannelGroupListItem extends UpdateChannelGroupParams {
+      sens_word_list: ChannelsBindSensitiveItem[]
+    }
     // 通道组下的通道关联国家的网络类型
     interface ChannelsChannelNetworkItem {
       country_cn: string
@@ -293,6 +312,15 @@ declare module 'apis' {
       network_name: string
       network_weight: string // 权重
       region_code: string
+    }
+    // 通道组下的通道关联的关键字
+    interface ChannelsChannelKeywordItem {
+      keyroute_comment: string
+      keyroute_enabled: '0' | '1' // 0关闭1开启
+      keyroute_id: string
+      keyroute_keywords: string
+      keyroute_name: string
+      keyroute_priority: string
     }
     // 获取通道组关联数据（通道+权重+关键字路由+敏感词）
     interface GetChannelGroupRelatedDataItem {
@@ -304,15 +332,26 @@ declare module 'apis' {
       channel_flow: string // 流速
       channel_udh: '1' // 是否使用udh模式，1是0否
       channel_mobile_type: '0' // 0:无前缀, 1:+前缀, 2:00前缀, 3:0前缀
-      keyroute_list: any[]
+      keyroute_list: ChannelsChannelKeywordItem[]
       network_list: ChannelsChannelNetworkItem[]
     }
-    interface ChannelGroupBindSensitiveWord {
+    interface updateChannelsBindSensitiveWordParams {
       group_id: string
-      sens_id: string
+      sens_id: string // 敏感词ID
     }
     interface GetChannelGroupRelatedDataParams {
       group_id: string
+      channel_id?: string
+      keyword?: string
+    }
+    // 修改通道组关联通道-国家网络权重
+
+    interface UpdateChannelsCountryNetworkWeightParams {
+      group_id: string
+      channel_id: string
+      region_code: string
+      network_id: string
+      weight: string
     }
     /**
      * 通道组管理end
@@ -379,6 +418,20 @@ declare module 'apis' {
     interface UpdateChannelCountryNetworkStatusParams {
       id: string
       enabled: '1' | '0' // 是否启用   1是  0否
+    }
+    // 通道组添加通道-参数
+    interface ChannelGroupAddChannelParams {
+      group_id: string
+      channel_id: string
+    }
+    // 通道组删除通道-参数
+    interface ChannelGroupDeleteChannelParams
+      extends ChannelGroupAddChannelParams {}
+    // 通道组-通道修改关键字-参数
+    interface ChannelGroupUpdateKeywordParams {
+      group_id: string // 通道组ID
+      channel_id: string // 通道ID
+      keywords_route_id: string // 关键字ID
     }
     /**
      * 通道管理end
@@ -504,6 +557,15 @@ declare module 'apis' {
       id: string
       status: string
     }
+    // 通道组绑定的敏感词
+    interface ChannelsBindSensitiveItem {
+      enabled: '1' | '0' // 0关闭1开启
+      group_id: string
+      keywords: string
+      name: string
+      priority: string
+      sens_id: string
+    }
     /**
      * 敏感词管理end
      */
@@ -516,13 +578,19 @@ declare module 'apis' {
       id: string
       page: string
     }
-    // 获取关键词返回数据
+    // 获取所有关键词返回数据
     interface GetkeyWordItems {
       id: string
       name: string
       comment: string
       keywords: string
       enabled: string
+    }
+    // 获取可用关键词返回数据
+    interface GetKeywordEnabledItems {
+      id: string
+      name: string
+      keywords: string
     }
     // 新增关键词列表参数
     interface AddkeyWordParams {

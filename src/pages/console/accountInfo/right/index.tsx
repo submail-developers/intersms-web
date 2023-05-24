@@ -1,7 +1,7 @@
-import { useState, useRef, MutableRefObject, useEffect } from 'react'
+import { useState, useRef, MutableRefObject } from 'react'
 import { useAppSelector } from '@/store/hook'
 import { accountInfoState } from '@/store/reducers/accountInfo'
-import { Tabs, Button, App, Switch, Popconfirm } from 'antd'
+import { Tabs, App, Switch, Popconfirm, Checkbox } from 'antd'
 import type { TabsProps } from 'antd'
 import { useSize } from '@/hooks'
 
@@ -12,16 +12,15 @@ import PriceDialog from './dialog/priceDialog'
 import ChannelDialog from './dialog/channelDialog'
 import ErrorDialog from './dialog/errorDialog'
 
-import {
-  deleteAccountPrice,
-  deleteAccountChannel,
-  deleteAccountError,
-  GetRegioncodeByCountry,
-} from '@/api'
+import { GetRegioncodeByCountry, changeMkState, changeTestState } from '@/api'
 import { API } from 'apis'
 import './index.scss'
 
-export default function Right() {
+interface Props {
+  forceUpdateLeft: () => void
+}
+
+export default function Right(props: Props) {
   const { message } = App.useApp()
   const accountInfoStore = useAppSelector(accountInfoState)
   const size = useSize()
@@ -91,37 +90,15 @@ export default function Right() {
 
   // 删除
   const deleteEvent = async () => {
-    let selectKeys = []
     switch (activeKey) {
       case '1':
-        selectKeys = priceTableRef.current.getRowSelectKeys()
-        if (selectKeys.length == 0) {
-          message.warning('请选择要删除的配置项！')
-          return
-        }
-        await deleteAccountPrice({ id: selectKeys.join(',') })
-        message.success('删除成功')
-        updateTable()
+        await priceTableRef.current.deleteSelectEvent()
         break
       case '2':
-        selectKeys = channelTableRef.current.getRowSelectKeys()
-        if (selectKeys.length == 0) {
-          message.warning('请选择要删除的配置项！')
-          return
-        }
-        await deleteAccountChannel({ id: selectKeys.join(',') })
-        message.success('删除成功')
-        updateTable()
+        await channelTableRef.current.deleteSelectEvent()
         break
       case '3':
-        selectKeys = errorTableRef.current.getRowSelectKeys()
-        if (selectKeys.length == 0) {
-          message.warning('请选择要删除的配置项！')
-          return
-        }
-        await deleteAccountError({ id: selectKeys.join(',') })
-        message.success('删除成功')
-        updateTable()
+        await errorTableRef.current.deleteSelectEvent()
         break
     }
   }
@@ -173,9 +150,25 @@ export default function Right() {
   }
 
   // 自定义tabs导航
-  const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => {
-    const changeALl = (checked: boolean) => {}
-    const changeTest = (checked: boolean) => {}
+  const renderTabBar: TabsProps['renderTabBar'] = (tabprops, DefaultTabBar) => {
+    const [loading, setloading] = useState(false)
+    const [disabled, setdisabled] = useState(false)
+    const changeALl = async () => {
+      setloading(true)
+      await changeMkState({
+        account: accountInfoStore.activeAccount?.account || '',
+        mke_flg: accountInfoStore.activeAccount?.mke_flg == '0' ? '1' : '0',
+      })
+      await props.forceUpdateLeft()
+      setloading(false)
+    }
+    const changeTest = async () => {
+      await changeTestState({
+        account: accountInfoStore.activeAccount?.account || '',
+        test_flg: accountInfoStore.activeAccount?.test_flg == '1' ? '0' : '1',
+      })
+      await props.forceUpdateLeft()
+    }
     return (
       <div className={`tabbar-head ${size == 'small' ? '' : 'fx fx-wrap'}`}>
         <div className={`fx panle-list ${size}`}>
@@ -197,14 +190,23 @@ export default function Right() {
         <div className={`fx-auto ext-switch fx-between-center ${size}`}>
           {activeKey == '1' ? (
             <div className='switch-all fx-shrink'>
-              <Switch size={'small'} onChange={changeALl}></Switch>
+              <Switch
+                size={'small'}
+                loading={loading}
+                checked={accountInfoStore.activeAccount?.mke_flg == '1'}
+                onClick={changeALl}></Switch>
               <span> 开启全部营销</span>
             </div>
           ) : (
             <div></div>
           )}
           <div className='switch-test'>
-            <Switch size={'small'} onChange={changeTest}></Switch>
+            <Checkbox
+              disabled={disabled}
+              onChange={changeTest}
+              checked={
+                accountInfoStore.activeAccount?.test_flg == '1' ? true : false
+              }></Checkbox>
             <span> 测试用户</span>
           </div>
         </div>

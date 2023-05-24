@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Button,
   Select,
@@ -16,7 +16,7 @@ import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import { getSendList } from '@/api'
+import { getSendList, getChannelList, getChannelGroupList } from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 
@@ -30,22 +30,38 @@ interface FormValues {
   keyword: string
 }
 
+const allChannel = { name: '全部通道', id: 'all' } as API.ChannelItem
+const allChannels = {
+  name: '全部通道组',
+  id: 'all',
+} as API.GetChannelGroupListItem
+
 // 发送列表
 export default function SendList() {
   const { Option } = Select
   const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
-
-  const channelList = [
-    { label: '全部通道', value: 'all' },
-    { label: '通道1', value: '1' },
-    { label: '通道2', value: '2' },
-  ]
-  const groupList = [
-    { label: '全部通道组', value: 'all' },
-    { label: '通道组1', value: '1' },
-    { label: '通道组2', value: '2' },
+  const [tableData, settableData] = useState<DataType[]>([])
+  // 被点击的客户(不是被checkbox选中的客户)
+  const [activeIndex, setactiveIndex] = useState<number>()
+  // 通道列表
+  const [channelList, setchannelList] = useState<API.ChannelItem[]>([
+    allChannel,
+  ])
+  // 通道组列表
+  const [channelsList, setchannelsList] = useState<
+    API.GetChannelGroupListItem[]
+  >([allChannels])
+  // 快捷可选日期
+  const rangePresets: {
+    label: string
+    value: [Dayjs, Dayjs]
+  }[] = [
+    { label: '最近7天', value: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')] },
+    { label: '最近14天', value: [dayjs().add(-15, 'd'), dayjs().add(-1, 'd')] },
+    { label: '最近30天', value: [dayjs().add(-31, 'd'), dayjs().add(-1, 'd')] },
+    { label: '最近90天', value: [dayjs().add(-91, 'd'), dayjs().add(-1, 'd')] },
   ]
 
   // 初始化form的值
@@ -93,23 +109,26 @@ export default function SendList() {
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
     return current && current >= dayjs().endOf('day') // 无法选择今天以后的日期
   }
-  const rangePresets: {
-    label: string
-    value: [Dayjs, Dayjs]
-  }[] = [
-    { label: '最近7天', value: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近14天', value: [dayjs().add(-15, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近30天', value: [dayjs().add(-31, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近90天', value: [dayjs().add(-91, 'd'), dayjs().add(-1, 'd')] },
-  ]
 
-  const [tableData, settableData] = useState<DataType[]>([])
   useEffect(() => {
     formatSearchValue(initFormValues)
+    getChannel()
+    getChannels()
   }, [])
-
-  // 被点击的客户(不是被checkbox选中的客户)
-  const [activeIndex, setactiveIndex] = useState<number>()
+  // 获取通道列表
+  const getChannel = async () => {
+    try {
+      const res = await getChannelList()
+      setchannelList([...channelList, ...res.data])
+    } catch (error) {}
+  }
+  // 获取通道组列表
+  const getChannels = async () => {
+    try {
+      const res = await getChannelGroupList()
+      setchannelsList([...channelsList, ...res.data])
+    } catch (error) {}
+  }
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
@@ -122,6 +141,7 @@ export default function SendList() {
     {
       title: '号码',
       dataIndex: 'mobile',
+      className: 'paddingL30',
       width: 150,
     },
     {
@@ -143,12 +163,12 @@ export default function SendList() {
       title: '请求/完成时间',
       dataIndex: 'time',
       width: 200,
-      render: (_, recort) => {
+      render: (_, record) => {
         return (
           <span>
-            {recort.send}
+            {record.send}
             <br />
-            {recort.sent}
+            {record.sent}
           </span>
         )
       },
@@ -157,18 +177,20 @@ export default function SendList() {
       title: '下行耗时',
       dataIndex: 'timer',
       width: 100,
-      render: (_, recort) => <span style={{ color: '#0074d7' }}>3s</span>,
+      render: (_, record) => (
+        <span style={{ color: '#0074d7' }}>{record.downlink_time}s</span>
+      ),
     },
     {
       title: '回执',
       dataIndex: 'report_state',
-      render: (_, recort) => (
-        <span style={{ color: '#00ae6f' }}>{recort.report_state}</span>
+      render: (_, record) => (
+        <span style={{ color: '#00ae6f' }}>{record.report_state}</span>
       ),
     },
     {
       title: '国家/地区',
-      dataIndex: 'region_code',
+      dataIndex: 'country_cn',
     },
     {
       title: '通道',
@@ -177,28 +199,27 @@ export default function SendList() {
     {
       title: '通道组',
       dataIndex: 'group_name',
-      width: 200,
     },
     {
       title: '网络类型',
-      dataIndex: 'report_code',
-      width: 100,
+      render: (_, record) => <span>{record.net_type}</span>,
     },
     {
       title: '短信类型',
-      dataIndex: 'type',
-      width: 100,
+      render: (_, record) => (
+        <span>{record.type == '1' ? '营销短信' : '行业短信'}</span>
+      ),
     },
     {
       title: '成本/计费价',
       dataIndex: 'price',
-      width: 120,
-      render: (_, recort) => {
+      width: 140,
+      render: (_, record) => {
         return (
           <span>
-            <span style={{ color: '#888888' }}>{recort.fee}</span>
+            <span style={{ color: '#888888' }}>{record.fee}</span>
             <br />
-            {recort.cost}
+            {record.cost}
           </span>
         )
       },
@@ -227,6 +248,8 @@ export default function SendList() {
               placeholder='请选择通道'
               style={{ width: 162 }}
               size={size}
+              options={channelList}
+              fieldNames={{ label: 'name', value: 'id' }}
               suffixIcon={
                 <i
                   className='icon iconfont icon-xiala'
@@ -237,11 +260,11 @@ export default function SendList() {
                   }}
                 />
               }>
-              {channelList.map((item) => (
+              {/* {channelList.map((item) => (
                 <Option value={item.value} key={item.value}>
                   {item.label}
                 </Option>
-              ))}
+              ))} */}
             </Select>
           </Form.Item>
           <Form.Item label='' name='group' style={{ marginBottom: 10 }}>
@@ -249,6 +272,8 @@ export default function SendList() {
               placeholder='请选择通道组'
               style={{ width: 162 }}
               size={size}
+              options={channelsList}
+              fieldNames={{ label: 'name', value: 'id' }}
               suffixIcon={
                 <i
                   className='icon iconfont icon-xiala'
@@ -259,11 +284,11 @@ export default function SendList() {
                   }}
                 />
               }>
-              {groupList.map((item) => (
+              {/* {groupList.map((item) => (
                 <Option value={item.value} key={item.value}>
                   {item.label}
                 </Option>
-              ))}
+              ))} */}
             </Select>
           </Form.Item>
 

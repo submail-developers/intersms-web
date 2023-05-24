@@ -12,18 +12,22 @@ import EditDetail from './editDetail/editDetail'
 import type { ColumnsType } from 'antd/es/table'
 import { groupBy } from '@/utils'
 import { useSize } from '@/hooks'
+import { useAppSelector } from '@/store/hook'
+import { channelsState } from '@/store/reducers/channels'
 
-import { getChannelCountryList } from '@/api'
+import { getChannelGroupRelatedData } from '@/api'
 import { API } from 'apis'
 
 import './accessCountry.scss'
+interface DataType extends API.GetChannelGroupRelatedDataItem {}
 
 interface Props {
-  // onSearch: () => void
+  onUpdate: () => void
 }
 interface DataType extends API.GetChannelGroupRelatedDataItem {}
 
 const Dialog = (props: Props, ref: any) => {
+  const channlesStore = useAppSelector(channelsState)
   const size = useSize()
   const [form] = Form.useForm()
   const [channelId, setchannelId] = useState<string>('') // 通道ID
@@ -41,11 +45,7 @@ const Dialog = (props: Props, ref: any) => {
   const [show, setShow] = useState(false)
 
   const open = async (record: DataType) => {
-    const groupData = Object.values(
-      groupBy(record.network_list, 'region_code'),
-    ) as API.ChannelCountryConfigItem[][]
-    console.log(groupData, record.network_list, 'record.network_list')
-    setTableData(groupData)
+    setchannelId(record.channel_id)
     tableref && tableref.current?.cancel()
     setShow(true)
   }
@@ -57,7 +57,18 @@ const Dialog = (props: Props, ref: any) => {
   }, [channelId])
 
   const search = async () => {
-    const res = await getChannelCountryList({ channel: channelId })
+    try {
+      const res = await getChannelGroupRelatedData({
+        group_id: channlesStore.activeChannels?.id || '',
+        channel_id: channelId,
+        keyword: '',
+      })
+      const network_list = res.data[0].network_list
+      const groupData = Object.values(
+        groupBy(network_list, 'region_code'),
+      ) as API.ChannelCountryConfigItem[][]
+      setTableData(groupData)
+    } catch (error) {}
   }
 
   const close = () => {

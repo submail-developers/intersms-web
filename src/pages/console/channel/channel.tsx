@@ -1,16 +1,12 @@
 import { useEffect, useState, MutableRefObject, useRef } from 'react'
 import { Button, ConfigProvider, Table, Row, Col, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import type { RangePickerProps } from 'antd/es/date-picker'
 import AddChannel from './dialog/addChannel'
-import ChannelDetail from './dialog/channelDetail/channelDetail'
+import MyDrawer from './dialog/drawer/drawer'
 import BindSeneitiveWord from './dialog/bindSensitiveWord/bindSensitiveWord'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import dayjs from 'dayjs'
-import type { Dayjs } from 'dayjs'
 import { getChannelList, deleteChannel } from '@/api'
 import { API } from 'apis'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import {
   mobileTypeOptions,
   getOptionsLabel,
@@ -26,7 +22,7 @@ interface DataType extends API.ChannelItem {}
 export default function Channel() {
   const { message } = App.useApp()
   const addChannelDialogRef: MutableRefObject<any> = useRef(null)
-  const detailRef: MutableRefObject<any> = useRef(null)
+  const drawerRef: MutableRefObject<any> = useRef(null)
   const bindSeneitiveWordRef: MutableRefObject<any> = useRef(null)
   const [list, setlist] = useState<DataType[]>([])
 
@@ -171,7 +167,7 @@ export default function Channel() {
     addChannelDialogRef.current.open({ isAdd: false, record })
   }
   const showDetail = (record: DataType) => {
-    detailRef.current.open(record.id)
+    drawerRef.current.open(record.id)
   }
 
   useEffect(() => {
@@ -188,19 +184,24 @@ export default function Channel() {
   // 删除通道
   const deleteEvent = async (ids: string | React.Key[]) => {
     let id = ''
-    if (typeof ids == 'string') {
-      id = ids
-    } else {
+    if (Array.isArray(ids)) {
       if (ids.length === 0) {
         message.warning('请选择删除的通道！')
         return
       }
       id = ids.join(',')
+    } else {
+      id = ids
     }
     try {
       await deleteChannel({ id })
       message.success('删除成功')
       initData()
+      if (Array.isArray(ids)) {
+        setSelectedRowKeys([])
+      } else {
+        setSelectedRowKeys(selectedRowKeys.filter((item) => item != ids))
+      }
     } catch (error) {}
   }
 
@@ -287,7 +288,7 @@ export default function Channel() {
         />
       </ConfigProvider>
       <AddChannel ref={addChannelDialogRef} initData={initData} />
-      <ChannelDetail ref={detailRef} />
+      <MyDrawer ref={drawerRef} />
       <BindSeneitiveWord ref={bindSeneitiveWordRef} />
     </div>
   )

@@ -41,13 +41,14 @@ const Dialog = (props: Props, ref: any) => {
 
   const open = (record: API.UpdateAccountChannelParams = initialValues) => {
     form.resetFields()
-    if (record) {
+    if (record.id != '') {
       // 编辑
       setisAdd(false)
       const _initValues: FormType = {
         ...initialValues,
         ...record,
       }
+      _initValues.signature = _initValues.signature.replace(/【|】/g, '')
       form.setFieldsValue(_initValues)
     } else {
       setisAdd(true)
@@ -78,10 +79,11 @@ const Dialog = (props: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const formvalues = await form.getFieldsValue()
-      let params = {
+      let params: FormType = {
         ...formvalues,
         sender: accountInfoStore.activeAccount?.account,
       }
+      params.signature = `【${params.signature}】`
       await updateAccountChannel(params)
       message.success('保存成功！')
       props.onUpdateTable()

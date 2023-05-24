@@ -45,7 +45,7 @@ const Dialog = (props: Props, ref: any) => {
 
   const open = (record: API.UpdateAccountErrorParams = initialValues) => {
     form.resetFields()
-    if (record) {
+    if (record.id != '') {
       // 编辑
       setisAdd(false)
       const _initValues: FormType = {

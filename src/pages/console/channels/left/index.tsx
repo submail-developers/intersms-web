@@ -74,7 +74,13 @@ export default function Left() {
     {
       title: '敏感词绑定',
       width: 100,
-      render: (_, record) => <div className='color-gray'>敏感词</div>,
+      render: (_, record) => (
+        <div className='color-gray'>
+          {record.sens_word_list.length > 0
+            ? record.sens_word_list[0].name
+            : ''}
+        </div>
+      ),
     },
     {
       title: '状态',
@@ -136,7 +142,7 @@ export default function Left() {
   }
   const showBindDialog = () => {
     if (activeRow) {
-      bindSensitiveWordDialogRef.current.open({ rowData: activeRow })
+      bindSensitiveWordDialogRef.current.open(activeRow)
     } else {
       message.warning('请选择通道组！')
     }
@@ -216,7 +222,10 @@ export default function Left() {
         </ConfigProvider>
       </div>
       <AddDialog ref={dialogRef} onSearch={search} />
-      <BindSensitiveWordDialog ref={bindSensitiveWordDialogRef} />
+      <BindSensitiveWordDialog
+        ref={bindSensitiveWordDialogRef}
+        onSearch={search}
+      />
     </section>
   )
 }

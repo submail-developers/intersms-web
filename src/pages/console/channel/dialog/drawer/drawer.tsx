@@ -7,28 +7,19 @@ import {
   useEffect,
 } from 'react'
 import { Form, Input, ConfigProvider, Button, Drawer } from 'antd'
-import MyTable from '../table/table'
-import EditDetail from '../editDetail/editDetail'
-import type { ColumnsType } from 'antd/es/table'
+import MyTable from './table/table'
 import { groupBy } from '@/utils'
 import { useSize } from '@/hooks'
 
 import { getChannelCountryList } from '@/api'
 import { API } from 'apis'
 
-import './channelDetail.scss'
+import './drawer.scss'
 
 interface Props {
   // onSearch: () => void
 }
-interface DataType {
-  key: string
-  name: string
-  name_code: string
-  type: string
-  price1: string
-  price2: string
-}
+
 const Dialog = (props: Props, ref: any) => {
   const size = useSize()
   const [form] = Form.useForm()
@@ -38,7 +29,6 @@ const Dialog = (props: Props, ref: any) => {
   )
 
   const tableref: MutableRefObject<any> = useRef(null)
-  const editDetailRef: MutableRefObject<any> = useRef(null)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -68,16 +58,6 @@ const Dialog = (props: Props, ref: any) => {
 
   const close = () => {
     setShow(false)
-  }
-
-  const editEvent = () => {
-    let checkedCountry: string[] = []
-    tableData.forEach((item) => {
-      checkedCountry.push(item[0].region_code)
-    })
-    console.log(checkedCountry, '1')
-    tableref && tableref.current?.cancel()
-    editDetailRef.current.open(checkedCountry)
   }
 
   return (
@@ -146,17 +126,8 @@ const Dialog = (props: Props, ref: any) => {
           <div className='drawer-table-wrap'>
             <MyTable ref={tableref} search={search} tableData={tableData} />
           </div>
-          <footer className='drawer-footer'>
-            <div className='btn-group'>
-              <div className='btn' onClick={editEvent}>
-                <i className='icon iconfont icon-xinzeng'></i>
-                <span>编辑</span>
-              </div>
-            </div>
-          </footer>
         </div>
       </div>
-      <EditDetail search={search} channelId={channelId} ref={editDetailRef} />
     </Drawer>
   )
 }

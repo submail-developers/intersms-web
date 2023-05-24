@@ -1,15 +1,12 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
-import { GetOpenSensitiveWordList } from '@/api'
+import { getKeywordEnabledList, channelGroupUpdateKeyword } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
-import type { RadioChangeEvent } from 'antd'
 import { API } from 'apis'
-import { ProFormDependency } from '@ant-design/pro-components'
-import './bindKeyword.scss'
-import type { OptionProps } from 'antd/es/select'
+import { bindTypeOptions } from '@/utils/options'
 
 interface Props {
-  // onSearch: () => void
+  onSearch: (flag?: boolean) => void
 }
 
 // 新增时初始化的值
@@ -20,7 +17,7 @@ const initialValues = {
 const Dialog = (props: Props, ref: any) => {
   const [form] = Form.useForm()
   const { message } = App.useApp()
-  const [wordList, setWordList] = useState<API.GetSensitiveWordListItems[]>([])
+  const [wordList, setWordList] = useState<API.GetKeywordEnabledItems[]>([])
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -28,20 +25,45 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = () => {
-    form.resetFields()
-    form.setFieldsValue(initialValues)
-    setIsModalOpen(true)
+  const [channelItem, setchannelItem] =
+    useState<API.GetChannelGroupRelatedDataItem>()
+
+  const open = (record: API.GetChannelGroupRelatedDataItem) => {
+    setchannelItem(record)
     initWord()
+    form.resetFields()
+    let initVlaues
+    if (record.keyroute_list.length > 0) {
+      const { keyroute_id, keyroute_keywords } = record.keyroute_list[0]
+      initVlaues = {
+        keywords_route_id: keyroute_id,
+        keywords: keyroute_keywords,
+      }
+    } else {
+      initVlaues = initialValues
+    }
+    form.setFieldsValue(initVlaues)
+    setIsModalOpen(true)
   }
   const initWord = async () => {
-    const res = await GetOpenSensitiveWordList({ id: '', page: '1' })
+    const res = await getKeywordEnabledList()
+    console.log(res)
     setWordList(res.data)
   }
 
   const handleOk = async () => {
     try {
+      if (channelItem == undefined) return
+      let formValues = await form.getFieldsValue()
+      console.log(formValues)
+      await channelGroupUpdateKeyword({
+        group_id: channelItem.group_id,
+        channel_id: channelItem.channel_id,
+        keywords_route_id: formValues.keywords_route_id,
+        // isbind: formValues.isbind
+      })
       message.success('保存成功！')
+      props.onSearch(true)
       setIsModalOpen(false)
     } catch (error) {}
   }
@@ -61,7 +83,6 @@ const Dialog = (props: Props, ref: any) => {
       width={640}
       closable={false}
       wrapClassName='modal-reset'
-      data-class='bind-sensitive-worad'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
       <Form
@@ -74,26 +95,13 @@ const Dialog = (props: Props, ref: any) => {
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
             <Form.Item label='关键词绑定' name='bind'>
-              <Radio.Group
-                options={[
-                  {
-                    label: '绑定',
-                    value: '1',
-                  },
-                  {
-                    label: '取消绑定',
-                    value: '0',
-                  },
-                ]}></Radio.Group>
+              <Radio.Group options={bindTypeOptions}></Radio.Group>
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
-            <Form.Item
-              label='选择关键词条目'
-              name='word'
-              validateTrigger='onSubmit'>
+            <Form.Item label='选择关键词条目' name='keywords_route_id'>
               <Select
                 fieldNames={{ label: 'name', value: 'id' }}
                 showSearch
@@ -112,7 +120,7 @@ const Dialog = (props: Props, ref: any) => {
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
-            <Form.Item label='' name='keywords' validateTrigger='onSubmit'>
+            <Form.Item label='' name='keywords'>
               <Input.TextArea disabled autoSize={{ minRows: 2, maxRows: 6 }} />
             </Form.Item>
           </Col>

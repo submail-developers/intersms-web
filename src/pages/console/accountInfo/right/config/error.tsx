@@ -19,7 +19,7 @@ function Error(props: Props, ref: any) {
   useImperativeHandle(ref, () => {
     return {
       updateTableData, // 更行table
-      getRowSelectKeys, // 获取选中的rowKey
+      deleteSelectEvent, // 获取选中的rowKey
     }
   })
   const [tableData, settableData] = useState<DataType[]>([])
@@ -56,12 +56,22 @@ function Error(props: Props, ref: any) {
     try {
       await deleteAccountError({ id })
       message.success('删除成功')
+      setSelectedRowKeys(selectedRowKeys.filter((item) => item != id))
       updateTableData()
     } catch (error) {}
   }
-
-  const getRowSelectKeys = () => {
-    return selectedRowKeys
+  // 删除选中的
+  const deleteSelectEvent = async () => {
+    if (selectedRowKeys.length == 0) {
+      message.warning('请选择要删除的配置项！')
+      return
+    }
+    try {
+      await deleteAccountError({ id: selectedRowKeys.join(',') })
+      setSelectedRowKeys([])
+      message.success('删除成功')
+      updateTableData()
+    } catch (error) {}
   }
 
   const rowSelection = {
@@ -90,11 +100,11 @@ function Error(props: Props, ref: any) {
       dataIndex: 'appid',
     },
     {
-      title: 'region_code',
+      title: '国家/地区名',
       render: (_, record) => <div>缺少该字段</div>,
     },
     {
-      title: 'sms_type',
+      title: '短信类型',
       dataIndex: 'sms_type',
       render: (_, record) => (
         <div>{record.sms_type == '1' ? '短信通道组' : '营销通道组'}</div>

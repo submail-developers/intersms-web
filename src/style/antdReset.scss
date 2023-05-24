@@ -235,28 +235,24 @@
         & > td:last-child {
           border-color: transparent;
         }
-        &.active > td {
-          border-color: transparent !important;
-          background-color: #0074d7 !important;
-          color: #fff;
-          .ant-checkbox {
-            .ant-checkbox-inner {
-              background-color: #fff;
-              &::after {
-                border-color: #0074d7;
-              }
-            }
+        &.active {
+          td {
+            border-color: transparent !important;
+            background-color: #fff !important;
+            color: #0074d7;
           }
-          .ant-switch {
-            background-color: #fff;
-            .ant-switch-handle {
-              &::before {
-                background-color: #0074d7;
-              }
-            }
-            .ant-switch-inner-checked,
-            .ant-switch-inner-unchecked {
-              color: #0074d7;
+          td:first-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            position: relative;
+            &::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 3px;
+              height: 100%;
+              background-color: #0074d7;
             }
           }
         }

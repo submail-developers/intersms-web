@@ -13,7 +13,7 @@ interface Props {
 }
 
 interface FormType extends API.UpdateAccountPriceParams {
-  type: '1' | '2' // 通道类型   1行业通道  2营销通道
+  type: '1' | '2' // 通道类型   1营销2行业
 }
 
 // 新增时初始化的值
@@ -23,7 +23,7 @@ const initialValues: FormType = {
   price_tra: '',
   price_mke: '',
   country_cn: '',
-  type: '1',
+  type: '2', // 默认行业短信
 }
 const Dialog = (props: Props, ref: any) => {
   const accountInfoStore = useAppSelector(accountInfoState)
@@ -39,13 +39,12 @@ const Dialog = (props: Props, ref: any) => {
 
   const open = (record: API.UpdateAccountPriceParams = initialValues) => {
     form.resetFields()
-    if (record) {
+    if (record.id != '') {
       // 编辑
       setisAdd(false)
       const _initValues: FormType = {
         ...initialValues,
         ...record,
-        type: Number(record.price_mke) > 0 ? '2' : '1',
       }
       form.setFieldsValue(_initValues)
     } else {
@@ -62,15 +61,6 @@ const Dialog = (props: Props, ref: any) => {
         ...formvalues,
         sender: accountInfoStore.activeAccount?.account,
       }
-      // 因为table列表里没有类型字段，所以需要非该类型的值清空
-      if (params.type == '1') {
-        // 1行业通道
-        params.price_mke = ''
-      } else {
-        // 2营销通道
-        params.price_tra = ''
-      }
-      delete params.type
       await updateAccountPrice(params)
       message.success('保存成功！')
       props.onUpdateTable()
@@ -126,20 +116,6 @@ const Dialog = (props: Props, ref: any) => {
                 <Col span={12}>
                   <Form.Item
                     hidden={type != '1'}
-                    label='行业价格'
-                    name='price_tra'
-                    validateTrigger='onSubmit'
-                    rules={[
-                      { message: '请输入' },
-                      {
-                        type: 'number',
-                        message: '请输入正确的数字!',
-                      },
-                    ]}>
-                    <Input placeholder='请输入价格' maxLength={30} />
-                  </Form.Item>
-                  <Form.Item
-                    hidden={type != '2'}
                     label='营销价格'
                     name='price_mke'
                     validateTrigger='onSubmit'
@@ -150,7 +126,29 @@ const Dialog = (props: Props, ref: any) => {
                         message: '请输入正确的数字!',
                       },
                     ]}>
-                    <Input placeholder='请输入价格' maxLength={30} />
+                    <Input
+                      type='number'
+                      placeholder='请输入价格'
+                      maxLength={30}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    hidden={type != '2'}
+                    label='行业价格'
+                    name='price_tra'
+                    validateTrigger='onSubmit'
+                    rules={[
+                      { message: '请输入' },
+                      {
+                        type: 'number',
+                        message: '请输入正确的数字!',
+                      },
+                    ]}>
+                    <Input
+                      type='number'
+                      placeholder='请输入价格'
+                      maxLength={30}
+                    />
                   </Form.Item>
                 </Col>
               )

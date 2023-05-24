@@ -5,7 +5,6 @@ import { accountInfoState } from '@/store/reducers/accountInfo'
 import type { ColumnsType } from 'antd/es/table'
 import { getAccountChannelList, deleteAccountChannel } from '@/api'
 import { API } from 'apis'
-import { channelsTypeOptions2, getOptionsLabel } from '@/utils/options'
 
 interface DataType extends API.AccountChannelItem {}
 
@@ -20,7 +19,7 @@ function Channel(props: Props, ref: any) {
   useImperativeHandle(ref, () => {
     return {
       updateTableData, // 更行table
-      getRowSelectKeys, // 获取选中的rowKey
+      deleteSelectEvent, // 获取选中的rowKey
     }
   })
   const [tableData, settableData] = useState<DataType[]>([])
@@ -57,12 +56,22 @@ function Channel(props: Props, ref: any) {
     try {
       await deleteAccountChannel({ id })
       message.success('删除成功')
+      setSelectedRowKeys(selectedRowKeys.filter((item) => item != id))
       updateTableData()
     } catch (error) {}
   }
-
-  const getRowSelectKeys = () => {
-    return selectedRowKeys
+  // 删除选中的
+  const deleteSelectEvent = async () => {
+    if (selectedRowKeys.length == 0) {
+      message.warning('请选择要删除的配置项！')
+      return
+    }
+    try {
+      await deleteAccountChannel({ id: selectedRowKeys.join(',') })
+      setSelectedRowKeys([])
+      message.success('删除成功')
+      updateTableData()
+    } catch (error) {}
   }
 
   const rowSelection = {
@@ -113,12 +122,8 @@ function Channel(props: Props, ref: any) {
       dataIndex: 'signature',
     },
     {
-      title: '价格提醒',
-      render: (_, record) => <div>没有字段</div>,
-    },
-    {
-      title: '提醒配置',
-      render: (_, record) => <div>没有字段</div>,
+      title: '报警开关',
+      render: (_, record) => <div>没有字段</div>, // 已开启或不展示
     },
     {
       title: '操作',
