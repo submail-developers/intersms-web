@@ -10,11 +10,16 @@ import {
   Col,
   Switch,
   Popconfirm,
+  App,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import { getalArmConfigList } from '@/api'
+import {
+  getalArmConfigList,
+  updateAlarmConfigStatus,
+  deleteAlarmConfigList,
+} from '@/api'
 import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
@@ -77,9 +82,9 @@ export default function NumberChannelsRoute() {
   const formatSearchValue = (params: FormValues) => {
     const { id, type, page, keyword } = params
     const searchParams = {
-      id: '',
-      type: 'all',
-      keyword: '',
+      id,
+      type,
+      keyword,
       page: '1',
     }
     searchEvent(searchParams)
@@ -97,9 +102,10 @@ export default function NumberChannelsRoute() {
   }, [])
 
   const typeList = [
-    { label: '报警类型', value: 'all' },
-    { label: '报警类型1', value: '1' },
-    { label: '报警类型2', value: '2' },
+    { label: '全部类型', value: 'all' },
+    { label: '账号报警', value: '1' },
+    { label: '通道报警', value: '2' },
+    { label: '国家报警', value: '4' },
   ]
 
   const onFinish = (values: FormValues) => {}
@@ -107,7 +113,7 @@ export default function NumberChannelsRoute() {
   const columns: ColumnsType<DataType> = [
     {
       title: '报警类型',
-      dataIndex: 'warning_type',
+      dataIndex: 'type',
       className: 'paddingL30',
       width: 120,
       render: (_, record) => {
@@ -159,34 +165,88 @@ export default function NumberChannelsRoute() {
       width: 120,
       render: (_, record) => (
         <>
-          <Button type='link' style={{ paddingLeft: 0 }}>
+          <Button
+            type='link'
+            style={{ paddingLeft: 0 }}
+            onClick={() => updateWaringEvent(false, record)}>
             编辑
           </Button>
-          <Button type='link'>删除</Button>
+          <Button type='link'>
+            <Popconfirm
+              placement='left'
+              title='警告'
+              description='确定删除该条报警吗？'
+              onConfirm={() => singleDeleteEvent(record.id)}
+              okText='确定'
+              cancelText='取消'>
+              删除
+            </Popconfirm>
+          </Button>
         </>
       ),
     },
   ]
 
-  const updateCountryEvent = () => {
-    addDialogRef.current.open()
+  const updateWaringEvent = (isAdd: boolean = true, record?: DataType) => {
+    addDialogRef.current.open({ isAdd, record })
   }
 
+  const { message } = App.useApp()
+
+  //批量停用/启用
+  const batchDeactivation = async (isOnOff: any) => {
+    if (isOnOff === '0') {
+      if (selectedRowKeys.length === 0) {
+        message.warning('请勾选要停用的报警！')
+        return
+      }
+      const status = '0'
+      const id = selectedRowKeys.join(',')
+      await updateAlarmConfigStatus({ id, status })
+    } else {
+      if (selectedRowKeys.length === 0) {
+        message.warning('请勾选要启用的报警！')
+        return
+      }
+      const status = '1'
+      const id = selectedRowKeys.join(',')
+      await updateAlarmConfigStatus({ id, status })
+    }
+
+    await search()
+    setSelectedRowKeys([])
+  }
+  // 单独删除事件
+  const singleDeleteEvent = async (id: any) => {
+    await deleteAlarmConfigList({ id })
+    await search()
+  }
+  // 批量删除事件
+  const deleteEvent = async () => {
+    if (selectedRowKeys.length === 0) {
+      message.warning('请勾选要删除的报警！')
+      return
+    }
+    const id = selectedRowKeys.join(',')
+    await deleteAlarmConfigList({ id })
+    await search()
+    setSelectedRowKeys([])
+  }
   return (
     <div data-class='numberChannelsRoute'>
       <MenuTitle title='报警设置'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div className='btn-group' style={{ marginBottom: '10px' }}>
-            <div className='btn' onClick={updateCountryEvent}>
+            <div className='btn' onClick={() => updateWaringEvent()}>
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
             </div>
             <Popconfirm
               placement='bottom'
               title='警告'
-              description='确定启用选中的敏感词吗？'
-              // onConfirm={() => batchDeactivation('1')}
+              description='确定启用选中报警吗？'
+              onConfirm={() => batchDeactivation('1')}
               okText='确定'
               cancelText='取消'>
               <div className='btn'>
@@ -194,14 +254,30 @@ export default function NumberChannelsRoute() {
                 <span>启用</span>
               </div>
             </Popconfirm>
-            <div className='btn'>
-              <i className='icon iconfont icon-tingyong'></i>
-              <span>停用</span>
-            </div>
-            <div className='btn delete'>
-              <i className='icon iconfont icon-bianji'></i>
-              <span>删除</span>
-            </div>
+            <Popconfirm
+              placement='bottom'
+              title='警告'
+              description='确定停用选中的报警吗？'
+              onConfirm={() => batchDeactivation('0')}
+              okText='确定'
+              cancelText='取消'>
+              <div className='btn'>
+                <i className='icon iconfont icon-tingyong'></i>
+                <span>停用</span>
+              </div>
+            </Popconfirm>
+            <Popconfirm
+              placement='bottom'
+              title='警告'
+              description='确定删除选中的报警吗？'
+              onConfirm={deleteEvent}
+              okText='确定'
+              cancelText='取消'>
+              <div className='btn delete'>
+                <i className='icon iconfont icon-shanchu'></i>
+                <span>删除</span>
+              </div>
+            </Popconfirm>
           </div>
         </Col>
         <Col>
@@ -214,22 +290,19 @@ export default function NumberChannelsRoute() {
             <Form
               name='basic'
               form={form}
-              initialValues={{ message_type: 'all', channels_type: 'all' }}
+              // initialValues={{ message_type: 'all', channels_type: 'all' }}
               layout='inline'
               wrapperCol={{ span: 24 }}
               onFinish={onFinish}
               autoComplete='off'>
-              <Form.Item label='' name='country' style={{ marginBottom: 10 }}>
+              <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
                 <Input
                   size={size}
                   placeholder='国家/地区/通道/账号'
                   maxLength={20}
                   style={{ width: 220 }}></Input>
               </Form.Item>
-              <Form.Item
-                label=''
-                name='message_type'
-                style={{ marginBottom: 10 }}>
+              <Form.Item label='' name='type' style={{ marginBottom: 10 }}>
                 <Select
                   placeholder='报警类型'
                   style={{ width: 162 }}
@@ -262,6 +335,7 @@ export default function NumberChannelsRoute() {
                   <Button
                     type='primary'
                     size={size}
+                    onClick={search}
                     htmlType='submit'
                     style={{ width: 110, marginLeft: 0 }}>
                     搜索

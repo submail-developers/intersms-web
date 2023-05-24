@@ -522,6 +522,15 @@ declare module 'apis' {
       fail: string
       status: string
     }
+    //报警设置量启用/停用  0关闭 1启用
+    interface UpdateAlarmConfigStatusParams {
+      id: string
+      status: string
+    }
+    //删除报警设置
+    interface DeleteAlarmConfigListParams {
+      id: string
+    }
     /**
      * 报警设置end
      */
@@ -618,7 +627,47 @@ declare module 'apis' {
     /**
      * 黑名单管理start
      */
-
+    // 获取黑名单
+    interface GetBlackListParams {
+      id: string
+      page: string
+    }
+    // 获取黑名单返回数据
+    interface GetBlackListItems {
+      id: string
+      name: string
+      enabled: string
+    }
+    // 新增黑名单
+    interface AddBlackListParams {
+      id: string
+      name: string
+      enabled: string
+    }
+    //黑名单启用/停用  0关闭 1启用
+    interface blackListStopUsingParams {
+      id: string
+      enabled: string
+    }
+    // 删除黑名单
+    interface DeleteBlackListParams {
+      id: string
+    }
+    // 获取黑名单电话明细
+    interface GetBlackDetailListParams {
+      list_id: string
+    }
+    // 获取黑名单电话明细返回数据
+    interface GetBlackDetailListItems {
+      id: string
+      list: string
+      mobile: string
+    }
+    // 新增黑名单手机号码
+    interface AddBlackMobileListParams {
+      list_id: string
+      mobile: string
+    }
     /**
      * 黑名单管理end
      */

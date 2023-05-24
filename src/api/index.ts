@@ -439,6 +439,25 @@ export const saveAlarmConfigList = (data: API.SaveAlarmConfigListParams) => {
     { ...data },
   )
 }
+// 报警设置批量启用/停用
+export const updateAlarmConfigStatus = (
+  data: API.UpdateAlarmConfigStatusParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.UpdateAlarmConfigStatusParams
+  >('customer/update_alarm_config_status', { ...data })
+}
+// 删除报警设置
+export const deleteAlarmConfigList = (
+  data: API.DeleteAlarmConfigListParams,
+) => {
+  return request.post<any, API.Response<any>, API.DeleteAlarmConfigListParams>(
+    'customer/delete_alarm_config',
+    { ...data },
+  )
+}
 /**
  * 报警设置end
  */
@@ -555,7 +574,50 @@ export const keyWordStopUsing = (data: API.keyWordStopUsingParams) => {
 /**
  * 黑名单管理start
  */
-
+// 获取黑名单列表
+export const getBlackList = (data: API.GetBlackListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetBlackListItems[]>,
+    API.GetBlackListParams
+  >('customer/get_mobile_block_list', { ...data })
+}
+// 新增黑名单
+export const addBlackList = (data: API.AddBlackListParams) => {
+  return request.post<any, API.Response<any>, API.AddBlackListParams>(
+    'customer/save_mobile_block_list',
+    { ...data },
+  )
+}
+// 黑名单启用/停用
+export const BlackListStopUsing = (data: API.blackListStopUsingParams) => {
+  return request.post<any, API.Response<any>, API.blackListStopUsingParams>(
+    'customer/update_mobile_block_list_status',
+    { ...data },
+  )
+}
+// 删除黑名单
+export const deleteBlackList = (data: API.DeleteBlackListParams) => {
+  return request.post<any, API.Response<any>, API.DeleteBlackListParams>(
+    'customer/delete_mobile_block_list',
+    { ...data },
+  )
+}
+// 根据黑名单组，获取黑名单电话明细
+export const getBlackItemsList = (data: API.GetBlackDetailListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetBlackDetailListItems[]>,
+    API.GetBlackDetailListParams
+  >('customer/get_mobile_block_items_bylist', { ...data })
+}
+// 新增黑名单手机号码
+export const addBlackMobileList = (data: API.AddBlackMobileListParams) => {
+  return request.post<any, API.Response<any>, API.AddBlackMobileListParams>(
+    'customer/save_mobile_block_items',
+    { ...data },
+  )
+}
 /**
  * 黑名单管理end
  */

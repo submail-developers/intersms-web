@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/store/hook'
-// import {changeActiveAccountId,} from '@/store/reducers/accountInfo'
+import { changeActiveBlack } from '@/store/reducers/black'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import {
   Button,
@@ -17,11 +17,14 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import AddDialog from './addDialog/addDialog'
 
 import { useSize } from '@/hooks'
-import { getAccountList, deleteAccount } from '@/api'
+import { getBlackList, BlackListStopUsing, deleteBlackList } from '@/api'
 import { API } from 'apis'
 import './index.scss'
 
-interface DataType extends API.AccountListItem {}
+interface DataType extends API.GetBlackListItems {}
+interface SwitchProps {
+  record: DataType
+}
 
 /**
  * 客户信息
@@ -33,21 +36,45 @@ export default function Left() {
   // const accountInfoStore = useAppSelector(accountInfoState)
   const size = useSize()
   // 列表
-  const [tableData, settableData] = useState<API.AccountListItem[]>([])
+  const [tableData, settableData] = useState<API.GetBlackListItems[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
-  const [activeIndex, setactiveIndex] = useState<number>()
+  // const [activeIndex, setactiveIndex] = useState<number>()
+  const [activeIndex, setactiveIndex] = useState<DataType | null>(null)
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
-        setactiveIndex(index)
+        setactiveIndex(record)
       },
     }
   }
 
+  //单独启用 停用事件
+  const SwitchNode = (props: SwitchProps) => {
+    const [loading, setloading] = useState(false)
+    // 修改开启状态
+    const changeState = async (_: any, event: any) => {
+      event.stopPropagation()
+      setloading(true)
+      await BlackListStopUsing({
+        ...props.record,
+        enabled: props.record.enabled == '1' ? '0' : '1',
+      })
+      await search(true)
+      setloading(false)
+    }
+    return (
+      <Switch
+        size='small'
+        checked={props.record.enabled == '1'}
+        loading={loading}
+        onClick={(_, event) => changeState(_, event)}></Switch>
+    )
+  }
+
   const columns: ColumnsType<DataType> = [
     {
-      title: 'sender',
-      dataIndex: 'sender',
+      title: 'name',
+      dataIndex: 'name',
       className: 'paddingL30',
       ellipsis: true,
     },
@@ -56,57 +83,61 @@ export default function Left() {
       dataIndex: 'account',
       ellipsis: true,
       width: 50,
-      render: (_, record) => {
-        return (
-          <div className='fx-end-start' style={{ paddingRight: '10px' }}>
-            <Switch size='small' />
-          </div>
-        )
-      },
+      render: (_, record) => <SwitchNode record={record}></SwitchNode>,
     },
   ]
 
   useEffect(() => {
-    initData()
+    search()
   }, [])
-  const initData = async () => {
-    settableData([
-      {
-        id: 'string',
-        account: 'string',
-        sender: 'string',
-        region_code: 'string',
-        channel_id: 'string',
-        network: 'string',
-      },
-      {
-        id: 'string2',
-        account: 'string2',
-        sender: 'string2',
-        region_code: 'string',
-        channel_id: 'string',
-        network: 'string',
-      },
-    ])
-    // dispatch(changeActiveAccountId('string'))
-    setactiveIndex(0)
+  const search = async (noResetActive?: boolean) => {
+    const res = await getBlackList({
+      id: '',
+      page: '1',
+    })
+    settableData(res.data)
+    if (noResetActive) return
+    if (res.data.length > 0) {
+      dispatch(changeActiveBlack(res.data[0]))
+      setactiveIndex(res.data[0])
+    } else {
+      dispatch(changeActiveBlack(null))
+      setactiveIndex(null)
+    }
   }
 
-  // 删除事件
-  const deleteEvent = async () => {}
+  // 删除黑名单
+  const deleteEvent = async () => {
+    if (activeIndex) {
+      await deleteBlackList({
+        id: activeIndex.id,
+      })
+      await search()
+    } else {
+      message.warning('请选择黑名单！')
+    }
+  }
   // 开启dialog
-  const openAddDialog = () => {
-    dialogRef.current.open()
+  const openAddDialog = (isAdd: boolean = true) => {
+    if (isAdd === true) {
+      dialogRef.current.open()
+    } else {
+      if (activeIndex) {
+        dialogRef.current.open({ rowData: activeIndex })
+      } else {
+        message.warning('请选择黑名单！')
+      }
+    }
   }
 
   return (
     <section data-class='account-left' className={`${size}`}>
       <div className='btn-group'>
-        <div className='btn' onClick={openAddDialog}>
+        <div className='btn' onClick={() => openAddDialog()}>
           <i className='icon iconfont icon-xinzeng'></i>
           <span>新增</span>
         </div>
-        <div className='btn'>
+        <div className='btn' onClick={() => openAddDialog(false)}>
           <i className='icon iconfont icon-bianji'></i>
           <span>编辑</span>
         </div>
@@ -136,17 +167,17 @@ export default function Left() {
             showHeader={false}
             columns={columns}
             dataSource={tableData}
-            rowKey={'account'}
+            rowKey={'id'}
             onRow={onRow}
-            rowClassName={(record, index) =>
-              index == activeIndex ? 'active' : ''
+            rowClassName={(record) =>
+              record.id == activeIndex?.id ? 'active' : ''
             }
             pagination={false}
             scroll={{ y: 450 }}
           />
         </ConfigProvider>
       </div>
-      <AddDialog ref={dialogRef} onSearch={initData} />
+      <AddDialog ref={dialogRef} onSearch={search} />
     </section>
   )
 }

@@ -1,4 +1,7 @@
-import { useState, useRef, MutableRefObject } from 'react'
+import { useState, useRef, MutableRefObject, useEffect } from 'react'
+import { useAppSelector } from '@/store/hook'
+import { blackState } from '@/store/reducers/black'
+
 import {
   ConfigProvider,
   Button,
@@ -11,15 +14,36 @@ import {
   Pagination,
 } from 'antd'
 import { useSize } from '@/hooks'
+import { getBlackItemsList } from '@/api'
 import AddDialog from './dialog/addDialog'
-
+import { API } from 'apis'
 import './index.scss'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import type { PaginationProps } from 'antd'
 
+interface DataType extends API.GetBlackDetailListItems {}
+type Props = {
+  activeBlack: API.GetBlackDetailListItems | null
+}
+
 export default function Right() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
+  const [tableData, settableData] = useState<DataType[]>([])
+  const blackStore = useAppSelector(blackState)
   const [form] = Form.useForm()
+
+  useEffect(() => {
+    if (blackStore.activeBlack) {
+      search()
+    }
+  }, [blackStore.activeBlack])
+
+  const search = async () => {
+    const res = await getBlackItemsList({
+      list_id: blackStore.activeBlack?.id || '',
+    })
+    settableData(Array.isArray(res.data) ? res.data : Object.values(res.data))
+  }
 
   const data = []
   for (let i = 0; i < 100; i++) {
@@ -71,8 +95,8 @@ export default function Right() {
                 <span>新增</span>
               </div>
               <div className='btn'>
-                <i className='icon iconfont icon-bianji'></i>
-                <span>编辑</span>
+                <i className='icon iconfont icon-xinzeng'></i>
+                <span>导入</span>
               </div>
               <Popconfirm
                 placement='bottom'
@@ -144,10 +168,10 @@ export default function Right() {
         style={{ width: '100%', marginTop: '10px' }}
         onChange={onChange}>
         <Row wrap gutter={observerGutter}>
-          {data.map((item) => (
-            <Col key={item.value} {...observerBle}>
+          {tableData.map((item) => (
+            <Col key={item.id} {...observerBle}>
               <div className='checkbox-item fx-between-center'>
-                <Checkbox value={item.value}>{item.label}</Checkbox>
+                <Checkbox value={item.id}>{item.mobile}</Checkbox>
                 <div className='delete-btn'>
                   <i className='icon iconfont icon-shanchu fn12'></i>
                 </div>
@@ -156,7 +180,7 @@ export default function Right() {
           ))}
         </Row>
       </Checkbox.Group>
-      <AddDialog ref={addDialogRef} />
+      <AddDialog ref={addDialogRef} onSearch={search} />
     </section>
   )
 }

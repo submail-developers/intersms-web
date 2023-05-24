@@ -1,6 +1,11 @@
-import { useState, useImperativeHandle, forwardRef } from 'react'
+import { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
-import { saveAlarmConfigList } from '@/api'
+import {
+  saveAlarmConfigList,
+  getAllChannelId,
+  GetRegioncodeByCountry,
+} from '@/api'
+import { API } from 'apis'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
 import { waringTypeOptions } from '@/utils/options'
@@ -10,10 +15,16 @@ import './addDialog.scss'
 interface Props {
   // onSearch: () => void
 }
+interface InitOpen {
+  isAdd: boolean
+  record?: API.GetalArmConfigListItems
+}
 
 const Dialog = (props: Props, ref: any) => {
   const [form] = Form.useForm()
   const { message } = App.useApp()
+  const [isAdd, setisAdd] = useState<boolean>(true)
+  const [record, setrecord] = useState<API.GetalArmConfigListItems | null>(null)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -21,9 +32,27 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = () => {
+  const open = (initValues: InitOpen) => {
+    const { isAdd, record } = initValues
+    setisAdd(isAdd)
     form.resetFields()
+
+    form.setFieldsValue(initValues.record)
     setIsModalOpen(true)
+    if (isAdd) {
+      countryName()
+    } else {
+      if (record) {
+        let arr: API.GetRegioncodeByCountryItems[] = [
+          {
+            label: record.country_cn,
+            value: record.region_code,
+          },
+        ]
+        setCountryNameData(arr)
+        setrecord(record)
+      }
+    }
   }
 
   const handleOk = async () => {
@@ -36,6 +65,34 @@ const Dialog = (props: Props, ref: any) => {
       // }
       // setIsModalOpen(false)
     } catch (error) {}
+  }
+
+  useEffect(() => {
+    allGroupId()
+  }, [])
+  // 通道名称
+  const allGroupId = async () => {
+    const res = await getAllChannelId('')
+    setallChannelData(res.data)
+  }
+  const [allChannelData, setallChannelData] = useState<
+    API.GetAllChannelIdParamsItems[]
+  >([])
+
+  // 国家名称
+  const [CountryNameData, setCountryNameData] = useState<
+    API.GetRegioncodeByCountryItems[]
+  >([])
+  const countryName = async () => {
+    const res = await GetRegioncodeByCountry({
+      country_cn: '',
+      keyword: '',
+    })
+    let arr: any = []
+    res.data.map((item: any) => {
+      arr = [...arr, ...item.children]
+    })
+    setCountryNameData(arr)
   }
 
   const handleCancel = () => {
@@ -62,7 +119,7 @@ const Dialog = (props: Props, ref: any) => {
 
   return (
     <Modal
-      title='报警设置'
+      title={isAdd ? '新增报警设置' : '编辑报警设置'}
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -112,48 +169,54 @@ const Dialog = (props: Props, ref: any) => {
                     <Form.Item
                       hidden={access_type != '2'}
                       label='通道报警'
-                      name='type'>
-                      <Input placeholder='请输入通道' maxLength={30} />
+                      name='type'
+                      validateTrigger='onSubmit'>
+                      <Select
+                        showSearch
+                        placeholder='请选择通道'
+                        optionFilterProp='children'
+                        options={allChannelData}
+                        fieldNames={{ label: 'name', value: 'id' }}
+                        onChange={onChange1}
+                        onSearch={onSearch}
+                        filterOption={(input, option) =>
+                          (option?.name ?? '')
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                      />
                     </Form.Item>
-                    <Form.Item
+                    {/* <Form.Item
                       label='国家报警'
                       name='type'
                       hidden={access_type != '4'}>
                       <Input placeholder='请输入国家地区' maxLength={30} />
+                    </Form.Item> */}
+                    <Form.Item
+                      hidden={access_type != '4'}
+                      label='国家/地区名称'
+                      name='type'
+                      validateTrigger='onSubmit'>
+                      <Select
+                        showSearch
+                        placeholder='请选择'
+                        optionFilterProp='children'
+                        // onChange={seleCountry}
+                        // onSearch={onSearch}
+                        fieldNames={{ label: 'label', value: 'value' }}
+                        filterOption={(input, option) =>
+                          (option?.label ?? '')
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={CountryNameData}
+                      />
                     </Form.Item>
                   </Col>
                 </>
               )
             }}
           </ProFormDependency>
-
-          {/* <Col span={12}>
-            <Form.Item label='选择国家/地区'>
-              <Select
-                showSearch
-                // bordered={false}
-                placeholder='请选择'
-                optionFilterProp='children'
-                onChange={onChange1}
-                onSearch={onSearch}
-                filterOption={(input, option) =>
-                  (option?.label ?? '')
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={[
-                  {
-                    value: '1',
-                    label: '国家1',
-                  },
-                  {
-                    value: '2',
-                    label: '通道2',
-                  },
-                ]}
-              />
-            </Form.Item>
-          </Col> */}
         </Row>
         <Row>
           <Col span={24}>
