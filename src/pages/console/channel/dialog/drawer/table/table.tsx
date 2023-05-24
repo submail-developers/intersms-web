@@ -1,9 +1,5 @@
-import React, {
-  useEffect,
-  useImperativeHandle,
-  useState,
-  forwardRef,
-} from 'react'
+import { useImperativeHandle, useState, forwardRef } from 'react'
+import { LockFilled, UnlockOutlined } from '@ant-design/icons'
 import { Col, Input, Switch, Form } from 'antd'
 import { groupBy } from '@/utils'
 import './table.scss'
@@ -84,9 +80,6 @@ const Table = (props: Props, ref: any) => {
             <Input type='number' />
           </Form.Item>
         </div>
-        <div className='td'>
-          <Enbled id={editProps.itm.id} enabled={editProps.itm.enabled} />
-        </div>
         <div className='td fx action-wrap'>
           <div className='btn color' onClick={save}>
             保存
@@ -95,6 +88,9 @@ const Table = (props: Props, ref: any) => {
           <div className='btn color' onClick={cancel}>
             取消
           </div>
+        </div>
+        <div className='td'>
+          <Enbled id={editProps.itm.id} enabled={editProps.itm.enabled} />
         </div>
       </>
     )
@@ -112,13 +108,13 @@ const Table = (props: Props, ref: any) => {
       <>
         <div className='td'>{defprops.itm.price_tra}</div>
         <div className='td'>{defprops.itm.price_mke}</div>
-        <div className='td'>
-          <Enbled id={defprops.itm.id} enabled={defprops.itm.enabled} />
-        </div>
         <div className='td fx action-wrap'>
           <div className='btn color' onClick={edit}>
             编辑
           </div>
+        </div>
+        <div className='td'>
+          <Enbled id={defprops.itm.id} enabled={defprops.itm.enabled} />
         </div>
       </>
     )
@@ -128,13 +124,14 @@ const Table = (props: Props, ref: any) => {
     <Form component={false} form={form}>
       <div class-data='my-table'>
         <div className='thead fn14'>
+          <div className='th suo'></div>
           <div className='th name'>国家/地区名称</div>
           <div className='th'>国家/地区代码</div>
           <div className='th net-type'>运营商网络类型</div>
           <div className='th'>行业价格</div>
           <div className='th'>营销价格</div>
-          <div className='th'>状态</div>
           <div className='th'>操作</div>
+          <div className='th'>状态</div>
         </div>
         {props.tableData.map((item, index) => {
           return (
@@ -147,6 +144,20 @@ const Table = (props: Props, ref: any) => {
                 len += 1
                 return (
                   <div className={`tr ${trClassName}`} key={itm.id}>
+                    <div className='td suo'>
+                      {indx == 0 ? (
+                        <>
+                          {index % 2 == 1 ? (
+                            <LockFilled className='color-gray fn16' />
+                          ) : (
+                            <UnlockOutlined className='color fn16' />
+                          )}
+                        </>
+                      ) : (
+                        // <i className='icon iconfont icon-bianji fn14'></i>
+                        ''
+                      )}
+                    </div>
                     <div className='td name g-ellipsis'>
                       {indx == 0 ? itm.country_cn : ''}
                     </div>

@@ -1,4 +1,4 @@
-.drawer {
+.drawer.channel-drawer {
   .ant-drawer-content-wrapper {
     box-shadow: none;
     .ant-drawer-content {
@@ -20,7 +20,7 @@
             border-radius: 12px 0 0 12px;
             display: flex;
             flex-direction: column;
-            padding: 60px 10px 0;
+            padding: 60px 10px 10px;
             box-sizing: border-box;
             .drawer-header {
               width: 100%;
@@ -64,6 +64,13 @@
           }
         }
       }
+    }
+  }
+  .switch-all {
+    margin-left: 40px;
+    cursor: pointer;
+    .text {
+      margin-left: 10px;
     }
   }
 }

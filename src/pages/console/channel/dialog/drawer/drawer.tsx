@@ -6,8 +6,17 @@ import {
   useRef,
   useEffect,
 } from 'react'
-import { Form, Input, ConfigProvider, Button, Drawer } from 'antd'
+import {
+  Form,
+  Input,
+  ConfigProvider,
+  Button,
+  Drawer,
+  Popconfirm,
+  Switch,
+} from 'antd'
 import MyTable from './table/table'
+import TableCountry from './tableCountry/tableCountry'
 import { groupBy } from '@/utils'
 import { useSize } from '@/hooks'
 
@@ -49,7 +58,8 @@ const Dialog = (props: Props, ref: any) => {
   }, [channelId])
 
   const search = async () => {
-    const res = await getChannelCountryList({ channel: channelId })
+    const formVal = await form.getFieldsValue()
+    const res = await getChannelCountryList({ channel: channelId, ...formVal })
     const groupData = Object.values(
       groupBy(res.data, 'region_code'),
     ) as API.ChannelCountryConfigItem[][]
@@ -68,16 +78,35 @@ const Dialog = (props: Props, ref: any) => {
       closable={false}
       open={show}
       bodyStyle={{ backgroundColor: 'transparent' }}
-      rootClassName='drawer'
+      rootClassName='drawer channel-drawer'
       width={'70vw'}>
       <div className='drawer-container' onClick={close}>
         <div className='drawer-content' onClick={(e) => e.stopPropagation()}>
           <header className='drawer-header fx-between-center'>
             <div className='fx-y-center'>
-              <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
-              <span className='fn20' style={{ marginLeft: '10px' }}>
-                通道关联国家/地区
-              </span>
+              <div className='fx-y-center'>
+                <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
+                <span className='fn20' style={{ marginLeft: '10px' }}>
+                  通道关联国家/地区
+                </span>
+              </div>
+              <div className=' switch-all'>
+                <Popconfirm
+                  placement='bottom'
+                  title='警告'
+                  description='确定关联全部国家吗？'
+                  onConfirm={() => {}}
+                  okText='确定'
+                  cancelText='取消'>
+                  <div className='fx-y-center'>
+                    <Switch
+                      size='small'
+                      checked
+                      onClick={(_, e) => {}}></Switch>
+                    <span className='text'>关联全部国家</span>
+                  </div>
+                </Popconfirm>
+              </div>
             </div>
 
             <ConfigProvider
@@ -92,7 +121,7 @@ const Dialog = (props: Props, ref: any) => {
                 layout='inline'
                 wrapperCol={{ span: 24 }}
                 autoComplete='off'>
-                <Form.Item label='' name='name'>
+                <Form.Item label='' name='keyword'>
                   <Input
                     size={size}
                     placeholder='国家或地区名称/代码'
@@ -124,7 +153,8 @@ const Dialog = (props: Props, ref: any) => {
             </ConfigProvider>
           </header>
           <div className='drawer-table-wrap'>
-            <MyTable ref={tableref} search={search} tableData={tableData} />
+            {/* <MyTable ref={tableref} search={search} tableData={tableData} /> */}
+            <TableCountry search={search} tabData={tableData} />
           </div>
         </div>
       </div>

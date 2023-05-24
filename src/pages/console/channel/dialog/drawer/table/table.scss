@@ -1,5 +1,4 @@
 [class-data='my-table'] {
-  padding-bottom: 10px;
   .thead {
     width: 100%;
     min-height: 54px;
@@ -13,7 +12,8 @@
     .td {
       background-color: #f7f8f9;
       &:nth-child(1),
-      &:nth-child(2) {
+      &:nth-child(2),
+      &:nth-child(3) {
         background-color: transparent;
       }
     }
@@ -36,7 +36,7 @@
         flex-shrink: 0;
         display: flex;
         align-items: center;
-        &:nth-child(3) {
+        &:nth-child(4) {
           border-left: 1px solid #f7f8f9;
         }
         .ant-form-item {
@@ -56,6 +56,9 @@
             cursor: pointer;
           }
         }
+        &.suo {
+          cursor: pointer;
+        }
       }
     }
   }
@@ -66,20 +69,23 @@
     padding: 12px 20px;
     box-sizing: border-box;
     &:nth-child(1) {
-      padding-left: 50px;
+      width: 40px;
+      max-width: 40px;
+    }
+    &:nth-child(2) {
       font-weight: 500;
       width: 120px;
     }
-    &:nth-child(2) {
+    &:nth-child(3) {
       min-width: 80px;
     }
-    &:nth-child(3) {
+    &:nth-child(4) {
       padding-left: 50px;
     }
-    &:nth-child(4) {
+    &:nth-child(5) {
       min-width: 160px;
     }
-    &:nth-child(5) {
+    &:nth-child(6) {
       min-width: 160px;
     }
     &:last-child {
