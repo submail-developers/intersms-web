@@ -618,6 +618,15 @@ export const addBlackMobileList = (data: API.AddBlackMobileListParams) => {
     { ...data },
   )
 }
+// 删除黑名单手机号码
+export const deleteBlackMobileList = (
+  data: API.DeleteBlackMobileListParams,
+) => {
+  return request.post<any, API.Response<any>, API.DeleteBlackMobileListParams>(
+    'customer/delete_mobile_block_items',
+    { ...data },
+  )
+}
 /**
  * 黑名单管理end
  */

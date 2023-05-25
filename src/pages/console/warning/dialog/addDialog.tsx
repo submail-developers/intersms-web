@@ -8,19 +8,19 @@ import {
 import { API } from 'apis'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
-import { waringTypeOptions } from '@/utils/options'
+import { waringTypeOptions, waringTimeOptions } from '@/utils/options'
 import { ProFormDependency } from '@ant-design/pro-components'
 import './addDialog.scss'
 
 interface Props {
-  // onSearch: () => void
+  onSearch: () => void
 }
 interface InitOpen {
   isAdd: boolean
   record?: API.GetalArmConfigListItems
 }
 
-const Dialog = (props: Props, ref: any) => {
+const Dialog = ({ onSearch }: Props, ref: any) => {
   const [form] = Form.useForm()
   const { message } = App.useApp()
   const [isAdd, setisAdd] = useState<boolean>(true)
@@ -55,15 +55,41 @@ const Dialog = (props: Props, ref: any) => {
     }
   }
 
+  let area: string
+  let region_code: string
+  let country_cn: string
+  const seleCountry = (value: string, option: any) => {
+    country_cn = option.label
+    area = option.area
+    region_code = option.value
+  }
   const handleOk = async () => {
+    // try {
+    //   const params = await form.validateFields()
+    //   let newParams
+    //   newParams = { country_cn, region_code, ...params }
+    //   const res = await saveAlarmConfigList(newParams)
+    //   console.log(newParams, '?????')
+    //   if (res) {
+    //     message.success('保存成功！')
+    //   }
+    //   onSearch()
+    //   setIsModalOpen(false)
+    // } catch (error) {}
     try {
       const params = await form.validateFields()
-      // const res = await saveAlarmConfigList(params)
-      console.log(params, '?????')
-      // if (res) {
-      //   message.success('保存成功！')
-      // }
-      // setIsModalOpen(false)
+      let newParams
+      if (isAdd) {
+        newParams = { country_cn, area, region_code, ...params }
+      } else {
+        if (record) newParams = { ...record, ...params }
+      }
+      const res = await saveAlarmConfigList(newParams)
+      if (res) {
+        message.success('保存成功！')
+      }
+      setIsModalOpen(false)
+      onSearch()
     } catch (error) {}
   }
 
@@ -110,9 +136,6 @@ const Dialog = (props: Props, ref: any) => {
     console.log(`selected ${value}`)
   }
 
-  const onSearch = (value: string) => {
-    console.log('search:', value)
-  }
   const selTab = (value: string) => {
     console.log('selTab:', value)
   }
@@ -132,20 +155,19 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ status: '1', access_type: '1' }}
+        initialValues={{ status: '1', type: '1' }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='报警类型' name='access_type'>
+            <Form.Item label='报警类型' name='type'>
               <Select
+                disabled={!isAdd}
                 showSearch
-                // bordered={false}
                 placeholder='请选择'
                 optionFilterProp='children'
                 onChange={onChange1}
-                onSearch={onSearch}
                 filterOption={(input, option) =>
                   (option?.label ?? '')
                     .toLowerCase()
@@ -155,30 +177,34 @@ const Dialog = (props: Props, ref: any) => {
               />
             </Form.Item>
           </Col>
-          <ProFormDependency name={['access_type']}>
-            {({ access_type }) => {
+          <ProFormDependency name={['type']}>
+            {({ type }) => {
               return (
                 <>
                   <Col span={12}>
                     <Form.Item
-                      hidden={access_type != '1'}
-                      name='type'
+                      hidden={type != '1'}
+                      name={isAdd ? 'sender_id' : 'sender_mail'}
                       label='账号报警'>
-                      <Input placeholder='请输入账号' maxLength={30} />
+                      <Input
+                        disabled={!isAdd}
+                        placeholder='请输入账号'
+                        maxLength={30}
+                      />
                     </Form.Item>
                     <Form.Item
-                      hidden={access_type != '2'}
+                      hidden={type != '2'}
                       label='通道报警'
-                      name='type'
+                      name='channel_id'
                       validateTrigger='onSubmit'>
                       <Select
+                        disabled={!isAdd}
                         showSearch
                         placeholder='请选择通道'
                         optionFilterProp='children'
                         options={allChannelData}
                         fieldNames={{ label: 'name', value: 'id' }}
                         onChange={onChange1}
-                        onSearch={onSearch}
                         filterOption={(input, option) =>
                           (option?.name ?? '')
                             .toLowerCase()
@@ -186,23 +212,18 @@ const Dialog = (props: Props, ref: any) => {
                         }
                       />
                     </Form.Item>
-                    {/* <Form.Item
-                      label='国家报警'
-                      name='type'
-                      hidden={access_type != '4'}>
-                      <Input placeholder='请输入国家地区' maxLength={30} />
-                    </Form.Item> */}
+
                     <Form.Item
-                      hidden={access_type != '4'}
+                      hidden={type != '3'}
                       label='国家/地区名称'
-                      name='type'
+                      name={isAdd ? '' : 'country_cn'}
                       validateTrigger='onSubmit'>
                       <Select
                         showSearch
                         placeholder='请选择'
                         optionFilterProp='children'
-                        // onChange={seleCountry}
-                        // onSearch={onSearch}
+                        onChange={seleCountry}
+                        disabled={!isAdd}
                         fieldNames={{ label: 'label', value: 'value' }}
                         filterOption={(input, option) =>
                           (option?.label ?? '')
@@ -217,26 +238,61 @@ const Dialog = (props: Props, ref: any) => {
               )
             }}
           </ProFormDependency>
-        </Row>
-        <Row>
           <Col span={24}>
             <div className='group-title'>报警条件</div>
           </Col>
-        </Row>
-        <Row justify='space-between' gutter={30}>
           <Col span={12}>
+            <Form.Item label='报警时间范围' name='time'>
+              <Select
+                showSearch
+                placeholder='请选择'
+                optionFilterProp='children'
+                onChange={onChange1}
+                filterOption={(input, option) =>
+                  (option?.label ?? '')
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={waringTimeOptions}
+              />
+            </Form.Item>
+          </Col>
+          <ProFormDependency name={['type']}>
+            {({ type }) => {
+              return (
+                <>
+                  <Col span={12}>
+                    <Form.Item
+                      hidden={type != '1'}
+                      label='报警最小条数'
+                      name='row'>
+                      <Input placeholder='请输入最小条数' />
+                    </Form.Item>
+                  </Col>
+                </>
+              )
+            }}
+          </ProFormDependency>
+        </Row>
+        {/* <Row>
+          <Col span={24}>
+            <div className='group-title'>报警条件</div>
+          </Col>
+        </Row> */}
+        <Row justify='space-between' gutter={30}>
+          {/* <Col span={12}>
             <Form.Item
               label='报警时间范围'
               name='time'
               validateTrigger='onSubmit'>
               <Input placeholder='请输入报警时间范围' />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </Col> */}
+          {/* <Col span={12}>
             <Form.Item label='报警最小条数' name='min_length'>
               <Input placeholder='请输入最小条数' />
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
@@ -249,7 +305,7 @@ const Dialog = (props: Props, ref: any) => {
               <Radio.Group
                 options={[
                   { label: '打开', value: '1' },
-                  { label: '关闭', value: '2' },
+                  { label: '关闭', value: '0' },
                 ]}
                 onChange={onChange}
               />

@@ -14,10 +14,11 @@ import {
   Pagination,
 } from 'antd'
 import { useSize } from '@/hooks'
-import { getBlackItemsList } from '@/api'
+import { getBlackItemsList, deleteBlackMobileList } from '@/api'
 import AddDialog from './dialog/addDialog'
 import { API } from 'apis'
 import './index.scss'
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import type { PaginationProps } from 'antd'
 
@@ -43,14 +44,6 @@ export default function Right() {
       list_id: blackStore.activeBlack?.id || '',
     })
     settableData(Array.isArray(res.data) ? res.data : Object.values(res.data))
-  }
-
-  const data = []
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      value: 'id' + i,
-      label: '13012341234',
-    })
   }
 
   const onChange = (checkedValues: CheckboxValueType[]) => {
@@ -81,6 +74,8 @@ export default function Right() {
   }
   const showTotal: PaginationProps['showTotal'] = (total) =>
     `当前展示1-100/共${total}个`
+
+  const CheckboxGroup = Checkbox.Group
   return (
     <section
       data-class='account-right'
@@ -93,10 +88,6 @@ export default function Right() {
               <div className='btn' onClick={showDialog}>
                 <i className='icon iconfont icon-xinzeng'></i>
                 <span>新增</span>
-              </div>
-              <div className='btn'>
-                <i className='icon iconfont icon-xinzeng'></i>
-                <span>导入</span>
               </div>
               <Popconfirm
                 placement='bottom'
@@ -167,7 +158,7 @@ export default function Right() {
       <Checkbox.Group
         style={{ width: '100%', marginTop: '10px' }}
         onChange={onChange}>
-        <Row wrap gutter={observerGutter}>
+        <Row wrap gutter={observerGutter} style={{ width: '100%' }}>
           {tableData.map((item) => (
             <Col key={item.id} {...observerBle}>
               <div className='checkbox-item fx-between-center'>

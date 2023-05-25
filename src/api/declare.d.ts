@@ -510,6 +510,8 @@ declare module 'apis' {
       fail: string
       status: string
       datetime: string
+      sender_mail: string
+      channel_name: string
     }
     // 保存报警设置
     interface SaveAlarmConfigListParams {
@@ -667,6 +669,10 @@ declare module 'apis' {
     interface AddBlackMobileListParams {
       list_id: string
       mobile: string
+    }
+    // 删除黑名单手机号码
+    interface DeleteBlackMobileListParams {
+      id: string
     }
     /**
      * 黑名单管理end

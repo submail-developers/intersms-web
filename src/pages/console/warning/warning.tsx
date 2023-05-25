@@ -105,7 +105,7 @@ export default function NumberChannelsRoute() {
     { label: '全部类型', value: 'all' },
     { label: '账号报警', value: '1' },
     { label: '通道报警', value: '2' },
-    { label: '国家报警', value: '4' },
+    { label: '国家报警', value: '3' },
   ]
 
   const onFinish = (values: FormValues) => {}
@@ -120,32 +120,69 @@ export default function NumberChannelsRoute() {
         return (
           <>
             <span>
-              {record.type == '1'
-                ? '账号报警'
-                : record.type == '2'
-                ? '通道报警'
-                : record.type == '3'
-                ? '状态报警'
-                : '国家报警'}
+              {record.type == '1' ? (
+                <span className='color'>账号报警</span>
+              ) : record.type == '2' ? (
+                <span className='color-warning'>通道报警</span>
+              ) : record.type == '3' ? (
+                <span className='color-words'>国家报警</span>
+              ) : (
+                ''
+              )}
             </span>
           </>
         )
       },
     },
     {
-      title: '名称',
+      title: '报警对象',
       dataIndex: 'country_cn',
       width: 120,
+      render: (_, record) => {
+        return (
+          <>
+            <span>
+              {record.type == '1' ? (
+                <span>{record.sender_mail}</span>
+              ) : record.type == '2' ? (
+                <span>{record.channel_name}</span>
+              ) : record.type == '3' ? (
+                <span>{record.country_cn}</span>
+              ) : (
+                ''
+              )}
+            </span>
+          </>
+        )
+      },
+    },
+    {
+      title: '报警最小条数',
+      dataIndex: 'row',
+      width: 120,
+      render: (_, record) => {
+        return (
+          <>
+            <span>{record.row === '0' ? '-' : record.row + ' 条'} </span>
+          </>
+        )
+      },
     },
     {
       title: '报警时间范围',
       dataIndex: 'time',
       width: 120,
+      render: (_, record) => {
+        return <span>{record.time + ' 分钟'} </span>
+      },
     },
     {
       title: '报警失败率',
       dataIndex: 'fail',
       width: 120,
+      render: (_, record) => {
+        return <span>{record.fail + '%'} </span>
+      },
     },
     {
       title: '报警开关',
@@ -153,8 +190,12 @@ export default function NumberChannelsRoute() {
       render: (_, record) => {
         return (
           <>
-            <Switch size='small' checked={record.status == '1'} />
-            &nbsp;
+            <Switch
+              size='small'
+              checked={record.status == '1'}
+              onChange={(checked) => setSwicth(record, checked)}
+            />
+            &nbsp;&nbsp;
             <span>{record.status == '1' ? '已启用' : '未启用'}</span>
           </>
         )
@@ -192,7 +233,19 @@ export default function NumberChannelsRoute() {
   }
 
   const { message } = App.useApp()
-
+  //单独启用 停用事件
+  const setSwicth = async (record: any, checked: any) => {
+    let id = record.id
+    if (checked == true) {
+      const status = '1'
+      await updateAlarmConfigStatus({ id, status })
+      await search()
+    } else {
+      const status = '0'
+      await updateAlarmConfigStatus({ id, status })
+      await search()
+    }
+  }
   //批量停用/启用
   const batchDeactivation = async (isOnOff: any) => {
     if (isOnOff === '0') {
@@ -363,11 +416,11 @@ export default function NumberChannelsRoute() {
             index == activeIndex ? 'active' : ''
           }
           sticky
-          pagination={false}
+          pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>
-      <AddDialog ref={addDialogRef} />
+      <AddDialog ref={addDialogRef} onSearch={search} />
     </div>
   )
 }
