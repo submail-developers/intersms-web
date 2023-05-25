@@ -361,6 +361,14 @@ declare module 'apis' {
     /**
      * 通道管理start
      */
+    // 获取通道id
+    interface GetAllChannelIdParams {}
+    // 获取通道返回的数据
+    interface GetAllChannelIdParamsItems {
+      id: string
+      name: string
+    }
+    //
     interface ChannelItem {
       id: string
       name: string // 通道名称
@@ -512,7 +520,33 @@ declare module 'apis' {
     /**
      * 号码通道路由start
      */
-
+    // 获取号码通道路由
+    interface GetMobileRouteListParams {
+      mobile: string
+      type: string
+      keyword: string
+      channel: string
+      page: string
+    }
+    // 获取号码通道路由的数据
+    interface GetMobileRouteListItems {
+      mobile: string
+      name: string
+      type: string
+      channel: string
+      datetime: string
+    }
+    // 保存号码通道路由
+    interface SaveMobileRouteParams {
+      mobile: string
+      name: string
+      type: string
+      channel: string
+    }
+    //删除号码通道路由
+    interface DeleteMobileRouteListParams {
+      mobile: string
+    }
     /**
      * 号码通道路由end
      */
@@ -520,7 +554,47 @@ declare module 'apis' {
     /**
      * 报警设置start
      */
-
+    // 获取报警设置
+    interface GetalArmConfigListParams {
+      id: string
+      type: string
+      keyword: string
+      page: string
+    }
+    // 获取报警设置的数据
+    interface GetalArmConfigListItems {
+      id: string
+      type: string
+      country_cn: string
+      region_code: string
+      time: string
+      row: string
+      fail: string
+      status: string
+      datetime: string
+      sender_mail: string
+      channel_name: string
+    }
+    // 保存报警设置
+    interface SaveAlarmConfigListParams {
+      id: string
+      type: string
+      country_cn: string
+      region_code: string
+      time: string
+      row: string
+      fail: string
+      status: string
+    }
+    //报警设置量启用/停用  0关闭 1启用
+    interface UpdateAlarmConfigStatusParams {
+      id: string
+      status: string
+    }
+    //删除报警设置
+    interface DeleteAlarmConfigListParams {
+      id: string
+    }
     /**
      * 报警设置end
      */
@@ -632,7 +706,51 @@ declare module 'apis' {
     /**
      * 黑名单管理start
      */
-
+    // 获取黑名单
+    interface GetBlackListParams {
+      id: string
+      page: string
+    }
+    // 获取黑名单返回数据
+    interface GetBlackListItems {
+      id: string
+      name: string
+      enabled: string
+    }
+    // 新增黑名单
+    interface AddBlackListParams {
+      id: string
+      name: string
+      enabled: string
+    }
+    //黑名单启用/停用  0关闭 1启用
+    interface blackListStopUsingParams {
+      id: string
+      enabled: string
+    }
+    // 删除黑名单
+    interface DeleteBlackListParams {
+      id: string
+    }
+    // 获取黑名单电话明细
+    interface GetBlackDetailListParams {
+      list_id: string
+    }
+    // 获取黑名单电话明细返回数据
+    interface GetBlackDetailListItems {
+      id: string
+      list: string
+      mobile: string
+    }
+    // 新增黑名单手机号码
+    interface AddBlackMobileListParams {
+      list_id: string
+      mobile: string
+    }
+    // 删除黑名单手机号码
+    interface DeleteBlackMobileListParams {
+      id: string
+    }
     /**
      * 黑名单管理end
      */

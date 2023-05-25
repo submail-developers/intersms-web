@@ -53,6 +53,56 @@ export const channelTypeOptions = [
     value: '2',
   },
 ]
+// 报警类型
+export const waringTypeOptions = [
+  {
+    value: '1',
+    label: '账号报警',
+  },
+  {
+    value: '2',
+    label: '通道报警',
+  },
+  {
+    value: '3',
+    label: '国家报警',
+  },
+]
+// 报警时间范围
+export const waringTimeOptions = [
+  {
+    value: '5',
+    label: '5 分钟',
+  },
+  {
+    value: '10',
+    label: '10 分钟',
+  },
+  {
+    value: '15',
+    label: '15 分钟',
+  },
+  {
+    value: '20',
+    label: '20 分钟',
+  },
+  {
+    value: '25',
+    label: '25 分钟',
+  },
+  {
+    value: '30',
+    label: '30 分钟',
+  },
+  {
+    value: '45',
+    label: '45 分钟',
+  },
+  {
+    value: '60',
+    label: '60 分钟',
+  },
+]
 // 通道类型-价格
 export const channelPriceTypeOptions = [
   { label: '行业短信', value: '2' },

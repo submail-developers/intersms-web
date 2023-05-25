@@ -1,17 +1,28 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Divider } from 'antd'
-import { addAccount } from '@/api'
+import { saveMobileRouteList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
+import { useSize } from '@/hooks'
+import { API } from 'apis'
+
 import './addDialog.scss'
 
 interface Props {
-  // onSearch: () => void
+  allChannelData: API.GetAllChannelIdParamsItems[]
+  messageList: any
+  onSearch: () => void
 }
-
+interface InitOpen {
+  isAdd: boolean
+  record?: API.GetMobileRouteListItems
+}
 const Dialog = (props: Props, ref: any) => {
+  const { Option } = Select
+  const size = useSize()
   const [form] = Form.useForm()
   const { message } = App.useApp()
+  const [isAdd, setisAdd] = useState<boolean>(true)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -19,19 +30,22 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = () => {
+  const open = (initValues: InitOpen) => {
+    const { isAdd, record } = initValues
+    setisAdd(isAdd)
     form.resetFields()
+    form.setFieldsValue(initValues.record)
     setIsModalOpen(true)
   }
-
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await addAccount(params)
+      const res = await saveMobileRouteList(params)
       if (res) {
         message.success('保存成功！')
       }
       setIsModalOpen(false)
+      props.onSearch()
     } catch (error) {}
   }
 
@@ -50,6 +64,11 @@ const Dialog = (props: Props, ref: any) => {
     { label: '行业通道组', value: '1' },
     { label: '营销通道组', value: '2' },
   ]
+  const smsType = [
+    // { label: '短信类型', value: 'all' },
+    { label: '行业短信', value: '1' },
+    { label: '营销短信', value: '2' },
+  ]
 
   const onChange1 = (value: string) => {
     console.log(`selected ${value}`)
@@ -61,7 +80,7 @@ const Dialog = (props: Props, ref: any) => {
 
   return (
     <Modal
-      title='号码通道路由配置'
+      title={isAdd ? '新增号码通道路由' : '编辑号码通道路由'}
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -89,48 +108,41 @@ const Dialog = (props: Props, ref: any) => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label='短信类型' name='message_type'>
-              <Input disabled />
+            <Form.Item label='短信类型' name='type'>
+              {/* <Input disabled /> */}
+              <Select
+                showSearch
+                placeholder='请选择短信类型'
+                optionFilterProp='children'
+                // options={props.messageList}
+                options={smsType}
+                onChange={onChange1}
+              />
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item
-              label='通道组'
-              name='channel_group'
-              validateTrigger='onSubmit'>
+            <Form.Item label='通道' name='channel' validateTrigger='onSubmit'>
               <Select
                 showSearch
                 // bordered={false}
-                placeholder='请选择'
+                placeholder='请选择通道'
                 optionFilterProp='children'
+                options={props.allChannelData.slice(1)}
+                fieldNames={{ label: 'name', value: 'id' }}
                 onChange={onChange1}
                 onSearch={onSearch}
                 filterOption={(input, option) =>
-                  (option?.label ?? '')
+                  (option?.name ?? '')
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={[
-                  {
-                    value: '1',
-                    label: '通道组1',
-                  },
-                  {
-                    value: '2',
-                    label: '通道组2',
-                  },
-                  {
-                    value: '3',
-                    label: '通道组3',
-                  },
-                ]}
               />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label='发送名' name='country_code'>
+            <Form.Item label='发送名' name='name'>
               <Input placeholder='请输入发送名' />
             </Form.Item>
           </Col>

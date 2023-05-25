@@ -4,6 +4,7 @@ import testReducer from './reducers/test'
 import loadingReducer from './reducers/loading'
 import accountReducer from './reducers/accountInfo'
 import channelsReducer from './reducers/channels'
+import blackReducer from './reducers/black'
 
 // 合并切片
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     testReducer,
     accountReducer,
     channelsReducer,
+    blackReducer,
   },
 })
 

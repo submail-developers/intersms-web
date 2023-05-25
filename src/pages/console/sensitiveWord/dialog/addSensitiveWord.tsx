@@ -6,7 +6,7 @@ import {
   useEffect,
 } from 'react'
 import { Modal, Form, Input, App, Row, Col } from 'antd'
-import { AddSensitiveWordList } from '@/api'
+import { addSensitiveWordList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { InputRef } from 'antd'
 
@@ -39,7 +39,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await AddSensitiveWordList(params)
+      const res = await addSensitiveWordList(params)
       if (res) {
         message.success('保存成功！')
       }
@@ -57,7 +57,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const { TextArea } = Input
   return (
     <Modal
-      title='添加敏感词'
+      title={isAdd ? '添加敏感词' : '编辑敏感词'}
       width={640}
       closable={false}
       wrapClassName='modal-reset'

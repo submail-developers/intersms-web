@@ -13,7 +13,7 @@ import {
 import type { ColumnsType } from 'antd/es/table'
 import AddKeyword from './dialog/addKeyword'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import { GetkeyWord, DeletekeyWord, keyWordStopUsing } from '@/api'
+import { getkeyWord, deletekeyWord, keyWordStopUsing } from '@/api'
 import { API } from 'apis'
 
 // 发送列表
@@ -50,7 +50,7 @@ export default function Channel() {
   }, [])
 
   const search = async () => {
-    const res = await GetkeyWord({
+    const res = await getkeyWord({
       id: '',
       page: '1',
     })
@@ -140,7 +140,7 @@ export default function Channel() {
   ]
   // 单独删除事件
   const singleDeleteEvent = async (id: any) => {
-    await DeletekeyWord({ id })
+    await deletekeyWord({ id })
     await search()
   }
   // 批量删除事件
@@ -150,7 +150,7 @@ export default function Channel() {
       return
     }
     const id = selectedRowKeys.join(',')
-    await DeletekeyWord({ id })
+    await deletekeyWord({ id })
     await search()
   }
   //单独启用 停用事件

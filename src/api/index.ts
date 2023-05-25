@@ -216,19 +216,14 @@ export const changeTestState = (data: API.ChangeTestStateParams) => {
  * 通道组管理start
  */
 // 获取通道组id
-export const GetAllGroupId = (data: API.GetAllGroupIdParams) => {
-  return request.post<any, API.Response<any>, API.GetAllGroupIdParams>(
-    'customer/get_all_group_ids',
-    { ...data },
-  )
+export const getAllGroupId = (data: API.GetAllGroupIdParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetAllGroupIdItems[]>,
+    API.GetAllGroupIdParams
+  >('customer/get_all_group_ids', { ...data })
 }
-// 保存通道组
-export const SaveCountry = (data: API.SaveCountryParams) => {
-  return request.post<any, API.Response<any>, API.SaveCountryParams>(
-    'customer/save_country',
-    { ...data },
-  )
-}
+
 // 获取通道组列表(包含敏感词信息)
 export const getChannelGroupList = (
   data: API.GetChannelGroupListParams = { page: '1' },
@@ -320,14 +315,14 @@ export const updateChannelsNetworkWeight = (
 /**
  * 通道管理start
  */
-
-/**
- * 通道管理end
- */
-
-/**
- * 通道管理start
- */
+// 获取通道id
+export const getAllChannelId = (data: API.GetAllChannelIdParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetAllChannelIdParamsItems[]>,
+    API.GetAllChannelIdParams
+  >('customer/get_all_channel_ids', { ...data })
+}
 
 // 获取通道列表
 export const getChannelList = (data: API.Ids = { id: '' }) => {
@@ -397,8 +392,16 @@ export const updateChannelCountryNetworkStatus = (
  */
 // 获取国家信息列表
 export const getCountryList = (data: API.GetCountryListParams) => {
-  return request.post<any, API.Response<any>, API.GetCountryListParams>(
-    'customer/get_country',
+  return request.post<
+    any,
+    API.Response<API.GetCountryListItems>,
+    API.GetCountryListParams
+  >('customer/get_country', { ...data })
+}
+// 保存国家信息
+export const saveCountry = (data: API.SaveCountryParams) => {
+  return request.post<any, API.Response<any>, API.SaveCountryParams>(
+    'customer/save_country',
     { ...data },
   )
 }
@@ -412,10 +415,11 @@ export const getCountryList = (data: API.GetCountryListParams) => {
  */
 // 获取网络信息列表
 export const getNetWorkList = (data: API.GetNetWorkParams) => {
-  return request.post<any, API.Response<any>, API.GetNetWorkParams>(
-    'customer/get_network',
-    { ...data },
-  )
+  return request.post<
+    any,
+    API.Response<API.GetNetWorkListItems[]>,
+    API.GetNetWorkParams
+  >('customer/get_network', { ...data })
 }
 // 保存网络信息
 export const saveNetWorkList = (data: API.SaveNetWorkParams) => {
@@ -438,7 +442,30 @@ export const deleteNetWorkList = (data: API.DeleteNetWorkParams) => {
 /**
  * 号码通道路由start
  */
-
+// 获取号码通道路由
+export const getMobileRouteList = (data: API.GetMobileRouteListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetMobileRouteListItems[]>,
+    API.GetMobileRouteListParams
+  >('customer/get_mobile_route', { ...data })
+}
+// 保存号码通道路由
+export const saveMobileRouteList = (data: API.SaveMobileRouteParams) => {
+  return request.post<any, API.Response<any>, API.SaveMobileRouteParams>(
+    'customer/save_mobile_route',
+    { ...data },
+  )
+}
+// 删除号码通道路由配置
+export const deleteMobileRouteList = (
+  data: API.DeleteMobileRouteListParams,
+) => {
+  return request.post<any, API.Response<any>, API.DeleteMobileRouteListParams>(
+    'customer/delete_mobile_route',
+    { ...data },
+  )
+}
 /**
  * 号码通道路由end
  */
@@ -446,7 +473,40 @@ export const deleteNetWorkList = (data: API.DeleteNetWorkParams) => {
 /**
  * 报警设置start
  */
-
+// 获取报警设置
+export const getalArmConfigList = (data: API.GetalArmConfigListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetalArmConfigListItems[]>,
+    API.GetalArmConfigListParams
+  >('customer/get_alarm_config', { ...data })
+}
+// 保存报警设置
+export const saveAlarmConfigList = (data: API.SaveAlarmConfigListParams) => {
+  return request.post<any, API.Response<any>, API.SaveAlarmConfigListParams>(
+    'customer/save_alarm_config',
+    { ...data },
+  )
+}
+// 报警设置批量启用/停用
+export const updateAlarmConfigStatus = (
+  data: API.UpdateAlarmConfigStatusParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.UpdateAlarmConfigStatusParams
+  >('customer/update_alarm_config_status', { ...data })
+}
+// 删除报警设置
+export const deleteAlarmConfigList = (
+  data: API.DeleteAlarmConfigListParams,
+) => {
+  return request.post<any, API.Response<any>, API.DeleteAlarmConfigListParams>(
+    'customer/delete_alarm_config',
+    { ...data },
+  )
+}
 /**
  * 报警设置end
  */
@@ -464,15 +524,16 @@ export const deleteNetWorkList = (data: API.DeleteNetWorkParams) => {
  */
 
 // 获取敏感词列表
-export const GetSensitiveWordList = (data: API.GetSensitiveWordListParams) => {
-  return request.post<any, API.Response<any>, API.GetSensitiveWordListParams>(
-    'customer/get_sensitive_keywords',
-    { ...data },
-  )
+export const getSensitiveWordList = (data: API.GetSensitiveWordListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetSensitiveWordListItems[]>,
+    API.GetSensitiveWordListParams
+  >('customer/get_sensitive_keywords', { ...data })
 }
 
 // 获取开启状态的敏感词列表
-export const GetOpenSensitiveWordList = (
+export const getOpenSensitiveWordList = (
   data: API.GetSensitiveWordListParams,
 ) => {
   return request.post<any, API.Response<any>, API.GetSensitiveWordListParams>(
@@ -482,7 +543,7 @@ export const GetOpenSensitiveWordList = (
 }
 
 // 新增敏感词列表
-export const AddSensitiveWordList = (data: API.AddSensitiveWordListParams) => {
+export const addSensitiveWordList = (data: API.AddSensitiveWordListParams) => {
   return request.post<any, API.Response<any>, API.AddSensitiveWordListParams>(
     'customer/save_sensitive_keywords',
     { ...data },
@@ -490,7 +551,7 @@ export const AddSensitiveWordList = (data: API.AddSensitiveWordListParams) => {
 }
 
 // 删除敏感词列表
-export const DeleteSensitiveWordList = (
+export const deleteSensitiveWordList = (
   data: API.DeleteSensitiveWordListParams,
 ) => {
   return request.post<
@@ -500,7 +561,7 @@ export const DeleteSensitiveWordList = (
   >('customer/delete_sensitive_keywords', { ...data })
 }
 // 敏感词批量启用/停用
-export const SensitiveWordListStopUsing = (
+export const sensitiveWordListStopUsing = (
   data: API.SensitiveWordListStopUsingParams,
 ) => {
   return request.post<
@@ -518,11 +579,12 @@ export const SensitiveWordListStopUsing = (
  * 关键词管理start
  */
 // 获取关键词列表
-export const GetkeyWord = (data: API.GetkeyWordParams) => {
-  return request.post<any, API.Response<any>, API.GetkeyWordParams>(
-    'customer/get_keywords_route',
-    { ...data },
-  )
+export const getkeyWord = (data: API.GetkeyWordParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetkeyWordItems[]>,
+    API.GetkeyWordParams
+  >('customer/get_keywords_route', { ...data })
 }
 // 获取可用关键词列表
 export const getKeywordEnabledList = () => {
@@ -532,14 +594,14 @@ export const getKeywordEnabledList = () => {
 }
 
 // 新增关键词列表
-export const AddkeyWord = (data: API.AddkeyWordParams) => {
+export const addkeyWord = (data: API.AddkeyWordParams) => {
   return request.post<any, API.Response<any>, API.AddkeyWordParams>(
     'customer/save_keywords_route',
     { ...data },
   )
 }
 // 删除关键词列表
-export const DeletekeyWord = (data: API.DeletekeyWordParams) => {
+export const deletekeyWord = (data: API.DeletekeyWordParams) => {
   return request.post<any, API.Response<any>, API.DeletekeyWordParams>(
     'customer/delete_keywords_route',
     { ...data },
@@ -567,7 +629,59 @@ export const keyWordStopUsing = (data: API.keyWordStopUsingParams) => {
 /**
  * 黑名单管理start
  */
-
+// 获取黑名单列表
+export const getBlackList = (data: API.GetBlackListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetBlackListItems[]>,
+    API.GetBlackListParams
+  >('customer/get_mobile_block_list', { ...data })
+}
+// 新增黑名单
+export const addBlackList = (data: API.AddBlackListParams) => {
+  return request.post<any, API.Response<any>, API.AddBlackListParams>(
+    'customer/save_mobile_block_list',
+    { ...data },
+  )
+}
+// 黑名单启用/停用
+export const BlackListStopUsing = (data: API.blackListStopUsingParams) => {
+  return request.post<any, API.Response<any>, API.blackListStopUsingParams>(
+    'customer/update_mobile_block_list_status',
+    { ...data },
+  )
+}
+// 删除黑名单
+export const deleteBlackList = (data: API.DeleteBlackListParams) => {
+  return request.post<any, API.Response<any>, API.DeleteBlackListParams>(
+    'customer/delete_mobile_block_list',
+    { ...data },
+  )
+}
+// 根据黑名单组，获取黑名单电话明细
+export const getBlackItemsList = (data: API.GetBlackDetailListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetBlackDetailListItems[]>,
+    API.GetBlackDetailListParams
+  >('customer/get_mobile_block_items_bylist', { ...data })
+}
+// 新增黑名单手机号码
+export const addBlackMobileList = (data: API.AddBlackMobileListParams) => {
+  return request.post<any, API.Response<any>, API.AddBlackMobileListParams>(
+    'customer/save_mobile_block_items',
+    { ...data },
+  )
+}
+// 删除黑名单手机号码
+export const deleteBlackMobileList = (
+  data: API.DeleteBlackMobileListParams,
+) => {
+  return request.post<any, API.Response<any>, API.DeleteBlackMobileListParams>(
+    'customer/delete_mobile_block_items',
+    { ...data },
+  )
+}
 /**
  * 黑名单管理end
  */

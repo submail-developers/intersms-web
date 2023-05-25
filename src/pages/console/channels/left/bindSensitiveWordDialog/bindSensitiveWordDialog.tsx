@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
-import { GetOpenSensitiveWordList, channelGroupBindSensitiveWord } from '@/api'
+import { getOpenSensitiveWordList, channelGroupBindSensitiveWord } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import { API } from 'apis'
 import { bindTypeOptions } from '@/utils/options'
@@ -40,7 +40,7 @@ const Dialog = (props: Props, ref: any) => {
     initWord()
   }
   const initWord = async () => {
-    const res = await GetOpenSensitiveWordList({ id: '', page: '1' })
+    const res = await getOpenSensitiveWordList({ id: '', page: '1' })
     setWordList(res.data)
   }
 
