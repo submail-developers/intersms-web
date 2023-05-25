@@ -4,17 +4,20 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react'
+
 import type { TableColumnsType } from 'antd'
 import { Form, Input, Table, ConfigProvider, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
 import './tableCountry.scss'
 import {
-  updateChannelCountryNetworkPrice,
   updateChannelCountryNetworkStatus,
+  updateChannelsNetworkWeight,
 } from '@/api'
 import { API } from 'apis'
+import { useAppSelector } from '@/store/hook'
+import { channelsState } from '@/store/reducers/channels'
 
-interface Item extends API.ChannelCountryConfigItem {}
+interface Item extends API.ChannelsChannelNetworkItem {}
 interface DataType {
   id: React.Key
   child: Item[]
@@ -25,6 +28,7 @@ interface EnbledProps {
 }
 
 interface Props {
+  channelId: string
   tabData: Item[][]
   search: () => void
 }
@@ -32,7 +36,6 @@ interface Props {
 let bgContry = {
   enabled: 0,
   network: 0,
-  price_mke: 0,
   price_tra: 0,
   action: 0,
 }
@@ -43,7 +46,9 @@ function MyTable(props: Props, ref: any) {
       cancel,
     }
   })
-  const [editId, seteditId] = useState<string>('') // 当前编辑的ID
+  const channlesStore = useAppSelector(channelsState)
+  const [editNetworkId, seteditNetworkId] = useState<string>('') // 当前运营商权重的ID
+  const [editCountryId, seteditCountryId] = useState<React.Key>('') // 编辑国家权重的ID
   const [tableData, settableData] = useState<DataType[]>([])
   const [form] = Form.useForm()
 
@@ -52,7 +57,7 @@ function MyTable(props: Props, ref: any) {
     let _data: DataType[] = []
     props.tabData.forEach((item) => {
       _data.push({
-        id: item[0].id,
+        id: item[0].network_id,
         child: item,
       })
     })
@@ -69,24 +74,35 @@ function MyTable(props: Props, ref: any) {
     initBgContry()
   }
 
-  const showEdit = (record: Item) => {
-    seteditId(record.id)
+  const showEdit = (id: React.Key, item?: Item) => {
+    seteditCountryId(id)
+    seteditNetworkId(item?.network_id || '')
     form.setFieldsValue({
-      price_tra: record.price_tra,
-      price_mke: record.price_mke,
+      network_weight: item?.network_weight,
+      country_weight: '10',
     })
     initBgContry()
   }
   // 编辑保存
-  const save = async (record: Item) => {
+  const save = async (item: Item) => {
     let value = await form.validateFields()
-    await updateChannelCountryNetworkPrice({ ...value, id: record.id })
+    console.log(value)
+    // 保存运营商权重
+    await updateChannelsNetworkWeight({
+      group_id: channlesStore.activeChannels?.id || '',
+      channel_id: props.channelId,
+      region_code: item.region_code,
+      network_id: item.network_id,
+      weight: value.network_weight,
+    })
     await props.search()
-    seteditId('')
+    seteditNetworkId('')
+    seteditCountryId('')
     initBgContry()
   }
   const cancel = () => {
-    seteditId('')
+    seteditNetworkId('')
+    seteditCountryId('')
     initBgContry()
   }
 
@@ -116,7 +132,6 @@ function MyTable(props: Props, ref: any) {
     bgContry = {
       enabled: 0, // 是否启用   1是  0否
       network: 0, // 运营商网络
-      price_mke: 0, // 营销价格
       price_tra: 0, // 行业价格
       action: 0,
     }
@@ -130,7 +145,7 @@ function MyTable(props: Props, ref: any) {
       render(_, record) {
         return (
           <div className='td-content'>
-            <div onClick={() => changeLock(record)} className='lock'>
+            <div onClick={() => changeLock(record)} className='pointer'>
               {Math.random() > 0.5 ? (
                 <LockFilled className='color-gray fn16' />
               ) : (
@@ -143,6 +158,8 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '国家/地区名称',
+      width: 200,
+      ellipsis: true,
       render(_, record) {
         return (
           <div className={`td-content fw500`}>{record.child[0].country_cn}</div>
@@ -151,9 +168,24 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '国家/地区代码',
-      className: 'paddingL50',
+      className: 'paddingL30',
       render(_, record) {
         return <div className={`td-content`}>{record.child[0].region_code}</div>
+      },
+    },
+    {
+      title: <div className='paddingL12'>国家/地区权重</div>,
+      width: 200,
+      render(_, record) {
+        return record.id == editCountryId ? (
+          <div className='td-content sub-td'>
+            <Form.Item name='country_weight'>
+              <Input type='number' />
+            </Form.Item>
+          </div>
+        ) : (
+          <div className='td-content paddingL12'>{10}</div>
+        )
       },
     },
     {
@@ -170,9 +202,9 @@ function MyTable(props: Props, ref: any) {
               bgContry.network += 1
               return (
                 <div
-                  key={item.id}
+                  key={item.network_id}
                   className={`${trClassName} sub-td paddingL30`}>
-                  {item.network}
+                  {item.network_name}
                 </div>
               )
             })}
@@ -181,7 +213,7 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL12'>行业价格</div>,
+      title: <div className='paddingL12'>运营商权重</div>,
       width: 200,
       render(_, record) {
         return (
@@ -193,41 +225,13 @@ function MyTable(props: Props, ref: any) {
               }
               bgContry.price_tra += 1
               return (
-                <div key={item.id} className={`${trClassName} sub-td `}>
-                  {item.id == editId ? (
-                    <Form.Item name='price_tra'>
-                      <Input type='number' step={0.00001} min={0} />
+                <div key={item.network_id} className={`${trClassName} sub-td `}>
+                  {item.network_id == editNetworkId ? (
+                    <Form.Item name='network_weight'>
+                      <Input type='number' />
                     </Form.Item>
                   ) : (
-                    <div className='paddingL12'>{item.price_tra}</div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )
-      },
-    },
-    {
-      title: <div className='paddingL12'>营销价格</div>,
-      width: 200,
-      render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.price_mke % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.price_mke += 1
-              return (
-                <div key={item.id} className={`${trClassName} sub-td `}>
-                  {item.id == editId ? (
-                    <Form.Item name='price_mke'>
-                      <Input type='number' step={0.00001} min={0} />
-                    </Form.Item>
-                  ) : (
-                    <div className='paddingL12'>{item.price_mke}</div>
+                    <div className='paddingL12'>{item.network_weight}</div>
                   )}
                 </div>
               )
@@ -248,8 +252,8 @@ function MyTable(props: Props, ref: any) {
               }
               bgContry.enabled += 1
               return (
-                <div key={item.id} className={`${trClassName} sub-td`}>
-                  <Enbled id={item.id} enabled={item.enabled} />
+                <div key={item.network_id} className={`${trClassName} sub-td`}>
+                  <Enbled id={item.network_id} enabled={item.enabled} />
                 </div>
               )
             })}
@@ -270,8 +274,8 @@ function MyTable(props: Props, ref: any) {
               }
               bgContry.action += 1
               return (
-                <div key={item.id} className={`${trClassName} sub-td`}>
-                  {item.id == editId ? (
+                <div key={item.network_id} className={`${trClassName} sub-td`}>
+                  {item.network_id == editNetworkId ? (
                     <>
                       <Button
                         type='link'
@@ -287,7 +291,7 @@ function MyTable(props: Props, ref: any) {
                     <Button
                       type='link'
                       style={{ paddingLeft: 0 }}
-                      onClick={() => showEdit(item)}>
+                      onClick={() => showEdit(record.id, item)}>
                       编辑
                     </Button>
                   )}
@@ -309,7 +313,7 @@ function MyTable(props: Props, ref: any) {
           },
         }}>
         <Table
-          className='theme-cell-reset bg-white'
+          className='theme-cell-channels bg-white'
           columns={columns}
           dataSource={tableData}
           sticky

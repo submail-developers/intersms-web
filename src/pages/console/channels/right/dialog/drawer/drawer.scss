@@ -1,4 +1,4 @@
-.drawer {
+.drawer.channels-drawer {
   .ant-drawer-content-wrapper {
     box-shadow: none;
     .ant-drawer-content {
@@ -20,7 +20,7 @@
             border-radius: 12px 0 0 12px;
             display: flex;
             flex-direction: column;
-            padding: 60px 10px;
+            padding: 60px 10px 10px;
             box-sizing: border-box;
             .drawer-header {
               width: 100%;
@@ -50,20 +50,17 @@
               overflow-y: scroll;
               overflow-x: hidden;
             }
-            .drawer-footer {
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              height: 60px;
-              width: 100%;
-              padding: 10px;
-              background-color: #fff;
-              z-index: 2;
-              box-sizing: border-box;
-            }
           }
         }
       }
+    }
+  }
+
+  .switch-all {
+    margin-left: 40px;
+    cursor: pointer;
+    .text {
+      margin-left: 10px;
     }
   }
 }

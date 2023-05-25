@@ -185,7 +185,7 @@ function Error(props: Props, ref: any) {
           rowSelection={rowSelection}
           onRow={onRow}
           sticky
-          pagination={{ position: ['bottomRight'] }}
+          pagination={false}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>

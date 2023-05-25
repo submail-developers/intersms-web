@@ -312,6 +312,7 @@ declare module 'apis' {
       network_name: string
       network_weight: string // 权重
       region_code: string
+      enabled: '0' | '1'
     }
     // 通道组下的通道关联的关键字
     interface ChannelsChannelKeywordItem {
@@ -432,6 +433,14 @@ declare module 'apis' {
       group_id: string // 通道组ID
       channel_id: string // 通道ID
       keywords_route_id: string // 关键字ID
+    }
+    // 修改通道组关联通道-运营商权重
+    interface UpdateChannelsCountryNetworkParams {
+      group_id: string
+      channel_id: string
+      region_code: string
+      network_id: string
+      weight: string
     }
     /**
      * 通道管理end

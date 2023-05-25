@@ -6,10 +6,16 @@ import {
   useRef,
   useEffect,
 } from 'react'
-import { Form, Input, ConfigProvider, Button, Drawer } from 'antd'
-import MyTable from './table/table'
-import EditDetail from './editDetail/editDetail'
-import type { ColumnsType } from 'antd/es/table'
+import {
+  Form,
+  Input,
+  ConfigProvider,
+  Button,
+  Drawer,
+  Popconfirm,
+  Switch,
+} from 'antd'
+import TableCountry from './tableCountry/tableCountry'
 import { groupBy } from '@/utils'
 import { useSize } from '@/hooks'
 import { useAppSelector } from '@/store/hook'
@@ -18,7 +24,7 @@ import { channelsState } from '@/store/reducers/channels'
 import { getChannelGroupRelatedData } from '@/api'
 import { API } from 'apis'
 
-import './accessCountry.scss'
+import './drawer.scss'
 interface DataType extends API.GetChannelGroupRelatedDataItem {}
 
 interface Props {
@@ -31,12 +37,11 @@ const Dialog = (props: Props, ref: any) => {
   const size = useSize()
   const [form] = Form.useForm()
   const [channelId, setchannelId] = useState<string>('') // 通道ID
-  const [tableData, setTableData] = useState<API.ChannelCountryConfigItem[][]>(
-    [],
-  )
+  const [tableData, setTableData] = useState<
+    API.ChannelsChannelNetworkItem[][]
+  >([])
 
   const tableref: MutableRefObject<any> = useRef(null)
-  const editDetailRef: MutableRefObject<any> = useRef(null)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -51,10 +56,10 @@ const Dialog = (props: Props, ref: any) => {
   }
 
   useEffect(() => {
-    if (channelId) {
+    if (show && channelId) {
       search()
     }
-  }, [channelId])
+  }, [show, channelId])
 
   const search = async () => {
     try {
@@ -66,25 +71,16 @@ const Dialog = (props: Props, ref: any) => {
       const network_list = res.data[0].network_list
       const groupData = Object.values(
         groupBy(network_list, 'region_code'),
-      ) as API.ChannelCountryConfigItem[][]
+      ) as API.ChannelsChannelNetworkItem[][]
       setTableData(groupData)
     } catch (error) {}
   }
 
   const close = () => {
+    setTableData([])
+    setchannelId('')
     setShow(false)
   }
-
-  const editEvent = () => {
-    let checkedCountry: string[] = []
-    tableData.forEach((item) => {
-      checkedCountry.push(item[0].region_code)
-    })
-    console.log(checkedCountry, '1')
-    tableref && tableref.current?.cancel()
-    editDetailRef.current.open(checkedCountry)
-  }
-
   return (
     <Drawer
       title=''
@@ -93,16 +89,35 @@ const Dialog = (props: Props, ref: any) => {
       closable={false}
       open={show}
       bodyStyle={{ backgroundColor: 'transparent' }}
-      rootClassName='drawer'
+      rootClassName='drawer channels-drawer'
       width={'70vw'}>
       <div className='drawer-container' onClick={close}>
         <div className='drawer-content' onClick={(e) => e.stopPropagation()}>
           <header className='drawer-header fx-between-center'>
             <div className='fx-y-center'>
-              <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
-              <span className='fn20' style={{ marginLeft: '10px' }}>
-                通道关联国家
-              </span>
+              <div className='fx-y-center'>
+                <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
+                <span className='fn20' style={{ marginLeft: '10px' }}>
+                  通道关联国家/地区
+                </span>
+              </div>
+              <div className=' switch-all'>
+                <Popconfirm
+                  placement='bottom'
+                  title='警告'
+                  description='确定关联全部国家及其运营商吗？'
+                  onConfirm={() => {}}
+                  okText='确定'
+                  cancelText='取消'>
+                  <div className='fx-y-center'>
+                    <Switch
+                      size='small'
+                      checked
+                      onClick={(_, e) => {}}></Switch>
+                    <span className='text'>关联全部国家及其运营商</span>
+                  </div>
+                </Popconfirm>
+              </div>
             </div>
 
             <ConfigProvider
@@ -149,19 +164,15 @@ const Dialog = (props: Props, ref: any) => {
             </ConfigProvider>
           </header>
           <div className='drawer-table-wrap'>
-            <MyTable ref={tableref} search={search} tableData={tableData} />
+            <TableCountry
+              ref={tableref}
+              search={search}
+              channelId={channelId}
+              tabData={tableData}
+            />
           </div>
-          <footer className='drawer-footer'>
-            <div className='btn-group'>
-              <div className='btn' onClick={editEvent}>
-                <i className='icon iconfont icon-xinzeng'></i>
-                <span>编辑</span>
-              </div>
-            </div>
-          </footer>
         </div>
       </div>
-      <EditDetail search={search} channelId={channelId} ref={editDetailRef} />
     </Drawer>
   )
 }

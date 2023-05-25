@@ -121,10 +121,10 @@ function Channel(props: Props, ref: any) {
       title: '签名',
       dataIndex: 'signature',
     },
-    {
-      title: '报警开关',
-      render: (_, record) => <div>没有字段</div>, // 已开启或不展示
-    },
+    // {
+    //   title: '报警开关',
+    //   render: (_, record) => <div>没有字段</div>, // 已开启或不展示
+    // },
     {
       title: '操作',
       dataIndex: 'actions',
@@ -167,7 +167,7 @@ function Channel(props: Props, ref: any) {
           rowSelection={rowSelection}
           onRow={onRow}
           sticky
-          pagination={{ position: ['bottomRight'] }}
+          pagination={false}
           scroll={{ x: 'max-content' }}
         />
       </ConfigProvider>

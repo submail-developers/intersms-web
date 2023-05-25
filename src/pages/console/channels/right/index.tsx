@@ -8,7 +8,7 @@ import { useSize } from '@/hooks'
 import { getChannelGroupRelatedData, channelGroupDeleteChannel } from '@/api'
 import AddChannelDialog from './dialog/addChannelDialog'
 import { API } from 'apis'
-import AccessCountryDrawer from './dialog/drawer/accessCountry'
+import AccessCountryDrawer from './dialog/drawer/drawer'
 import { channelTypeOptions, getOptionsLabel } from '@/utils/options'
 
 import './index.scss'
@@ -219,6 +219,7 @@ export default function Right() {
               rowSelection={rowSelection}
               sticky
               scroll={{ x: 'max-content' }}
+              pagination={false}
             />
           </ConfigProvider>
         </div>

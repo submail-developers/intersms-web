@@ -303,14 +303,14 @@ export const channelGroupUpdateKeyword = (
     API.ChannelGroupUpdateKeywordParams
   >('customer/save_group_related_keywords_route', { ...data })
 }
-// 修改通道组关联通道-国家网络权重
-export const updateChannelsCountryNetworkWeight = (
-  data: API.UpdateChannelCountryNetworkStatusParams,
+// 修改通道组关联通道-运营商权重
+export const updateChannelsNetworkWeight = (
+  data: API.UpdateChannelsCountryNetworkParams,
 ) => {
   return request.post<
     any,
     API.Response<any>,
-    API.UpdateChannelCountryNetworkStatusParams
+    API.UpdateChannelsCountryNetworkParams
   >('customer/update_countrynetwork_weight', { ...data })
 }
 /**

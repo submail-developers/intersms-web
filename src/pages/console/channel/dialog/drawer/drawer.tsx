@@ -15,7 +15,6 @@ import {
   Popconfirm,
   Switch,
 } from 'antd'
-import MyTable from './table/table'
 import TableCountry from './tableCountry/tableCountry'
 import { groupBy } from '@/utils'
 import { useSize } from '@/hooks'
@@ -90,11 +89,11 @@ const Dialog = (props: Props, ref: any) => {
                   通道关联国家/地区
                 </span>
               </div>
-              <div className=' switch-all'>
+              <div className='switch-all'>
                 <Popconfirm
                   placement='bottom'
                   title='警告'
-                  description='确定关联全部国家吗？'
+                  description='确定关联全部国家及其运营商吗？'
                   onConfirm={() => {}}
                   okText='确定'
                   cancelText='取消'>
@@ -103,7 +102,7 @@ const Dialog = (props: Props, ref: any) => {
                       size='small'
                       checked
                       onClick={(_, e) => {}}></Switch>
-                    <span className='text'>关联全部国家</span>
+                    <span className='text'>关联全部国家及其运营商</span>
                   </div>
                 </Popconfirm>
               </div>
@@ -153,8 +152,7 @@ const Dialog = (props: Props, ref: any) => {
             </ConfigProvider>
           </header>
           <div className='drawer-table-wrap'>
-            {/* <MyTable ref={tableref} search={search} tableData={tableData} /> */}
-            <TableCountry search={search} tabData={tableData} />
+            <TableCountry ref={tableref} search={search} tabData={tableData} />
           </div>
         </div>
       </div>

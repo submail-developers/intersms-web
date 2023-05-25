@@ -23,7 +23,7 @@ const initialValues: FormType = {
   country_cn: '', // 国家中文名称
   group_id: '', // 通道组id
 }
-const Dialog = (props: Props, ref: any) => {
+function Dialog(props: Props, ref: any) {
   const accountInfoStore = useAppSelector(accountInfoState)
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
