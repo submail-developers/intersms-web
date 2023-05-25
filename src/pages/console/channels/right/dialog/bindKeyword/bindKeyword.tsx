@@ -46,12 +46,8 @@ const Dialog = (props: Props, ref: any) => {
     setIsModalOpen(true)
   }
   const initWord = async () => {
-<<<<<<< HEAD
     const res = await getKeywordEnabledList()
     console.log(res)
-=======
-    const res = await getOpenSensitiveWordList({ id: '', page: '1' })
->>>>>>> origin/main
     setWordList(res.data)
   }
 
