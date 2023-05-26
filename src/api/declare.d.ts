@@ -410,31 +410,33 @@ declare module 'apis' {
       letter: string
       children: CountryItem[]
     }
+    // interface ChannelCountryConfigItem {
+    //   channel_id: string
+    //   country_cn: string
+    //   id: string
+    //   enabled: '1' | '0' // 是否启用   1是  0否
+    //   network: string // 运营商网络
+    //   price_mke: string // 营销价格
+    //   price_tra: string // 行业价格
+    //   region_code: string
+    //   cost_price: string
+    //   sug_price: string
+    //   name: string
+    //   country_related_flg: '1' | '0'
+    //   network_related_flg: '1' | '0'
+    // }
     interface ChannelCountryConfigItem {
-      channel_id: string
       country_cn: string
-      id: string
-      enabled: '1' | '0' // 是否启用   1是  0否
-      network: string // 运营商网络
+      country_related_flg: '0' | '1'
+      name: string
+      network_id: string
+      network_related_flg: string
+      region_code: string
+      cost_price: string // 成本价
+      sug_price: string // 建议销售价
       price_mke: string // 营销价格
       price_tra: string // 行业价格
-      region_code: string
-      cost_price: string
-      sug_price: string
-      name: string
-      country_related_flg: '1' | '0'
-      network_related_flg: '1' | '0'
     }
-    // interface ChannelCountryConfigItem {
-    //   cost_price: string
-    //   country_cn: string
-    //   country_related_flg: '0'|'1'
-    //   name: string
-    //   network_id: string
-    //   network_related_flg: string
-    //   region_code: string
-    //   sug_price: string
-    // }
     // 修改通道关联国家及网络接口参数
     interface UpdateChannelCountryNetworkPriceParams {
       channel_id: string

@@ -1,21 +1,26 @@
-[data-class='breadcrumb'] {
+[data-class='breadcrumb-wrap'] {
+  background-color: #eaeff5;
   width: 100%;
-  height: 58px;
-  box-sizing: border-box;
-  background-color: #fff;
-  z-index: 10;
-  border-bottom: 1px solid #e7e7e7;
-  padding: 0 8px;
-  .prefix-btn {
-    margin-left: 8px;
-    width: 45px;
-    height: 45px;
-    color: #0074d7;
-    cursor: pointer;
-  }
-  .crumb {
-    margin-left: 24px;
-    color: #0074d7;
-    font-weight: 500;
+  .breadcrumb {
+    width: 100%;
+    height: 58px;
+    box-sizing: border-box;
+    background-color: #fff;
+    z-index: 10;
+    border-bottom: 1px solid #e7e7e7;
+    padding: 0 8px;
+    border-top-left-radius: 20px;
+    .prefix-btn {
+      margin-left: 8px;
+      width: 45px;
+      height: 45px;
+      color: #0074d7;
+      cursor: pointer;
+    }
+    .crumb {
+      margin-left: 24px;
+      color: #0074d7;
+      font-weight: 500;
+    }
   }
 }

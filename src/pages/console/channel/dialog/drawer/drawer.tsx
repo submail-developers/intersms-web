@@ -76,6 +76,7 @@ const Dialog = (props: Props, ref: any) => {
       onClose={close}
       closable={false}
       open={show}
+      forceRender
       bodyStyle={{ backgroundColor: 'transparent' }}
       rootClassName='drawer channel-drawer'
       width={'70vw'}>

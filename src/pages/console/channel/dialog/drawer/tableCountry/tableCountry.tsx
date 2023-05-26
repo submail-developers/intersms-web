@@ -4,7 +4,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react'
-import type { TableColumnsType } from 'antd'
+import { TableColumnsType, message } from 'antd'
 import { Form, Input, Table, ConfigProvider, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
 import './tableCountry.scss'
@@ -51,15 +51,15 @@ function MyTable(props: Props, ref: any) {
   useEffect(() => {
     initBgContry()
     let _data: DataType[] = []
-    props.tabData.forEach((item) => {
+    props.tabData.forEach((item, index) => {
       _data.push({
-        id: item[0].id,
+        id: index,
         child: item,
       })
     })
     settableData(_data)
     return () => {
-      settableData([])
+      // settableData([])
     }
   }, [props.tabData])
 
@@ -71,17 +71,21 @@ function MyTable(props: Props, ref: any) {
   }
 
   const showEdit = (record: Item) => {
-    seteditId(record.id)
-    form.setFieldsValue({
-      price_tra: record.price_tra,
-      price_mke: record.price_mke,
-    })
-    initBgContry()
+    if (record.network_related_flg == '1') {
+      seteditId(record.network_id)
+      form.setFieldsValue({
+        price_tra: record.price_tra,
+        price_mke: record.price_mke,
+      })
+      initBgContry()
+    } else {
+      message.warning('开启该运营商后再编辑！')
+    }
   }
   // 编辑保存
   const save = async (record: Item) => {
     let value = await form.validateFields()
-    await updateChannelCountryNetworkPrice({ ...value, id: record.id })
+    await updateChannelCountryNetworkPrice({ ...value, id: record.network_id })
     await props.search()
     seteditId('')
     initBgContry()
@@ -94,14 +98,18 @@ function MyTable(props: Props, ref: any) {
   const Enbled = (enbledProps: EnbledProps) => {
     const [loading, setLoading] = useState(false)
     const checkEnbled = async () => {
-      setLoading(true)
-      await updateChannelCountryNetworkStatus({
-        id: enbledProps.id,
-        enabled: enbledProps.checked ? '0' : '1',
-      })
-      await props.search()
-      setLoading(false)
-      initBgContry()
+      try {
+        setLoading(true)
+        await updateChannelCountryNetworkStatus({
+          id: enbledProps.id,
+          enabled: enbledProps.checked ? '0' : '1',
+        })
+        await props.search()
+        setLoading(false)
+        initBgContry()
+      } catch (error) {
+        setLoading(false)
+      }
     }
     return (
       <Switch
@@ -133,7 +141,7 @@ function MyTable(props: Props, ref: any) {
         return (
           <div className='td-content'>
             <div onClick={() => changeLock(record)} className='lock'>
-              {Math.random() > 0.5 ? (
+              {record.child[0].country_related_flg != '1' ? (
                 <LockFilled className='color-gray fn16' />
               ) : (
                 <UnlockOutlined className='color fn16' />
@@ -145,6 +153,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '国家/地区名称',
+      width: 150,
       render(_, record) {
         return (
           <div className={`td-content fw500`}>{record.child[0].country_cn}</div>
@@ -153,6 +162,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '国家/地区代码',
+      width: 200,
       className: 'paddingL50',
       render(_, record) {
         return <div className={`td-content`}>{record.child[0].region_code}</div>
@@ -161,6 +171,7 @@ function MyTable(props: Props, ref: any) {
     {
       title: <div className='paddingL30'>运营商网络类型</div>,
       className: 'col-line',
+      // width: 200,
       render(_, record) {
         return (
           <div className='grid'>
@@ -172,7 +183,7 @@ function MyTable(props: Props, ref: any) {
               bgContry.network += 1
               return (
                 <div
-                  key={item.id}
+                  key={'name' + item.network_id}
                   className={`${trClassName} sub-td paddingL30`}>
                   {item.name || '-'}
                 </div>
@@ -184,7 +195,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>行业价格</div>,
-      width: 200,
+      width: 240,
       render(_, record) {
         return (
           <div className='grid'>
@@ -195,13 +206,15 @@ function MyTable(props: Props, ref: any) {
               }
               bgContry.price_tra += 1
               return (
-                <div key={item.id} className={`${trClassName} sub-td `}>
-                  {item.id == editId ? (
+                <div
+                  key={'price_tra' + item.network_id}
+                  className={`${trClassName} sub-td `}>
+                  {item.network_id == editId ? (
                     <Form.Item name='price_tra'>
                       <Input type='number' step={0.00001} min={0} />
                     </Form.Item>
                   ) : (
-                    <div className='paddingL12'>{item.price_tra}</div>
+                    <div className='paddingL12'>{item.price_tra || '-'}</div>
                   )}
                 </div>
               )
@@ -212,7 +225,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>营销价格</div>,
-      width: 200,
+      width: 240,
       render(_, record) {
         return (
           <div className='grid'>
@@ -223,13 +236,15 @@ function MyTable(props: Props, ref: any) {
               }
               bgContry.price_mke += 1
               return (
-                <div key={item.id} className={`${trClassName} sub-td `}>
-                  {item.id == editId ? (
+                <div
+                  key={'price_mke' + item.network_id}
+                  className={`${trClassName} sub-td `}>
+                  {item.network_id == editId ? (
                     <Form.Item name='price_mke'>
                       <Input type='number' step={0.00001} min={0} />
                     </Form.Item>
                   ) : (
-                    <div className='paddingL12'>{item.price_mke}</div>
+                    <div className='paddingL12'>{item.price_mke || '-'}</div>
                   )}
                 </div>
               )
@@ -250,11 +265,15 @@ function MyTable(props: Props, ref: any) {
               }
               bgContry.enabled += 1
               return (
-                <div key={item.id} className={`${trClassName} sub-td`}>
+                <div
+                  key={'state' + item.network_id}
+                  className={`${trClassName} sub-td`}>
                   <Enbled
-                    id={item.id}
+                    id={item.network_id}
                     checked={item.network_related_flg == '1'}
-                    disabled={item.country_related_flg != '1' || !item.network}
+                    disabled={
+                      item.country_related_flg != '1' || !item.network_id
+                    }
                   />
                 </div>
               )
@@ -265,7 +284,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '操作',
-      width: 160,
+      width: 120,
       render(_, record) {
         return (
           <div className='grid'>
@@ -276,8 +295,10 @@ function MyTable(props: Props, ref: any) {
               }
               bgContry.action += 1
               return (
-                <div key={item.id} className={`${trClassName} sub-td`}>
-                  {item.id == editId ? (
+                <div
+                  key={'action' + item.network_id}
+                  className={`${trClassName} sub-td`}>
+                  {item.network_id == editId ? (
                     <>
                       <Button
                         type='link'
