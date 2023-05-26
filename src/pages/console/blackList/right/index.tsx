@@ -29,7 +29,13 @@ type Props = {
 
 export default function Right() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
+  const [selectedList, setselectedList] = useState<CheckboxValueType[]>([])
+
   const [tableData, settableData] = useState<DataType[]>([])
+  const [indeterminate, setIndeterminate] = useState(false) //控制半选状态
+  const [checkAll, setCheckAll] = useState(false) //控制全选状态
+  const CheckboxGroup = Checkbox.Group
+
   const blackStore = useAppSelector(blackState)
   const [form] = Form.useForm()
 
@@ -47,9 +53,20 @@ export default function Right() {
   }
 
   const onChange = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues)
+    setselectedList(checkedValues)
+    if (checkedValues.length > 0) {
+      if (checkedValues.length == tableData.length) {
+        setIndeterminate(false)
+        setCheckAll(true)
+      } else {
+        setIndeterminate(true)
+        setCheckAll(false)
+      }
+    } else {
+      setIndeterminate(false)
+      setCheckAll(false)
+    }
   }
-  const onFinish = (values: any) => {}
 
   const size = useSize()
   // 展示新增弹框
@@ -75,7 +92,19 @@ export default function Right() {
   const showTotal: PaginationProps['showTotal'] = (total) =>
     `当前展示1-100/共${total}个`
 
-  const CheckboxGroup = Checkbox.Group
+  const onCheckAllChange = (e: CheckboxChangeEvent) => {
+    setCheckAll(e.target.checked)
+    if (e.target.checked) {
+      let ids: string[] = []
+      tableData.forEach((item) => ids.push(item.id))
+      setselectedList(ids)
+    } else {
+      setselectedList([])
+    }
+    // console.log(e)
+    // settableData(e.target.checked ? tableData : [])
+    // setIndeterminate(false)
+  }
   return (
     <section
       data-class='account-right'
@@ -110,7 +139,6 @@ export default function Right() {
               initialValues={{}}
               layout='inline'
               wrapperCol={{ span: 24 }}
-              onFinish={onFinish}
               autoComplete='off'>
               <Form.Item label='' name='name' style={{ marginBottom: 10 }}>
                 <Input
@@ -141,7 +169,13 @@ export default function Right() {
         </Row>
         <Row justify={'space-between'} align={'bottom'} wrap gutter={[10, 10]}>
           <Col>
-            <div className='list-title'>黑名单表-钓鱼</div>
+            <Checkbox
+              indeterminate={indeterminate}
+              onChange={onCheckAllChange}
+              checked={checkAll}>
+              全选
+            </Checkbox>
+            <div className='list-title'>黑名单</div>
           </Col>
           <Col>
             <Pagination
@@ -155,8 +189,10 @@ export default function Right() {
           </Col>
         </Row>
       </div>
-      <Checkbox.Group
+
+      <CheckboxGroup
         style={{ width: '100%', marginTop: '10px' }}
+        value={selectedList}
         onChange={onChange}>
         <Row wrap gutter={observerGutter} style={{ width: '100%' }}>
           {tableData.map((item) => (
@@ -170,7 +206,7 @@ export default function Right() {
             </Col>
           ))}
         </Row>
-      </Checkbox.Group>
+      </CheckboxGroup>
       <AddDialog ref={addDialogRef} onSearch={search} />
     </section>
   )
