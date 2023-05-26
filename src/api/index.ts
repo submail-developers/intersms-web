@@ -394,7 +394,7 @@ export const updateChannelCountryNetworkStatus = (
 export const getCountryList = (data: API.GetCountryListParams) => {
   return request.post<
     any,
-    API.Response<API.GetCountryListItems>,
+    API.Response<API.GetCountryListItems[]>,
     API.GetCountryListParams
   >('customer/get_country', { ...data })
 }

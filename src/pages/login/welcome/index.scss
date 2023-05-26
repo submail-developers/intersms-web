@@ -1,0 +1,97 @@
+[data-class='welcome'] {
+  display: inline-block;
+  vertical-align: middle;
+  width: 496px;
+  height: 500px;
+  opacity: 1;
+  padding: 48px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: opacity 0.3s ease-out;
+  .title {
+    font-size: 32px;
+    line-height: 45px;
+  }
+  .logo-wrap {
+    margin-top: 16px;
+    margin-bottom: 32px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 28px;
+    .logo {
+      height: 16px;
+      margin-right: 10px;
+    }
+  }
+  .btn {
+    margin-top: 16px;
+    width: 100%;
+    height: 48px;
+    line-height: 48px;
+    border-radius: 8px;
+    text-align: center;
+    color: #fff;
+    font-size: 20px;
+    background-color: #3d7af3;
+    cursor: pointer;
+    transition: background-color 0.3s ease-out;
+    &:hover {
+      background-color: #285ccf;
+    }
+    &.loading {
+      pointer-events: none;
+    }
+  }
+
+  .ant-form {
+    .ant-form-item {
+      margin-bottom: 32px;
+      .ant-form-item-label {
+        label {
+          color: #aaa;
+          font-size: 16px;
+          &::before {
+            display: none;
+          }
+        }
+      }
+      .ant-form-item-control-input {
+        // 输入框
+        input.ant-input {
+          border: none;
+          padding-left: 0;
+          padding-bottom: 14px;
+          border-bottom: 1px solid #e7e7e7;
+          border-radius: 0;
+          box-shadow: none;
+          // color: #0074d7;
+          font-size: 16px;
+          &:hover {
+            border-radius: 0;
+            border-bottom-color: #e7e7e7;
+            box-shadow: none;
+          }
+          &:focus {
+            border-bottom-color: #0074d7;
+          }
+        }
+        // 输入框带后缀
+        .ant-input-affix-wrapper {
+          padding: 0;
+          border: none;
+          border-bottom: 1px solid #e7e7e7;
+          box-shadow: none;
+          input.ant-input {
+            border: none;
+            height: 32px;
+          }
+          input.ant-input-suffix,
+          input.ant-input-prefix {
+            color: #999;
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
+}
