@@ -101,7 +101,9 @@ function Error(props: Props, ref: any) {
     },
     {
       title: '国家/地区名',
-      render: (_, record) => <div>缺少该字段</div>,
+      dataIndex: 'country_cn',
+      width: 200,
+      ellipsis: true,
     },
     {
       title: '短信类型',
@@ -156,9 +158,9 @@ function Error(props: Props, ref: any) {
             编辑
           </Button>
           <Popconfirm
-            placement='bottom'
+            placement='left'
             title='警告'
-            description='确定删除选中的客户吗？'
+            description='确定删除该配置吗？'
             onConfirm={() => deleteEvent(record.id)}
             okText='确定'
             cancelText='取消'>

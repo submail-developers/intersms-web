@@ -128,9 +128,9 @@ function Price(props: Props, ref: any) {
             编辑
           </Button>
           <Popconfirm
-            placement='bottom'
+            placement='left'
             title='警告'
-            description='确定删除选中的客户吗？'
+            description='确定删除该配置吗？'
             onConfirm={() => deleteEvent(record.id)}
             okText='确定'
             cancelText='取消'>

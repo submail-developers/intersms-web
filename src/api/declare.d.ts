@@ -216,6 +216,8 @@ declare module 'apis' {
       unknown: string
       rejected: string
       spname: string
+      country_cn: string
+      region_code: string
     }
     // 客户信息-价格配置item
     interface AccountPriceItem {
@@ -234,6 +236,7 @@ declare module 'apis' {
       country_cn: string
       region_code: string
       group_id: string
+      group_name: string
       group_type: '1' | '2' // 通道类型   1行业通道  2营销通道
       appid: string // 0所有
       signature: string // 签名
@@ -251,6 +254,8 @@ declare module 'apis' {
       unknown: string
       rejected: string
       spname: string
+      country_cn: string
+      country_code: string
     }
     // 客户信息-价格配置-开启/关闭全部营销
     interface ChangeMkStateParams {
@@ -416,7 +421,20 @@ declare module 'apis' {
       region_code: string
       cost_price: string
       sug_price: string
+      name: string
+      country_related_flg: '1' | '0'
+      network_related_flg: '1' | '0'
     }
+    // interface ChannelCountryConfigItem {
+    //   cost_price: string
+    //   country_cn: string
+    //   country_related_flg: '0'|'1'
+    //   name: string
+    //   network_id: string
+    //   network_related_flg: string
+    //   region_code: string
+    //   sug_price: string
+    // }
     // 修改通道关联国家及网络接口参数
     interface UpdateChannelCountryNetworkPriceParams {
       channel_id: string

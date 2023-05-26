@@ -20,7 +20,8 @@ interface DataType {
   child: Item[]
 }
 interface EnbledProps {
-  enabled: '0' | '1'
+  checked: boolean
+  disabled: boolean
   id: string
 }
 
@@ -96,7 +97,7 @@ function MyTable(props: Props, ref: any) {
       setLoading(true)
       await updateChannelCountryNetworkStatus({
         id: enbledProps.id,
-        enabled: enbledProps.enabled == '0' ? '1' : '0',
+        enabled: enbledProps.checked ? '0' : '1',
       })
       await props.search()
       setLoading(false)
@@ -104,7 +105,8 @@ function MyTable(props: Props, ref: any) {
     }
     return (
       <Switch
-        checked={enbledProps.enabled == '1'}
+        checked={enbledProps.checked}
+        disabled={enbledProps.disabled}
         onChange={checkEnbled}
         loading={loading}
         size='small'
@@ -172,7 +174,7 @@ function MyTable(props: Props, ref: any) {
                 <div
                   key={item.id}
                   className={`${trClassName} sub-td paddingL30`}>
-                  {item.network}
+                  {item.name || '-'}
                 </div>
               )
             })}
@@ -249,7 +251,11 @@ function MyTable(props: Props, ref: any) {
               bgContry.enabled += 1
               return (
                 <div key={item.id} className={`${trClassName} sub-td`}>
-                  <Enbled id={item.id} enabled={item.enabled} />
+                  <Enbled
+                    id={item.id}
+                    checked={item.network_related_flg == '1'}
+                    disabled={item.country_related_flg != '1' || !item.network}
+                  />
                 </div>
               )
             })}
@@ -316,7 +322,7 @@ function MyTable(props: Props, ref: any) {
           pagination={false}
           rowKey={'id'}
           rowClassName={(record, index) => {
-            return index % 2 == 1 ? 'lock-text' : ''
+            return record.child[0].country_related_flg == '0' ? 'lock-text' : ''
           }}
           scroll={{ x: 'max-content' }}
         />
