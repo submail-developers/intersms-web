@@ -29,6 +29,7 @@ type Props = {
 
 export default function Right() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
+  const [selectedList, setselectedList] = useState<CheckboxValueType[]>([])
 
   const [tableData, settableData] = useState<DataType[]>([])
   const [indeterminate, setIndeterminate] = useState(false) //控制半选状态
@@ -52,7 +53,19 @@ export default function Right() {
   }
 
   const onChange = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues)
+    setselectedList(checkedValues)
+    if (checkedValues.length > 0) {
+      if (checkedValues.length == tableData.length) {
+        setIndeterminate(false)
+        setCheckAll(true)
+      } else {
+        setIndeterminate(true)
+        setCheckAll(false)
+      }
+    } else {
+      setIndeterminate(false)
+      setCheckAll(false)
+    }
   }
 
   const size = useSize()
@@ -80,10 +93,17 @@ export default function Right() {
     `当前展示1-100/共${total}个`
 
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
-    console.log(e)
-    settableData(e.target.checked ? tableData : [])
-    setIndeterminate(false)
     setCheckAll(e.target.checked)
+    if (e.target.checked) {
+      let ids: string[] = []
+      tableData.forEach((item) => ids.push(item.id))
+      setselectedList(ids)
+    } else {
+      setselectedList([])
+    }
+    // console.log(e)
+    // settableData(e.target.checked ? tableData : [])
+    // setIndeterminate(false)
   }
   return (
     <section
@@ -172,6 +192,7 @@ export default function Right() {
 
       <CheckboxGroup
         style={{ width: '100%', marginTop: '10px' }}
+        value={selectedList}
         onChange={onChange}>
         <Row wrap gutter={observerGutter} style={{ width: '100%' }}>
           {tableData.map((item) => (
