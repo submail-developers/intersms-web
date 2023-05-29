@@ -492,9 +492,9 @@ declare module 'apis' {
       country_cn: string
       country_area_code: string
       region_code: string
-      tra_group: string
+      tra_group: string | undefined
       tra_sender: string
-      mke_group: string
+      mke_group: string | undefined
       mke_sender: string
     }
 

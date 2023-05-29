@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import logo from '@/assets/img/logo.png'
+import logo from '@/assets/img/logo.svg'
 import './header.scss'
 import { useSize } from '@/hooks'
 

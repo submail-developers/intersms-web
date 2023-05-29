@@ -23,10 +23,12 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const open = (params: any) => {
+  const open = (record: API.GetCountryListItems) => {
     form.resetFields()
-    form.setFieldsValue(params.record)
-
+    let _record = { ...record }
+    _record.mke_group = _record.mke_group == '' ? undefined : _record.mke_group
+    _record.tra_group = _record.tra_group == '' ? undefined : _record.tra_group
+    form.setFieldsValue(_record)
     setIsModalOpen(true)
   }
 

@@ -1,6 +1,6 @@
 import { useState, forwardRef, useTransition } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
-import Logo from '@/assets/img/logo.png'
+import Logo from '@/assets/img/logo.svg'
 
 import './index.scss'
 interface Props {

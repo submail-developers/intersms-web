@@ -164,7 +164,7 @@ export default function Channel() {
   ]
 
   const updateCountryEvent = (record: DataType) => {
-    updateCountryDialogRef.current.open({ record })
+    updateCountryDialogRef.current.open(record)
   }
 
   return (
