@@ -76,6 +76,7 @@ function Price(props: Props, ref: any) {
   }
 
   const rowSelection = {
+    columnWidth: 60,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
