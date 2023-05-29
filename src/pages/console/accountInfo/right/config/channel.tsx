@@ -75,6 +75,7 @@ function Channel(props: Props, ref: any) {
   }
 
   const rowSelection = {
+    columnWidth: 60,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
@@ -105,26 +106,22 @@ function Channel(props: Props, ref: any) {
     {
       title: '国家/地区',
       dataIndex: 'country_cn',
+      width: 200,
+      ellipsis: true,
     },
     {
       title: '通道组',
-      dataIndex: 'group_id',
+      dataIndex: 'group_name',
     },
     {
       title: '短信类型',
-      render: (_, record) => (
-        // <div>{getOptionsLabel(channelsTypeOptions2, record.group_type)}</div>
-        <div>{record.group_type == '1' ? '行业' : '营销'}</div>
-      ),
+      dataIndex: 'group_type',
+      render: (_, record) => <>{record.group_type == '1' ? '行业' : '营销'}</>,
     },
     {
       title: '签名',
       dataIndex: 'signature',
     },
-    // {
-    //   title: '报警开关',
-    //   render: (_, record) => <div>没有字段</div>, // 已开启或不展示
-    // },
     {
       title: '操作',
       dataIndex: 'actions',
@@ -138,9 +135,9 @@ function Channel(props: Props, ref: any) {
             编辑
           </Button>
           <Popconfirm
-            placement='bottom'
+            placement='left'
             title='警告'
-            description='确定删除选中的客户吗？'
+            description='确定删除该配置吗？'
             onConfirm={() => deleteEvent(record.id)}
             okText='确定'
             cancelText='取消'>

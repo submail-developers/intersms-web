@@ -29,6 +29,8 @@ const initialValues: FormType = {
   unknown: '',
   rejected: '',
   spname: '',
+  country_cn: '',
+  region_code: '',
 }
 const Dialog = (props: Props, ref: any) => {
   const accountInfoStore = useAppSelector(accountInfoState)
@@ -75,6 +77,7 @@ const Dialog = (props: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const formvalues = await form.getFieldsValue()
+      console.log(formvalues)
       let params = {
         ...formvalues,
         sender: accountInfoStore.activeAccount?.account,
@@ -88,6 +91,15 @@ const Dialog = (props: Props, ref: any) => {
 
   const handleCancel = () => {
     setIsModalOpen(false)
+  }
+
+  const changeCountry = (
+    value: string,
+    o: API.CountryItem | API.CountryItem[],
+  ) => {
+    if (!Array.isArray(o)) {
+      form.setFieldValue('country_cn', o.label)
+    }
   }
 
   return (
@@ -109,17 +121,23 @@ const Dialog = (props: Props, ref: any) => {
         <Form.Item label='id' name='id' hidden>
           <Input />
         </Form.Item>
-        <Form.Item labelCol={{ span: 24 }} label='国家/地区名称' name='name'>
+        <Form.Item
+          labelCol={{ span: 24 }}
+          label='国家/地区名称'
+          name='region_code'>
           <Select
             showSearch
+            onChange={changeCountry}
             placeholder='请选择'
-            fieldNames={{ value: 'label' }}
             optionFilterProp='children'
             filterOption={(input, option) =>
               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
             options={props.allCountry}
           />
+        </Form.Item>
+        <Form.Item hidden label='国家/地区名称' name='country_cn'>
+          <Input placeholder='' maxLength={30} />
         </Form.Item>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>

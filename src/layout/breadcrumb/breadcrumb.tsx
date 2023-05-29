@@ -21,16 +21,18 @@ export default function BreadCrumb() {
     .map((match) => match.handle.crumb(match.data))
 
   return (
-    <div data-class='breadcrumb' className='fx-y-center'>
-      <div
-        className='prefix-btn fx-center-center'
-        onClick={() => dispatch(changeClose())}>
-        <i
-          className={`iconfont fn18 icon-${
-            status ? 'shouhui' : 'shouhui1'
-          }`}></i>
+    <div data-class='breadcrumb-wrap'>
+      <div className=' fx-y-center breadcrumb'>
+        <div
+          className='prefix-btn fx-center-center'
+          onClick={() => dispatch(changeClose())}>
+          <i
+            className={`iconfont fn18 icon-${
+              status ? 'shouhui' : 'shouhui1'
+            }`}></i>
+        </div>
+        <div className='crumb fn18'>{crumbs.map((item) => item)}</div>
       </div>
-      <div className='crumb fn18'>{crumbs.map((item) => item)}</div>
     </div>
   )
 }

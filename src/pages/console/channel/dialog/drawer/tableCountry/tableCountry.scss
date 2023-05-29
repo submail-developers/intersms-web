@@ -96,6 +96,9 @@
   .lock-text {
     color: #999;
     pointer-events: none;
+    .lock {
+      pointer-events: all;
+    }
     .ant-btn {
       color: #999;
     }

@@ -65,6 +65,7 @@ export default function Right() {
     }
   }
   const rowSelection = {
+    columnWidth: 60,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
@@ -191,7 +192,7 @@ export default function Right() {
           <Popconfirm
             placement='bottom'
             title='警告'
-            description='确定删除选中的客户吗？'
+            description='确定删除选中的通道吗？'
             onConfirm={deleteSelectChannel}
             okText='确定'
             cancelText='取消'>

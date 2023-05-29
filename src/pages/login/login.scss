@@ -1,0 +1,37 @@
+[data-class='login'] {
+  width: 100%;
+  height: 100%;
+  .img-wrap {
+    width: 50%;
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  .right {
+    width: 50%;
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+  }
+  .form-wrap {
+    width: 496px;
+    height: 500px;
+    position: absolute;
+    overflow: hidden;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    .anim {
+      width: fit-content;
+      height: 100%;
+      white-space: nowrap;
+      transition: transform 0.3s ease-out;
+    }
+  }
+}

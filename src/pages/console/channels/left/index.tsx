@@ -166,7 +166,7 @@ export default function Left() {
         <Popconfirm
           placement='bottom'
           title='警告'
-          description='确定删除选中的客户吗？'
+          description='确定删除当前通道组吗？'
           onConfirm={deleteEvent}
           okText='确定'
           cancelText='取消'>
