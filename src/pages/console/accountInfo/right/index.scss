@@ -52,9 +52,6 @@
       &.small {
         padding: 10px 0;
         min-width: '0';
-        .switch-test {
-          margin-left: 10px;
-        }
       }
       .switch-all {
         span {
@@ -62,10 +59,14 @@
           word-break: keep-all;
         }
       }
-      .switch-test {
-        span {
-          color: #ff4446;
-          word-break: keep-all;
+    }
+    .switch-test {
+      .ant-checkbox + span {
+        color: #999;
+      }
+      .ant-checkbox-wrapper-checked {
+        .ant-checkbox + span {
+          color: inherit;
         }
       }
     }

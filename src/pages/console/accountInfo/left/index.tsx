@@ -68,14 +68,16 @@ function Left(props: any, ref: any) {
       width: '10%',
       align: 'right',
       render: (_, record) => (
-        <div className='qizi'>
-          {record.test_flg == '1' ? (
-            <span
-              className='icon iconfont icon-a-biaoji2'
-              title='测试用户'></span>
-          ) : (
-            <></>
-          )}
+        <div className='qizi-wrap'>
+          <div className='qizi'>
+            {record.test_flg == '1' ? (
+              <span
+                className='icon iconfont icon-a-biaoji2'
+                title='测试用户'></span>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
       ),
     },

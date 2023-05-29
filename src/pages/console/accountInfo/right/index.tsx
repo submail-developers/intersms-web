@@ -206,8 +206,9 @@ export default function Right(props: Props) {
               onChange={changeTest}
               checked={
                 accountInfoStore.activeAccount?.test_flg == '1' ? true : false
-              }></Checkbox>
-            <span> 测试用户</span>
+              }>
+              测试用户
+            </Checkbox>
           </div>
         </div>
       </div>

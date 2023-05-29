@@ -71,16 +71,16 @@ function MyTable(props: Props, ref: any) {
   }
 
   const showEdit = (record: Item) => {
-    if (record.network_related_flg == '1') {
-      seteditId(record.network_id)
-      form.setFieldsValue({
-        price_tra: record.price_tra,
-        price_mke: record.price_mke,
-      })
-      initBgContry()
-    } else {
-      message.warning('开启该运营商后再编辑！')
-    }
+    // if (record.network_related_flg == '1') {
+    seteditId(record.network_id)
+    form.setFieldsValue({
+      price_tra: record.price_tra,
+      price_mke: record.price_mke,
+    })
+    initBgContry()
+    // } else {
+    //   message.warning('开启该运营商后再编辑！')
+    // }
   }
   // 编辑保存
   const save = async (record: Item) => {
