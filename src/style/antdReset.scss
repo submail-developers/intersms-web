@@ -15,6 +15,10 @@
   }
 }
 
+.ant-modal {
+  top: 200px;
+}
+
 // .modal-reset重置弹框样式及弹框内表单的样式，如客户信息中新增客户的弹框
 .ant-modal-wrap.modal-reset {
   .ant-form {
