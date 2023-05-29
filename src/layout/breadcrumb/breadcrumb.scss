@@ -12,10 +12,16 @@
     border-top-left-radius: 20px;
     .prefix-btn {
       margin-left: 8px;
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       color: #0074d7;
       cursor: pointer;
+      border-radius: 50%;
+      background-color: transparent;
+      transition: background-color 0.3s;
+      &:hover {
+        background-color: #dddfdf;
+      }
     }
     .crumb {
       margin-left: 24px;

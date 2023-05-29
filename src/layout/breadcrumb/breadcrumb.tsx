@@ -27,7 +27,7 @@ export default function BreadCrumb() {
           className='prefix-btn fx-center-center'
           onClick={() => dispatch(changeClose())}>
           <i
-            className={`iconfont fn18 icon-${
+            className={`iconfont fn16 icon-${
               status ? 'shouhui' : 'shouhui1'
             }`}></i>
         </div>
