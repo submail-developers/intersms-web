@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Form,
+  App,
   Pagination,
 } from 'antd'
 import { useSize } from '@/hooks'
@@ -23,6 +24,10 @@ import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import type { PaginationProps } from 'antd'
 
 interface DataType extends API.GetBlackDetailListItems {}
+interface FormValues {
+  list_id: string
+  keyword: string
+}
 type Props = {
   activeBlack: API.GetBlackDetailListItems | null
 }
@@ -38,35 +43,44 @@ export default function Right() {
 
   const blackStore = useAppSelector(blackState)
   const [form] = Form.useForm()
-
+  // 初始化form的值
+  const initFormValues: FormValues = {
+    list_id: '',
+    keyword: '',
+  }
+  const search = async () => {
+    const values = await form.getFieldsValue()
+    formatSearchValue(values)
+  }
+  const formatSearchValue = (params: FormValues) => {
+    const { list_id, keyword } = params
+    const searchParams = {
+      list_id: blackStore.activeBlack?.id || '',
+      keyword,
+    }
+    searchEvent(searchParams)
+  }
+  const searchEvent = async (params: API.GetBlackDetailListParams) => {
+    try {
+      const res = await getBlackItemsList(params)
+      settableData(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
     if (blackStore.activeBlack) {
-      search()
+      formatSearchValue(initFormValues)
     }
   }, [blackStore.activeBlack])
 
-  const search = async () => {
-    const res = await getBlackItemsList({
-      list_id: blackStore.activeBlack?.id || '',
-    })
-    settableData(Array.isArray(res.data) ? res.data : Object.values(res.data))
-  }
-
-  const onChange = (checkedValues: CheckboxValueType[]) => {
-    setselectedList(checkedValues)
-    if (checkedValues.length > 0) {
-      if (checkedValues.length == tableData.length) {
-        setIndeterminate(false)
-        setCheckAll(true)
-      } else {
-        setIndeterminate(true)
-        setCheckAll(false)
-      }
-    } else {
-      setIndeterminate(false)
-      setCheckAll(false)
-    }
-  }
+  // const search = async () => {
+  //   const res = await getBlackItemsList({
+  //     list_id: blackStore.activeBlack?.id || '',
+  //     keyword: '',
+  //   })
+  //   settableData(Array.isArray(res.data) ? res.data : Object.values(res.data))
+  // }
 
   const size = useSize()
   // 展示新增弹框
@@ -91,9 +105,29 @@ export default function Right() {
   }
   const showTotal: PaginationProps['showTotal'] = (total) =>
     `当前展示1-100/共${total}个`
+  const { message } = App.useApp()
 
+  let isChecked: any = []
+  const onChange = (checkedValues: CheckboxValueType[]) => {
+    isChecked = checkedValues
+    setselectedList(checkedValues)
+    if (checkedValues.length > 0) {
+      if (checkedValues.length == tableData.length) {
+        setIndeterminate(false)
+        setCheckAll(true)
+      } else {
+        setIndeterminate(true)
+        setCheckAll(false)
+      }
+    } else {
+      setIndeterminate(false)
+      setCheckAll(false)
+    }
+  }
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
     setCheckAll(e.target.checked)
+    // setIndeterminate(false)
+
     if (e.target.checked) {
       let ids: string[] = []
       tableData.forEach((item) => ids.push(item.id))
@@ -103,8 +137,27 @@ export default function Right() {
     }
     // console.log(e)
     // settableData(e.target.checked ? tableData : [])
-    // setIndeterminate(false)
+    setIndeterminate(false)
   }
+  // 批量删除事件
+  const deleteEvent = async () => {
+    console.log(selectedList)
+    if (selectedList.length === 0) {
+      message.warning('请勾选要删除的黑名单！')
+      return
+    }
+    const id = selectedList.join(',')
+    await deleteBlackMobileList({ id })
+    await search()
+    setCheckAll(false)
+    setIndeterminate(false)
+  }
+  // 单独删除
+  const singleDeleteEvent = async (id: any) => {
+    await deleteBlackMobileList({ id })
+    await search()
+  }
+
   return (
     <section
       data-class='account-right'
@@ -121,8 +174,8 @@ export default function Right() {
               <Popconfirm
                 placement='bottom'
                 title='警告'
-                description='确定删除选中的客户吗？'
-                // onConfirm={deleteEvent}
+                description='确定删除选中的黑名单吗？'
+                onConfirm={deleteEvent}
                 okText='确定'
                 cancelText='取消'>
                 <div className='btn delete'>
@@ -140,7 +193,7 @@ export default function Right() {
               layout='inline'
               wrapperCol={{ span: 24 }}
               autoComplete='off'>
-              <Form.Item label='' name='name' style={{ marginBottom: 10 }}>
+              <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
                 <Input
                   size={size}
                   placeholder='手机号'
@@ -159,6 +212,7 @@ export default function Right() {
                     type='primary'
                     size={size}
                     htmlType='submit'
+                    onClick={search}
                     style={{ width: 110, marginLeft: 0 }}>
                     搜索
                   </Button>
@@ -169,13 +223,15 @@ export default function Right() {
         </Row>
         <Row justify={'space-between'} align={'bottom'} wrap gutter={[10, 10]}>
           <Col>
-            <Checkbox
-              indeterminate={indeterminate}
-              onChange={onCheckAllChange}
-              checked={checkAll}>
-              全选
-            </Checkbox>
-            <div className='list-title'>黑名单</div>
+            <div className='list-title'>
+              {' '}
+              <Checkbox
+                indeterminate={indeterminate}
+                onChange={onCheckAllChange}
+                checked={checkAll}>
+                黑名单
+              </Checkbox>
+            </div>
           </Col>
           <Col>
             <Pagination
@@ -199,9 +255,20 @@ export default function Right() {
             <Col key={item.id} {...observerBle}>
               <div className='checkbox-item fx-between-center'>
                 <Checkbox value={item.id}>{item.mobile}</Checkbox>
-                <div className='delete-btn'>
+                <Popconfirm
+                  placement='left'
+                  title='警告'
+                  description='确定删除该条黑名单吗？'
+                  onConfirm={() => singleDeleteEvent(item.id)}
+                  okText='确定'
+                  cancelText='取消'>
                   <i className='icon iconfont icon-shanchu fn12'></i>
-                </div>
+                </Popconfirm>
+                {/* <div
+                  className='delete-btn'
+                  onClick={() => singleDeleteEvent(item.id)}>
+                  <i className='icon iconfont icon-shanchu fn12'></i>
+                </div> */}
               </div>
             </Col>
           ))}
