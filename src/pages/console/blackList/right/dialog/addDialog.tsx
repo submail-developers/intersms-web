@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import {
   Modal,
@@ -84,21 +85,13 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   let list_id: any
   list_id = blackStore.activeBlack?.id || ''
   const handleOk = async () => {
-    try {
-      console.log(fileList[0], 'fileList')
-      let file: any
-      // fileList.map((item) => (file = item.name))
-      const params = await form.validateFields()
-      params.list_id = list_id
-      params.file = fileList[0]
-
-      const res = await addBlackMobileList(params)
-      if (res) {
-        message.success('保存成功！')
-      }
-      onSearch()
-      setIsModalOpen(false)
-    } catch (error) {}
+    console.log(fileList)
+    const res = await uploadBlackMobileList({
+      list_id: '8',
+      mobile: '13112341234',
+      file: fileList[0],
+    })
+    console.log(res)
   }
 
   const handleCancel = () => {

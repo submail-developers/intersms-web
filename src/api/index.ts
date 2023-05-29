@@ -687,8 +687,13 @@ export const uploadBlackMobileList = (
   data: API.UploadBlackMobileListParams,
 ) => {
   return request.post<any, API.Response<any>, API.UploadBlackMobileListParams>(
-    'customer/analysis_file_mobile',
+    'customer/save_mobile_block_items',
     { ...data },
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
   )
 }
 /**

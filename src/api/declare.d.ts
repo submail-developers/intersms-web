@@ -775,7 +775,9 @@ declare module 'apis' {
     }
     // 上传黑名单文件
     interface UploadBlackMobileListParams {
-      file: string
+      list_id: string
+      mobile: string
+      file: any
     }
     /**
      * 黑名单管理end
