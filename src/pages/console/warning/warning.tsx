@@ -116,7 +116,7 @@ export default function NumberChannelsRoute() {
       title: '报警类型',
       dataIndex: 'type',
       className: 'paddingL30',
-      width: 120,
+      width: '14%',
       render: (_, record) => {
         return (
           <>
@@ -138,7 +138,7 @@ export default function NumberChannelsRoute() {
     {
       title: '报警对象',
       dataIndex: 'country_cn',
-      width: 120,
+      width: '14%',
       render: (_, record) => {
         return (
           <>
@@ -160,7 +160,7 @@ export default function NumberChannelsRoute() {
     {
       title: '报警最小条数',
       dataIndex: 'row',
-      width: 120,
+      width: '14%',
       render: (_, record) => {
         return (
           <>
@@ -172,7 +172,7 @@ export default function NumberChannelsRoute() {
     {
       title: '报警时间范围',
       dataIndex: 'time',
-      width: 120,
+      width: '14%',
       render: (_, record) => {
         return <span>{record.time + ' 分钟'} </span>
       },
@@ -180,14 +180,14 @@ export default function NumberChannelsRoute() {
     {
       title: '报警失败率',
       dataIndex: 'fail',
-      width: 120,
+      width: '14%',
       render: (_, record) => {
         return <span>{record.fail + '%'} </span>
       },
     },
     {
       title: '报警开关',
-      width: 120,
+      width: '14%',
       render: (_, record) => {
         return (
           <>
@@ -204,7 +204,6 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '操作',
-      width: 120,
       render: (_, record) => (
         <>
           <Button

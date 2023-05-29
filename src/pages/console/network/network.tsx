@@ -98,38 +98,39 @@ export default function Network() {
     {
       title: '运营商网络',
       dataIndex: 'name',
-      width: 120,
+      width: 220,
       className: 'paddingL30',
     },
     {
       title: '国家/地区名',
       dataIndex: 'country_cn',
-      width: 140,
+      width: 220,
       ellipsis: true,
     },
     {
       title: '代码',
       dataIndex: 'region_code',
-      width: 80,
+      width: 220,
     },
     {
       title: '洲属',
       dataIndex: 'area',
-      width: 80,
+      width: 220,
     },
     {
       title: '成本价格',
       dataIndex: 'cost_price',
-      width: 80,
+      width: 220,
     },
     {
       title: '建议零售价格',
       dataIndex: 'sug_price',
-      width: 80,
+      // width: '14%',
     },
     {
       title: '操作',
-      width: 120,
+      width: 220,
+      className: 'paddingL30',
       render: (_, record) => (
         <div>
           <Button

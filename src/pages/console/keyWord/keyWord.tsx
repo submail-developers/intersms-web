@@ -74,12 +74,12 @@ export default function Channel() {
     {
       title: '条目名称',
       dataIndex: 'name',
-      width: 160,
+      width: 220,
       className: 'paddingL30',
     },
     {
       title: '关键词',
-      width: 600,
+      width: 800,
       dataIndex: 'keywords',
       render: (_, record) => (
         <span className='color-words g-ellipsis-2'>{record.keywords}</span>
@@ -91,13 +91,12 @@ export default function Channel() {
     {
       title: '备注',
       dataIndex: 'comment',
-      width: 160,
+      width: 320,
       className: 'paddingL50',
     },
     {
       title: '启用状态',
       dataIndex: 'enabled',
-      width: 160,
       render: (_, record: DataType) => (
         <div className='switch-all fx-shrink'>
           <Switch
@@ -115,7 +114,8 @@ export default function Channel() {
     },
     {
       title: '操作',
-      width: 120,
+      className: 'paddingL50',
+      width: 220,
       render: (_, record) => (
         <>
           <Button

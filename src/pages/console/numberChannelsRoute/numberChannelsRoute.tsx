@@ -59,7 +59,7 @@ export default function NumberChannelsRoute() {
     }
   }
   const rowSelection = {
-    columnWidth: 120,
+    columnWidth: 60,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
@@ -123,11 +123,11 @@ export default function NumberChannelsRoute() {
       title: '手机号码',
       dataIndex: 'mobile',
       className: 'paddingL30',
-      width: '20%',
+      width: 280,
     },
     {
       title: '短信类型',
-      width: '20%',
+      width: 280,
       dataIndex: 'type',
       render: (_, record: DataType) => (
         <div>
@@ -137,16 +137,18 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '通道',
-      width: '20%',
       dataIndex: 'channel',
+      // width: '20%',
     },
     {
       title: '发送名',
-      width: '20%',
+      width: 320,
+      className: 'paddingL30',
       dataIndex: 'name',
     },
     {
       title: '操作',
+      width: 220,
       render: (_, record) => (
         <div>
           <Button
