@@ -15,7 +15,7 @@ import { UploadOutlined } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
 import { useAppSelector } from '@/store/hook'
 import { blackState } from '@/store/reducers/black'
-import { addBlackMobileList } from '@/api'
+import { addBlackMobileList, uploadBlackMobileList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 // import type { RadioValueType } from 'antd/es/radio/Group'
 import type { RadioChangeEvent } from 'antd'
@@ -23,35 +23,18 @@ interface Props {
   onSearch: () => void
 }
 
+let mobileNumDate: any = []
 const props: UploadProps = {
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+  action: 'apiscustomer/analysis_file_mobile',
   onChange({ file, fileList }) {
     if (file.status !== 'uploading') {
-      console.log(file, fileList)
+      fileList.map(
+        (item) =>
+          // console.log(item.response.data)
+          (mobileNumDate = item.response.data),
+      )
     }
   },
-  defaultFileList: [
-    // {
-    //   uid: '1',
-    //   name: 'xxx.png',
-    //   status: 'uploading',
-    //   url: 'http://www.baidu.com/xxx.png',
-    //   percent: 33,
-    // },
-    // {
-    //   uid: '2',
-    //   name: 'yyy.png',
-    //   status: 'done',
-    //   url: 'http://www.baidu.com/yyy.png',
-    // },
-    // {
-    //   uid: '3',
-    //   name: 'zzz.png',
-    //   status: 'error',
-    //   response: 'Server Error 500', // custom error message to show
-    //   url: 'http://www.baidu.com/zzz.png',
-    // },
-  ],
 }
 
 const Dialog = ({ onSearch }: Props, ref: any) => {
@@ -75,13 +58,16 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     try {
       const params = await form.validateFields()
       params.list_id = list_id
+      // params.mobile = mobileNumDate
+      console.log(mobileNumDate)
+      // console.log(params, '?????')
 
-      const res = await addBlackMobileList(params)
-      if (res) {
-        message.success('保存成功！')
-      }
-      onSearch()
-      setIsModalOpen(false)
+      // const res = await addBlackMobileList(params)
+      // if (res) {
+      //   message.success('保存成功！')
+      // }
+      // onSearch()
+      // setIsModalOpen(false)
     } catch (error) {}
   }
 
@@ -100,6 +86,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     { label: '行业短信', value: '1' },
     { label: '营销短信', value: '2' },
   ]
+
   const { TextArea } = Input
   return (
     <Modal
@@ -116,7 +103,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        initialValues={{ type: ['1'] }}
+        initialValues={{ type: ['1'], mobile: mobileNumDate }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
@@ -143,7 +130,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
           <TextArea
             rows={6}
             className='color-words'
-            style={{ fontSize: '16px' }}
+            style={{ fontSize: '16px', color: '#282b31' }}
           />
         </Form.Item>
         <Form.Item label='从文件导入'>

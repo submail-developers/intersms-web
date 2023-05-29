@@ -682,6 +682,15 @@ export const deleteBlackMobileList = (
     { ...data },
   )
 }
+// 黑名单上传文件
+export const uploadBlackMobileList = (
+  data: API.UploadBlackMobileListParams,
+) => {
+  return request.post<any, API.Response<any>, API.UploadBlackMobileListParams>(
+    'customer/analysis_file_mobile',
+    { ...data },
+  )
+}
 /**
  * 黑名单管理end
  */

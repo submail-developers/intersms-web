@@ -735,6 +735,7 @@ declare module 'apis' {
     // 获取黑名单电话明细
     interface GetBlackDetailListParams {
       list_id: string
+      keyword: string
     }
     // 获取黑名单电话明细返回数据
     interface GetBlackDetailListItems {
@@ -750,6 +751,10 @@ declare module 'apis' {
     // 删除黑名单手机号码
     interface DeleteBlackMobileListParams {
       id: string
+    }
+    // 上传黑名单文件
+    interface UploadBlackMobileListParams {
+      file: string
     }
     /**
      * 黑名单管理end
