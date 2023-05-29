@@ -15,7 +15,7 @@ export default function Header() {
       <div className='right fn16 fx-y-center'>
         <div className='text'>欢迎使用赛邮国际短信网关 1.0</div>
         <div className='logout-wrap'>
-          <i className='icon iconfont icon-shouhui1 fn14'></i>
+          <i className='icon iconfont icon-tuichu fn16'></i>
           <span>退出登录</span>
         </div>
       </div>
