@@ -15,7 +15,7 @@ export default function SizeBar() {
       {routerList.map((item) => (
         <dd key={item.path}>
           <NavLink to={item.path || '/'} className='fx-col-center-center'>
-            <span className={item.handle.icon + ' iconfont fn22'}></span>
+            <span className={item.handle.icon + ' iconfont fn20'}></span>
             <span>{item.handle.alias}</span>
           </NavLink>
         </dd>
