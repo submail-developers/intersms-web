@@ -8,7 +8,8 @@ import React, {
 import type { TableColumnsType } from 'antd'
 import { Form, Input, Table, ConfigProvider, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
-import './tableCountry.scss'
+// import './tableCountry.scss'
+import '@/style/drawerTable.scss'
 import {
   updateChannelCountryNetworkStatus,
   updateChannelsNetworkWeight,
@@ -145,7 +146,7 @@ function MyTable(props: Props, ref: any) {
       render(_, record) {
         return (
           <div className='td-content'>
-            <div onClick={() => changeLock(record)} className='pointer'>
+            <div onClick={() => changeLock(record)} className='lock'>
               {Math.random() > 0.5 ? (
                 <LockFilled className='color-gray fn16' />
               ) : (
@@ -313,14 +314,14 @@ function MyTable(props: Props, ref: any) {
           },
         }}>
         <Table
-          className='theme-cell-channels bg-white'
+          className='drawer-table'
           columns={columns}
           dataSource={tableData}
           sticky
           pagination={false}
           rowKey={'id'}
           rowClassName={(record, index) => {
-            return index % 2 == 1 ? 'lock-text' : ''
+            return index % 2 == 1 ? 'lock-row' : ''
           }}
           scroll={{ x: 'max-content' }}
         />

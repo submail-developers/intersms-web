@@ -22,7 +22,7 @@ const initialValues: FormType = {
   sender: '',
   price_tra: '',
   price_mke: '',
-  country_cn: '',
+  country_cn: undefined,
   type: '2', // 默认行业短信
 }
 const Dialog = (props: Props, ref: any) => {
@@ -100,8 +100,7 @@ const Dialog = (props: Props, ref: any) => {
             filterOption={(input, option) =>
               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
-            options={props.allCountry}
-          />
+            options={props.allCountry}></Select>
         </Form.Item>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>

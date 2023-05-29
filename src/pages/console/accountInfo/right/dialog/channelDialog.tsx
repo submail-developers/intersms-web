@@ -17,11 +17,11 @@ interface FormType extends API.UpdateAccountChannelParams {}
 const initialValues: FormType = {
   id: '', // 客户ID
   sender: '', // 客户account
-  appid: '', // 0所有
+  appid: '0', // 0所有
   group_type: '1', // 通道类型   1行业通道  2营销通道
   signature: '', // 签名 需带【】
-  country_cn: '', // 国家中文名称
-  group_id: '', // 通道组id
+  country_cn: undefined, // 国家中文名称
+  group_id: undefined, // 通道组id
 }
 function Dialog(props: Props, ref: any) {
   const accountInfoStore = useAppSelector(accountInfoState)

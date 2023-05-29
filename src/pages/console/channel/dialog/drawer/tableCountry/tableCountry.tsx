@@ -7,7 +7,8 @@ import React, {
 import { TableColumnsType, message } from 'antd'
 import { Form, Input, Table, ConfigProvider, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
-import './tableCountry.scss'
+// import '@/style/drawerTable.scss'
+import '@/style/drawerTable.scss'
 import {
   updateChannelCountryNetworkPrice,
   updateChannelCountryNetworkStatus,
@@ -53,7 +54,7 @@ function MyTable(props: Props, ref: any) {
     let _data: DataType[] = []
     props.tabData.forEach((item, index) => {
       _data.push({
-        id: index,
+        id: item[0].id,
         child: item,
       })
     })
@@ -71,16 +72,13 @@ function MyTable(props: Props, ref: any) {
   }
 
   const showEdit = (record: Item) => {
-    // if (record.network_related_flg == '1') {
-    seteditId(record.network_id)
+    seteditId(record.id)
     form.setFieldsValue({
+      price_def: record.price_tra,
       price_tra: record.price_tra,
       price_mke: record.price_mke,
     })
     initBgContry()
-    // } else {
-    //   message.warning('开启该运营商后再编辑！')
-    // }
   }
   // 编辑保存
   const save = async (record: Item) => {
@@ -169,6 +167,26 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
+      title: <div className='paddingL12'>默认价格</div>,
+      width: 200,
+      className: 'paddingL50 paddingR30',
+      render(_, record) {
+        return (
+          <div className={`td-content`}>
+            {record.child.some((item) => item.id == editId) ? (
+              <Form.Item name='price_def'>
+                <Input type='number' step={0.00001} min={0} />
+              </Form.Item>
+            ) : (
+              <div className='paddingL12'>
+                {record.child[0].price_tra || '-'}
+              </div>
+            )}
+          </div>
+        )
+      },
+    },
+    {
       title: <div className='paddingL30'>运营商网络类型</div>,
       className: 'col-line',
       // width: 200,
@@ -183,7 +201,7 @@ function MyTable(props: Props, ref: any) {
               bgContry.network += 1
               return (
                 <div
-                  key={'name' + item.network_id}
+                  key={'name' + item.id}
                   className={`${trClassName} sub-td paddingL30`}>
                   {item.name || '-'}
                 </div>
@@ -207,9 +225,9 @@ function MyTable(props: Props, ref: any) {
               bgContry.price_tra += 1
               return (
                 <div
-                  key={'price_tra' + item.network_id}
+                  key={'price_tra' + item.id}
                   className={`${trClassName} sub-td `}>
-                  {item.network_id == editId ? (
+                  {item.id == editId ? (
                     <Form.Item name='price_tra'>
                       <Input type='number' step={0.00001} min={0} />
                     </Form.Item>
@@ -237,9 +255,9 @@ function MyTable(props: Props, ref: any) {
               bgContry.price_mke += 1
               return (
                 <div
-                  key={'price_mke' + item.network_id}
+                  key={'price_mke' + item.id}
                   className={`${trClassName} sub-td `}>
-                  {item.network_id == editId ? (
+                  {item.id == editId ? (
                     <Form.Item name='price_mke'>
                       <Input type='number' step={0.00001} min={0} />
                     </Form.Item>
@@ -266,10 +284,10 @@ function MyTable(props: Props, ref: any) {
               bgContry.enabled += 1
               return (
                 <div
-                  key={'state' + item.network_id}
+                  key={'state' + item.id}
                   className={`${trClassName} sub-td`}>
                   <Enbled
-                    id={item.network_id}
+                    id={item.id}
                     checked={item.network_related_flg == '1'}
                     disabled={
                       item.country_related_flg != '1' || !item.network_id
@@ -296,9 +314,9 @@ function MyTable(props: Props, ref: any) {
               bgContry.action += 1
               return (
                 <div
-                  key={'action' + item.network_id}
+                  key={'action' + item.id}
                   className={`${trClassName} sub-td`}>
-                  {item.network_id == editId ? (
+                  {item.id == editId ? (
                     <>
                       <Button
                         type='link'
@@ -336,14 +354,14 @@ function MyTable(props: Props, ref: any) {
           },
         }}>
         <Table
-          className='theme-cell-reset bg-white'
+          className='drawer-table'
           columns={columns}
           dataSource={tableData}
           sticky
           pagination={false}
           rowKey={'id'}
           rowClassName={(record, index) => {
-            return record.child[0].country_related_flg == '0' ? 'lock-text' : ''
+            return record.child[0].country_related_flg == '0' ? 'lock-row' : ''
           }}
           scroll={{ x: 'max-content' }}
         />

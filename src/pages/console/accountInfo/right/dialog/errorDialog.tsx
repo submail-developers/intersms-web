@@ -30,7 +30,7 @@ const initialValues: FormType = {
   rejected: '',
   spname: '',
   country_cn: '',
-  region_code: '',
+  region_code: undefined,
 }
 const Dialog = (props: Props, ref: any) => {
   const accountInfoStore = useAppSelector(accountInfoState)

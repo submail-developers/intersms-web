@@ -9,7 +9,7 @@ interface Props {
 }
 
 const GroupTitle = styled.div`
-  font-size: 16px;
+  font-size: 15px;
   color: #b2b2b2;
   margin-bottom: 10px;
 `
