@@ -187,7 +187,7 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL30'>运营商网络类型</div>,
+      title: <div className='paddingL30'>运营商网络</div>,
       className: 'col-line',
       // width: 200,
       render(_, record) {

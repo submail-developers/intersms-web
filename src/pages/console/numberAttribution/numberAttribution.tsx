@@ -144,7 +144,7 @@ export default function NumberAttr() {
               dataSource={tableData}
               rowKey={'id'}
               pagination={false}
-              scroll={{ y: 510, x: 'max-content' }}
+              scroll={{ y: 480, x: 'max-content' }}
             />
           </ConfigProvider>
         </div>
