@@ -767,6 +767,7 @@ declare module 'apis' {
     interface AddBlackMobileListParams {
       list_id: string
       mobile: string
+      file: string
     }
     // 删除黑名单手机号码
     interface DeleteBlackMobileListParams {

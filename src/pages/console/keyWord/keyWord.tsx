@@ -39,6 +39,7 @@ export default function Channel() {
     }
   }
   const rowSelection = {
+    columnWidth: 60,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)

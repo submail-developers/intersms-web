@@ -126,6 +126,8 @@ export default function Right() {
   }
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
     setCheckAll(e.target.checked)
+    // setIndeterminate(false)
+
     if (e.target.checked) {
       let ids: string[] = []
       tableData.forEach((item) => ids.push(item.id))
@@ -135,7 +137,7 @@ export default function Right() {
     }
     // console.log(e)
     // settableData(e.target.checked ? tableData : [])
-    // setIndeterminate(false)
+    setIndeterminate(false)
   }
   // 批量删除事件
   const deleteEvent = async () => {

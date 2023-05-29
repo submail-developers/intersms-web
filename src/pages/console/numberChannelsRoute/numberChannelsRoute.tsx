@@ -59,6 +59,7 @@ export default function NumberChannelsRoute() {
     }
   }
   const rowSelection = {
+    columnWidth: 120,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
