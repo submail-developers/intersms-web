@@ -50,7 +50,7 @@ export default function Right() {
   const initFormValues: FormValues = {
     list_id: '',
     keyword: '',
-    limit: 10,
+    limit: 100,
     page: 1,
   }
   const search = async () => {
@@ -62,7 +62,7 @@ export default function Right() {
     const searchParams = {
       list_id: blackStore.activeBlack?.id || '',
       keyword,
-      limit: 10,
+      limit: 100,
       page: 1,
     }
     searchEvent(searchParams)
@@ -121,8 +121,6 @@ export default function Right() {
     xl: 12,
     xxl: 14,
   }
-  // const showTotal: PaginationProps['showTotal'] = (total) =>
-  //   `当前展示1-100/共${total}个`
   const { message } = App.useApp()
 
   let isChecked: any = []
@@ -256,14 +254,15 @@ export default function Right() {
               size='small'
               total={total}
               current={current}
+              defaultPageSize={100}
               showSizeChanger
               showQuickJumper
-              pageSizeOptions={[10, 20, 30]}
+              pageSizeOptions={[100, 200, 300]}
               // showTotal={(total) => `一共${total}条`}
               onChange={changePage}
               // total={total}
               showTotal={(total, range) =>
-                `${range[0]}-${range[1]} of ${total} items`
+                `当前展示${range[0]}-${range[1]}条 / 共 ${total} 条`
               }
             />
           </Col>
