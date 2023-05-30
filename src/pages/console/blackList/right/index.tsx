@@ -251,6 +251,7 @@ export default function Right() {
           </Col>
           <Col>
             <Pagination
+              style={{ paddingRight: '16px' }}
               size='small'
               total={total}
               current={current}
