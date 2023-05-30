@@ -225,9 +225,7 @@ export const getAllGroupId = (data: API.GetAllGroupIdParams) => {
 }
 
 // 获取通道组列表(包含敏感词信息)
-export const getChannelGroupList = (
-  data: API.GetChannelGroupListParams = { page: '1' },
-) => {
+export const getChannelGroupList = (data: API.GetChannelGroupListParams) => {
   return request.post<
     any,
     API.Response<API.GetChannelGroupListItem[]>,

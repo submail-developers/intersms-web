@@ -68,7 +68,6 @@ export default function NumberAttr() {
   const search = async () => {
     const res = await getAccountList({
       keyword,
-      page: '1',
     })
     settableData(res.data)
     if (res.data.length > 0) {

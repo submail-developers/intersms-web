@@ -43,7 +43,6 @@ function Price(props: Props, ref: any) {
     try {
       const res = await getAccountPriceList({
         sender: accountInfoStore.activeAccount?.account || '', // 客户account
-        page: '1',
       })
       settableData(res.data)
     } catch (error) {}

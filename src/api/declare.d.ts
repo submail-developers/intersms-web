@@ -157,7 +157,6 @@ declare module 'apis' {
 
     // 获取客户列表参数
     interface AccountListParams {
-      page?: string
       keyword?: string
     }
     // 客户列表返回值
@@ -183,7 +182,6 @@ declare module 'apis' {
     // 客户信息-国家价格配置/国家通道配置/失败处理配置列表
     interface GetAccountConfigListParams {
       sender: string // 客户account
-      page: string
     }
     // 客户信息-新增/修改国家价格配置
     interface UpdateAccountPriceParams {
@@ -299,7 +297,6 @@ declare module 'apis' {
     interface GetChannelGroupListParams {
       id?: string
       keyword?: string
-      page: string
     }
 
     interface UpdateChannelGroupParams {
@@ -539,7 +536,6 @@ declare module 'apis' {
       id: string
       keyword: string
       group_id: string
-      page: string
     }
     // 获取国家信息返回的数据
     interface GetCountryListItems {
@@ -565,7 +561,6 @@ declare module 'apis' {
     interface GetNetWorkParams {
       id: string
       keyword: string
-      page: string
     }
     // 获取网络信息返回的数据
     interface GetNetWorkListItems {
@@ -603,7 +598,6 @@ declare module 'apis' {
       type: string
       keyword: string
       channel: string
-      page: string
     }
     // 获取号码通道路由的数据
     interface GetMobileRouteListItems {
@@ -636,7 +630,6 @@ declare module 'apis' {
       id: string
       type: string
       keyword: string
-      page: string
     }
     // 获取报警设置的数据
     interface GetalArmConfigListItems {
@@ -691,7 +684,6 @@ declare module 'apis' {
     // 获取敏感词
     interface GetSensitiveWordListParams {
       id: string
-      page: string
     }
     // 获取敏感词返回数据
     interface GetSensitiveWordListItems {
@@ -736,7 +728,6 @@ declare module 'apis' {
     // 获取关键词
     interface GetkeyWordParams {
       id: string
-      page: string
     }
     // 获取所有关键词返回数据
     interface GetkeyWordItems {

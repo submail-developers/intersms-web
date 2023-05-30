@@ -106,9 +106,7 @@ export default function Channel() {
     },
     {
       title: '连接状态',
-      render: (_, record) => (
-        <div className='color-success'>{record.access_type}-已开启</div>
-      ),
+      render: (_, record) => <div className='color-success'>无字段</div>,
     },
     {
       title: '链路数量',

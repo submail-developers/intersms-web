@@ -105,7 +105,7 @@ export default function Left() {
 
   // noResetActive是否重置当前选中项
   const search = async (noResetActive?: boolean) => {
-    const res = await getChannelGroupList({ page: '1', id: '', keyword })
+    const res = await getChannelGroupList({ id: '', keyword })
     settableData(res.data)
     if (noResetActive) return
     if (res.data.length > 0) {

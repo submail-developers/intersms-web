@@ -53,7 +53,6 @@ export default function Channel() {
   const search = async () => {
     const res = await getkeyWord({
       id: '',
-      page: '1',
     })
     settableData(res.data)
     if (res.data.length > 0) {

@@ -76,7 +76,6 @@ export default function Network() {
     const { id, page, keyword } = params
     const searchParams = {
       id: '',
-      page: '1',
       keyword,
     }
     searchEvent(searchParams)

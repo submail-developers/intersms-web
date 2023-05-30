@@ -62,7 +62,6 @@ export default function Channel() {
     const { id, group_id, page, keyword } = params
     const searchParams = {
       id: '',
-      page: '1',
       group_id,
       keyword,
     }

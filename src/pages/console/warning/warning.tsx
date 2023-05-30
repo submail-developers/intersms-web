@@ -86,7 +86,6 @@ export default function NumberChannelsRoute() {
       id,
       type,
       keyword,
-      page: '1',
     }
     searchEvent(searchParams)
   }
