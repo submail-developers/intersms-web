@@ -5,7 +5,7 @@ import BindKeyword from './dialog/bindKeyword/bindKeyword'
 import { Button, Popconfirm, ConfigProvider, Table, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useSize } from '@/hooks'
-import { getChannelGroupRelatedData, channelGroupDeleteChannel } from '@/api'
+import { getGroupChannelList, channelGroupDeleteChannel } from '@/api'
 import AddChannelDialog from './dialog/addChannelDialog'
 import { API } from 'apis'
 import AccessCountryDrawer from './dialog/drawer/drawer'
@@ -13,7 +13,7 @@ import { channelTypeOptions, getOptionsLabel } from '@/utils/options'
 
 import './index.scss'
 
-interface DataType extends API.GetChannelGroupRelatedDataItem {}
+interface DataType extends API.GroupChannelItem {}
 
 type Props = {
   activeChannels: API.GetChannelGroupListItem | null
@@ -39,7 +39,7 @@ export default function Right() {
     }
   }, [channlesStore.activeChannels])
   const getList = async () => {
-    const res = await getChannelGroupRelatedData({
+    const res = await getGroupChannelList({
       group_id: channlesStore.activeChannels?.id || '',
     })
     settableData(res.data)

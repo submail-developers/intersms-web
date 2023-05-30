@@ -103,47 +103,55 @@ function Error(props: Props, ref: any) {
     {
       title: '国家/地区名',
       dataIndex: 'country_cn',
-      width: 200,
+      width: 160,
       ellipsis: true,
     },
     {
       title: '短信类型',
-      dataIndex: 'sms_type',
+      width: 120,
+      dataIndex: 'Sms_type',
       render: (_, record) => (
         <div>{record.sms_type == '1' ? '短信通道组' : '营销通道组'}</div>
       ),
     },
     {
-      title: 'response_time',
-      dataIndex: 'response_time',
+      title: 'Response_time',
       width: 120,
+      dataIndex: 'response_time',
     },
     {
-      title: 'delivrd',
+      title: 'Delivrd',
+      width: 120,
       dataIndex: 'delivrd',
     },
     {
-      title: 'undeliv',
+      title: 'Undeliv',
+      width: 120,
       dataIndex: 'undeliv',
     },
     {
-      title: 'expired',
+      title: 'Expired',
+      width: 120,
       dataIndex: 'expired',
     },
     {
-      title: 'accepted',
+      title: 'Accepted',
+      width: 120,
       dataIndex: 'accepted',
     },
     {
-      title: 'unknown',
+      title: 'Unknown',
+      width: 120,
       dataIndex: 'unknown',
     },
     {
-      title: 'rejected',
+      title: 'Rejected',
+      width: 120,
       dataIndex: 'rejected',
     },
     {
-      title: 'spname',
+      title: 'Spname',
+      width: 120,
       dataIndex: 'spname',
     },
     {

@@ -23,8 +23,6 @@ import {
   oneTouchChannelCountryNetworkStatus,
 } from '@/api'
 import { API } from 'apis'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
-import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import './drawer.scss'
 
 interface Props {

@@ -12,34 +12,34 @@ import {
   ConfigProvider,
   Button,
   Drawer,
-  Popconfirm,
-  Switch,
+  App,
+  Checkbox,
 } from 'antd'
 import TableCountry from './tableCountry/tableCountry'
-import { groupBy } from '@/utils'
 import { useSize } from '@/hooks'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
 
-import { getChannelGroupRelatedData } from '@/api'
+import { getGroupRelatedData, oneTouchGroupCountryNetworkStatus } from '@/api'
 import { API } from 'apis'
 
 import './drawer.scss'
-interface DataType extends API.GetChannelGroupRelatedDataItem {}
+interface DataType extends API.GroupRelatedDataItem {}
 
 interface Props {
   onUpdate: () => void
 }
-interface DataType extends API.GetChannelGroupRelatedDataItem {}
 
 const Dialog = (props: Props, ref: any) => {
+  const { message } = App.useApp()
   const channlesStore = useAppSelector(channelsState)
   const size = useSize()
   const [form] = Form.useForm()
   const [channelId, setchannelId] = useState<string>('') // 通道ID
-  const [tableData, setTableData] = useState<
-    API.ChannelsChannelNetworkItem[][]
-  >([])
+  const [tableData, setTableData] = useState<API.GroupRelatedDataItem[]>([])
+
+  const [indeterminate, setIndeterminate] = useState(false)
+  const [checkAll, setCheckAll] = useState(false)
 
   const tableref: MutableRefObject<any> = useRef(null)
   useImperativeHandle(ref, () => {
@@ -63,16 +63,14 @@ const Dialog = (props: Props, ref: any) => {
 
   const search = async () => {
     try {
-      const res = await getChannelGroupRelatedData({
+      const res = await getGroupRelatedData({
         group_id: channlesStore.activeChannels?.id || '',
         channel_id: channelId,
         keyword: '',
       })
-      const network_list = res.data[0].network_list
-      const groupData = Object.values(
-        groupBy(network_list, 'region_code'),
-      ) as API.ChannelsChannelNetworkItem[][]
-      setTableData(groupData)
+      setTableData(res.data)
+      setIndeterminate(res.list_status == '2')
+      setCheckAll(res.list_status == '1')
     } catch (error) {}
   }
 
@@ -81,6 +79,24 @@ const Dialog = (props: Props, ref: any) => {
     setchannelId('')
     setShow(false)
   }
+
+  // 一键开启/关闭
+  const onCheckAllChange = async () => {
+    message.loading({
+      content: '',
+      duration: 0,
+    })
+    try {
+      await oneTouchGroupCountryNetworkStatus({
+        group_id: channlesStore.activeChannels?.id || '',
+        channel_id: channelId,
+        status: checkAll ? '0' : '1',
+      })
+      message.destroy()
+    } catch (error) {}
+    await search()
+  }
+
   return (
     <Drawer
       title=''
@@ -102,21 +118,14 @@ const Dialog = (props: Props, ref: any) => {
                 </span>
               </div>
               <div className=' switch-all'>
-                <Popconfirm
-                  placement='bottom'
-                  title='警告'
-                  description='确定关联全部国家及其运营商吗？'
-                  onConfirm={() => {}}
-                  okText='确定'
-                  cancelText='取消'>
-                  <div className='fx-y-center'>
-                    <Switch
-                      size='small'
-                      checked
-                      onClick={(_, e) => {}}></Switch>
-                    <span className='text'>关联全部国家及其运营商</span>
-                  </div>
-                </Popconfirm>
+                <div className='fx-y-center'>
+                  <Checkbox
+                    indeterminate={indeterminate}
+                    onClick={onCheckAllChange}
+                    checked={checkAll}>
+                    关联全部国家及其运营商
+                  </Checkbox>
+                </div>
               </div>
             </div>
 

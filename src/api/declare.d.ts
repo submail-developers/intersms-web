@@ -2,6 +2,8 @@ declare module 'apis' {
   namespace API {
     interface Response<T = any> {
       data: T
+      message?: string
+      status?: string
     }
 
     interface BaseParams {
@@ -329,7 +331,7 @@ declare module 'apis' {
       keyroute_priority: string
     }
     // 获取通道组关联数据（通道+权重+关键字路由+敏感词）
-    interface GetChannelGroupRelatedDataItem {
+    interface GroupChannelItem {
       group_id: string
       channel_id: string
       channel_name: string
@@ -345,11 +347,35 @@ declare module 'apis' {
       group_id: string
       sens_id: string // 敏感词ID
     }
-    interface GetChannelGroupRelatedDataParams {
+    interface GetGroupChannelListParams {
+      group_id: string
+      channel_id?: string
+    }
+    // 通道组-获取关联国家列表
+    interface GetGroupRelatedDataParams {
       group_id: string
       channel_id?: string
       keyword?: string
     }
+    interface GroupRelatedDataNetItem {
+      id: string
+      network_id: string
+      network_name: string
+      weight: string
+      network_enabled: '1' | '0'
+    }
+
+    interface GroupRelatedDataItem {
+      id: string
+      channel_id: string
+      country_cn: string
+      region_code: string
+      weight: string
+      network_id: string
+      country_enabled: '1' | '0'
+      network_list: GroupRelatedDataNetItem[]
+    }
+
     // 修改通道组关联通道-国家网络权重
 
     interface UpdateChannelsCountryNetworkWeightParams {
@@ -358,6 +384,23 @@ declare module 'apis' {
       region_code: string
       network_id: string
       weight: string
+    }
+    // 禁用启用通道组关联通道-国家/运营商
+
+    interface UpdateGroupCountryNetworkStatusParams {
+      group_id: string
+      channel_id: string
+      region_code: string
+      network_id: string
+      status: '0' | '1' // 0禁用1启用
+      type: '1' | '2' // 1操作国家  2操作运营商网络
+    }
+
+    // 一键启用/禁用所有关联国家和运营商
+    interface OneTouchGroupCountryNetworkStatusParams {
+      group_id: string
+      channel_id: string
+      status: '0' | '1' // 1启用0禁用
     }
     /**
      * 通道组管理end
@@ -410,21 +453,6 @@ declare module 'apis' {
       letter: string
       children: CountryItem[]
     }
-    // interface ChannelCountryConfigItem {
-    //   channel_id: string
-    //   country_cn: string
-    //   id: string
-    //   enabled: '1' | '0' // 是否启用   1是  0否
-    //   network: string // 运营商网络
-    //   price_mke: string // 营销价格
-    //   price_tra: string // 行业价格
-    //   region_code: string
-    //   cost_price: string
-    //   sug_price: string
-    //   name: string
-    //   country_related_flg: '1' | '0'
-    //   network_related_flg: '1' | '0'
-    // }
     interface NetworkListItem {
       id: string
       network_enabled: '0' | '1'

@@ -248,25 +248,28 @@ export const deleteChannelGroup = (data: API.Ids) => {
     { ...data },
   )
 }
-// 通道组关联敏感词
+// 通道组绑定/取消绑定敏感词
 export const channelGroupBindSensitiveWord = (
   data: API.updateChannelsBindSensitiveWordParams,
+  bind: '0' | '1', // 1绑定0取消绑定
 ) => {
+  const url =
+    bind == '1'
+      ? 'customer/save_group_related_sensitive_keywords'
+      : 'customer/delete_group_related_sensitive_keywords'
   return request.post<
     any,
     API.Response<any>,
     API.updateChannelsBindSensitiveWordParams
-  >('customer/save_group_related_sensitive_keywords', { ...data })
+  >(url, { ...data })
 }
 
-// 获取通道组关联数据（通道+权重+关键字路由）
-export const getChannelGroupRelatedData = (
-  data: API.GetChannelGroupRelatedDataParams,
-) => {
+// 获取通道组管理配置列表
+export const getGroupChannelList = (data: API.GetGroupChannelListParams) => {
   return request.post<
     any,
-    API.Response<any>,
-    API.GetChannelGroupRelatedDataParams
+    API.Response<API.GroupChannelItem[]>,
+    API.GetGroupChannelListParams
   >('customer/get_group_related_data', { ...data })
 }
 // 通道组添加通道
@@ -298,6 +301,16 @@ export const channelGroupUpdateKeyword = (
     API.ChannelGroupUpdateKeywordParams
   >('customer/save_group_related_keywords_route', { ...data })
 }
+interface GroupRelatedData extends API.Response<API.GroupRelatedDataItem[]> {
+  list_status: '1' | '2' | '3' // 1全部开启状态   2部分开启状态   3全部关闭状态
+}
+// 获取通道组-通道关联数据
+export const getGroupRelatedData = (data: API.GetGroupRelatedDataParams) => {
+  return request.post<any, GroupRelatedData, API.GetGroupRelatedDataParams>(
+    'customer/get_group_related_channel_country_data',
+    { ...data },
+  )
+}
 // 修改通道组关联通道-运营商权重
 export const updateChannelsNetworkWeight = (
   data: API.UpdateChannelsCountryNetworkParams,
@@ -307,6 +320,26 @@ export const updateChannelsNetworkWeight = (
     API.Response<any>,
     API.UpdateChannelsCountryNetworkParams
   >('customer/update_countrynetwork_weight', { ...data })
+}
+// 禁用启用通道组关联通道-国家/运营商
+export const updateGroupCountryNetworkStatus = (
+  data: API.UpdateGroupCountryNetworkStatusParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.UpdateGroupCountryNetworkStatusParams
+  >('customer/update_countrynetwork_weight_status', { ...data })
+}
+// 一键启用/禁用所有关联国家和运营商
+export const oneTouchGroupCountryNetworkStatus = (
+  data: API.OneTouchGroupCountryNetworkStatusParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.OneTouchGroupCountryNetworkStatusParams
+  >('customer/update_all_countrynetwork_weight_status', { ...data })
 }
 /**
  * 通道组管理end

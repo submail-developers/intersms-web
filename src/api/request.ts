@@ -14,7 +14,7 @@ const request: AxiosInstance = axios.create({
 request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (!config.url?.includes('/pet')) {
-      config.url = '/apis' + config.url
+      config.url = '/apis/' + config.url
     }
     // config.headers['Cooik'] = '123'
     return config

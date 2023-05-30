@@ -20,7 +20,7 @@ interface EnbledProps {
   region_code: string
   checked: boolean
   disabled: boolean
-  id: string
+  network_id: string
 }
 
 interface Props {
@@ -62,8 +62,8 @@ function MyTable(props: Props, ref: any) {
         channel_id: props.channelId,
         region_code: record.region_code,
         network_id: '0',
-        status: record.country_enabled == '1' ? '0' : '1',
-        type: '1',
+        status: record.country_enabled == '1' ? '0' : '1', // 0禁用1启用,
+        type: '1', // 1操作国家  2操作运营商网络
       })
       message.destroy()
     } catch (error) {}
@@ -112,18 +112,12 @@ function MyTable(props: Props, ref: any) {
         netParams && updateChannelCountryNetworkPrice(netParams),
       ]
       await Promise.all(list)
-      await props.search()
       message.destroy()
-      seteditCountryId('')
-      seteditNetId('')
-      initBgContry()
-    } catch (error) {
-      await props.search()
-      message.destroy()
-      seteditCountryId('')
-      seteditNetId('')
-      initBgContry()
-    }
+    } catch (error) {}
+    await props.search()
+    seteditCountryId('')
+    seteditNetId('')
+    initBgContry()
   }
   const cancel = () => {
     seteditCountryId('')
@@ -139,7 +133,7 @@ function MyTable(props: Props, ref: any) {
         await updateChannelCountryNetworkStatus({
           channel_id: props.channelId,
           region_code: enbledProps.region_code,
-          network_id: enbledProps.id,
+          network_id: enbledProps.network_id,
           status: enbledProps.checked ? '0' : '1',
           type: '2',
         })
@@ -369,7 +363,7 @@ function MyTable(props: Props, ref: any) {
                     className={`${trClassName} sub-td`}>
                     <Enbled
                       region_code={record.region_code}
-                      id={item.network_id}
+                      network_id={item.network_id}
                       checked={item.network_enabled == '1'}
                       disabled={
                         record.country_enabled != '1' || !item.network_id
@@ -469,25 +463,18 @@ function MyTable(props: Props, ref: any) {
 
   return (
     <Form component={false} form={form}>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorBgContainer: 'transparent',
-          },
-        }}>
-        <Table
-          className='drawer-table'
-          columns={columns}
-          dataSource={props.tabData}
-          sticky
-          pagination={false}
-          rowKey={'id'}
-          rowClassName={(record, index) => {
-            return record.country_enabled == '0' ? 'lock-row' : ''
-          }}
-          scroll={{ x: 'max-content' }}
-        />
-      </ConfigProvider>
+      <Table
+        className='drawer-table'
+        columns={columns}
+        dataSource={props.tabData}
+        sticky
+        pagination={false}
+        rowKey={'id'}
+        rowClassName={(record, index) => {
+          return record.country_enabled == '0' ? 'lock-row' : ''
+        }}
+        scroll={{ x: 'max-content' }}
+      />
     </Form>
   )
 }

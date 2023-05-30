@@ -31,7 +31,7 @@ const Dialog = (props: Props, ref: any) => {
     form.resetFields()
     let initVlaues
     if (record.sens_word_list.length > 0) {
-      initVlaues = { ...record.sens_word_list[0] }
+      initVlaues = { ...record.sens_word_list[0], bind: '1' }
     } else {
       initVlaues = initialValues
     }
@@ -48,11 +48,20 @@ const Dialog = (props: Props, ref: any) => {
     try {
       if (channelsItem == undefined) return
       let formValues = await form.getFieldsValue()
-      await channelGroupBindSensitiveWord({
-        group_id: channelsItem?.id,
-        sens_id: formValues.sens_id,
-        // isbind: formValues.isbind
-      })
+      let sens_id = formValues.sens_id
+      if (formValues.bind == '0') {
+        sens_id = ''
+        channelsItem.sens_word_list.forEach(
+          (item) => (sens_id += `${item.sens_id},`),
+        )
+      }
+      await channelGroupBindSensitiveWord(
+        {
+          group_id: channelsItem?.id,
+          sens_id: sens_id,
+        },
+        formValues.bind,
+      )
       message.success('保存成功！')
       props.onSearch(true)
       setIsModalOpen(false)

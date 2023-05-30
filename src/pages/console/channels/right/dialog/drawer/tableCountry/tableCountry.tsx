@@ -6,42 +6,41 @@ import React, {
 } from 'react'
 
 import type { TableColumnsType } from 'antd'
-import { Form, Input, Table, ConfigProvider, Button, Switch } from 'antd'
+import { Form, Input, Table, App, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
-// import './tableCountry.scss'
 import '@/style/drawerTable.scss'
 import {
-  updateChannelCountryNetworkStatus,
+  updateGroupCountryNetworkStatus,
   updateChannelsNetworkWeight,
 } from '@/api'
 import { API } from 'apis'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
 
-interface Item extends API.ChannelsChannelNetworkItem {}
-interface DataType {
-  id: React.Key
-  child: Item[]
-}
+interface DataType extends API.GroupRelatedDataItem {}
+
 interface EnbledProps {
-  enabled: '0' | '1'
-  id: string
+  region_code: string
+  checked: boolean
+  disabled: boolean
+  network_id: string
 }
 
 interface Props {
   channelId: string
-  tabData: Item[][]
+  tabData: DataType[]
   search: () => void
 }
 
 let bgContry = {
-  enabled: 0,
-  network: 0,
-  price_tra: 0,
+  name: 0,
+  weight: 0,
+  status: 0,
   action: 0,
 }
 
 function MyTable(props: Props, ref: any) {
+  const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
       cancel,
@@ -50,70 +49,103 @@ function MyTable(props: Props, ref: any) {
   const channlesStore = useAppSelector(channelsState)
   const [editNetworkId, seteditNetworkId] = useState<string>('') // 当前运营商权重的ID
   const [editCountryId, seteditCountryId] = useState<React.Key>('') // 编辑国家权重的ID
-  const [tableData, settableData] = useState<DataType[]>([])
   const [form] = Form.useForm()
 
   useEffect(() => {
     initBgContry()
-    let _data: DataType[] = []
-    props.tabData.forEach((item) => {
-      _data.push({
-        id: item[0].network_id,
-        child: item,
-      })
-    })
-    settableData(_data)
-    return () => {
-      settableData([])
-    }
   }, [props.tabData])
 
-  const changeLock = (data: DataType) => {
-    console.log(data)
-    // await props.search()
+  // 修改国家状态
+  const changeLock = async (record: DataType) => {
+    message.loading({
+      content: '',
+      duration: 0,
+    })
+    try {
+      await updateGroupCountryNetworkStatus({
+        group_id: channlesStore.activeChannels?.id || '',
+        channel_id: props.channelId,
+        region_code: record.region_code,
+        network_id: record.network_id,
+        status: record.country_enabled == '1' ? '0' : '1', // 0禁用1启用,
+        type: '1', // 1操作国家  2操作运营商网络
+      })
+      message.destroy()
+    } catch (error) {}
+    await props.search()
     cancel()
     initBgContry()
   }
-
-  const showEdit = (id: React.Key, item?: Item) => {
-    seteditCountryId(id)
-    seteditNetworkId(item?.network_id || '')
+  // 编辑
+  const showEdit = (record: DataType, index: number = -1) => {
+    seteditCountryId(record.id)
+    if (index != -1) seteditNetworkId(record.network_list[index].id)
     form.setFieldsValue({
-      network_weight: item?.network_weight,
-      country_weight: '10',
+      country_weight: record.weight,
+      network_weight: index == -1 ? '' : record.network_list[index].weight,
     })
     initBgContry()
   }
   // 编辑保存
-  const save = async (item: Item) => {
-    let value = await form.validateFields()
-    console.log(value)
-    // 保存运营商权重
-    await updateChannelsNetworkWeight({
-      group_id: channlesStore.activeChannels?.id || '',
-      channel_id: props.channelId,
-      region_code: item.region_code,
-      network_id: item.network_id,
-      weight: value.network_weight,
+  const save = async (record: DataType, index: number = -1) => {
+    message.loading({
+      content: '',
+      duration: 0,
     })
+    let value = await form.validateFields()
+    try {
+      let countryParams: API.UpdateChannelsCountryNetworkParams,
+        netParams: API.UpdateChannelsCountryNetworkParams | null
+      countryParams = {
+        group_id: channlesStore.activeChannels?.id || '',
+        channel_id: props.channelId,
+        region_code: record.region_code,
+        network_id: record.network_id,
+        weight: value.country_weight,
+      }
+      if (index == -1) {
+        netParams = null
+      } else {
+        netParams = {
+          group_id: channlesStore.activeChannels?.id || '',
+          channel_id: props.channelId,
+          region_code: record.region_code,
+          network_id: record.network_list[index].network_id,
+          weight: value.network_weight,
+        }
+      }
+      const list = [
+        updateChannelsNetworkWeight(countryParams),
+        netParams && updateChannelsNetworkWeight(netParams),
+      ]
+      // 保存权重
+      await Promise.all(list)
+      message.destroy()
+    } catch (error) {}
     await props.search()
     seteditNetworkId('')
     seteditCountryId('')
     initBgContry()
   }
+  // 取消编辑
   const cancel = () => {
     seteditNetworkId('')
     seteditCountryId('')
     initBgContry()
   }
 
+  // Switch组件
   const Enbled = (enbledProps: EnbledProps) => {
     const [loading, setLoading] = useState(false)
     const checkEnbled = async () => {
       setLoading(true)
-      await updateChannelCountryNetworkStatus({
-        id: enbledProps.id,
-        enabled: enbledProps.enabled == '0' ? '1' : '0',
+      await updateGroupCountryNetworkStatus({
+        group_id: channlesStore.activeChannels?.id || '',
+        channel_id: props.channelId,
+        region_code: enbledProps.region_code,
+        network_id: enbledProps.network_id,
+        status: enbledProps.checked ? '0' : '1', // 0禁用1启用,
+        type: '2', // 1操作国家  2操作运营商网络
       })
       await props.search()
       setLoading(false)
@@ -121,7 +153,8 @@ function MyTable(props: Props, ref: any) {
     }
     return (
       <Switch
-        checked={enbledProps.enabled == '1'}
+        checked={enbledProps.checked}
+        disabled={enbledProps.disabled}
         onChange={checkEnbled}
         loading={loading}
         size='small'
@@ -129,11 +162,12 @@ function MyTable(props: Props, ref: any) {
     )
   }
 
+  // 初始化背景色状态
   const initBgContry = () => {
     bgContry = {
-      enabled: 0, // 是否启用   1是  0否
-      network: 0, // 运营商网络
-      price_tra: 0, // 行业价格
+      name: 0,
+      weight: 0,
+      status: 0,
       action: 0,
     }
   }
@@ -147,7 +181,7 @@ function MyTable(props: Props, ref: any) {
         return (
           <div className='td-content'>
             <div onClick={() => changeLock(record)} className='lock'>
-              {Math.random() > 0.5 ? (
+              {record.country_enabled != '1' ? (
                 <LockFilled className='color-gray fn16' />
               ) : (
                 <UnlockOutlined className='color fn16' />
@@ -159,33 +193,32 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '国家/地区名称',
-      width: 200,
+      width: 150,
       ellipsis: true,
       render(_, record) {
-        return (
-          <div className={`td-content fw500`}>{record.child[0].country_cn}</div>
-        )
+        return <div className={`td-content fw500`}>{record.country_cn}</div>
       },
     },
     {
-      title: '国家/地区代码',
+      title: '代码',
+      width: 100,
       className: 'paddingL30',
       render(_, record) {
-        return <div className={`td-content`}>{record.child[0].region_code}</div>
+        return <div className={`td-content`}>{record.region_code}</div>
       },
     },
     {
       title: <div className='paddingL12'>国家/地区权重</div>,
-      width: 200,
+      width: 180,
       render(_, record) {
         return record.id == editCountryId ? (
           <div className='td-content sub-td'>
             <Form.Item name='country_weight'>
-              <Input type='number' />
+              <Input type='number' min={1} max={99} />
             </Form.Item>
           </div>
         ) : (
-          <div className='td-content paddingL12'>{10}</div>
+          <div className='td-content paddingL12'>{record.weight}</div>
         )
       },
     },
@@ -193,139 +226,204 @@ function MyTable(props: Props, ref: any) {
       title: <div className='paddingL30'>运营商网络</div>,
       className: 'col-line',
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.network % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.network += 1
-              return (
-                <div
-                  key={item.network_id}
-                  className={`${trClassName} sub-td paddingL30`}>
-                  {item.network_name}
-                </div>
-              )
-            })}
-          </div>
-        )
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item) => {
+                let trClassName = ''
+                if (bgContry.name % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.name += 1
+                return (
+                  <div
+                    key={'name' + item.id}
+                    className={`${trClassName} sub-td paddingL30`}>
+                    {item.network_name || '-'}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.name % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.name += 1
+          return <div className={`sub-td paddingL30 ${trClassName}`}>-</div>
+        }
       },
     },
     {
       title: <div className='paddingL12'>运营商权重</div>,
-      width: 200,
+      width: 180,
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.price_tra % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.price_tra += 1
-              return (
-                <div key={item.network_id} className={`${trClassName} sub-td `}>
-                  {item.network_id == editNetworkId ? (
-                    <Form.Item name='network_weight'>
-                      <Input type='number' />
-                    </Form.Item>
-                  ) : (
-                    <div className='paddingL12'>{item.network_weight}</div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item) => {
+                let trClassName = ''
+                if (bgContry.weight % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.weight += 1
+                return (
+                  <div
+                    key={'network_weight' + item.id}
+                    className={`${trClassName} sub-td `}>
+                    {item.id == editNetworkId ? (
+                      <Form.Item name='network_weight'>
+                        <Input type='number' min={1} max={99} />
+                      </Form.Item>
+                    ) : (
+                      <div className='paddingL12'>{item.weight || '-'}</div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.weight % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.weight += 1
+          return <div className={`sub-td paddingL12 ${trClassName}`}>-</div>
+        }
       },
     },
     {
-      title: '状态',
+      title: <div className='paddingL12'>状态</div>,
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.enabled % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.enabled += 1
-              return (
-                <div key={item.network_id} className={`${trClassName} sub-td`}>
-                  <Enbled id={item.network_id} enabled={item.enabled} />
-                </div>
-              )
-            })}
-          </div>
-        )
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item) => {
+                let trClassName = ''
+                if (bgContry.status % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.status += 1
+                return (
+                  <div
+                    key={'status' + item.id}
+                    className={`${trClassName} sub-td paddingL12`}>
+                    <Enbled
+                      region_code={record.region_code}
+                      network_id={item.network_id}
+                      checked={item.network_enabled == '1'}
+                      disabled={
+                        record.country_enabled != '1' || !item.network_id
+                      }
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.status % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.status += 1
+          return <div className={`${trClassName} sub-td paddingL12`}>-</div>
+        }
       },
     },
     {
-      title: '操作',
+      title: <div className='paddingL30'>操作</div>,
       width: 160,
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.action % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.action += 1
-              return (
-                <div key={item.network_id} className={`${trClassName} sub-td`}>
-                  {item.network_id == editNetworkId ? (
-                    <>
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item, index) => {
+                let trClassName = ''
+                if (bgContry.action % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.action += 1
+                return (
+                  <div
+                    key={'active' + item.id}
+                    className={`${trClassName} sub-td paddingL30`}>
+                    {record.id == editCountryId && item.id == editNetworkId ? (
+                      <>
+                        <Button
+                          type='link'
+                          style={{ paddingLeft: 0 }}
+                          onClick={() => save(record, index)}>
+                          保存
+                        </Button>
+                        <Button type='link' onClick={cancel}>
+                          取消
+                        </Button>
+                      </>
+                    ) : (
                       <Button
                         type='link'
                         style={{ paddingLeft: 0 }}
-                        onClick={() => save(item)}>
-                        保存
+                        onClick={() => showEdit(record, index)}>
+                        编辑
                       </Button>
-                      <Button type='link' onClick={cancel}>
-                        取消
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
-                      type='link'
-                      style={{ paddingLeft: 0 }}
-                      onClick={() => showEdit(record.id, item)}>
-                      编辑
-                    </Button>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.action % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.action += 1
+          return (
+            <div className={`${trClassName} sub-td paddingL30`}>
+              {record.id == editCountryId ? (
+                <>
+                  <Button
+                    type='link'
+                    style={{ paddingLeft: 0 }}
+                    onClick={() => save(record)}>
+                    保存
+                  </Button>
+                  <Button type='link' onClick={cancel}>
+                    取消
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  type='link'
+                  style={{ paddingLeft: 0 }}
+                  onClick={() => showEdit(record)}>
+                  编辑
+                </Button>
+              )}
+            </div>
+          )
+        }
       },
     },
   ]
 
   return (
     <Form component={false} form={form}>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorBgContainer: 'transparent',
-          },
-        }}>
-        <Table
-          className='drawer-table'
-          columns={columns}
-          dataSource={tableData}
-          sticky
-          pagination={false}
-          rowKey={'id'}
-          rowClassName={(record, index) => {
-            return index % 2 == 1 ? 'lock-row' : ''
-          }}
-          scroll={{ x: 'max-content' }}
-        />
-      </ConfigProvider>
+      <Table
+        className='drawer-table'
+        columns={columns}
+        dataSource={props.tabData}
+        sticky
+        pagination={false}
+        rowKey={'id'}
+        rowClassName={(record, index) => {
+          return record.country_enabled == '0' ? 'lock-row' : ''
+        }}
+        scroll={{ x: 'max-content' }}
+      />
     </Form>
   )
 }
