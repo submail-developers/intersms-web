@@ -75,6 +75,18 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       setFileList(newFileList)
     },
     beforeUpload: (file) => {
+      console.log(file.type)
+      const isConform =
+        file.type === 'text/plain' ||
+        file.type === 'text/csv' ||
+        file.type === 'text/directory' ||
+        file.type ===
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+        file.type === 'application/vnd.ms-excel'
+      if (!isConform) {
+        message.error(`${file.name} 不符合上传文件的格式`)
+        return isConform || Upload.LIST_IGNORE
+      }
       setFileList([...fileList, file])
 
       return false
@@ -85,13 +97,19 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   let list_id: any
   list_id = blackStore.activeBlack?.id || ''
   const handleOk = async () => {
-    console.log(fileList)
-    const res = await uploadBlackMobileList({
-      list_id: '8',
-      mobile: '13112341234',
-      file: fileList[0],
-    })
-    console.log(res)
+    try {
+      // console.log(fileList)
+      const params = await form.validateFields()
+      params.list_id = list_id
+      fileList.map((item) => (params.file = item))
+
+      const res = await uploadBlackMobileList(params)
+      if (res) {
+        message.success('保存成功！')
+      }
+      setIsModalOpen(false)
+      onSearch()
+    } catch (error) {}
   }
 
   const handleCancel = () => {
@@ -143,7 +161,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
               <span
                 className='color-gray'
                 style={{ fontSize: '12px', paddingLeft: '20px' }}>
-                多个联系人号码导入时，请每行输入一个手机号码
+                多个联系人号码输入时，请用逗号隔开
               </span>
             </div>
           }
@@ -160,16 +178,21 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
             <Button icon={<UploadOutlined />}>Upload</Button>
           </Upload> */}
           <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Select File</Button>
+            <Button icon={<UploadOutlined />}>选择文件</Button>
+            <p
+              className='color-gray'
+              style={{ fontSize: '12px', margin: '0px' }}>
+              仅支持 TXT , CSV, VCF , excel 格式
+            </p>
           </Upload>
-          <Button
+          {/* <Button
             type='primary'
             onClick={handleUpload}
             disabled={fileList.length === 0}
             loading={uploading}
             style={{ marginTop: 16 }}>
             {uploading ? 'Uploading' : 'Start Upload'}
-          </Button>
+          </Button> */}
         </Form.Item>
         {/* <Form.Item
           label='黑名单手机号'

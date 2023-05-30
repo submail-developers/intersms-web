@@ -44,6 +44,7 @@ export default function Left() {
     return {
       onClick: () => {
         setactiveIndex(record)
+        dispatch(changeActiveBlack(record))
       },
     }
   }

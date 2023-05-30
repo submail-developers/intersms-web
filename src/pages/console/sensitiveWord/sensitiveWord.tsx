@@ -61,13 +61,6 @@ export default function Channel() {
       id: '',
     })
     settableData(res.data)
-    // if (res.data.length > 0) {
-    // dispatch(changeActiveAccountId(res.data[0].account))
-    // setSelectedRowKeys([res.data[0].account])
-    // } else {
-    // dispatch(changeActiveAccountId(''))
-    // setSelectedRowKeys([''])
-    // }
   }
   const [tableData, settableData] = useState<API.GetSensitiveWordListItems[]>(
     [],
@@ -85,23 +78,24 @@ export default function Channel() {
     {
       title: '敏感词',
       dataIndex: 'keywords',
-      width: 800,
+      width: 480,
       render: (_, record) => (
         <span className='color-words g-ellipsis-2'>{record.keywords}</span>
-        // <Tooltip title={record.keywords} placement='bottom'>
-        //   <div className='g-ellipsis-2'>{record.keywords}</div>
-        // </Tooltip>
       ),
     },
     {
       title: '备注',
       dataIndex: 'comment',
-      width: 320,
+      width: 190,
       className: 'paddingL50',
+      render: (_, record) => (
+        <span className='g-ellipsis-2'>{record.comment}</span>
+      ),
     },
     {
       title: '启用状态',
       dataIndex: 'enabled',
+      width: 190,
       render: (_, record: DataType) => (
         <div className='switch-all fx-shrink'>
           <Switch

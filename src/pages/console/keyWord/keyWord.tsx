@@ -55,13 +55,6 @@ export default function Channel() {
       id: '',
     })
     settableData(res.data)
-    if (res.data.length > 0) {
-      // dispatch(changeActiveAccountId(res.data[0].account))
-      // setSelectedRowKeys([res.data[0].account])
-    } else {
-      // dispatch(changeActiveAccountId(''))
-      // setSelectedRowKeys([''])
-    }
   }
   const [tableData, settableData] = useState<API.GetkeyWordItems[]>([])
   const addSensitiveWordListRef: MutableRefObject<any> = useRef(null)
@@ -78,24 +71,25 @@ export default function Channel() {
     },
     {
       title: '关键词',
-      width: 800,
+      width: 480,
       dataIndex: 'keywords',
       render: (_, record) => (
         <span className='color-words g-ellipsis-2'>{record.keywords}</span>
-        // <Tooltip title={record.keywords} placement='bottomLeft'>
-        //   <div className='g-ellipsis-2 color-words'>{record.keywords}</div>
-        // </Tooltip>
       ),
     },
     {
       title: '备注',
       dataIndex: 'comment',
-      width: 320,
+      width: 190,
       className: 'paddingL50',
+      render: (_, record) => (
+        <span className='g-ellipsis-2'>{record.comment}</span>
+      ),
     },
     {
       title: '启用状态',
       dataIndex: 'enabled',
+      width: 190,
       render: (_, record: DataType) => (
         <div className='switch-all fx-shrink'>
           <Switch

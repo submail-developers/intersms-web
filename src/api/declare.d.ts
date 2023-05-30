@@ -189,7 +189,7 @@ declare module 'apis' {
       sender: string // 客户account
       price_tra: string // 行业价格
       price_mke: string // 营销价格
-      country_cn: string | undefined // 国家中文名称
+      country_cn: string // 国家中文名称
       type: '1' | '2' // 短信类型  1营销2行业
     }
     // 客户信息-新增/修改国家通道配置
@@ -199,8 +199,8 @@ declare module 'apis' {
       appid: string // 0所有
       group_type: '1' | '2' // 通道类型   1行业通道  2营销通道
       signature: string // 签名 需带【】
-      country_cn: string | undefined // 国家中文名称
-      group_id: string | undefined // 通道组id
+      country_cn: string // 国家中文名称
+      group_id: string // 通道组id
     }
     // 客户信息-新增/修改失败处理配置
     interface UpdateAccountErrorParams {
@@ -217,7 +217,7 @@ declare module 'apis' {
       rejected: string
       spname: string
       country_cn: string
-      region_code: string | undefined
+      region_code: string
     }
     // 客户信息-价格配置item
     interface AccountPriceItem {
@@ -544,9 +544,9 @@ declare module 'apis' {
       country_cn: string
       country_area_code: string
       region_code: string
-      tra_group: string | undefined
+      tra_group: string
       tra_sender: string
-      mke_group: string | undefined
+      mke_group: string
       mke_sender: string
     }
 
@@ -804,6 +804,8 @@ declare module 'apis' {
     interface GetBlackDetailListParams {
       list_id: string
       keyword: string
+      limit: number
+      page: number
     }
     // 获取黑名单电话明细返回数据
     interface GetBlackDetailListItems {
