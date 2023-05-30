@@ -3,7 +3,6 @@ import { Button, ConfigProvider, Table, Row, Col, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddChannel from './dialog/addChannel'
 import MyDrawer from './dialog/drawer/drawer'
-import BindSeneitiveWord from './dialog/bindSensitiveWord/bindSensitiveWord'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import { getChannelList, deleteChannel } from '@/api'
 import { API } from 'apis'
@@ -13,7 +12,6 @@ import {
   channelTypeOptions,
 } from '@/utils/options'
 
-// console.log(API.ChannelType)
 import './channel.scss'
 
 interface DataType extends API.ChannelItem {}
@@ -23,7 +21,6 @@ export default function Channel() {
   const { message } = App.useApp()
   const addChannelDialogRef: MutableRefObject<any> = useRef(null)
   const drawerRef: MutableRefObject<any> = useRef(null)
-  const bindSeneitiveWordRef: MutableRefObject<any> = useRef(null)
   const [list, setlist] = useState<DataType[]>([])
 
   // 被点击的客户(不是被checkbox选中的客户)
@@ -105,19 +102,6 @@ export default function Channel() {
           style={{ padding: 0 }}>
           查看详情
         </Button>
-      ),
-    },
-    {
-      title: '敏感词绑定',
-      render: (_, record) => (
-        <div className='bind-wrap color-gray'>
-          <span className='text'>未绑定</span>
-          <div
-            className='icon-wrap fx-center-center'
-            onClick={() => bindSeneitiveWordRef.current.open(record)}>
-            <span className='icon iconfont icon-bangding fn14'></span>
-          </div>
-        </div>
       ),
     },
     {
@@ -290,7 +274,6 @@ export default function Channel() {
       </ConfigProvider>
       <AddChannel ref={addChannelDialogRef} initData={initData} />
       <MyDrawer ref={drawerRef} />
-      <BindSeneitiveWord ref={bindSeneitiveWordRef} />
     </div>
   )
 }
