@@ -56,13 +56,6 @@ export default function Channel() {
       page: '1',
     })
     settableData(res.data)
-    if (res.data.length > 0) {
-      // dispatch(changeActiveAccountId(res.data[0].account))
-      // setSelectedRowKeys([res.data[0].account])
-    } else {
-      // dispatch(changeActiveAccountId(''))
-      // setSelectedRowKeys([''])
-    }
   }
   const [tableData, settableData] = useState<API.GetkeyWordItems[]>([])
   const addSensitiveWordListRef: MutableRefObject<any> = useRef(null)
@@ -79,20 +72,17 @@ export default function Channel() {
     },
     {
       title: '关键词',
-      width: 800,
+      width: 480,
       dataIndex: 'keywords',
       render: (_, record) => (
         <span className='color-words g-ellipsis-2'>{record.keywords}</span>
-        // <Tooltip title={record.keywords} placement='bottomLeft'>
-        //   <div className='g-ellipsis-2 color-words'>{record.keywords}</div>
-        // </Tooltip>
       ),
     },
     {
       title: '备注',
       dataIndex: 'comment',
-      width: 320,
-      className: 'paddingL50',
+      width: 160,
+      className: 'paddingL70',
     },
     {
       title: '启用状态',

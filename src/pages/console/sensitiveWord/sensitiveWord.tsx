@@ -62,13 +62,6 @@ export default function Channel() {
       page: '1',
     })
     settableData(res.data)
-    // if (res.data.length > 0) {
-    // dispatch(changeActiveAccountId(res.data[0].account))
-    // setSelectedRowKeys([res.data[0].account])
-    // } else {
-    // dispatch(changeActiveAccountId(''))
-    // setSelectedRowKeys([''])
-    // }
   }
   const [tableData, settableData] = useState<API.GetSensitiveWordListItems[]>(
     [],
@@ -86,19 +79,16 @@ export default function Channel() {
     {
       title: '敏感词',
       dataIndex: 'keywords',
-      width: 800,
+      width: 480,
       render: (_, record) => (
         <span className='color-words g-ellipsis-2'>{record.keywords}</span>
-        // <Tooltip title={record.keywords} placement='bottom'>
-        //   <div className='g-ellipsis-2'>{record.keywords}</div>
-        // </Tooltip>
       ),
     },
     {
       title: '备注',
       dataIndex: 'comment',
-      width: 320,
-      className: 'paddingL50',
+      width: 160,
+      className: 'paddingL70',
     },
     {
       title: '启用状态',

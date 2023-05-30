@@ -27,6 +27,8 @@ interface DataType extends API.GetBlackDetailListItems {}
 interface FormValues {
   list_id: string
   keyword: string
+  limit: number
+  page: number
 }
 type Props = {
   activeBlack: API.GetBlackDetailListItems | null
@@ -35,7 +37,8 @@ type Props = {
 export default function Right() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
   const [selectedList, setselectedList] = useState<CheckboxValueType[]>([])
-
+  const [total, setTotal] = useState(0)
+  const [current, setCurrent] = useState(1)
   const [tableData, settableData] = useState<DataType[]>([])
   const [indeterminate, setIndeterminate] = useState(false) //控制半选状态
   const [checkAll, setCheckAll] = useState(false) //控制全选状态
@@ -47,16 +50,20 @@ export default function Right() {
   const initFormValues: FormValues = {
     list_id: '',
     keyword: '',
+    limit: 10,
+    page: 1,
   }
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { list_id, keyword } = params
+    const { list_id, keyword, limit, page } = params
     const searchParams = {
       list_id: blackStore.activeBlack?.id || '',
       keyword,
+      limit: 10,
+      page: 1,
     }
     searchEvent(searchParams)
   }
@@ -64,6 +71,24 @@ export default function Right() {
     try {
       const res = await getBlackItemsList(params)
       settableData(res.data)
+      setTotal(res.total)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  // 点击分页
+  const changePage = async (page: number, pageSize: number) => {
+    const pageParams = {
+      list_id: blackStore.activeBlack?.id || '',
+      keyword: '',
+      limit: pageSize,
+      page: page,
+    }
+    try {
+      const res = await getBlackItemsList(pageParams)
+      settableData(res.data)
+      setCurrent(page)
+      console.log(pageParams)
     } catch (error) {
       console.log(error)
     }
@@ -73,14 +98,6 @@ export default function Right() {
       formatSearchValue(initFormValues)
     }
   }, [blackStore.activeBlack])
-
-  // const search = async () => {
-  //   const res = await getBlackItemsList({
-  //     list_id: blackStore.activeBlack?.id || '',
-  //     keyword: '',
-  //   })
-  //   settableData(Array.isArray(res.data) ? res.data : Object.values(res.data))
-  // }
 
   const size = useSize()
   // 展示新增弹框
@@ -103,8 +120,8 @@ export default function Right() {
     xl: 12,
     xxl: 14,
   }
-  const showTotal: PaginationProps['showTotal'] = (total) =>
-    `当前展示1-100/共${total}个`
+  // const showTotal: PaginationProps['showTotal'] = (total) =>
+  //   `当前展示1-100/共${total}个`
   const { message } = App.useApp()
 
   let isChecked: any = []
@@ -213,7 +230,7 @@ export default function Right() {
                     size={size}
                     htmlType='submit'
                     onClick={search}
-                    style={{ width: 110, marginLeft: 0 }}>
+                    style={{ width: 90, marginLeft: 0 }}>
                     搜索
                   </Button>
                 </ConfigProvider>
@@ -236,11 +253,17 @@ export default function Right() {
           <Col>
             <Pagination
               size='small'
-              total={1000}
+              total={total}
+              current={current}
               showSizeChanger
               showQuickJumper
-              pageSizeOptions={[100, 200, 300]}
-              showTotal={showTotal}
+              pageSizeOptions={[10, 20, 30]}
+              showTotal={(total) => `一共${total}条`}
+              onChange={changePage}
+              // total={total}
+              // showTotal={(total, range) =>
+              //   `${range[0]}-${range[1]} of ${total} items`
+              // }
             />
           </Col>
         </Row>
