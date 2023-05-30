@@ -25,10 +25,9 @@ const Dialog = (props: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const [channelItem, setchannelItem] =
-    useState<API.GetChannelGroupRelatedDataItem>()
+  const [channelItem, setchannelItem] = useState<API.GroupChannelItem>()
 
-  const open = (record: API.GetChannelGroupRelatedDataItem) => {
+  const open = (record: API.GroupChannelItem) => {
     setchannelItem(record)
     initWord()
     form.resetFields()
@@ -38,6 +37,7 @@ const Dialog = (props: Props, ref: any) => {
       initVlaues = {
         keywords_route_id: keyroute_id,
         keywords: keyroute_keywords,
+        bind: '1',
       }
     } else {
       initVlaues = initialValues
@@ -47,7 +47,6 @@ const Dialog = (props: Props, ref: any) => {
   }
   const initWord = async () => {
     const res = await getKeywordEnabledList()
-    console.log(res)
     setWordList(res.data)
   }
 
@@ -55,13 +54,21 @@ const Dialog = (props: Props, ref: any) => {
     try {
       if (channelItem == undefined) return
       let formValues = await form.getFieldsValue()
-      console.log(formValues)
-      await channelGroupUpdateKeyword({
-        group_id: channelItem.group_id,
-        channel_id: channelItem.channel_id,
-        keywords_route_id: formValues.keywords_route_id,
-        // isbind: formValues.isbind
-      })
+      let keywords_route_id = formValues.keywords_route_id
+      if (formValues.bind == '0') {
+        keywords_route_id = ''
+        channelItem.keyroute_list.forEach(
+          (item) => (keywords_route_id += `${item.keyroute_id},`),
+        )
+      }
+      await channelGroupUpdateKeyword(
+        {
+          group_id: channelItem.group_id,
+          channel_id: channelItem.channel_id,
+          keywords_route_id: formValues.keywords_route_id,
+        },
+        formValues.bind,
+      )
       message.success('保存成功！')
       props.onSearch(true)
       setIsModalOpen(false)

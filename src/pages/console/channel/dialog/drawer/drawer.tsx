@@ -60,6 +60,8 @@ const Dialog = (props: Props, ref: any) => {
     const formVal = await form.getFieldsValue()
     const res = await getChannelCountryList({ channel: channelId, ...formVal })
     setTableData(res.data)
+    setIndeterminate(res.list_status == '2')
+    setCheckAll(res.list_status == '1')
   }
 
   const close = () => {

@@ -294,19 +294,21 @@ export const channelGroupDeleteChannel = (
 // 通道组-通道修改关键字
 export const channelGroupUpdateKeyword = (
   data: API.ChannelGroupUpdateKeywordParams,
+  bind: '0' | '1', // 1绑定0取消绑定
 ) => {
+  const url =
+    bind == '1'
+      ? 'customer/save_group_related_keywords_route'
+      : 'customer/delete_group_related_keywords_route'
   return request.post<
     any,
     API.Response<any>,
     API.ChannelGroupUpdateKeywordParams
-  >('customer/save_group_related_keywords_route', { ...data })
-}
-interface GroupRelatedData extends API.Response<API.GroupRelatedDataItem[]> {
-  list_status: '1' | '2' | '3' // 1全部开启状态   2部分开启状态   3全部关闭状态
+  >(url, { ...data })
 }
 // 获取通道组-通道关联数据
 export const getGroupRelatedData = (data: API.GetGroupRelatedDataParams) => {
-  return request.post<any, GroupRelatedData, API.GetGroupRelatedDataParams>(
+  return request.post<any, API.GroupRelatedData, API.GetGroupRelatedDataParams>(
     'customer/get_group_related_channel_country_data',
     { ...data },
   )
@@ -382,7 +384,7 @@ export const deleteChannel = (data: API.Ids) => {
 export const getChannelCountryList = (data: API.getChannelCountryParams) => {
   return request.post<
     any,
-    API.Response<API.ChannelCountryConfigItem[]>,
+    API.ChannelRelatedDataRes,
     API.getChannelCountryParams
   >('customer/get_channel_related_country_network', { ...data })
 }

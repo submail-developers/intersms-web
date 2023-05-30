@@ -376,6 +376,10 @@ declare module 'apis' {
       network_list: GroupRelatedDataNetItem[]
     }
 
+    interface GroupRelatedData extends Response<GroupRelatedDataItem[]> {
+      list_status: '1' | '2' | '3' // 1全部开启状态   2部分开启状态   3全部关闭状态
+    }
+
     // 修改通道组关联通道-国家网络权重
 
     interface UpdateChannelsCountryNetworkWeightParams {
@@ -476,6 +480,12 @@ declare module 'apis' {
       sug_price: string
       cost_price: string
     }
+
+    interface ChannelRelatedDataRes
+      extends Response<ChannelCountryConfigItem[]> {
+      list_status: '1' | '2' | '3' // 1全部开启状态   2部分开启状态   3全部关闭状态
+    }
+
     // 修改通道关联国家及网络接口参数
     interface UpdateChannelCountryNetworkPriceParams {
       id: string // 国家ID或运营商ID
