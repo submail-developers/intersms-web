@@ -71,6 +71,7 @@ export default function Right() {
     try {
       const res = await getBlackItemsList(params)
       settableData(res.data)
+      console.log(res)
       setTotal(res.total)
     } catch (error) {
       console.log(error)
@@ -258,12 +259,12 @@ export default function Right() {
               showSizeChanger
               showQuickJumper
               pageSizeOptions={[10, 20, 30]}
-              showTotal={(total) => `一共${total}条`}
+              // showTotal={(total) => `一共${total}条`}
               onChange={changePage}
               // total={total}
-              // showTotal={(total, range) =>
-              //   `${range[0]}-${range[1]} of ${total} items`
-              // }
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} items`
+              }
             />
           </Col>
         </Row>

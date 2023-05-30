@@ -659,12 +659,15 @@ export const deleteBlackList = (data: API.DeleteBlackListParams) => {
   )
 }
 // 根据黑名单组，获取黑名单电话明细
+interface BlackListResponse
+  extends API.Response<API.GetBlackDetailListItems[]> {
+  total: number
+}
 export const getBlackItemsList = (data: API.GetBlackDetailListParams) => {
-  return request.post<
-    any,
-    API.Response<API.GetBlackDetailListItems[]>,
-    API.GetBlackDetailListParams
-  >('customer/get_mobile_block_items_bylist', { ...data })
+  return request.post<any, BlackListResponse, API.GetBlackDetailListParams>(
+    'customer/get_mobile_block_items_bylist',
+    { ...data },
+  )
 }
 // 新增黑名单手机号码
 export const addBlackMobileList = (data: API.AddBlackMobileListParams) => {
