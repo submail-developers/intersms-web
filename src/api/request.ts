@@ -32,6 +32,7 @@ request.interceptors.response.use(
     if ([200, 201].includes(res.status) && res.data.status === 'success') {
       return res.data
     } else {
+      message.destroy()
       message.error(res.data.message)
       return Promise.reject(res.data)
     }

@@ -1,5 +1,5 @@
 [data-components='sidebar'] {
-  width: 60px;
+  width: 64px;
   background-color: transparent;
   margin: 0;
   dt,
@@ -8,10 +8,12 @@
     height: 48px;
   }
   dt {
+    width: 40px;
+    height: 56px;
     .user {
-      width: 40px;
       height: 40px;
       border-radius: 12px;
+      display: block;
     }
   }
   dd {

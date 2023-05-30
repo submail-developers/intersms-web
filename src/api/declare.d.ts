@@ -425,29 +425,42 @@ declare module 'apis' {
     //   country_related_flg: '1' | '0'
     //   network_related_flg: '1' | '0'
     // }
-    interface ChannelCountryConfigItem {
+    interface NetworkListItem {
       id: string
-      country_cn: string
-      country_related_flg: '0' | '1'
-      name: string
+      network_enabled: '0' | '1'
       network_id: string
-      network_related_flg: string
-      region_code: string
-      cost_price: string // 成本价
-      sug_price: string // 建议销售价
+      network_name: string
       price_mke: string // 营销价格
       price_tra: string // 行业价格
+      sug_price: string // 建议销售价
+      cost_price: string // 成本价
+    }
+    // 关联国家/地区
+    interface ChannelCountryConfigItem {
+      channel_id: string
+      country_cn: string
+      country_enabled: '0' | '1'
+      id: string
+      network_list: NetworkListItem[]
+      price_mke: string // 营销价格
+      price_tra: string // 行业价格
+      region_code: string
+      sug_price: string
+      cost_price: string
     }
     // 修改通道关联国家及网络接口参数
     interface UpdateChannelCountryNetworkPriceParams {
-      channel_id: string
+      id: string // 国家ID或运营商ID
       price_mke: string // 营销价格
       price_tra: string // 行业价格
     }
     // 批量启用禁用通道关联国家及网络
     interface UpdateChannelCountryNetworkStatusParams {
-      id: string
-      enabled: '1' | '0' // 是否启用   1是  0否
+      channel_id: string
+      region_code: string
+      network_id: string // 网络id   操作国家传0 操作运营商网络必须有值
+      status: '1' | '0' // 1启用 0禁用
+      type: '1' | '2' // 操作类型   1操作国家  2操作运营商网络
     }
     // 通道组添加通道-参数
     interface ChannelGroupAddChannelParams {
@@ -470,6 +483,11 @@ declare module 'apis' {
       region_code: string
       network_id: string
       weight: string
+    }
+    // 一键启用/禁用所有关联国家和运营商
+    interface OneTouchChannelCountryNetworkStatusParams {
+      channel_id: string
+      status: '0' | '1' // 1启用0禁用
     }
     /**
      * 通道管理end

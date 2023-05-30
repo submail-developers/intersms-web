@@ -12,16 +12,19 @@ import {
   ConfigProvider,
   Button,
   Drawer,
-  Popconfirm,
-  Switch,
+  App,
+  Checkbox,
 } from 'antd'
 import TableCountry from './tableCountry/tableCountry'
-import { groupBy } from '@/utils'
 import { useSize } from '@/hooks'
 
-import { getChannelCountryList } from '@/api'
+import {
+  getChannelCountryList,
+  oneTouchChannelCountryNetworkStatus,
+} from '@/api'
 import { API } from 'apis'
-
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import './drawer.scss'
 
 interface Props {
@@ -29,12 +32,11 @@ interface Props {
 }
 
 const Dialog = (props: Props, ref: any) => {
+  const { message } = App.useApp()
   const size = useSize()
   const [form] = Form.useForm()
   const [channelId, setchannelId] = useState<string>('') // 通道ID
-  const [tableData, setTableData] = useState<API.ChannelCountryConfigItem[][]>(
-    [],
-  )
+  const [tableData, setTableData] = useState<API.ChannelCountryConfigItem[]>([])
 
   const tableref: MutableRefObject<any> = useRef(null)
   useImperativeHandle(ref, () => {
@@ -59,15 +61,64 @@ const Dialog = (props: Props, ref: any) => {
   const search = async () => {
     const formVal = await form.getFieldsValue()
     const res = await getChannelCountryList({ channel: channelId, ...formVal })
-    const groupData = Object.values(
-      groupBy(res.data, 'region_code'),
-    ) as API.ChannelCountryConfigItem[][]
-    setTableData(groupData)
+    setTableData(res.data)
   }
 
   const close = () => {
     setShow(false)
   }
+
+  const [indeterminate, setIndeterminate] = useState(false)
+  const [checkAll, setCheckAll] = useState(false)
+
+  const onCheckAllChange = async () => {
+    message.loading({
+      content: '',
+      duration: 0,
+    })
+    try {
+      await oneTouchChannelCountryNetworkStatus({
+        channel_id: channelId,
+        status: checkAll ? '0' : '1',
+      })
+      message.destroy()
+    } catch (error) {}
+    await search()
+  }
+
+  useEffect(() => {
+    if (tableData.length > 0) {
+      let _checkall = true,
+        _nocheck = true
+      tableData.forEach((item) => {
+        if (item.country_enabled == '0') {
+          _checkall = false
+        } else {
+          _nocheck = false
+        }
+        item.network_list.forEach((itm) => {
+          if (itm.network_enabled == '0') {
+            _checkall = false
+          } else {
+            _nocheck = false
+          }
+        })
+      })
+      if (_checkall) {
+        setIndeterminate(false)
+        setCheckAll(true)
+      } else if (_nocheck) {
+        setIndeterminate(false)
+        setCheckAll(false)
+      } else {
+        setIndeterminate(true)
+        setCheckAll(false)
+      }
+    } else {
+      setIndeterminate(false)
+      setCheckAll(false)
+    }
+  }, [tableData])
 
   return (
     <Drawer
@@ -91,21 +142,14 @@ const Dialog = (props: Props, ref: any) => {
                 </span>
               </div>
               <div className='switch-all'>
-                <Popconfirm
-                  placement='bottom'
-                  title='警告'
-                  description='确定关联全部国家及其运营商吗？'
-                  onConfirm={() => {}}
-                  okText='确定'
-                  cancelText='取消'>
-                  <div className='fx-y-center'>
-                    <Switch
-                      size='small'
-                      checked
-                      onClick={(_, e) => {}}></Switch>
-                    <span className='text'>关联全部国家及其运营商</span>
-                  </div>
-                </Popconfirm>
+                <div className='fx-y-center'>
+                  <Checkbox
+                    indeterminate={indeterminate}
+                    onClick={onCheckAllChange}
+                    checked={checkAll}>
+                    关联全部国家及其运营商
+                  </Checkbox>
+                </div>
               </div>
             </div>
 
@@ -153,7 +197,12 @@ const Dialog = (props: Props, ref: any) => {
             </ConfigProvider>
           </header>
           <div className='drawer-table-wrap'>
-            <TableCountry ref={tableref} search={search} tabData={tableData} />
+            <TableCountry
+              ref={tableref}
+              search={search}
+              tabData={tableData}
+              channelId={channelId}
+            />
           </div>
         </div>
       </div>

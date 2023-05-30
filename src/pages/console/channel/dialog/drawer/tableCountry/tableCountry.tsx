@@ -4,7 +4,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react'
-import { TableColumnsType, message } from 'antd'
+import { TableColumnsType, App } from 'antd'
 import { Form, Input, Table, ConfigProvider, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
 // import '@/style/drawerTable.scss'
@@ -15,19 +15,17 @@ import {
 } from '@/api'
 import { API } from 'apis'
 
-interface Item extends API.ChannelCountryConfigItem {}
-interface DataType {
-  id: React.Key
-  child: Item[]
-}
+interface DataType extends API.ChannelCountryConfigItem {}
 interface EnbledProps {
+  region_code: string
   checked: boolean
   disabled: boolean
   id: string
 }
 
 interface Props {
-  tabData: Item[][]
+  channelId: string
+  tabData: DataType[]
   search: () => void
 }
 
@@ -40,56 +38,96 @@ let bgContry = {
 }
 
 function MyTable(props: Props, ref: any) {
+  const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
       cancel,
     }
   })
-  const [editId, seteditId] = useState<string>('') // 当前编辑的ID
-  const [tableData, settableData] = useState<DataType[]>([])
+  const [editCountryId, seteditCountryId] = useState<string>('') // 当前编辑的国家ID
+  const [editNetId, seteditNetId] = useState<string>('') // 当前编辑的运营商ID
   const [form] = Form.useForm()
 
   useEffect(() => {
     initBgContry()
-    let _data: DataType[] = []
-    props.tabData.forEach((item, index) => {
-      _data.push({
-        id: item[0].id,
-        child: item,
-      })
-    })
-    settableData(_data)
-    return () => {
-      // settableData([])
-    }
   }, [props.tabData])
 
-  const changeLock = (data: DataType) => {
-    console.log(data)
-    // await props.search()
+  const changeLock = async (record: DataType) => {
+    message.loading({
+      content: '',
+      duration: 0,
+    })
+    try {
+      await updateChannelCountryNetworkStatus({
+        channel_id: props.channelId,
+        region_code: record.region_code,
+        network_id: '0',
+        status: record.country_enabled == '1' ? '0' : '1',
+        type: '1',
+      })
+      message.destroy()
+    } catch (error) {}
+    await props.search()
     cancel()
     initBgContry()
   }
 
-  const showEdit = (record: Item) => {
-    seteditId(record.id)
+  const showEdit = (record: DataType, index: number = -1) => {
+    seteditCountryId(record.id)
+    if (index != -1) seteditNetId(record.network_list[index].id)
     form.setFieldsValue({
-      price_def: record.price_tra,
-      price_tra: record.price_tra,
-      price_mke: record.price_mke,
+      country_price_tra: record.price_tra,
+      country_price_mke: record.price_mke,
+      price_tra: index == -1 ? '' : record.network_list[index].price_tra,
+      price_mke: index == -1 ? '' : record.network_list[index].price_mke,
     })
     initBgContry()
   }
   // 编辑保存
-  const save = async (record: Item) => {
+  const save = async (record: DataType, index: number = -1) => {
+    message.loading({
+      content: '',
+      duration: 0,
+    })
     let value = await form.validateFields()
-    await updateChannelCountryNetworkPrice({ ...value, id: record.network_id })
-    await props.search()
-    seteditId('')
-    initBgContry()
+    try {
+      let countryParams: API.UpdateChannelCountryNetworkPriceParams,
+        netParams: API.UpdateChannelCountryNetworkPriceParams | null
+      countryParams = {
+        id: record.id,
+        price_mke: value.country_price_mke,
+        price_tra: value.country_price_tra,
+      }
+      if (index == -1) {
+        netParams = null
+      } else {
+        netParams = {
+          id: record.network_list[index].id,
+          price_mke: value.price_mke,
+          price_tra: value.price_tra,
+        }
+      }
+      const list = [
+        updateChannelCountryNetworkPrice(countryParams),
+        netParams && updateChannelCountryNetworkPrice(netParams),
+      ]
+      await Promise.all(list)
+      await props.search()
+      message.destroy()
+      seteditCountryId('')
+      seteditNetId('')
+      initBgContry()
+    } catch (error) {
+      await props.search()
+      message.destroy()
+      seteditCountryId('')
+      seteditNetId('')
+      initBgContry()
+    }
   }
   const cancel = () => {
-    seteditId('')
+    seteditCountryId('')
+    seteditNetId('')
     initBgContry()
   }
 
@@ -99,8 +137,11 @@ function MyTable(props: Props, ref: any) {
       try {
         setLoading(true)
         await updateChannelCountryNetworkStatus({
-          id: enbledProps.id,
-          enabled: enbledProps.checked ? '0' : '1',
+          channel_id: props.channelId,
+          region_code: enbledProps.region_code,
+          network_id: enbledProps.id,
+          status: enbledProps.checked ? '0' : '1',
+          type: '2',
         })
         await props.search()
         setLoading(false)
@@ -139,7 +180,7 @@ function MyTable(props: Props, ref: any) {
         return (
           <div className='td-content'>
             <div onClick={() => changeLock(record)} className='lock'>
-              {record.child[0].country_related_flg != '1' ? (
+              {record.country_enabled != '1' ? (
                 <LockFilled className='color-gray fn16' />
               ) : (
                 <UnlockOutlined className='color fn16' />
@@ -153,34 +194,46 @@ function MyTable(props: Props, ref: any) {
       title: '国家/地区名称',
       width: 150,
       render(_, record) {
+        return <div className={`td-content fw500`}>{record.country_cn}</div>
+      },
+    },
+    {
+      title: '代码',
+      width: 100,
+      className: 'paddingL30',
+      render(_, record) {
+        return <div className={`td-content`}>{record.region_code}</div>
+      },
+    },
+    {
+      title: <div className='paddingL12'>行业价格</div>,
+      width: 180,
+      render(_, record) {
         return (
-          <div className={`td-content fw500`}>{record.child[0].country_cn}</div>
+          <div className='td-content paddingR10'>
+            {record.id == editCountryId ? (
+              <Form.Item name='country_price_tra'>
+                <Input type='number' step={0.00001} min={0} />
+              </Form.Item>
+            ) : (
+              <div className='paddingL12'>{record.price_tra || '-'}</div>
+            )}
+          </div>
         )
       },
     },
     {
-      title: '国家/地区代码',
-      width: 200,
-      className: 'paddingL50',
-      render(_, record) {
-        return <div className={`td-content`}>{record.child[0].region_code}</div>
-      },
-    },
-    {
-      title: <div className='paddingL12'>默认价格</div>,
-      width: 200,
-      className: 'paddingL50 paddingR30',
+      title: <div className='paddingL12'>营销价格</div>,
+      width: 180,
       render(_, record) {
         return (
-          <div className={`td-content`}>
-            {record.child.some((item) => item.id == editId) ? (
-              <Form.Item name='price_def'>
+          <div className='td-content paddingR10'>
+            {record.id == editCountryId ? (
+              <Form.Item name='country_price_mke'>
                 <Input type='number' step={0.00001} min={0} />
               </Form.Item>
             ) : (
-              <div className='paddingL12'>
-                {record.child[0].price_tra || '-'}
-              </div>
+              <div className='paddingL12'>{record.price_mke || '-'}</div>
             )}
           </div>
         )
@@ -189,158 +242,227 @@ function MyTable(props: Props, ref: any) {
     {
       title: <div className='paddingL30'>运营商网络</div>,
       className: 'col-line',
-      // width: 200,
+      width: 240,
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.network % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.network += 1
-              return (
-                <div
-                  key={'name' + item.id}
-                  className={`${trClassName} sub-td paddingL30`}>
-                  {item.name || '-'}
-                </div>
-              )
-            })}
-          </div>
-        )
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item) => {
+                let trClassName = ''
+                if (bgContry.network % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.network += 1
+                return (
+                  <div
+                    key={'name' + item.id}
+                    className={`${trClassName} sub-td paddingL30`}>
+                    {item.network_name || '-'}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.network % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.network += 1
+          return <div className={`sub-td paddingL30 ${trClassName}`}>-</div>
+        }
       },
     },
     {
       title: <div className='paddingL12'>行业价格</div>,
-      width: 240,
+      width: 180,
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.price_tra % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.price_tra += 1
-              return (
-                <div
-                  key={'price_tra' + item.id}
-                  className={`${trClassName} sub-td `}>
-                  {item.id == editId ? (
-                    <Form.Item name='price_tra'>
-                      <Input type='number' step={0.00001} min={0} />
-                    </Form.Item>
-                  ) : (
-                    <div className='paddingL12'>{item.price_tra || '-'}</div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item) => {
+                let trClassName = ''
+                if (bgContry.price_tra % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.price_tra += 1
+                return (
+                  <div
+                    key={'price_tra' + item.id}
+                    className={`${trClassName} sub-td `}>
+                    {item.id == editNetId ? (
+                      <Form.Item name='price_tra'>
+                        <Input type='number' step={0.00001} min={0} />
+                      </Form.Item>
+                    ) : (
+                      <div className='paddingL12'>{item.price_tra || '-'}</div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.price_tra % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.price_tra += 1
+          return <div className={`sub-td paddingL12 ${trClassName}`}>-</div>
+        }
       },
     },
     {
       title: <div className='paddingL12'>营销价格</div>,
-      width: 240,
+      width: 180,
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.price_mke % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.price_mke += 1
-              return (
-                <div
-                  key={'price_mke' + item.id}
-                  className={`${trClassName} sub-td `}>
-                  {item.id == editId ? (
-                    <Form.Item name='price_mke'>
-                      <Input type='number' step={0.00001} min={0} />
-                    </Form.Item>
-                  ) : (
-                    <div className='paddingL12'>{item.price_mke || '-'}</div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item) => {
+                let trClassName = ''
+                if (bgContry.price_mke % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.price_mke += 1
+                return (
+                  <div
+                    key={'price_mke' + item.id}
+                    className={`${trClassName} sub-td `}>
+                    {item.id == editNetId ? (
+                      <Form.Item name='price_mke'>
+                        <Input type='number' step={0.00001} min={0} />
+                      </Form.Item>
+                    ) : (
+                      <div className='paddingL12'>{item.price_mke || '-'}</div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.price_mke % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.price_mke += 1
+          return <div className={`sub-td paddingL12 ${trClassName}`}>-</div>
+        }
       },
     },
     {
       title: '状态',
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.enabled % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.enabled += 1
-              return (
-                <div
-                  key={'state' + item.id}
-                  className={`${trClassName} sub-td`}>
-                  <Enbled
-                    id={item.id}
-                    checked={item.network_related_flg == '1'}
-                    disabled={
-                      item.country_related_flg != '1' || !item.network_id
-                    }
-                  />
-                </div>
-              )
-            })}
-          </div>
-        )
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item) => {
+                let trClassName = ''
+                if (bgContry.enabled % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.enabled += 1
+                return (
+                  <div
+                    key={'state' + item.id}
+                    className={`${trClassName} sub-td`}>
+                    <Enbled
+                      region_code={record.region_code}
+                      id={item.network_id}
+                      checked={item.network_enabled == '1'}
+                      disabled={
+                        record.country_enabled != '1' || !item.network_id
+                      }
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.enabled % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.enabled += 1
+          return <div className={`sub-td ${trClassName}`}>-</div>
+        }
       },
     },
     {
       title: '操作',
       width: 120,
       render(_, record) {
-        return (
-          <div className='grid'>
-            {record.child.map((item) => {
-              let trClassName = ''
-              if (bgContry.action % 2 != 0) {
-                trClassName = 'bg-gray'
-              }
-              bgContry.action += 1
-              return (
-                <div
-                  key={'action' + item.id}
-                  className={`${trClassName} sub-td`}>
-                  {item.id == editId ? (
-                    <>
+        if (record.network_list.length > 0) {
+          return (
+            <div className='grid'>
+              {record.network_list.map((item, index) => {
+                let trClassName = ''
+                if (bgContry.action % 2 != 0) {
+                  trClassName = 'bg-gray'
+                }
+                bgContry.action += 1
+                return (
+                  <div
+                    key={'action' + item.id}
+                    className={`${trClassName} sub-td`}>
+                    {record.id == editCountryId && item.id == editNetId ? (
+                      <>
+                        <Button
+                          type='link'
+                          style={{ paddingLeft: 0 }}
+                          onClick={() => save(record, index)}>
+                          保存
+                        </Button>
+                        <Button type='link' onClick={cancel}>
+                          取消
+                        </Button>
+                      </>
+                    ) : (
                       <Button
                         type='link'
                         style={{ paddingLeft: 0 }}
-                        onClick={() => save(item)}>
-                        保存
+                        onClick={() => showEdit(record, index)}>
+                        编辑
                       </Button>
-                      <Button type='link' onClick={cancel}>
-                        取消
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
-                      type='link'
-                      style={{ paddingLeft: 0 }}
-                      onClick={() => showEdit(item)}>
-                      编辑
-                    </Button>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        } else {
+          let trClassName = ''
+          if (bgContry.action % 2 != 0) {
+            trClassName = 'bg-gray'
+          }
+          bgContry.action += 1
+          return (
+            <div key={'action' + record.id} className={`${trClassName} sub-td`}>
+              {record.id == editCountryId ? (
+                <>
+                  <Button
+                    type='link'
+                    style={{ paddingLeft: 0 }}
+                    onClick={() => save(record)}>
+                    保存
+                  </Button>
+                  <Button type='link' onClick={cancel}>
+                    取消
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  type='link'
+                  style={{ paddingLeft: 0 }}
+                  onClick={() => showEdit(record)}>
+                  编辑
+                </Button>
+              )}
+            </div>
+          )
+        }
       },
     },
   ]
@@ -356,12 +478,12 @@ function MyTable(props: Props, ref: any) {
         <Table
           className='drawer-table'
           columns={columns}
-          dataSource={tableData}
+          dataSource={props.tabData}
           sticky
           pagination={false}
           rowKey={'id'}
           rowClassName={(record, index) => {
-            return record.child[0].country_related_flg == '0' ? 'lock-row' : ''
+            return record.country_enabled == '0' ? 'lock-row' : ''
           }}
           scroll={{ x: 'max-content' }}
         />

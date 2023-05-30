@@ -383,6 +383,16 @@ export const updateChannelCountryNetworkStatus = (
     API.UpdateChannelCountryNetworkStatusParams
   >('customer/update_channel_related_country_network_status', { ...data })
 }
+// 一键启用/禁用所有关联国家和运营商
+export const oneTouchChannelCountryNetworkStatus = (
+  data: API.OneTouchChannelCountryNetworkStatusParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.OneTouchChannelCountryNetworkStatusParams
+  >('customer/update_channel_all_related_country_network_status', { ...data })
+}
 /**
  * 通道管理end
  */
