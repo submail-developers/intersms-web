@@ -241,7 +241,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
           <Col span={24}>
             <div className='group-title'>报警条件</div>
           </Col>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Form.Item label='报警时间范围' name='time'>
               <Select
                 showSearch
@@ -256,7 +256,31 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
                 options={waringTimeOptions}
               />
             </Form.Item>
-          </Col>
+          </Col> */}
+          <ProFormDependency name={['type']}>
+            {({ type }) => {
+              return (
+                <>
+                  <Col span={type != '1' ? 24 : 12}>
+                    <Form.Item label='报警时间范围' name='time'>
+                      <Select
+                        showSearch
+                        placeholder='请选择'
+                        optionFilterProp='children'
+                        onChange={onChange1}
+                        filterOption={(input, option) =>
+                          (option?.label ?? '')
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={waringTimeOptions}
+                      />
+                    </Form.Item>
+                  </Col>
+                </>
+              )
+            }}
+          </ProFormDependency>
           <ProFormDependency name={['type']}>
             {({ type }) => {
               return (
