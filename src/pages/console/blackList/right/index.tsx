@@ -261,7 +261,6 @@ export default function Right() {
               pageSizeOptions={[100, 200, 300]}
               // showTotal={(total) => `一共${total}条`}
               onChange={changePage}
-              // total={total}
               showTotal={(total, range) =>
                 `当前展示${range[0]}-${range[1]}条 / 共 ${total} 条`
               }

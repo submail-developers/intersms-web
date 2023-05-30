@@ -161,7 +161,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
               <span
                 className='color-gray'
                 style={{ fontSize: '12px', paddingLeft: '20px' }}>
-                多个联系人号码导入时，请每行输入一个手机号码
+                多个联系人号码输入时，请用逗号隔开
               </span>
             </div>
           }
@@ -178,7 +178,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
             <Button icon={<UploadOutlined />}>Upload</Button>
           </Upload> */}
           <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Select File</Button>
+            <Button icon={<UploadOutlined />}>选择文件</Button>
             <p
               className='color-gray'
               style={{ fontSize: '12px', margin: '0px' }}>

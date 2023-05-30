@@ -81,12 +81,16 @@ export default function Channel() {
     {
       title: '备注',
       dataIndex: 'comment',
-      width: 160,
-      className: 'paddingL70',
+      width: 190,
+      className: 'paddingL50',
+      render: (_, record) => (
+        <span className='g-ellipsis-2'>{record.comment}</span>
+      ),
     },
     {
       title: '启用状态',
       dataIndex: 'enabled',
+      width: 190,
       render: (_, record: DataType) => (
         <div className='switch-all fx-shrink'>
           <Switch
