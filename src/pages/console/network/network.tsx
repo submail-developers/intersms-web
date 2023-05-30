@@ -24,7 +24,6 @@ interface DataType extends API.GetNetWorkListItems {}
 interface FormValues {
   id: string
   keyword: string
-  page: string
 }
 
 // 国家信息配置
@@ -65,7 +64,6 @@ export default function Network() {
   // 初始化form的值
   const initFormValues: FormValues = {
     id: '',
-    page: '1',
     keyword: '',
   }
   const search = async () => {
@@ -73,7 +71,7 @@ export default function Network() {
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { id, page, keyword } = params
+    const { id, keyword } = params
     const searchParams = {
       id: '',
       keyword,

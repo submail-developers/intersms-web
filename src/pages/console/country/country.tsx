@@ -27,7 +27,6 @@ interface FormValues {
   id: string
   group_id: string
   keyword: string
-  page: string
 }
 
 // 国家信息配置
@@ -50,7 +49,6 @@ export default function Channel() {
   // 初始化form的值
   const initFormValues: FormValues = {
     id: '',
-    page: '1',
     group_id: 'all',
     keyword: '',
   }
@@ -59,7 +57,7 @@ export default function Channel() {
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { id, group_id, page, keyword } = params
+    const { id, group_id, keyword } = params
     const searchParams = {
       id: '',
       group_id,

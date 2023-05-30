@@ -31,7 +31,6 @@ interface FormValues {
   type: string
   keyword: string
   channel: string
-  page: string
 }
 
 // 号码通道路由
@@ -75,14 +74,13 @@ export default function NumberChannelsRoute() {
     type: 'all',
     keyword: '',
     channel: '',
-    page: '1',
   }
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { mobile, type, keyword, channel, page } = params
+    const { mobile, type, keyword, channel } = params
     const searchParams = {
       mobile,
       type,

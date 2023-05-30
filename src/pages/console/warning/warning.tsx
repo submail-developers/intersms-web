@@ -31,7 +31,6 @@ interface FormValues {
   id: string
   type: string
   keyword: string
-  page: string
 }
 
 // 国家信息配置
@@ -74,14 +73,13 @@ export default function NumberChannelsRoute() {
     id: '',
     type: 'all',
     keyword: '',
-    page: '1',
   }
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { id, type, page, keyword } = params
+    const { id, type, keyword } = params
     const searchParams = {
       id,
       type,

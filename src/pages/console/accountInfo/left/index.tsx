@@ -96,7 +96,6 @@ function Left(props: any, ref: any) {
   const search = async (activeAccountId: string = '') => {
     const res = await getAccountList({
       keyword,
-      page: '1',
     })
     settableData(res.data)
     if (res.data.length > 0) {

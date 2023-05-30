@@ -81,7 +81,6 @@ export default function SendList() {
     const start = (time && time[0].format('YYYY-MM-DD')) || ''
     const end = (time && time[1].format('YYYY-MM-DD')) || ''
     const searchParams = {
-      page: '1',
       type: 'all',
       start,
       end,
@@ -125,7 +124,7 @@ export default function SendList() {
   // 获取通道组列表
   const getChannels = async () => {
     try {
-      const res = await getChannelGroupList()
+      const res = await getChannelGroupList({})
       setchannelsList([...channelsList, ...res.data])
     } catch (error) {}
   }

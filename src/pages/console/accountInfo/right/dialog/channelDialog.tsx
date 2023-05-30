@@ -60,7 +60,7 @@ function Dialog(props: Props, ref: any) {
   }
 
   const getChannelsList = async () => {
-    const res = await getChannelGroupList({ page: '1' })
+    const res = await getChannelGroupList({})
     const enabledchannelsList = res.data.filter((item) => item.enabled == '1')
     setchannelsList(enabledchannelsList)
   }

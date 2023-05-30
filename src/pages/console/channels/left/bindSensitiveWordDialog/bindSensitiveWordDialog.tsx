@@ -40,7 +40,7 @@ const Dialog = (props: Props, ref: any) => {
     initWord()
   }
   const initWord = async () => {
-    const res = await getOpenSensitiveWordList({ id: '', page: '1' })
+    const res = await getOpenSensitiveWordList({ id: '' })
     setWordList(res.data)
   }
 
