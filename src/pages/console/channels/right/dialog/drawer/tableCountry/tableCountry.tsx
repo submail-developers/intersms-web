@@ -3,6 +3,8 @@ import React, {
   useState,
   forwardRef,
   useImperativeHandle,
+  memo,
+  useCallback,
 } from 'react'
 
 import type { TableColumnsType } from 'antd'
@@ -24,6 +26,9 @@ interface EnbledProps {
   checked: boolean
   disabled: boolean
   network_id: string
+  channelId: string
+  search: () => void
+  initBgContry: () => void
 }
 
 interface Props {
@@ -38,6 +43,35 @@ let bgContry = {
   status: 0,
   action: 0,
 }
+
+// Switch组件
+const Enbled = memo((enbledProps: EnbledProps) => {
+  const channlesStore = useAppSelector(channelsState)
+  const [loading, setLoading] = useState(false)
+  const checkEnbled = async () => {
+    setLoading(true)
+    await updateGroupCountryNetworkStatus({
+      group_id: channlesStore.activeChannels?.id || '',
+      channel_id: enbledProps.channelId,
+      region_code: enbledProps.region_code,
+      network_id: enbledProps.network_id,
+      status: enbledProps.checked ? '0' : '1', // 0禁用1启用,
+      type: '2', // 1操作国家  2操作运营商网络
+    })
+    await enbledProps.search()
+    setLoading(false)
+    enbledProps.initBgContry()
+  }
+  return (
+    <Switch
+      checked={enbledProps.checked}
+      disabled={enbledProps.disabled}
+      onChange={checkEnbled}
+      loading={loading}
+      size='small'
+    />
+  )
+})
 
 function MyTable(props: Props, ref: any) {
   const { message } = App.useApp()
@@ -134,43 +168,15 @@ function MyTable(props: Props, ref: any) {
     initBgContry()
   }
 
-  // Switch组件
-  const Enbled = (enbledProps: EnbledProps) => {
-    const [loading, setLoading] = useState(false)
-    const checkEnbled = async () => {
-      setLoading(true)
-      await updateGroupCountryNetworkStatus({
-        group_id: channlesStore.activeChannels?.id || '',
-        channel_id: props.channelId,
-        region_code: enbledProps.region_code,
-        network_id: enbledProps.network_id,
-        status: enbledProps.checked ? '0' : '1', // 0禁用1启用,
-        type: '2', // 1操作国家  2操作运营商网络
-      })
-      await props.search()
-      setLoading(false)
-      initBgContry()
-    }
-    return (
-      <Switch
-        checked={enbledProps.checked}
-        disabled={enbledProps.disabled}
-        onChange={checkEnbled}
-        loading={loading}
-        size='small'
-      />
-    )
-  }
-
   // 初始化背景色状态
-  const initBgContry = () => {
+  const initBgContry = useCallback(() => {
     bgContry = {
       name: 0,
       weight: 0,
       status: 0,
       action: 0,
     }
-  }
+  }, [])
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -317,6 +323,9 @@ function MyTable(props: Props, ref: any) {
                       disabled={
                         record.country_enabled != '1' || !item.network_id
                       }
+                      channelId={props.channelId}
+                      search={props.search}
+                      initBgContry={initBgContry}
                     />
                   </div>
                 )

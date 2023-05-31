@@ -749,6 +749,27 @@ export const uploadBlackMobileList = (
  * 登陆start
  */
 
+// 用户登录，用户名密码相关信息验证-获取验证码
+export const getLoginCode = (data: API.GetLoginCodeParams) => {
+  return request.post<any, API.Response<API.userInfo>, API.GetLoginCodeParams>(
+    'account/login',
+    { ...data },
+  )
+}
+
+// 验证码验证
+export const login = (data: API.LoginParams) => {
+  return request.post<any, API.Response<any>, API.LoginParams>(
+    'account/do_login',
+    { ...data },
+  )
+}
+
+// 退出登录
+export const logout = () => {
+  return request.post<any, API.Response<any>, any>('account/logout', {})
+}
+
 /**
  * 登陆end
  */

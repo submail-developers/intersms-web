@@ -1,11 +1,22 @@
-import { useState, useRef, useEffect, RefObject } from 'react'
+import {
+  useState,
+  useRef,
+  useEffect,
+  RefObject,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
 import { Form, Input } from 'antd'
 import type { InputRef } from 'antd'
 import { LeftOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
+
+import { login } from '@/api'
+
 import './index.scss'
 
 interface Props {
+  mob: string
   step: number
   beforeStep: () => void
 }
@@ -23,7 +34,12 @@ type C = 1 | 2 | 3 | 4 | 5 | 6
 
 const nums = '0123456789'
 
-function Code(props: Props) {
+function Code(props: Props, ref: any) {
+  useImperativeHandle(ref, () => {
+    return {
+      initForm,
+    }
+  })
   const [form] = Form.useForm()
   const [cindex, setcindex] = useState<C>(1)
   const nav = useNavigate()
@@ -35,13 +51,33 @@ function Code(props: Props) {
     inputRef5: useRef<InputRef>(null),
     inputRef6: useRef<InputRef>(null),
   }
-  const beforeStep = () => {
-    props.beforeStep()
+
+  const initForm = () => {
+    form.resetFields()
+    let timer = setTimeout(() => {
+      refs.inputRef1.current?.focus()
+      clearTimeout(timer)
+    }, 500)
   }
+
   const submit = async () => {
     const value = await form.validateFields()
-    // console.log(redirect)
-    return nav('/console')
+    let code =
+      value.numb1 +
+      value.numb2 +
+      value.numb3 +
+      value.numb4 +
+      value.numb5 +
+      value.numb6
+    if (code.length == 6) {
+      try {
+        await login({
+          mob: props.mob,
+          code,
+        })
+        return nav('/console')
+      } catch (error) {}
+    }
   }
 
   const next = () => {
@@ -157,11 +193,16 @@ function Code(props: Props) {
       </div>
       <div className='title'>输入手机号验证码</div>
       <div className='tips'>
-        请输入至<span>+86 184******12 </span>的6位验证码
+        请输入至
+        <span>
+          +86 {`${props.mob.slice(0, 3)}****${props.mob.slice(7, 12)}`}{' '}
+        </span>
+        的6位验证码
       </div>
       <div style={{ width: '100%', overflow: 'hidden' }}>
         <Form
           name='form'
+          id='code'
           form={form}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 24 }}
@@ -221,4 +262,4 @@ function Code(props: Props) {
     </div>
   )
 }
-export default Code
+export default forwardRef(Code)

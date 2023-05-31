@@ -841,6 +841,22 @@ declare module 'apis' {
      * 登陆start
      */
 
+    // 用户登录，用户名密码相关信息验证-获取验证码
+    interface GetLoginCodeParams {
+      account: string // 邮箱账户
+      password: string // 密码
+    }
+    interface userInfo {
+      mail: string
+      name: string
+      mob: string
+    }
+
+    interface LoginParams {
+      mob: string
+      code: string
+    }
+
     /**
      * 登陆end
      */

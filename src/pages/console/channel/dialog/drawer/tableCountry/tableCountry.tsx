@@ -1,13 +1,14 @@
-import React, {
+import {
   useEffect,
   useState,
   forwardRef,
   useImperativeHandle,
+  memo,
+  useCallback,
 } from 'react'
 import { TableColumnsType, App } from 'antd'
-import { Form, Input, Table, ConfigProvider, Button, Switch } from 'antd'
+import { Form, Input, Table, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
-// import '@/style/drawerTable.scss'
 import '@/style/drawerTable.scss'
 import {
   updateChannelCountryNetworkPrice,
@@ -21,6 +22,9 @@ interface EnbledProps {
   checked: boolean
   disabled: boolean
   network_id: string
+  channelId: string
+  search: () => void
+  initBgContry: () => void
 }
 
 interface Props {
@@ -36,6 +40,36 @@ let bgContry = {
   price_tra: 0,
   action: 0,
 }
+
+const Enbled = memo((enbledProps: EnbledProps) => {
+  const [loading, setLoading] = useState(false)
+  const checkEnbled = async () => {
+    try {
+      setLoading(true)
+      await updateChannelCountryNetworkStatus({
+        channel_id: enbledProps.channelId,
+        region_code: enbledProps.region_code,
+        network_id: enbledProps.network_id,
+        status: enbledProps.checked ? '0' : '1',
+        type: '2',
+      })
+      await enbledProps.search()
+      setLoading(false)
+      enbledProps.initBgContry()
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+  return (
+    <Switch
+      checked={enbledProps.checked}
+      disabled={enbledProps.disabled}
+      onChange={checkEnbled}
+      loading={loading}
+      size='small'
+    />
+  )
+})
 
 function MyTable(props: Props, ref: any) {
   const { message } = App.useApp()
@@ -125,37 +159,7 @@ function MyTable(props: Props, ref: any) {
     initBgContry()
   }
 
-  const Enbled = (enbledProps: EnbledProps) => {
-    const [loading, setLoading] = useState(false)
-    const checkEnbled = async () => {
-      try {
-        setLoading(true)
-        await updateChannelCountryNetworkStatus({
-          channel_id: props.channelId,
-          region_code: enbledProps.region_code,
-          network_id: enbledProps.network_id,
-          status: enbledProps.checked ? '0' : '1',
-          type: '2',
-        })
-        await props.search()
-        setLoading(false)
-        initBgContry()
-      } catch (error) {
-        setLoading(false)
-      }
-    }
-    return (
-      <Switch
-        checked={enbledProps.checked}
-        disabled={enbledProps.disabled}
-        onChange={checkEnbled}
-        loading={loading}
-        size='small'
-      />
-    )
-  }
-
-  const initBgContry = () => {
+  const initBgContry = useCallback(() => {
     bgContry = {
       enabled: 0, // 是否启用   1是  0否
       network: 0, // 运营商网络
@@ -163,7 +167,7 @@ function MyTable(props: Props, ref: any) {
       price_tra: 0, // 行业价格
       action: 0,
     }
-  }
+  }, [])
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -368,6 +372,9 @@ function MyTable(props: Props, ref: any) {
                       disabled={
                         record.country_enabled != '1' || !item.network_id
                       }
+                      channelId={props.channelId}
+                      search={props.search}
+                      initBgContry={initBgContry}
                     />
                   </div>
                 )

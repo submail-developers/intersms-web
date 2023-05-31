@@ -1,23 +1,27 @@
-import { useState, forwardRef, useTransition } from 'react'
-import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
-import Logo from '@/assets/img/submil.png'
+import { useState } from 'react'
+import { Form, Input } from 'antd'
+import Logo from '@/assets/img/submail.svg'
 import ErrorMessage from '@/components/antd/formErrorTips/formErrorTips'
+
+import { getLoginCode } from '@/api'
+import { API } from 'apis'
 
 import './index.scss'
 interface Props {
   step: number
-  next: () => void
+  next: (info: API.userInfo) => void
 }
 
 function Welcome(props: Props) {
   const [loading, setLoaidng] = useState(false)
   const [form] = Form.useForm()
   const getCode = async () => {
-    props.next()
+    // props.next()
     try {
       setLoaidng(true)
       const values = await form.validateFields()
-      props.next()
+      const res = await getLoginCode(values)
+      props.next(res.data)
       setLoaidng(false)
     } catch (error) {
       setLoaidng(false)
@@ -34,15 +38,15 @@ function Welcome(props: Props) {
       </div>
       <Form
         name='form'
+        id='form'
         form={form}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        style={{ width: '100%' }}
-        autoComplete='on'>
+        style={{ width: '100%' }}>
         <Form.Item
           label=''
-          name='email'
+          name='account'
           rules={[
             {
               required: true,
@@ -66,7 +70,7 @@ function Welcome(props: Props) {
             },
           ]}
           validateTrigger='onSubmit'>
-          <Input placeholder='请输入密码' maxLength={30} />
+          <Input type='password' placeholder='请输入密码' maxLength={30} />
         </Form.Item>
       </Form>
       <div className={`btn ${loading && 'loading'}`} onClick={getCode}>
