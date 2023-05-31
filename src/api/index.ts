@@ -89,11 +89,10 @@ export const GetRegioncodeByCountry = (
 
 // 获取发送列表
 export const getSendList = (data: API.GetSendListParams) => {
-  return request.post<
-    any,
-    API.Response<API.SendListItem[]>,
-    API.GetSendListParams
-  >('customer/get_send_list', { ...data })
+  return request.post<any, API.SendListRes, API.GetSendListParams>(
+    'customer/get_send_list',
+    { ...data },
+  )
 }
 /**
  * 发送列表end

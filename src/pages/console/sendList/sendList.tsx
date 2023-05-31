@@ -9,9 +9,8 @@ import {
   Table,
   Tooltip,
 } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
-
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
 import dayjs from 'dayjs'
@@ -38,11 +37,13 @@ const allChannels = {
 
 // 发送列表
 export default function SendList() {
-  const { Option } = Select
   const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<DataType[]>([])
+  const [total, settotal] = useState<number>(0)
+  const [page, setpage] = useState<number>(1)
+  const [pageSize, setpageSize] = useState<number>(20)
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
   // 通道列表
@@ -64,6 +65,21 @@ export default function SendList() {
     { label: '最近90天', value: [dayjs().add(-91, 'd'), dayjs().add(-1, 'd')] },
   ]
 
+  const changePage = async (_page: number, _pageSize: number) => {
+    if (_page != page) setpage(_page)
+    if (_pageSize != pageSize) setpageSize(_pageSize)
+  }
+
+  const pagination: TablePaginationConfig = {
+    position: ['bottomRight'],
+    onChange: changePage,
+    total: total,
+    defaultPageSize: 10,
+    pageSizeOptions: [10, 20, 50, 100],
+    showQuickJumper: true, // 快速跳转
+    showTotal: (total, range) => `共 ${total} 条`,
+  }
+
   // 初始化form的值
   const initFormValues: FormValues = {
     channel: 'all',
@@ -72,37 +88,32 @@ export default function SendList() {
     keyword: '',
   }
 
-  const onFinish = (values: FormValues) => {
-    formatSearchValue(values)
-  }
-
-  const formatSearchValue = (params: FormValues) => {
-    const { channel, group, time, keyword } = params
+  // 获取列表数据
+  const search = async () => {
+    const values = await form.getFieldsValue()
+    const { channel, group, time, keyword } = values
     const start = (time && time[0].format('YYYY-MM-DD')) || ''
     const end = (time && time[1].format('YYYY-MM-DD')) || ''
-    const searchParams = {
+    const params = {
       type: 'all',
       start,
       end,
       channel,
       group,
       keyword,
+      page,
+      limit: pageSize,
     }
-    searchEvent(searchParams)
-  }
-
-  // 获取列表数据
-  const searchEvent = async (params: API.GetSendListParams) => {
     try {
       const res = await getSendList(params)
       settableData(res.data)
-    } catch (error) {
-      console.log(error)
-    }
+      settotal(res.total)
+    } catch (error) {}
   }
+
   const resetForm = () => {
     form.resetFields()
-    formatSearchValue(initFormValues)
+    search()
   }
 
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
@@ -110,10 +121,14 @@ export default function SendList() {
   }
 
   useEffect(() => {
-    formatSearchValue(initFormValues)
+    form.resetFields()
     getChannel()
     getChannels()
   }, [])
+
+  useEffect(() => {
+    search()
+  }, [page, pageSize])
   // 获取通道列表
   const getChannel = async () => {
     try {
@@ -240,7 +255,6 @@ export default function SendList() {
           initialValues={initFormValues}
           layout={size == 'small' ? 'inline' : 'inline'}
           wrapperCol={{ span: 24 }}
-          onFinish={onFinish}
           autoComplete='off'>
           <Form.Item label='' name='channel' style={{ marginBottom: 10 }}>
             <Select
@@ -258,13 +272,7 @@ export default function SendList() {
                     transform: 'scale(.45)',
                   }}
                 />
-              }>
-              {/* {channelList.map((item) => (
-                <Option value={item.value} key={item.value}>
-                  {item.label}
-                </Option>
-              ))} */}
-            </Select>
+              }></Select>
           </Form.Item>
           <Form.Item label='' name='group' style={{ marginBottom: 10 }}>
             <Select
@@ -282,13 +290,7 @@ export default function SendList() {
                     transform: 'scale(.45)',
                   }}
                 />
-              }>
-              {/* {groupList.map((item) => (
-                <Option value={item.value} key={item.value}>
-                  {item.label}
-                </Option>
-              ))} */}
-            </Select>
+              }></Select>
           </Form.Item>
 
           <MyFormItem
@@ -323,7 +325,7 @@ export default function SendList() {
               <Button
                 type='primary'
                 size={size}
-                htmlType='submit'
+                onClick={search}
                 style={{ width: 110, marginLeft: 0 }}>
                 搜索
               </Button>
@@ -343,7 +345,7 @@ export default function SendList() {
         rowKey='id'
         columns={columns}
         dataSource={tableData}
-        pagination={false}
+        pagination={pagination}
         sticky
         onRow={onRow}
         rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}

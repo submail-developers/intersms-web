@@ -97,6 +97,7 @@ function Error(props: Props, ref: any) {
   const columns: ColumnsType<DataType> = [
     {
       title: 'appid',
+      width: 100,
       dataIndex: 'appid',
     },
     {

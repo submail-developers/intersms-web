@@ -114,7 +114,8 @@ declare module 'apis' {
 
     // 发送列表参数
     interface GetSendListParams extends BaseParams {
-      page?: string
+      page: number // 第几页
+      limit: number // 每页数量
       start: string // 开始时间
       end?: string // 结束时间
       channel?: string // 通道类型
@@ -123,7 +124,10 @@ declare module 'apis' {
       keyword?: string // 搜索关键字
     }
 
-    // 发送列表
+    // 发送列表返回值
+    interface SendListRes extends Response<SendListItem[]> {
+      total: number
+    }
     interface SendListItem {
       id: string
       mobile: string
