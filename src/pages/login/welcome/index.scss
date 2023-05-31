@@ -1,37 +1,41 @@
 [data-class='welcome'] {
   display: inline-block;
   vertical-align: middle;
-  width: 496px;
-  height: 500px;
+  width: 100%;
   opacity: 1;
-  padding: 48px;
   box-sizing: border-box;
   overflow: hidden;
   transition: opacity 0.3s ease-out;
-  .title {
-    font-size: 32px;
-    line-height: 45px;
-  }
-  .logo-wrap {
-    margin-top: 16px;
-    margin-bottom: 32px;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 28px;
-    .logo {
-      height: 16px;
-      margin-right: 10px;
+  .top-text {
+    margin: 0 auto;
+    width: fit-content;
+    .title {
+      font-size: 32px;
+      line-height: 45px;
+      font-weight: 500;
+      .img {
+        height: 32px;
+        margin-right: 16px;
+      }
+    }
+    .name {
+      margin-top: 16px;
+      margin-bottom: 48px;
+      font-size: 20px;
+      line-height: 28px;
+      color: #999;
+      // font-weight: 400;
     }
   }
   .btn {
-    margin-top: 16px;
+    margin-top: 64px;
     width: 100%;
     height: 48px;
     line-height: 48px;
     border-radius: 8px;
     text-align: center;
     color: #fff;
-    font-size: 20px;
+    font-size: 16px;
     background-color: #3d7af3;
     cursor: pointer;
     transition: background-color 0.3s ease-out;
@@ -58,37 +62,21 @@
       .ant-form-item-control-input {
         // 输入框
         input.ant-input {
-          border: none;
-          padding-left: 0;
-          padding-bottom: 14px;
-          border-bottom: 1px solid #e7e7e7;
-          border-radius: 0;
+          height: 48px;
+          border: 1px solid #999;
+          border-radius: 8px;
           box-shadow: none;
-          // color: #0074d7;
           font-size: 16px;
+          background-color: transparent;
           &:hover {
-            border-radius: 0;
-            border-bottom-color: #e7e7e7;
+            border-color: #999;
             box-shadow: none;
           }
           &:focus {
-            border-bottom-color: #0074d7;
+            border-color: #0074d0;
           }
-        }
-        // 输入框带后缀
-        .ant-input-affix-wrapper {
-          padding: 0;
-          border: none;
-          border-bottom: 1px solid #e7e7e7;
-          box-shadow: none;
-          input.ant-input {
-            border: none;
-            height: 32px;
-          }
-          input.ant-input-suffix,
-          input.ant-input-prefix {
-            color: #999;
-            font-size: 16px;
+          &.ant-input-status-error {
+            border-color: #ff4d4f;
           }
         }
       }

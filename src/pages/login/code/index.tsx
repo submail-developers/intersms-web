@@ -19,20 +19,11 @@ interface Refs {
   inputRef6: RefObject<InputRef>
 }
 
-type Z = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | ''
 type C = 1 | 2 | 3 | 4 | 5 | 6
 
-type CodeList = [Z, Z, Z, Z, Z, Z]
-
-interface ItemProps {
-  index: number
-  cindex: number
-  next: () => void
-}
 const nums = '0123456789'
 
 function Code(props: Props) {
-  const [loading, setLoaidng] = useState(false)
   const [form] = Form.useForm()
   const [cindex, setcindex] = useState<C>(1)
   const nav = useNavigate()
@@ -48,7 +39,7 @@ function Code(props: Props) {
     props.beforeStep()
   }
   const submit = async () => {
-    // const value = await form.validateFields()
+    const value = await form.validateFields()
     // console.log(redirect)
     return nav('/console')
   }
@@ -57,6 +48,7 @@ function Code(props: Props) {
     if (cindex >= 6) {
       setcindex(6)
       refs.inputRef6.current?.focus()
+      submit()
     } else {
       refs[`inputRef${(cindex + 1) as C}`].current?.focus()
       setcindex((cindex + 1) as C)
@@ -91,6 +83,7 @@ function Code(props: Props) {
           })
           inputRef.current?.blur()
           setcindex(6)
+          submit()
           clearTimeout(timer)
         }, 0)
         return
@@ -128,6 +121,7 @@ function Code(props: Props) {
       next()
     }
   }
+
   const onFocus = (num: C) => {
     setcindex(num)
   }
@@ -143,13 +137,13 @@ function Code(props: Props) {
   // 键盘事件
   const onKeyDown = async (e: any) => {
     switch (e.keyCode) {
-      case 8:
+      case 8: // 删除事件
         let currentInputValue = await form.getFieldValue(`numb${cindex}`)
         if (!currentInputValue) {
           before()
         }
         break
-      case 13:
+      case 13: // enter事件
         //  handleLogin(event)
         break
     }
@@ -157,77 +151,72 @@ function Code(props: Props) {
 
   return (
     <div data-class='code' style={{ opacity: props.step == 1 ? '1' : '0' }}>
-      <div>
-        <div className='back' onClick={() => props.beforeStep()}>
-          <LeftOutlined />
-          返回
-        </div>
-        <div className='title'>输入手机号验证码</div>
-        <div className='tips'>
-          请输入至<span>+86 184******12 </span>的6位验证码
-        </div>
-        <div style={{ width: '100%', overflow: 'hidden' }}>
-          <Form
-            name='form'
-            form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 24 }}
-            layout='inline'
-            autoComplete='off'>
-            <Form.Item label='' name='numb1'>
-              <Input
-                placeholder=''
-                ref={refs.inputRef1}
-                onInput={(e) => oninput(e, refs.inputRef1)}
-                onFocus={() => onFocus(1)}
-              />
-            </Form.Item>
-            <Form.Item label='' name='numb2'>
-              <Input
-                placeholder=''
-                ref={refs.inputRef2}
-                onInput={(e) => oninput(e, refs.inputRef2)}
-                onFocus={() => onFocus(2)}
-              />
-            </Form.Item>
-            <Form.Item label='' name='numb3'>
-              <Input
-                placeholder=''
-                ref={refs.inputRef3}
-                onInput={(e) => oninput(e, refs.inputRef3)}
-                onFocus={() => onFocus(3)}
-              />
-            </Form.Item>
-            <div className='line'></div>
-            <Form.Item label='' name='numb4'>
-              <Input
-                placeholder=''
-                ref={refs.inputRef4}
-                onInput={(e) => oninput(e, refs.inputRef4)}
-                onFocus={() => onFocus(4)}
-              />
-            </Form.Item>
-            <Form.Item label='' name='numb5'>
-              <Input
-                placeholder=''
-                ref={refs.inputRef5}
-                onInput={(e) => oninput(e, refs.inputRef5)}
-                onFocus={() => onFocus(5)}
-              />
-            </Form.Item>
-            <Form.Item label='' name='numb6'>
-              <Input
-                placeholder=''
-                ref={refs.inputRef6}
-                onInput={(e) => oninput(e, refs.inputRef6)}
-                onFocus={() => onFocus(6)}
-              />
-            </Form.Item>
-          </Form>
-        </div>
-        <div className={`btn ${loading && 'loading'}`} onClick={submit}>
-          安全验证
-        </div>
+      <div className='back' onClick={() => props.beforeStep()}>
+        <LeftOutlined />
+        返回
+      </div>
+      <div className='title'>输入手机号验证码</div>
+      <div className='tips'>
+        请输入至<span>+86 184******12 </span>的6位验证码
+      </div>
+      <div style={{ width: '100%', overflow: 'hidden' }}>
+        <Form
+          name='form'
+          form={form}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 24 }}
+          layout='inline'
+          autoComplete='off'>
+          <Form.Item label='' name='numb1'>
+            <Input
+              placeholder=''
+              ref={refs.inputRef1}
+              onInput={(e) => oninput(e, refs.inputRef1)}
+              onFocus={() => onFocus(1)}
+            />
+          </Form.Item>
+          <Form.Item label='' name='numb2'>
+            <Input
+              placeholder=''
+              ref={refs.inputRef2}
+              onInput={(e) => oninput(e, refs.inputRef2)}
+              onFocus={() => onFocus(2)}
+            />
+          </Form.Item>
+          <Form.Item label='' name='numb3'>
+            <Input
+              placeholder=''
+              ref={refs.inputRef3}
+              onInput={(e) => oninput(e, refs.inputRef3)}
+              onFocus={() => onFocus(3)}
+            />
+          </Form.Item>
+          <div className='line'></div>
+          <Form.Item label='' name='numb4'>
+            <Input
+              placeholder=''
+              ref={refs.inputRef4}
+              onInput={(e) => oninput(e, refs.inputRef4)}
+              onFocus={() => onFocus(4)}
+            />
+          </Form.Item>
+          <Form.Item label='' name='numb5'>
+            <Input
+              placeholder=''
+              ref={refs.inputRef5}
+              onInput={(e) => oninput(e, refs.inputRef5)}
+              onFocus={() => onFocus(5)}
+            />
+          </Form.Item>
+          <Form.Item label='' name='numb6'>
+            <Input
+              placeholder=''
+              ref={refs.inputRef6}
+              onInput={(e) => oninput(e, refs.inputRef6)}
+              onFocus={() => onFocus(6)}
+            />
+          </Form.Item>
+        </Form>
       </div>
     </div>
   )

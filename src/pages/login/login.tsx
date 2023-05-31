@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
 import Welcome from './welcome'
 import Code from './code'
-
-import loginbanner from '@/assets/img/loginbanner.png'
 import './login.scss'
+import Logo from '@/assets/img/logo.svg'
+import bg from '@/assets/img/login.jpg'
+import { useSize } from '@/hooks'
 export default function Login() {
+  const size = useSize()
   const [step, setstep] = useState(0)
   const changeStep = (_step: number) => {
     setstep(_step)
@@ -17,17 +18,16 @@ export default function Login() {
   }, [])
   return (
     <div data-class='login'>
-      <div className='img-wrap'>
-        <img src={loginbanner} alt='' />
-      </div>
-      <div className='right'>
-        <div className='form-wrap'>
-          <div
-            className='anim'
-            style={{ transform: `translateX(-${step * 496}px)` }}>
-            <Welcome next={() => changeStep(1)} step={step} />
-            <Code beforeStep={() => changeStep(0)} step={step} />
-          </div>
+      <img src={bg} className='bg' alt='' />
+      <img src={Logo} className='logo' alt='' />
+      <div className={`form-wrap ${size}`}>
+        <div
+          className='anim'
+          style={{
+            transform: `translateX(-${step * (size == 'small' ? 320 : 400)}px)`,
+          }}>
+          <Welcome next={() => changeStep(1)} step={step} />
+          <Code beforeStep={() => changeStep(0)} step={step} />
         </div>
       </div>
     </div>

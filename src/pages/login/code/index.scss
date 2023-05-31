@@ -1,20 +1,19 @@
 [data-class='code'] {
   display: inline-block;
   vertical-align: middle;
-  width: 496px;
-  height: 500px;
+  width: 100%;
   opacity: 1;
-  padding: 48px;
-  box-sizing: border-box;
   font-size: 16px;
   overflow: hidden;
   transition: opacity 0.3s ease-out;
+  transform: translateY(-25%);
   .back {
     color: #0074d0;
     cursor: pointer;
   }
   .title {
-    font-size: 20px;
+    font-size: 24px;
+    font-weight: 500;
     margin-top: 32px;
   }
   .tips {
@@ -62,10 +61,12 @@
           padding: 0;
           width: 48px;
           height: 56px;
-          border-radius: 2;
+          border-radius: 4px;
           box-shadow: none;
-          font-size: 16px;
+          font-size: 20px;
+          font-weight: 500;
           text-align: center;
+          background-color: transparent;
           &:hover {
             box-shadow: none;
           }
