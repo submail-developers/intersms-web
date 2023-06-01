@@ -1,18 +1,50 @@
 import { defineConfig, loadEnv, ConfigEnv, UserConfig } from 'vite'
+import { wrapperEnv } from './src/viteConf/utils'
+import { createHtmlPlugin } from 'vite-plugin-html'
+import viteCompression from 'vite-plugin-compression'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig((mode: ConfigEnv): UserConfig => {
   const env = loadEnv(mode.mode, process.cwd())
-  console.log(env)
+  const viteEnv = wrapperEnv(env)
   return {
     base: '/',
-    plugins: [react()],
+    plugins: [
+      react(),
+      createHtmlPlugin({
+        minify: false, // 是否开启压缩html
+        /**
+         * 在这里写entry后，你将不需要在`index.html`内添加 script 标签，原有标签需要删除
+         * @default src/main.ts
+         */
+        entry: 'src/main.tsx',
+        inject: {
+          data: {
+            title: viteEnv.VITE_GLOB_APP_TITLE, // 网站title
+            injectScript: ``, // 添加额外的script标签
+            // injectScript: `<script src="./inject.js"></script>`, // 添加额外的script标签
+          },
+        },
+      }),
+      // * gzip compress
+      viteEnv.VITE_BUILD_GZIP &&
+        viteCompression({
+          verbose: true,
+          disable: false,
+          threshold: 10240,
+          algorithm: 'gzip',
+          ext: '.gz',
+        }),
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'), // 设置别名
       },
+    },
+    esbuild: {
+      pure: viteEnv.VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : [],
     },
     build: {
       // outDir: 'dist',
@@ -63,6 +95,9 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
       },
     },
     server: {
+      host: '0.0.0.0', // 服务器主机名，如果允许外部访问，可设置为"0.0.0.0"
+      port: viteEnv.VITE_PORT,
+      open: viteEnv.VITE_OPEN,
       proxy: {
         '/mytest/': {
           // 测试接口
@@ -74,7 +109,7 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
           target: 'http://zjhtest.submail.intersms.com',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/apis/, ''),
-          secure: false,
+          // secure: false,
         },
       },
     },
