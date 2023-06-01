@@ -18,6 +18,15 @@ export default defineConfig({
     cssCodeSplit: true, // 是否拆分css，false-所有css打包到一个文件，true-单独打包，默认为true
     cssTarget: 'chrome61',
     chunkSizeWarningLimit: 1500,
+    // esbuild 打包更快，但是不能去除 console.log，去除 console 使用 terser 模式
+    minify: 'esbuild',
+    // minify: 'terser',
+    // terserOptions: {
+    // 	compress: {
+    // 		drop_console: viteEnv.VITE_DROP_CONSOLE,
+    // 		drop_debugger: true
+    // 	}
+    // },
     rollupOptions: {
       output: {
         // 最小化拆分包
@@ -51,6 +60,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/pet': {
+        // 测试接口
         target: 'https://petstore-demo.apifox.com/',
         changeOrigin: true,
       },
