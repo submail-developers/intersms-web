@@ -22,10 +22,10 @@ export default defineConfig({
     minify: 'esbuild',
     // minify: 'terser',
     // terserOptions: {
-    // 	compress: {
-    // 		drop_console: viteEnv.VITE_DROP_CONSOLE,
-    // 		drop_debugger: true
-    // 	}
+    //   compress: {
+    //     drop_console: true,
+    //     drop_debugger: true,
+    //   },
     // },
     rollupOptions: {
       output: {
