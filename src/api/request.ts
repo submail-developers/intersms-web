@@ -25,21 +25,35 @@ request.interceptors.request.use(
     return Promise.reject(error)
   },
 )
+
 // 后置拦截
 request.interceptors.response.use(
   (res: AxiosResponse) => {
-    // message.destroy()
     if ([200, 201].includes(res.status) && res.data.status === 'success') {
       return res.data
     } else {
       message.destroy()
-      message.error(res.data.message)
+      message.error({
+        content: res.data.message,
+        onClose: () => {
+          if (res.data.message == '登录超时') {
+            window.location.hash = '/login'
+          }
+        },
+      })
       return Promise.reject(res.data)
     }
   },
   (error) => {
     message.destroy()
-    message.error(error.message)
+    message.error({
+      content: error.message,
+      onClose: () => {
+        if (error.message == '登录超时') {
+          window.location.hash = '/login'
+        }
+      },
+    })
     return Promise.reject(error)
   },
 )
