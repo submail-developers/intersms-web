@@ -8,14 +8,11 @@ import type {
 
 const request: AxiosInstance = axios.create({
   timeout: 60 * 1000,
-  // baseURL: 'http://zjhtest.submail.intersms.com/'
+  baseURL: import.meta.env.VITE_API_URL as string,
 })
 // 前置拦截
 request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    if (!config.url?.includes('/pet')) {
-      config.url = '/apis/' + config.url
-    }
     // config.headers['Cooik'] = '123'
     return config
   },

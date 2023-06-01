@@ -8,7 +8,7 @@ import { API } from 'apis'
 // 示例接口-get
 export const getPetInfo = (params: API.PetInfoParams) => {
   return request.get<any, API.Response<API.PetInfoRes>, API.PetInfoParams>(
-    '/pet/',
+    'mytest/console/api/pet/',
     {
       params,
     },
@@ -18,7 +18,7 @@ export const getPetInfo = (params: API.PetInfoParams) => {
 // 示例接口-post
 export const createPet = (data: API.CreatePetParams) => {
   return request.post<any, API.Response<API.PetInfoRes>, API.CreatePetParams>(
-    '/pet',
+    'mytest/console/api/pet',
     { ...data },
     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
   )
@@ -27,7 +27,7 @@ export const createPet = (data: API.CreatePetParams) => {
 // 示例接口-get
 export const getNumberList = () => {
   return request.get<any, API.Response<number[]>, API.PetInfoParams>(
-    'customer/zjhtest_get/',
+    'console/api/customer/zjhtest_get/',
   )
 }
 
@@ -46,12 +46,12 @@ export const getAllCountry = (
     any,
     API.Response<API.GetCountryItem[]>,
     API.GetCountryParams
-  >('customer/get_all_country_network_list', { ...data })
+  >('console/api/customer/get_all_country_network_list', { ...data })
 }
 // 获取全部已配置网络的国家
 export const getAllNetCountry = () => {
   return request.post<any, API.Response<API.LetterCountryItem[]>, null>(
-    'customer/get_all_country_network_list',
+    'console/api/customer/get_all_country_network_list',
   )
 }
 // 获取该用户账户下的国际短信appid, 参数 sender  用户account字段， 32位随机码id
@@ -60,7 +60,7 @@ export const getAppid = (data: API.GetAppidParams) => {
     any,
     API.Response<API.GetAppidItem[]>,
     API.GetAppidParams
-  >('customer/get_account_all_intersms_app', { ...data })
+  >('console/api/customer/get_account_all_intersms_app', { ...data })
 }
 /**
  * 常用-国家中文名称+地区代码start
@@ -73,7 +73,7 @@ export const GetRegioncodeByCountry = (
     any,
     API.Response<API.LetterCountryItem[]>,
     API.GetRegioncodeByCountryParams
-  >('customer/get_regioncode_by_country', { ...data })
+  >('console/api/customer/get_regioncode_by_country', { ...data })
 }
 
 /**
@@ -90,7 +90,7 @@ export const GetRegioncodeByCountry = (
 // 获取发送列表
 export const getSendList = (data: API.GetSendListParams) => {
   return request.post<any, API.SendListRes, API.GetSendListParams>(
-    'customer/get_send_list',
+    'console/api/customer/get_send_list',
     { ...data },
   )
 }
@@ -108,13 +108,13 @@ export const getAccountList = (data: API.AccountListParams) => {
     any,
     API.Response<API.AccountListItem[]>,
     API.AccountListParams
-  >('customer/get_sender_list', { ...data })
+  >('console/api/customer/get_sender_list', { ...data })
 }
 
 // 删除客户
 export const deleteAccount = (data: API.DeleteAccountParams) => {
   return request.post<any, API.Response<any>, API.DeleteAccountParams>(
-    'customer/delete_sender_info',
+    'console/api/customer/delete_sender_info',
     { ...data },
   )
 }
@@ -122,7 +122,7 @@ export const deleteAccount = (data: API.DeleteAccountParams) => {
 // 新增客户
 export const addAccount = (data: API.AddAccountParams) => {
   return request.post<any, API.Response<API.ChannelItem>, API.AddAccountParams>(
-    'customer/add_sender_info',
+    'console/api/customer/add_sender_info',
     { ...data },
   )
 }
@@ -132,7 +132,7 @@ export const getAccountPriceList = (data: API.GetAccountConfigListParams) => {
     any,
     API.Response<API.AccountPriceItem[]>,
     API.GetAccountConfigListParams
-  >('customer/get_sender_country', { ...data })
+  >('console/api/customer/get_sender_country', { ...data })
 }
 // 客户信息-获取国家通道配置列表
 export const getAccountChannelList = (data: API.GetAccountConfigListParams) => {
@@ -140,7 +140,7 @@ export const getAccountChannelList = (data: API.GetAccountConfigListParams) => {
     any,
     API.Response<API.AccountChannelItem[]>,
     API.GetAccountConfigListParams
-  >('customer/get_sender_country_channel', { ...data })
+  >('console/api/customer/get_sender_country_channel', { ...data })
 }
 // 客户信息-获取失败处理配置列表
 export const getAccountErrorList = (data: API.GetAccountConfigListParams) => {
@@ -148,61 +148,61 @@ export const getAccountErrorList = (data: API.GetAccountConfigListParams) => {
     any,
     API.Response<API.AccountErrorItem[]>,
     API.GetAccountConfigListParams
-  >('customer/get_sender_error_handle', { ...data })
+  >('console/api/customer/get_sender_error_handle', { ...data })
 }
 // 客户信息-新增/修改国家价格配置
 export const updateAccountPrice = (data: API.UpdateAccountPriceParams) => {
   return request.post<any, API.Response<any>, API.UpdateAccountPriceParams>(
-    'customer/save_sender_country',
+    'console/api/customer/save_sender_country',
     { ...data },
   )
 }
 // 客户信息-新增/修改国家通道配置
 export const updateAccountChannel = (data: API.UpdateAccountChannelParams) => {
   return request.post<any, API.Response<any>, API.UpdateAccountChannelParams>(
-    'customer/save_sender_country_channel',
+    'console/api/customer/save_sender_country_channel',
     { ...data },
   )
 }
 // 客户信息-新增/修改失败处理配置
 export const updateAccountError = (data: API.UpdateAccountErrorParams) => {
   return request.post<any, API.Response<any>, API.UpdateAccountErrorParams>(
-    'customer/save_sender_error_handle',
+    'console/api/customer/save_sender_error_handle',
     { ...data },
   )
 }
 // 客户信息-删除-国家价格配置
 export const deleteAccountPrice = (data: API.Ids) => {
   return request.post<any, API.Response<any>, API.Ids>(
-    'customer/delete_sender_country',
+    'console/api/customer/delete_sender_country',
     { ...data },
   )
 }
 // 客户信息-删除-国家通道配置
 export const deleteAccountChannel = (data: API.Ids) => {
   return request.post<any, API.Response<any>, API.Ids>(
-    'customer/delete_sender_country_channel',
+    'console/api/customer/delete_sender_country_channel',
     { ...data },
   )
 }
 // 客户信息-删除-失败处理配置
 export const deleteAccountError = (data: API.Ids) => {
   return request.post<any, API.Response<any>, API.Ids>(
-    'customer/delete_sender_error_handle',
+    'console/api/customer/delete_sender_error_handle',
     { ...data },
   )
 }
 // 客户信息-价格配置-开启/关闭全部营销
 export const changeMkState = (data: API.ChangeMkStateParams) => {
   return request.post<any, API.Response<any>, API.ChangeMkStateParams>(
-    'customer/switch_sender_market_status',
+    'console/api/customer/switch_sender_market_status',
     { ...data },
   )
 }
 // 客户信息-测试账户标记
 export const changeTestState = (data: API.ChangeTestStateParams) => {
   return request.post<any, API.Response<any>, API.ChangeTestStateParams>(
-    'customer/switch_sender_test_status',
+    'console/api/customer/switch_sender_test_status',
     { ...data },
   )
 }
@@ -220,7 +220,7 @@ export const getAllGroupId = (data: API.GetAllGroupIdParams) => {
     any,
     API.Response<API.GetAllGroupIdItems[]>,
     API.GetAllGroupIdParams
-  >('customer/get_all_group_ids', { ...data })
+  >('console/api/customer/get_all_group_ids', { ...data })
 }
 
 // 获取通道组列表(包含敏感词信息)
@@ -229,19 +229,19 @@ export const getChannelGroupList = (data: API.GetChannelGroupListParams) => {
     any,
     API.Response<API.GetChannelGroupListItem[]>,
     API.GetChannelGroupListParams
-  >('customer/get_group', { ...data })
+  >('console/api/customer/get_group', { ...data })
 }
 // 新增/修改通道组
 export const updateChannelGroup = (data: API.UpdateChannelGroupParams) => {
   return request.post<any, API.Response<any>, API.UpdateChannelGroupParams>(
-    'customer/save_group',
+    'console/api/customer/save_group',
     { ...data },
   )
 }
 // 保存通道组
 export const deleteChannelGroup = (data: API.Ids) => {
   return request.post<any, API.Response<any>, API.Ids>(
-    'customer/delete_group',
+    'console/api/customer/delete_group',
     { ...data },
   )
 }
@@ -252,8 +252,8 @@ export const channelGroupBindSensitiveWord = (
 ) => {
   const url =
     bind == '1'
-      ? 'customer/save_group_related_sensitive_keywords'
-      : 'customer/delete_group_related_sensitive_keywords'
+      ? 'console/api/customer/save_group_related_sensitive_keywords'
+      : 'console/api/customer/delete_group_related_sensitive_keywords'
   return request.post<
     any,
     API.Response<any>,
@@ -267,14 +267,14 @@ export const getGroupChannelList = (data: API.GetGroupChannelListParams) => {
     any,
     API.Response<API.GroupChannelItem[]>,
     API.GetGroupChannelListParams
-  >('customer/get_group_related_data', { ...data })
+  >('console/api/customer/get_group_related_data', { ...data })
 }
 // 通道组添加通道
 export const channelGroupAddChannel = (
   data: API.ChannelGroupAddChannelParams,
 ) => {
   return request.post<any, API.Response<any>, API.ChannelGroupAddChannelParams>(
-    'customer/save_group_related_channel',
+    'console/api/customer/save_group_related_channel',
     { ...data },
   )
 }
@@ -286,7 +286,7 @@ export const channelGroupDeleteChannel = (
     any,
     API.Response<any>,
     API.ChannelGroupDeleteChannelParams
-  >('customer/delete_group_related_channel', { ...data })
+  >('console/api/customer/delete_group_related_channel', { ...data })
 }
 // 通道组-通道修改关键字
 export const channelGroupUpdateKeyword = (
@@ -295,8 +295,8 @@ export const channelGroupUpdateKeyword = (
 ) => {
   const url =
     bind == '1'
-      ? 'customer/save_group_related_keywords_route'
-      : 'customer/delete_group_related_keywords_route'
+      ? 'console/api/customer/save_group_related_keywords_route'
+      : 'console/api/customer/delete_group_related_keywords_route'
   return request.post<
     any,
     API.Response<any>,
@@ -306,7 +306,7 @@ export const channelGroupUpdateKeyword = (
 // 获取通道组-通道关联数据
 export const getGroupRelatedData = (data: API.GetGroupRelatedDataParams) => {
   return request.post<any, API.GroupRelatedData, API.GetGroupRelatedDataParams>(
-    'customer/get_group_related_channel_country_data',
+    'console/api/customer/get_group_related_channel_country_data',
     { ...data },
   )
 }
@@ -318,7 +318,7 @@ export const updateChannelsNetworkWeight = (
     any,
     API.Response<any>,
     API.UpdateChannelsCountryNetworkParams
-  >('customer/update_countrynetwork_weight', { ...data })
+  >('console/api/customer/update_countrynetwork_weight', { ...data })
 }
 // 禁用启用通道组关联通道-国家/运营商
 export const updateGroupCountryNetworkStatus = (
@@ -328,7 +328,7 @@ export const updateGroupCountryNetworkStatus = (
     any,
     API.Response<any>,
     API.UpdateGroupCountryNetworkStatusParams
-  >('customer/update_countrynetwork_weight_status', { ...data })
+  >('console/api/customer/update_countrynetwork_weight_status', { ...data })
 }
 // 一键启用/禁用所有关联国家和运营商
 export const oneTouchGroupCountryNetworkStatus = (
@@ -338,7 +338,9 @@ export const oneTouchGroupCountryNetworkStatus = (
     any,
     API.Response<any>,
     API.OneTouchGroupCountryNetworkStatusParams
-  >('customer/update_all_countrynetwork_weight_status', { ...data })
+  >('console/api/customer/update_all_countrynetwork_weight_status', {
+    ...data,
+  })
 }
 /**
  * 通道组管理end
@@ -353,27 +355,27 @@ export const getAllChannelId = (data: API.GetAllChannelIdParams) => {
     any,
     API.Response<API.GetAllChannelIdParamsItems[]>,
     API.GetAllChannelIdParams
-  >('customer/get_all_channel_ids', { ...data })
+  >('console/api/customer/get_all_channel_ids', { ...data })
 }
 
 // 获取通道列表
 export const getChannelList = (data: API.Ids = { id: '' }) => {
   return request.post<any, API.Response<API.ChannelItem[]>, API.Ids>(
-    'customer/get_channel',
+    'console/api/customer/get_channel',
     { ...data },
   )
 }
 // 新增/修改通道
 export const saveChannel = (data: API.AddChannelParams) => {
   return request.post<any, API.Response<any>, API.AddChannelParams>(
-    'customer/save_channel',
+    'console/api/customer/save_channel',
     { ...data },
   )
 }
 // 新增/修改通道
 export const deleteChannel = (data: API.Ids) => {
   return request.post<any, API.Response<any>, API.Ids>(
-    'customer/delete_channel',
+    'console/api/customer/delete_channel',
     { ...data },
   )
 }
@@ -383,7 +385,7 @@ export const getChannelCountryList = (data: API.getChannelCountryParams) => {
     any,
     API.ChannelRelatedDataRes,
     API.getChannelCountryParams
-  >('customer/get_channel_related_country_network', { ...data })
+  >('console/api/customer/get_channel_related_country_network', { ...data })
 }
 // 修改通道关联国家及网络，已存在的关联国家直接跳过
 export const updateChannelCountryNetwork = (
@@ -393,7 +395,7 @@ export const updateChannelCountryNetwork = (
     any,
     API.Response<any>,
     API.UpdateChannelCountryNetworkParams
-  >('customer/update_channel_related_country_network', { ...data })
+  >('console/api/customer/update_channel_related_country_network', { ...data })
 }
 // 修改通道关联国家及网络，已存在的关联国家直接跳过
 export const updateChannelCountryNetworkPrice = (
@@ -403,7 +405,9 @@ export const updateChannelCountryNetworkPrice = (
     any,
     API.Response<any>,
     API.UpdateChannelCountryNetworkPriceParams
-  >('customer/update_channel_related_country_network_prices', { ...data })
+  >('console/api/customer/update_channel_related_country_network_prices', {
+    ...data,
+  })
 }
 // 批量启用禁用通道关联国家及网络
 export const updateChannelCountryNetworkStatus = (
@@ -413,7 +417,9 @@ export const updateChannelCountryNetworkStatus = (
     any,
     API.Response<any>,
     API.UpdateChannelCountryNetworkStatusParams
-  >('customer/update_channel_related_country_network_status', { ...data })
+  >('console/api/customer/update_channel_related_country_network_status', {
+    ...data,
+  })
 }
 // 一键启用/禁用所有关联国家和运营商
 export const oneTouchChannelCountryNetworkStatus = (
@@ -423,7 +429,9 @@ export const oneTouchChannelCountryNetworkStatus = (
     any,
     API.Response<any>,
     API.OneTouchChannelCountryNetworkStatusParams
-  >('customer/update_channel_all_related_country_network_status', { ...data })
+  >('console/api/customer/update_channel_all_related_country_network_status', {
+    ...data,
+  })
 }
 /**
  * 通道管理end
@@ -438,12 +446,12 @@ export const getCountryList = (data: API.GetCountryListParams) => {
     any,
     API.Response<API.GetCountryListItems[]>,
     API.GetCountryListParams
-  >('customer/get_country', { ...data })
+  >('console/api/customer/get_country', { ...data })
 }
 // 保存国家信息
 export const saveCountry = (data: API.SaveCountryParams) => {
   return request.post<any, API.Response<any>, API.SaveCountryParams>(
-    'customer/save_country',
+    'console/api/customer/save_country',
     { ...data },
   )
 }
@@ -461,19 +469,19 @@ export const getNetWorkList = (data: API.GetNetWorkParams) => {
     any,
     API.Response<API.GetNetWorkListItems[]>,
     API.GetNetWorkParams
-  >('customer/get_network', { ...data })
+  >('console/api/customer/get_network', { ...data })
 }
 // 保存网络信息
 export const saveNetWorkList = (data: API.SaveNetWorkParams) => {
   return request.post<any, API.Response<any>, API.SaveNetWorkParams>(
-    'customer/save_network',
+    'console/api/customer/save_network',
     { ...data },
   )
 }
 // 删除网络信息
 export const deleteNetWorkList = (data: API.DeleteNetWorkParams) => {
   return request.post<any, API.Response<any>, API.DeleteNetWorkParams>(
-    'customer/delete_network',
+    'console/api/customer/delete_network',
     { ...data },
   )
 }
@@ -490,12 +498,12 @@ export const getMobileRouteList = (data: API.GetMobileRouteListParams) => {
     any,
     API.Response<API.GetMobileRouteListItems[]>,
     API.GetMobileRouteListParams
-  >('customer/get_mobile_route', { ...data })
+  >('console/api/customer/get_mobile_route', { ...data })
 }
 // 保存号码通道路由
 export const saveMobileRouteList = (data: API.SaveMobileRouteParams) => {
   return request.post<any, API.Response<any>, API.SaveMobileRouteParams>(
-    'customer/save_mobile_route',
+    'console/api/customer/save_mobile_route',
     { ...data },
   )
 }
@@ -504,7 +512,7 @@ export const deleteMobileRouteList = (
   data: API.DeleteMobileRouteListParams,
 ) => {
   return request.post<any, API.Response<any>, API.DeleteMobileRouteListParams>(
-    'customer/delete_mobile_route',
+    'console/api/customer/delete_mobile_route',
     { ...data },
   )
 }
@@ -521,12 +529,12 @@ export const getalArmConfigList = (data: API.GetalArmConfigListParams) => {
     any,
     API.Response<API.GetalArmConfigListItems[]>,
     API.GetalArmConfigListParams
-  >('customer/get_alarm_config', { ...data })
+  >('console/api/customer/get_alarm_config', { ...data })
 }
 // 保存报警设置
 export const saveAlarmConfigList = (data: API.SaveAlarmConfigListParams) => {
   return request.post<any, API.Response<any>, API.SaveAlarmConfigListParams>(
-    'customer/save_alarm_config',
+    'console/api/customer/save_alarm_config',
     { ...data },
   )
 }
@@ -538,14 +546,14 @@ export const updateAlarmConfigStatus = (
     any,
     API.Response<any>,
     API.UpdateAlarmConfigStatusParams
-  >('customer/update_alarm_config_status', { ...data })
+  >('console/api/customer/update_alarm_config_status', { ...data })
 }
 // 删除报警设置
 export const deleteAlarmConfigList = (
   data: API.DeleteAlarmConfigListParams,
 ) => {
   return request.post<any, API.Response<any>, API.DeleteAlarmConfigListParams>(
-    'customer/delete_alarm_config',
+    'console/api/customer/delete_alarm_config',
     { ...data },
   )
 }
@@ -571,7 +579,7 @@ export const getSensitiveWordList = (data: API.GetSensitiveWordListParams) => {
     any,
     API.Response<API.GetSensitiveWordListItems[]>,
     API.GetSensitiveWordListParams
-  >('customer/get_sensitive_keywords', { ...data })
+  >('console/api/customer/get_sensitive_keywords', { ...data })
 }
 
 // 获取开启状态的敏感词列表
@@ -579,7 +587,7 @@ export const getOpenSensitiveWordList = (
   data: API.GetSensitiveWordListParams,
 ) => {
   return request.post<any, API.Response<any>, API.GetSensitiveWordListParams>(
-    'customer/get_all_sensitive_keywords_list',
+    'console/api/customer/get_all_sensitive_keywords_list',
     { ...data },
   )
 }
@@ -587,7 +595,7 @@ export const getOpenSensitiveWordList = (
 // 新增敏感词列表
 export const addSensitiveWordList = (data: API.AddSensitiveWordListParams) => {
   return request.post<any, API.Response<any>, API.AddSensitiveWordListParams>(
-    'customer/save_sensitive_keywords',
+    'console/api/customer/save_sensitive_keywords',
     { ...data },
   )
 }
@@ -600,7 +608,7 @@ export const deleteSensitiveWordList = (
     any,
     API.Response<any>,
     API.DeleteSensitiveWordListParams
-  >('customer/delete_sensitive_keywords', { ...data })
+  >('console/api/customer/delete_sensitive_keywords', { ...data })
 }
 // 敏感词批量启用/停用
 export const sensitiveWordListStopUsing = (
@@ -610,7 +618,7 @@ export const sensitiveWordListStopUsing = (
     any,
     API.Response<any>,
     API.SensitiveWordListStopUsingParams
-  >('customer/update_sensitive_keywords_status', { ...data })
+  >('console/api/customer/update_sensitive_keywords_status', { ...data })
 }
 
 /**
@@ -626,33 +634,33 @@ export const getkeyWord = (data: API.GetkeyWordParams) => {
     any,
     API.Response<API.GetkeyWordItems[]>,
     API.GetkeyWordParams
-  >('customer/get_keywords_route', { ...data })
+  >('console/api/customer/get_keywords_route', { ...data })
 }
 // 获取可用关键词列表
 export const getKeywordEnabledList = () => {
   return request.post<any, API.Response<API.GetKeywordEnabledItems[]>>(
-    'customer/get_all_keywords_route_list',
+    'console/api/customer/get_all_keywords_route_list',
   )
 }
 
 // 新增关键词列表
 export const addkeyWord = (data: API.AddkeyWordParams) => {
   return request.post<any, API.Response<any>, API.AddkeyWordParams>(
-    'customer/save_keywords_route',
+    'console/api/customer/save_keywords_route',
     { ...data },
   )
 }
 // 删除关键词列表
 export const deletekeyWord = (data: API.DeletekeyWordParams) => {
   return request.post<any, API.Response<any>, API.DeletekeyWordParams>(
-    'customer/delete_keywords_route',
+    'console/api/customer/delete_keywords_route',
     { ...data },
   )
 }
 // 关键词批量启用/停用
 export const keyWordStopUsing = (data: API.keyWordStopUsingParams) => {
   return request.post<any, API.Response<any>, API.keyWordStopUsingParams>(
-    'customer/update_keywords_route_status',
+    'console/api/customer/update_keywords_route_status',
     { ...data },
   )
 }
@@ -677,26 +685,26 @@ export const getBlackList = (data: API.GetBlackListParams) => {
     any,
     API.Response<API.GetBlackListItems[]>,
     API.GetBlackListParams
-  >('customer/get_mobile_block_list', { ...data })
+  >('console/api/customer/get_mobile_block_list', { ...data })
 }
 // 新增黑名单
 export const addBlackList = (data: API.AddBlackListParams) => {
   return request.post<any, API.Response<any>, API.AddBlackListParams>(
-    'customer/save_mobile_block_list',
+    'console/api/customer/save_mobile_block_list',
     { ...data },
   )
 }
 // 黑名单启用/停用
 export const BlackListStopUsing = (data: API.blackListStopUsingParams) => {
   return request.post<any, API.Response<any>, API.blackListStopUsingParams>(
-    'customer/update_mobile_block_list_status',
+    'console/api/customer/update_mobile_block_list_status',
     { ...data },
   )
 }
 // 删除黑名单
 export const deleteBlackList = (data: API.DeleteBlackListParams) => {
   return request.post<any, API.Response<any>, API.DeleteBlackListParams>(
-    'customer/delete_mobile_block_list',
+    'console/api/customer/delete_mobile_block_list',
     { ...data },
   )
 }
@@ -707,14 +715,14 @@ interface BlackListResponse
 }
 export const getBlackItemsList = (data: API.GetBlackDetailListParams) => {
   return request.post<any, BlackListResponse, API.GetBlackDetailListParams>(
-    'customer/get_mobile_block_items_bylist',
+    'console/api/customer/get_mobile_block_items_bylist',
     { ...data },
   )
 }
 // 新增黑名单手机号码
 export const addBlackMobileList = (data: API.AddBlackMobileListParams) => {
   return request.post<any, API.Response<any>, API.AddBlackMobileListParams>(
-    'customer/save_mobile_block_items',
+    'console/api/customer/save_mobile_block_items',
     { ...data },
   )
 }
@@ -723,7 +731,7 @@ export const deleteBlackMobileList = (
   data: API.DeleteBlackMobileListParams,
 ) => {
   return request.post<any, API.Response<any>, API.DeleteBlackMobileListParams>(
-    'customer/delete_mobile_block_items',
+    'console/api/customer/delete_mobile_block_items',
     { ...data },
   )
 }
@@ -732,7 +740,7 @@ export const uploadBlackMobileList = (
   data: API.UploadBlackMobileListParams,
 ) => {
   return request.post<any, API.Response<any>, API.UploadBlackMobileListParams>(
-    'customer/save_mobile_block_items',
+    'console/api/customer/save_mobile_block_items',
     { ...data },
     {
       headers: {
@@ -752,7 +760,7 @@ export const uploadBlackMobileList = (
 // 用户登录，用户名密码相关信息验证-获取验证码
 export const getLoginCode = (data: API.GetLoginCodeParams) => {
   return request.post<any, API.Response<API.userInfo>, API.GetLoginCodeParams>(
-    'account/login',
+    'console/api/account/login',
     { ...data },
   )
 }
@@ -760,14 +768,17 @@ export const getLoginCode = (data: API.GetLoginCodeParams) => {
 // 验证码验证
 export const login = (data: API.LoginParams) => {
   return request.post<any, API.Response<any>, API.LoginParams>(
-    'account/do_login',
+    'console/api/account/do_login',
     { ...data },
   )
 }
 
 // 退出登录
 export const logout = () => {
-  return request.post<any, API.Response<any>, any>('account/logout', {})
+  return request.post<any, API.Response<any>, any>(
+    'console/api/account/logout',
+    {},
+  )
 }
 
 /**
