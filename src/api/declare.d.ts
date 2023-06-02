@@ -610,6 +610,11 @@ declare module 'apis' {
       type: string
       channel: string
       datetime: string
+      channel_name: string
+      sender: string
+      account: string
+      region_code: string
+      country_cn: string
     }
     // 保存号码通道路由
     interface SaveMobileRouteParams {

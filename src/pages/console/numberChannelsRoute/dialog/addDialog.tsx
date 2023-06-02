@@ -49,6 +49,18 @@ const Dialog = (props: Props, ref: any) => {
     if (isAdd) {
       countryName()
       associatedAccount()
+    } else {
+      if (record) {
+        console.log(record)
+        let arr: API.GetRegioncodeByCountryItems[] = [
+          {
+            label: record.country_cn,
+            value: record.region_code,
+          },
+        ]
+        setCountryNameData(arr)
+        setrecord(record)
+      }
     }
   }
   // 国家名称
@@ -187,7 +199,7 @@ const Dialog = (props: Props, ref: any) => {
           <Col span={12}>
             <Form.Item
               label='关联账号'
-              name={isAdd ? '' : 'sender'}
+              name='account'
               validateTrigger='onSubmit'>
               <Select
                 showSearch

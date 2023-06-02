@@ -31,6 +31,8 @@ interface FormValues {
   type: string
   keyword: string
   channel: string
+  channel_name: string
+  account: string
 }
 
 // 号码通道路由
@@ -70,22 +72,26 @@ export default function NumberChannelsRoute() {
 
   // 初始化form的值
   const initFormValues: FormValues = {
+    account: '',
     mobile: '',
     type: 'all',
     keyword: '',
     channel: '',
+    channel_name: '',
   }
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { mobile, type, keyword, channel } = params
+    const { mobile, type, keyword, channel, channel_name, account } = params
     const searchParams = {
       mobile,
       type,
       keyword,
       channel,
+      channel_name,
+      account,
     }
     searchEvent(searchParams)
   }
@@ -124,7 +130,7 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '短信类型',
-      width: 280,
+      width: 150,
       dataIndex: 'type',
       render: (_, record: DataType) => (
         <div>
@@ -133,9 +139,27 @@ export default function NumberChannelsRoute() {
       ),
     },
     {
+      title: '关联账号',
+      dataIndex: 'account',
+      width: 280,
+    },
+    {
+      title: '关联国家/地区',
+      dataIndex: 'country_cn',
+      width: 280,
+    },
+    {
       title: '通道',
-      dataIndex: 'channel',
-      // width: '20%',
+      dataIndex: 'channel_name',
+      render: (_, record: DataType) => (
+        <div>
+          {record.channel_name == null ? (
+            <span>该通道已删除</span>
+          ) : (
+            <span>{record.channel_name}</span>
+          )}
+        </div>
+      ),
     },
     {
       title: '发送名',
