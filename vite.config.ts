@@ -53,16 +53,20 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
       },
     },
     esbuild: {
+      // 线上环境清空console和debugger
       pure: viteEnv.VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : [],
+      // 是否开启摇树
+      treeShaking: true,
     },
     build: {
       // outDir: 'dist',
       // assetsDir: 'asset',
       sourcemap: false,
       target: 'modules',
-      cssCodeSplit: true, // 是否拆分css，false-所有css打包到一个文件，true-单独打包，默认为true
+      cssCodeSplit: false, // 是否拆分css，false-所有css打包到一个文件，true-单独打包
       cssTarget: 'chrome61',
-      chunkSizeWarningLimit: 1500,
+      chunkSizeWarningLimit: 1500, // kbs
+      assetsInlineLimit: 1024 * 4, // kb 小于此阈值的导入或引用资源将内联为 base64 编码
       minify: 'esbuild', // 使用esbuild打包
       rollupOptions: {
         output: {
