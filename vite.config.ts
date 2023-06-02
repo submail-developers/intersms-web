@@ -66,7 +66,7 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
       cssCodeSplit: false, // 是否拆分css，false-所有css打包到一个文件，true-单独打包
       cssTarget: 'chrome61',
       chunkSizeWarningLimit: 1500, // kbs
-      assetsInlineLimit: 1024 * 4, // kb 小于此阈值的导入或引用资源将内联为 base64 编码
+      assetsInlineLimit: 1024 * 4, // 4kb 小于此阈值的导入或引用资源将内联为 base64 编码
       minify: 'esbuild', // 使用esbuild打包
       rollupOptions: {
         output: {
