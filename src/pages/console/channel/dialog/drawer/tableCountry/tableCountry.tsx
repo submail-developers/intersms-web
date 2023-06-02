@@ -24,7 +24,6 @@ interface EnbledProps {
   network_id: string
   channelId: string
   search: () => void
-  initBgContry: () => void
 }
 
 interface Props {
@@ -55,7 +54,6 @@ const Enbled = memo((enbledProps: EnbledProps) => {
       })
       await enbledProps.search()
       setLoading(false)
-      enbledProps.initBgContry()
     } catch (error) {
       setLoading(false)
     }
@@ -82,10 +80,6 @@ function MyTable(props: Props, ref: any) {
   const [editNetId, seteditNetId] = useState<string>('') // 当前编辑的运营商ID
   const [form] = Form.useForm()
 
-  useEffect(() => {
-    initBgContry()
-  }, [props.tabData])
-
   const changeLock = async (record: DataType) => {
     message.loading({
       content: '',
@@ -103,7 +97,6 @@ function MyTable(props: Props, ref: any) {
     } catch (error) {}
     await props.search()
     cancel()
-    initBgContry()
   }
 
   const showEdit = (record: DataType, index: number = -1) => {
@@ -115,7 +108,6 @@ function MyTable(props: Props, ref: any) {
       price_tra: index == -1 ? '' : record.network_list[index].price_tra,
       price_mke: index == -1 ? '' : record.network_list[index].price_mke,
     })
-    initBgContry()
   }
   // 编辑保存
   const save = async (record: DataType, index: number = -1) => {
@@ -151,23 +143,19 @@ function MyTable(props: Props, ref: any) {
     await props.search()
     seteditCountryId('')
     seteditNetId('')
-    initBgContry()
   }
   const cancel = () => {
     seteditCountryId('')
     seteditNetId('')
-    initBgContry()
   }
 
-  const initBgContry = useCallback(() => {
-    bgContry = {
-      enabled: 0, // 是否启用   1是  0否
-      network: 0, // 运营商网络
-      price_mke: 0, // 营销价格
-      price_tra: 0, // 行业价格
-      action: 0,
-    }
-  }, [])
+  bgContry = {
+    enabled: 0, // 是否启用   1是  0否
+    network: 0, // 运营商网络
+    price_mke: 0, // 营销价格
+    price_tra: 0, // 行业价格
+    action: 0,
+  }
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -374,7 +362,6 @@ function MyTable(props: Props, ref: any) {
                       }
                       channelId={props.channelId}
                       search={props.search}
-                      initBgContry={initBgContry}
                     />
                   </div>
                 )

@@ -28,7 +28,6 @@ interface EnbledProps {
   network_id: string
   channelId: string
   search: () => void
-  initBgContry: () => void
 }
 
 interface Props {
@@ -60,7 +59,6 @@ const Enbled = memo((enbledProps: EnbledProps) => {
     })
     await enbledProps.search()
     setLoading(false)
-    enbledProps.initBgContry()
   }
   return (
     <Switch
@@ -85,10 +83,6 @@ function MyTable(props: Props, ref: any) {
   const [editCountryId, seteditCountryId] = useState<React.Key>('') // 编辑国家权重的ID
   const [form] = Form.useForm()
 
-  useEffect(() => {
-    initBgContry()
-  }, [props.tabData])
-
   // 修改国家状态
   const changeLock = async (record: DataType) => {
     message.loading({
@@ -108,7 +102,6 @@ function MyTable(props: Props, ref: any) {
     } catch (error) {}
     await props.search()
     cancel()
-    initBgContry()
   }
   // 编辑
   const showEdit = (record: DataType, index: number = -1) => {
@@ -118,7 +111,6 @@ function MyTable(props: Props, ref: any) {
       country_weight: record.weight,
       network_weight: index == -1 ? '' : record.network_list[index].weight,
     })
-    initBgContry()
   }
   // 编辑保存
   const save = async (record: DataType, index: number = -1) => {
@@ -159,25 +151,20 @@ function MyTable(props: Props, ref: any) {
     await props.search()
     seteditNetworkId('')
     seteditCountryId('')
-    initBgContry()
   }
   // 取消编辑
   const cancel = () => {
     seteditNetworkId('')
     seteditCountryId('')
-    initBgContry()
   }
 
   // 初始化背景色状态
-  const initBgContry = useCallback(() => {
-    bgContry = {
-      name: 0,
-      weight: 0,
-      status: 0,
-      action: 0,
-    }
-  }, [])
-
+  bgContry = {
+    name: 0,
+    weight: 0,
+    status: 0,
+    action: 0,
+  }
   const columns: TableColumnsType<DataType> = [
     {
       title: <div></div>,
@@ -325,7 +312,6 @@ function MyTable(props: Props, ref: any) {
                       }
                       channelId={props.channelId}
                       search={props.search}
-                      initBgContry={initBgContry}
                     />
                   </div>
                 )
