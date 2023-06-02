@@ -30,26 +30,24 @@ request.interceptors.response.use(
       return res.data
     } else {
       message.destroy()
+      if (res.data.message == '登录超时') {
+        window.location.hash = '/login'
+      }
       message.error({
         content: res.data.message,
-        onClose: () => {
-          if (res.data.message == '登录超时') {
-            window.location.hash = '/login'
-          }
-        },
+        onClose: () => {},
       })
       return Promise.reject(res.data)
     }
   },
   (error) => {
     message.destroy()
+    if (error.message == '登录超时') {
+      window.location.hash = '/login'
+    }
     message.error({
       content: error.message,
-      onClose: () => {
-        if (error.message == '登录超时') {
-          window.location.hash = '/login'
-        }
-      },
+      onClose: () => {},
     })
     return Promise.reject(error)
   },

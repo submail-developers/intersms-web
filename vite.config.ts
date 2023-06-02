@@ -2,6 +2,7 @@ import { defineConfig, loadEnv, ConfigEnv, UserConfig } from 'vite'
 import { wrapperEnv } from './src/viteConf/utils'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import viteCompression from 'vite-plugin-compression'
+import { visualizer } from 'rollup-plugin-visualizer'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
@@ -28,15 +29,23 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
           },
         },
       }),
-      // * gzip compress
-      viteEnv.VITE_BUILD_GZIP &&
-        viteCompression({
-          verbose: true,
-          disable: false,
-          threshold: 10240,
-          algorithm: 'gzip',
-          ext: '.gz',
+      // * 是否生成包预览
+      viteEnv.VITE_REPORT &&
+        visualizer({
+          emitFile: false, // 生成的分析文件位置，true-打包文件下，false-项目根目录下
+          filename: 'stats.html', // 分析文件的文件名
+          open: true, // 打包后自动打开分析文件
+          title: '依赖分析表',
         }),
+      // * gzip compress
+      viteCompression({
+        verbose: true, // 是否在控制台输出压缩结果
+        disable: !viteEnv.VITE_BUILD_GZIP, // 是否禁用,相当于开关在这里
+        threshold: 10240, // 体积大于 该值时 才会被压缩，1024 约为 1kb
+        algorithm: 'gzip', // 压缩算法,可选 [ 'gzip' , 'brotliCompress' ,'deflate' , 'deflateRaw']
+        ext: '.gz', // 文件后缀
+        deleteOriginFile: true, // 是否删除源文件，只保留.gz
+      }),
     ],
     resolve: {
       alias: {
@@ -54,15 +63,7 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
       cssCodeSplit: true, // 是否拆分css，false-所有css打包到一个文件，true-单独打包，默认为true
       cssTarget: 'chrome61',
       chunkSizeWarningLimit: 1500,
-      // esbuild 打包更快，但是不能去除 console.log，去除 console 使用 terser 模式
-      minify: 'esbuild',
-      // minify: 'terser',
-      // terserOptions: {
-      //   compress: {
-      //     drop_console: true,
-      //     drop_debugger: true,
-      //   },
-      // },
+      minify: 'esbuild', // 使用esbuild打包
       rollupOptions: {
         output: {
           // 最小化拆分包
@@ -96,8 +97,8 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
     },
     server: {
       host: '0.0.0.0', // 服务器主机名，如果允许外部访问，可设置为"0.0.0.0"
-      port: viteEnv.VITE_PORT,
-      open: viteEnv.VITE_OPEN,
+      port: viteEnv.VITE_PORT, // 默认端口号
+      open: viteEnv.VITE_OPEN, // 项目启动后，是否自动打开浏览器
       proxy: {
         '/mytest/': {
           // 测试接口
