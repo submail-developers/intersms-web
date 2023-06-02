@@ -617,6 +617,9 @@ declare module 'apis' {
       name: string
       type: string
       channel: string
+      sender: string
+      region_code: string
+      country_cn: string
     }
     //删除号码通道路由
     interface DeleteMobileRouteListParams {
