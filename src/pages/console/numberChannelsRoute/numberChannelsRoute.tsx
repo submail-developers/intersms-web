@@ -256,7 +256,7 @@ export default function NumberChannelsRoute() {
               <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
                 <Input
                   size={size}
-                  placeholder='手机号码/发送名'
+                  placeholder='手机号码/发送名/账号/国家地区'
                   maxLength={20}
                   style={{ width: 220 }}></Input>
               </Form.Item>

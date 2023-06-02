@@ -667,6 +667,8 @@ declare module 'apis' {
       row: string
       fail: string
       status: string
+      channel_id: string
+      sender_id: string
     }
     //报警设置量启用/停用  0关闭 1启用
     interface UpdateAlarmConfigStatusParams {

@@ -3,6 +3,7 @@ import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
 import {
   saveAlarmConfigList,
   getAllChannelId,
+  getAccountList,
   GetRegioncodeByCountry,
 } from '@/api'
 import { API } from 'apis'
@@ -41,6 +42,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     setIsModalOpen(true)
     if (isAdd) {
       countryName()
+      associatedAccount()
     } else {
       if (record) {
         let arr: API.GetRegioncodeByCountryItems[] = [
@@ -63,6 +65,11 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     area = option.area
     region_code = option.value
   }
+
+  let sender: string
+  const seleAccount = (value: string, option: any) => {
+    sender = option.sender
+  }
   const handleOk = async () => {
     // try {
     //   const params = await form.validateFields()
@@ -81,6 +88,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       let newParams
       if (isAdd) {
         newParams = { country_cn, area, region_code, ...params }
+        console.log(newParams, 'add')
       } else {
         if (record) newParams = { ...record, ...params }
       }
@@ -119,6 +127,17 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       arr = [...arr, ...item.children]
     })
     setCountryNameData(arr)
+  }
+
+  // 关联账号列表
+  const [associatedAccountData, setAssociatedAccountData] = useState<
+    API.AccountListItem[]
+  >([])
+  const associatedAccount = async () => {
+    const res = await getAccountList({
+      keyword: '',
+    })
+    setAssociatedAccountData(res.data)
   }
 
   const handleCancel = () => {
@@ -182,7 +201,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
               return (
                 <>
                   <Col span={12}>
-                    <Form.Item
+                    {/* <Form.Item
                       hidden={type != '1'}
                       name={isAdd ? 'sender_id' : 'sender_mail'}
                       label='账号报警'>
@@ -190,6 +209,27 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
                         disabled={!isAdd}
                         placeholder='请输入账号'
                         maxLength={30}
+                      />
+                    </Form.Item> */}
+                    <Form.Item
+                      hidden={type != '1'}
+                      label='关联账号'
+                      name='account'
+                      validateTrigger='onSubmit'>
+                      <Select
+                        showSearch
+                        disabled={!isAdd}
+                        placeholder='请选择'
+                        optionFilterProp='children'
+                        onChange={seleAccount}
+                        onSearch={onSearch}
+                        fieldNames={{ label: 'sender', value: 'account' }}
+                        filterOption={(input, option) =>
+                          (option?.sender ?? '')
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={associatedAccountData}
                       />
                     </Form.Item>
                     <Form.Item
