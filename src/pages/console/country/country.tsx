@@ -122,7 +122,7 @@ export default function Channel() {
     },
     {
       title: '行业通道组',
-      dataIndex: 'tra_group',
+      dataIndex: 'tra_group_name',
       className: 'trade-0',
       width: 160,
     },
@@ -134,7 +134,7 @@ export default function Channel() {
     },
     {
       title: '营销通道组',
-      dataIndex: 'mke_group',
+      dataIndex: 'mke_group_name',
       className: 'sale-0',
       width: 160,
     },
