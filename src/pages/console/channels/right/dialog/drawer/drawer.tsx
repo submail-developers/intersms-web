@@ -50,23 +50,25 @@ const Dialog = (props: Props, ref: any) => {
   const [show, setShow] = useState(false)
 
   const open = async (record: DataType) => {
-    setchannelId(record.channel_id)
     tableref && tableref.current?.cancel()
+    setchannelId(record.channel_id)
     setShow(true)
   }
 
   useEffect(() => {
     if (show && channelId) {
+      form.resetFields()
       search()
     }
   }, [show, channelId])
 
   const search = async () => {
     try {
+      const formVal = await form.getFieldsValue()
       const res = await getGroupRelatedData({
         group_id: channlesStore.activeChannels?.id || '',
         channel_id: channelId,
-        keyword: '',
+        ...formVal,
       })
       setTableData(res.data)
       setIndeterminate(res.list_status == '2')
@@ -141,7 +143,7 @@ const Dialog = (props: Props, ref: any) => {
                 layout='inline'
                 wrapperCol={{ span: 24 }}
                 autoComplete='off'>
-                <Form.Item label='' name='name'>
+                <Form.Item label='' name='keyword'>
                   <Input
                     size={size}
                     placeholder='国家名称/代码'
