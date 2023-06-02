@@ -68,12 +68,7 @@ const Dialog = (props: Props, ref: any) => {
     const res = await getAccountList({
       keyword: '',
     })
-    let arr: any = []
-    res.data.map((item: any) => {
-      console.log(item)
-      arr = [...arr, ...item]
-    })
-    setAssociatedAccountData(arr)
+    setAssociatedAccountData(res.data)
   }
 
   let region_code: string
@@ -82,12 +77,17 @@ const Dialog = (props: Props, ref: any) => {
     country_cn = option.label
     region_code = option.value
   }
+  let sender: string
+  const seleAccount = (value: string, option: any) => {
+    sender = option.account
+  }
+
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
       let newParams
       if (isAdd) {
-        newParams = { country_cn, region_code, ...params }
+        newParams = { sender, country_cn, region_code, ...params }
       } else {
         if (record) newParams = { ...record, ...params }
       }
@@ -170,7 +170,6 @@ const Dialog = (props: Props, ref: any) => {
           </Col>
           <Col span={12}>
             <Form.Item label='短信类型' name='type'>
-              {/* <Input disabled /> */}
               <Select
                 disabled={!isAdd}
                 showSearch
@@ -186,9 +185,6 @@ const Dialog = (props: Props, ref: any) => {
 
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            {/* <Form.Item label='关联账号' name='sender'>
-              <Input disabled={!isAdd} placeholder='请输入关联账号' />
-            </Form.Item> */}
             <Form.Item
               label='关联账号'
               name={isAdd ? '' : 'sender'}
@@ -198,11 +194,11 @@ const Dialog = (props: Props, ref: any) => {
                 disabled={!isAdd}
                 placeholder='请选择'
                 optionFilterProp='children'
-                onChange={seleCountry}
+                onChange={seleAccount}
                 onSearch={onSearch}
-                fieldNames={{ label: 'label', value: 'value' }}
+                fieldNames={{ label: 'sender', value: 'account' }}
                 filterOption={(input, option) =>
-                  (option?.label ?? '')
+                  (option?.sender ?? '')
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
