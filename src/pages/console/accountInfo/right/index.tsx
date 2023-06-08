@@ -152,7 +152,6 @@ export default function Right(props: Props) {
   // 自定义tabs导航
   const renderTabBar: TabsProps['renderTabBar'] = (tabprops, DefaultTabBar) => {
     const [loading, setloading] = useState(false)
-    const [disabled, setdisabled] = useState(false)
     const changeALl = async () => {
       setloading(true)
       await changeMkState({
@@ -202,7 +201,6 @@ export default function Right(props: Props) {
           )}
           <div className='switch-test'>
             <Checkbox
-              disabled={disabled}
               onChange={changeTest}
               checked={
                 accountInfoStore.activeAccount?.test_flg == '1' ? true : false

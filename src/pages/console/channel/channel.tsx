@@ -89,6 +89,7 @@ export default function Channel() {
     },
     {
       title: '号码前缀',
+      width: '10%',
       render: (_, record: DataType) => {
         return <>{getOptionsLabel(mobileTypeOptions, record.mobile_type)}</>
       },
