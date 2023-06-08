@@ -76,7 +76,7 @@ export default function Left() {
       width: 100,
       render: (_, record) => (
         <div className='color-gray'>
-          {record.sens_word_list.length > 0
+          {record.sens_word_list && record.sens_word_list.length > 0
             ? record.sens_word_list[0].name
             : ''}
         </div>

@@ -3,7 +3,8 @@ import { wrapperEnv } from './src/viteConf/utils'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import viteCompression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
-import react from '@vitejs/plugin-react'
+// import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 
 // https://vitejs.dev/config/
@@ -62,7 +63,7 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
       // outDir: 'dist',
       // assetsDir: 'asset',
       sourcemap: false,
-      target: 'modules',
+      target: 'modules', //modules 会被转换为 ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14']
       cssCodeSplit: false, // 是否拆分css，false-所有css打包到一个文件，true-单独打包
       cssTarget: 'chrome61',
       chunkSizeWarningLimit: 1500, // kbs

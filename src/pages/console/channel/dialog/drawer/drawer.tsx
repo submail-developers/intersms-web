@@ -45,7 +45,6 @@ const Dialog = (props: Props, ref: any) => {
   const [show, setShow] = useState(false)
 
   const open = async (id: string) => {
-    tableref && tableref.current?.cancel()
     setShow(true)
     setchannelId(id)
   }
@@ -59,12 +58,16 @@ const Dialog = (props: Props, ref: any) => {
 
   const search = async () => {
     try {
+      tableref && tableref.current?.cancel()
       const formVal = await form.getFieldsValue()
       const res = await getChannelCountryList({
         channel: channelId,
         ...formVal,
       })
-      setTableData(res.data)
+      let timer = setTimeout(() => {
+        setTableData(res.data)
+        clearTimeout(timer)
+      }, 20)
       setIndeterminate(res.list_status == '2')
       setCheckAll(res.list_status == '1')
     } catch (error) {}
@@ -78,6 +81,7 @@ const Dialog = (props: Props, ref: any) => {
   const [checkAll, setCheckAll] = useState(false)
 
   const onCheckAllChange = async () => {
+    tableref && tableref.current?.cancel()
     message.loading({
       content: '',
       duration: 0,
@@ -133,7 +137,6 @@ const Dialog = (props: Props, ref: any) => {
       onClose={close}
       closable={false}
       open={show}
-      forceRender
       bodyStyle={{ backgroundColor: 'transparent' }}
       rootClassName='drawer channel-drawer'
       width={'70vw'}>

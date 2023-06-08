@@ -30,7 +30,7 @@ const Dialog = (props: Props, ref: any) => {
     setchannelsItem(record)
     form.resetFields()
     let initVlaues
-    if (record.sens_word_list.length > 0) {
+    if (record.sens_word_list && record.sens_word_list.length > 0) {
       initVlaues = { ...record.sens_word_list[0], bind: '1' }
     } else {
       initVlaues = initialValues

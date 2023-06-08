@@ -50,7 +50,6 @@ const Dialog = (props: Props, ref: any) => {
   const [show, setShow] = useState(false)
 
   const open = async (record: DataType) => {
-    tableref && tableref.current?.cancel()
     setchannelId(record.channel_id)
     setShow(true)
   }
@@ -64,13 +63,17 @@ const Dialog = (props: Props, ref: any) => {
 
   const search = async () => {
     try {
+      tableref && tableref.current?.cancel()
       const formVal = await form.getFieldsValue()
       const res = await getGroupRelatedData({
         group_id: channlesStore.activeChannels?.id || '',
         channel_id: channelId,
         ...formVal,
       })
-      setTableData(res.data)
+      let timer = setTimeout(() => {
+        setTableData(res.data)
+        clearTimeout(timer)
+      }, 0)
       setIndeterminate(res.list_status == '2')
       setCheckAll(res.list_status == '1')
     } catch (error) {}
@@ -84,6 +87,7 @@ const Dialog = (props: Props, ref: any) => {
 
   // 一键开启/关闭
   const onCheckAllChange = async () => {
+    tableref && tableref.current?.cancel()
     message.loading({
       content: '',
       duration: 0,
