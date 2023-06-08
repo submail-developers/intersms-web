@@ -7,6 +7,13 @@
   .bind-wrap {
     width: fit-content;
     position: relative;
+    .text {
+      display: inline-block;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .icon-wrap {
       display: none;
       position: absolute;

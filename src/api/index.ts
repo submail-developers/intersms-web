@@ -433,6 +433,22 @@ export const oneTouchChannelCountryNetworkStatus = (
     ...data,
   })
 }
+
+// 通道绑定/取消绑定敏感词
+export const channelBindSensitiveWord = (
+  data: API.updateChannelBindSensitiveWordParams,
+  bind: '0' | '1', // 1绑定0取消绑定
+) => {
+  const url =
+    bind == '1'
+      ? 'console/api/customer/save_channel_related_sensitive_keywords'
+      : 'console/api/customer/delete_channel_related_sensitive_keywords'
+  return request.post<
+    any,
+    API.Response<any>,
+    API.updateChannelBindSensitiveWordParams
+  >(url, { ...data })
+}
 /**
  * 通道管理end
  */

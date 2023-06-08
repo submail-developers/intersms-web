@@ -43,11 +43,11 @@ const Dialog = (props: Props, ref: any) => {
   })
 
   const open = (initFomeValue: any) => {
+    setIsModalOpen(true)
     const { isAdd } = initFomeValue
     setisAdd(!!isAdd)
     form.resetFields()
     form.setFieldsValue(!!isAdd ? initialValues : initFomeValue.record)
-    setIsModalOpen(true)
   }
 
   const handleOk = async () => {
@@ -79,8 +79,6 @@ const Dialog = (props: Props, ref: any) => {
     <Modal
       title={isAdd ? '新增通道' : '编辑通道'}
       width={640}
-      maskClosable
-      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>

@@ -3,6 +3,7 @@ import { Button, ConfigProvider, Table, Row, Col, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddChannel from './dialog/addChannel'
 import MyDrawer from './dialog/drawer/drawer'
+import BindSensitiveWordDialog from './dialog/bindSensitiveWordDialog/bindSensitiveWordDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import { getChannelList, deleteChannel } from '@/api'
 import { API } from 'apis'
@@ -19,6 +20,7 @@ interface DataType extends API.ChannelItem {}
 // 发送列表
 export default function Channel() {
   const { message } = App.useApp()
+  const bindSensitiveWordDialogRef: MutableRefObject<any> = useRef(null)
   const addChannelDialogRef: MutableRefObject<any> = useRef(null)
   const drawerRef: MutableRefObject<any> = useRef(null)
   const [list, setlist] = useState<DataType[]>([])
@@ -106,6 +108,22 @@ export default function Channel() {
       ),
     },
     {
+      title: '敏感词绑定',
+      width: 180,
+      render: (_, record) => (
+        <div className='bind-wrap color-gray'>
+          <span className='text g-ellipsis' title={record.keywords || ''}>
+            {record.keywords || '未绑定'}
+          </span>
+          <div
+            className='icon-wrap fx-center-center'
+            onClick={() => showBindDialog(record)}>
+            <span className='icon iconfont icon-bangding fn14'></span>
+          </div>
+        </div>
+      ),
+    },
+    {
       title: '连接状态',
       render: (_, record) => <div className='color-success'>无字段</div>,
     },
@@ -152,6 +170,9 @@ export default function Channel() {
   }
   const showDetail = (record: DataType) => {
     drawerRef.current.open(record.id)
+  }
+  const showBindDialog = (record: DataType) => {
+    bindSensitiveWordDialogRef.current.open(record)
   }
 
   useEffect(() => {
@@ -272,6 +293,10 @@ export default function Channel() {
         />
       </ConfigProvider>
       <AddChannel ref={addChannelDialogRef} initData={initData} />
+      <BindSensitiveWordDialog
+        ref={bindSensitiveWordDialogRef}
+        onSearch={initData}
+      />
       <MyDrawer ref={drawerRef} />
     </div>
   )

@@ -15,10 +15,6 @@ import './index.scss'
 
 interface DataType extends API.GroupChannelItem {}
 
-type Props = {
-  activeChannels: API.GetChannelGroupListItem | null
-}
-
 export default function Right() {
   // 列表
   const [tableData, settableData] = useState<DataType[]>([])
@@ -225,7 +221,11 @@ export default function Right() {
           </ConfigProvider>
         </div>
       </div>
-      <AddChannelDialog ref={addChannelDialogRef} onSearch={getList} />
+      <AddChannelDialog
+        disableList={tableData}
+        ref={addChannelDialogRef}
+        onSearch={getList}
+      />
       <AccessCountryDrawer ref={drawerRef} onUpdate={() => updateList()} />
       <BindKeyword ref={bindKeywordRef} onSearch={getList} />
     </section>

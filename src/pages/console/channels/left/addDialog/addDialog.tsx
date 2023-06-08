@@ -60,7 +60,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   }
   return (
     <Modal
-      title='新增通道组'
+      title={isAdd ? '新增通道组' : '编辑通道组'}
       width={640}
       closable={false}
       wrapClassName='modal-reset'
