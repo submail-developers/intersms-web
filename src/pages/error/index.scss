@@ -1,0 +1,14 @@
+[data-class='error-page'] {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  color: gray;
+  padding-top: 15vh;
+  .icon {
+    font-size: 40px;
+  }
+  .text {
+    margin-top: 32px;
+  }
+}
