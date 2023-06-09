@@ -1,22 +1,11 @@
-import { useAppDispatch, useAppSelector } from '@/store/hook'
+import { useAppDispatch } from '@/store/hook'
 import { changeActiveBlack } from '@/store/reducers/black'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import {
-  Button,
-  Input,
-  Affix,
-  ConfigProvider,
-  Table,
-  Switch,
-  Checkbox,
-  Popconfirm,
-  App,
-} from 'antd'
+import { ConfigProvider, Table, Switch, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import AddDialog from './addDialog/addDialog'
 
-import { useSize } from '@/hooks'
+import { usePoint } from '@/hooks'
 import { getBlackList, BlackListStopUsing, deleteBlackList } from '@/api'
 import { API } from 'apis'
 import './index.scss'
@@ -33,12 +22,10 @@ export default function Left() {
   const dialogRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
-  // const accountInfoStore = useAppSelector(accountInfoState)
-  const size = useSize()
+  const point = usePoint('xl')
   // 列表
   const [tableData, settableData] = useState<API.GetBlackListItems[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
-  // const [activeIndex, setactiveIndex] = useState<number>()
   const [activeIndex, setactiveIndex] = useState<DataType | null>(null)
   const onRow = (record: DataType, index?: number) => {
     return {
@@ -132,7 +119,7 @@ export default function Left() {
   }
 
   return (
-    <section data-class='account-left' className={`${size}`}>
+    <section data-class='account-left' className={`${point ? '' : 'xl'}`}>
       <div className='btn-group'>
         <div className='btn' onClick={() => openAddDialog()}>
           <i className='icon iconfont icon-xinzeng'></i>

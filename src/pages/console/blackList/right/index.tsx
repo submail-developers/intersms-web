@@ -21,7 +21,6 @@ import { API } from 'apis'
 import './index.scss'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
-import type { PaginationProps } from 'antd'
 
 interface DataType extends API.GetBlackDetailListItems {}
 interface FormValues {
@@ -29,9 +28,6 @@ interface FormValues {
   keyword: string
   limit: number
   page: number
-}
-type Props = {
-  activeBlack: API.GetBlackDetailListItems | null
 }
 
 export default function Right() {
@@ -142,8 +138,6 @@ export default function Right() {
   }
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
     setCheckAll(e.target.checked)
-    // setIndeterminate(false)
-
     if (e.target.checked) {
       let ids: string[] = []
       tableData.forEach((item) => ids.push(item.id))
@@ -151,8 +145,6 @@ export default function Right() {
     } else {
       setselectedList([])
     }
-    // console.log(e)
-    // settableData(e.target.checked ? tableData : [])
     setIndeterminate(false)
   }
   // 批量删除事件
@@ -287,11 +279,6 @@ export default function Right() {
                   cancelText='取消'>
                   <i className='icon iconfont icon-shanchu fn12'></i>
                 </Popconfirm>
-                {/* <div
-                  className='delete-btn'
-                  onClick={() => singleDeleteEvent(item.id)}>
-                  <i className='icon iconfont icon-shanchu fn12'></i>
-                </div> */}
               </div>
             </Col>
           ))}
