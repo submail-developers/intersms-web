@@ -6,7 +6,7 @@ import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
 import BindSensitiveWordDialog from './bindSensitiveWordDialog/bindSensitiveWordDialog'
 
-import { useSize } from '@/hooks'
+import { useSize, usePoint } from '@/hooks'
 import {
   getChannelGroupList,
   deleteChannelGroup,
@@ -27,7 +27,7 @@ export default function Left() {
   const bindSensitiveWordDialogRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
-  const size = useSize()
+  const point = usePoint('xl')
   const [keyword, setkeyword] = useState<string>('')
   // 列表
   const [tableData, settableData] = useState<DataType[]>([])
@@ -70,6 +70,8 @@ export default function Left() {
       title: '通道组名称',
       dataIndex: 'name',
       className: 'paddingL30',
+      width: 180,
+      ellipsis: true,
     },
     {
       title: '敏感词绑定',
@@ -149,7 +151,7 @@ export default function Left() {
   }
 
   return (
-    <section data-class='channels-left' className={`${size}`}>
+    <section data-class='channels-left' className={`${point ? '' : 'xl'}`}>
       <div className='btn-group'>
         <div className='btn' onClick={openAddDialog}>
           <i className='icon iconfont icon-xinzeng'></i>

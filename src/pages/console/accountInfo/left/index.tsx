@@ -15,7 +15,7 @@ import { Input, ConfigProvider, Table, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
 
-import { useSize, usePoint } from '@/hooks'
+import { usePoint } from '@/hooks'
 import { getAccountList, deleteAccount } from '@/api'
 import { API } from 'apis'
 import './index.scss'
@@ -35,7 +35,6 @@ function Left(props: any, ref: any) {
   const dialogRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
-  const size = useSize()
   const point = usePoint('xl')
   const [keyword, setkeyword] = useState<string>('') // 搜索关键字
   const [tableData, settableData] = useState<API.AccountListItem[]>([]) // table列表

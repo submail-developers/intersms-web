@@ -108,6 +108,7 @@ export default function Right() {
   const columns: ColumnsType<DataType> = [
     {
       title: <div style={{ marginLeft: '20px' }}>通道名</div>,
+      width: 160,
       render: (_, record) => (
         <div style={{ marginLeft: '20px' }}>{record.channel_name}</div>
       ),
@@ -115,12 +116,14 @@ export default function Right() {
     {
       title: '通道类型',
       dataIndex: 'channel_type',
+      width: 160,
       render: (_, record) => (
         <div>{getOptionsLabel(channelTypeOptions, record.channel_type)}</div>
       ),
     },
     {
       title: '连接状态',
+      width: 160,
       render: (_, record) => <div style={{ color: '#e81f1f' }}>没有字段</div>,
     },
     {
@@ -146,6 +149,7 @@ export default function Right() {
     {
       title: '关联国家/地区',
       dataIndex: 'actions',
+      width: 160,
       render: (_, record) => (
         <Button
           type='link'
@@ -158,6 +162,7 @@ export default function Right() {
     {
       title: '操作',
       dataIndex: 'actions',
+      width: 120,
       render: (_, record) => (
         <Popconfirm
           placement='bottom'

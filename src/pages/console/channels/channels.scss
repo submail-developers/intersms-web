@@ -1,3 +1,6 @@
 [data-class='channels'] {
-  color: black;
+  height: 100%;
+  .info-wrap {
+    position: relative;
+  }
 }

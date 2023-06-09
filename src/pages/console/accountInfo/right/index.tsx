@@ -1,7 +1,7 @@
 import { useState, useRef, MutableRefObject } from 'react'
 import { useAppSelector } from '@/store/hook'
 import { accountInfoState } from '@/store/reducers/accountInfo'
-import { Tabs, App, Switch, Popconfirm, Checkbox } from 'antd'
+import { Tabs, Switch, Popconfirm, Checkbox } from 'antd'
 import type { TabsProps } from 'antd'
 import { useSize } from '@/hooks'
 
@@ -21,7 +21,6 @@ interface Props {
 }
 
 export default function Right(props: Props) {
-  const { message } = App.useApp()
   const accountInfoStore = useAppSelector(accountInfoState)
   const size = useSize()
   const [activeKey, setactiveKey] = useState<string>('1')
