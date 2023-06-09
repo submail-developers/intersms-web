@@ -37,7 +37,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     const { isAdd, record } = initValues
     setisAdd(isAdd)
     form.resetFields()
-
     form.setFieldsValue(initValues.record)
     setIsModalOpen(true)
     if (isAdd) {
@@ -68,7 +67,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   let sender: string
   const seleAccount = (value: string, option: any) => {
-    sender = option.sender
+    sender = option.account
   }
   const handleOk = async () => {
     // try {

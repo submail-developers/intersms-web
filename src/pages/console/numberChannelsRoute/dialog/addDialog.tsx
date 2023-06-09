@@ -51,7 +51,6 @@ const Dialog = (props: Props, ref: any) => {
       associatedAccount()
     } else {
       if (record) {
-        console.log(record)
         let arr: API.GetRegioncodeByCountryItems[] = [
           {
             label: record.country_cn,
