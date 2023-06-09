@@ -98,6 +98,7 @@ function Channel(props: Props, ref: any) {
     {
       title: <div style={{ marginLeft: '20px' }}>Appid</div>,
       dataIndex: 'appid',
+      width: 120,
       render: (_, record) => (
         <div style={{ marginLeft: '20px' }}>{record.appid}</div>
       ),
@@ -110,15 +111,18 @@ function Channel(props: Props, ref: any) {
     },
     {
       title: '通道组',
+      width: 120,
       dataIndex: 'group_name',
     },
     {
       title: '短信类型',
+      width: 120,
       dataIndex: 'group_type',
       render: (_, record) => <>{record.group_type == '1' ? '行业' : '营销'}</>,
     },
     {
       title: '签名',
+      width: 120,
       dataIndex: 'signature',
     },
     {

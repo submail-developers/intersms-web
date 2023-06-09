@@ -74,12 +74,13 @@ export default function Channel() {
   const columns: ColumnsType<DataType> = [
     {
       title: '通道名',
-      width: '12%',
+      width: 200,
       className: 'paddingL30',
       dataIndex: 'name',
     },
     {
       title: '通道类型',
+      width: 160,
       dataIndex: 'type',
       render: (_, record: DataType) => (
         <>{getOptionsLabel(channelTypeOptions, record.type)}</>
@@ -87,17 +88,19 @@ export default function Channel() {
     },
     {
       title: '流速',
+      width: 120,
       render: (_, record: DataType) => <>{record.flow}t/s</>,
     },
     {
       title: '号码前缀',
-      width: '10%',
+      width: 120,
       render: (_, record: DataType) => {
         return <>{getOptionsLabel(mobileTypeOptions, record.mobile_type)}</>
       },
     },
     {
       title: '关联国家/地区',
+      width: 160,
       render: (_, record) => (
         <Button
           type='link'
@@ -125,15 +128,17 @@ export default function Channel() {
     },
     {
       title: '连接状态',
+      width: 160,
       render: (_, record) => <div className='color-success'>无字段</div>,
     },
     {
       title: '链路数量',
-      width: '10%',
+      width: 120,
       render: (_, record) => <div>1</div>,
     },
     {
       title: '配置',
+      width: 240,
       render: RenderConfig,
     },
     {
@@ -271,27 +276,18 @@ export default function Channel() {
           </div>
         </Popconfirm>
       </div>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorBgContainer: 'transparent',
-          },
-        }}>
-        <Table
-          className='theme-cell bg-white'
-          columns={columns}
-          dataSource={list}
-          sticky
-          pagination={false}
-          rowKey={'id'}
-          onRow={onRow}
-          rowSelection={rowSelection}
-          rowClassName={(record, index) =>
-            index == activeIndex ? 'active' : ''
-          }
-          scroll={{ x: 'max-content' }}
-        />
-      </ConfigProvider>
+      <Table
+        className='theme-cell bg-white'
+        columns={columns}
+        dataSource={list}
+        sticky
+        pagination={false}
+        rowKey={'id'}
+        onRow={onRow}
+        rowSelection={rowSelection}
+        rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
+        scroll={{ x: 'max-content' }}
+      />
       <AddChannel ref={addChannelDialogRef} initData={initData} />
       <BindSensitiveWordDialog
         ref={bindSensitiveWordDialogRef}

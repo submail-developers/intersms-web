@@ -1,5 +1,6 @@
 [data-class='account-right'] {
-  min-width: 760px;
+  min-width: 430px;
+  // width: fit-content;
   .tabbar-head {
     margin-top: 12px;
     .panle-list {
@@ -9,8 +10,8 @@
       overflow: hidden;
       font-size: 14px;
       &.small {
-        height: 24px;
-        line-height: 24px;
+        height: 32px;
+        line-height: 32px;
         font-size: 12px;
         .panle {
           width: 33.3%;

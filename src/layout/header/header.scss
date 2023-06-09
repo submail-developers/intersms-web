@@ -15,7 +15,7 @@
     word-break: keep-all;
     .logout-wrap {
       cursor: pointer;
-      margin-left: 160px;
+      margin-left: 150px;
       .icon {
         margin-right: 8px;
       }
@@ -24,7 +24,7 @@
 
   &.small {
     .logo {
-      height: 16px;
+      height: 12px;
       transition: all 0.3s;
     }
     .right {
@@ -39,7 +39,7 @@
         cursor: pointer;
         margin-left: 8px;
         .icon {
-          margin-right: 6px;
+          margin-right: 0;
           font-size: 10px;
         }
       }

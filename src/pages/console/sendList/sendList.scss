@@ -27,34 +27,4 @@
       transform: rotate(180deg);
     }
   }
-
-  // 重置table的样式
-  .ant-table-wrapper.reset-theme {
-    .ant-table-header table {
-      th {
-        padding: 16px;
-      }
-    }
-    .ant-table-body table {
-      tbody {
-        tr {
-          &.ant-table-measure-row {
-            visibility: collapse;
-          }
-          & > td {
-            padding: 7px 16px;
-            &.ant-table-selection-column {
-              width: 0;
-              padding: 0;
-            }
-          }
-          &.ant-table-row-selected > td {
-            background-color: #f0f6ff !important;
-            border-color: #3461bb !important;
-            color: inherit;
-          }
-        }
-      }
-    }
-  }
 }

@@ -24,3 +24,13 @@ export const useSize = () => {
     return size
   }
 }
+
+export const usePoint = (point: Points) => {
+  const { useBreakpoint } = Grid
+  const screens = useBreakpoint()
+  if (Object.keys(screens).length > 0) {
+    return screens[point]
+  } else {
+    return true
+  }
+}

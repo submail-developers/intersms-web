@@ -15,7 +15,7 @@ import { Input, ConfigProvider, Table, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
 
-import { useSize } from '@/hooks'
+import { useSize, usePoint } from '@/hooks'
 import { getAccountList, deleteAccount } from '@/api'
 import { API } from 'apis'
 import './index.scss'
@@ -36,6 +36,7 @@ function Left(props: any, ref: any) {
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
   const size = useSize()
+  const point = usePoint('xl')
   const [keyword, setkeyword] = useState<string>('') // 搜索关键字
   const [tableData, settableData] = useState<API.AccountListItem[]>([]) // table列表
   const [activeRow, setactiveRow] = useState<DataType | null>(null) // 被点击的客户(不是被checkbox选中的客户)
@@ -129,7 +130,7 @@ function Left(props: any, ref: any) {
   }
 
   return (
-    <section data-class='account-left' className={`${size}`}>
+    <section data-class='account-left' className={`${point ? '' : 'xl'}`}>
       <div className='btn-group'>
         <div className='btn' onClick={openAddDialog}>
           <i className='icon iconfont icon-xinzeng'></i>

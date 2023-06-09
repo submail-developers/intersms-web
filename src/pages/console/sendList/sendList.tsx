@@ -341,13 +341,14 @@ export default function SendList() {
         </Form>
       </ConfigProvider>
       <Table
-        className='theme-cell reset-theme'
-        rowKey='id'
+        className='theme-cell bg-white'
         columns={columns}
         dataSource={tableData}
-        pagination={pagination}
         sticky
+        pagination={false}
+        rowKey={'id'}
         onRow={onRow}
+        // rowSelection={rowSelection}
         rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
         scroll={{ x: 'max-content' }}
       />

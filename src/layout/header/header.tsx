@@ -21,7 +21,7 @@ export default function Header() {
         <div className='text'>欢迎使用赛邮国际短信网关 1.0</div>
         <div className='logout-wrap' onClick={logoutEvent}>
           <i className='icon iconfont icon-tuichu fn16'></i>
-          <span className='fn14'>退出登录</span>
+          <span>{size == 'middle' ? '退出登录' : ''}</span>
         </div>
       </div>
     </div>
