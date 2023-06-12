@@ -12,15 +12,13 @@ import {
   Button,
   Upload,
 } from 'antd'
-// import { UploadOutlined } from '@ant-design/icons'
-// import type { UploadProps } from 'antd'
+
 import { useAppSelector } from '@/store/hook'
 import { blackState } from '@/store/reducers/black'
 import { addBlackMobileList, uploadBlackMobileList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
 import { UploadOutlined } from '@ant-design/icons'
-// import type { RadioValueType } from 'antd/es/radio/Group'
 import type { RadioChangeEvent } from 'antd'
 interface Props {
   onSearch: () => void
@@ -98,7 +96,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   list_id = blackStore.activeBlack?.id || ''
   const handleOk = async () => {
     try {
-      // console.log(fileList)
       const params = await form.validateFields()
       params.list_id = list_id
       fileList.map((item) => (params.file = item))
@@ -112,8 +109,16 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     } catch (error) {}
   }
 
+  // 点击取消
   const handleCancel = () => {
-    setIsModalOpen(false)
+    // setIsModalOpen(false)
+    // deleFile()
+  }
+
+  const deleFile = (file) => {
+    if (file.status === 'removed') {
+      return true
+    }
   }
 
   const onFinish = () => {}
@@ -174,41 +179,17 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
           />
         </Form.Item>
         <Form.Item label='从文件导入'>
-          {/* <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          </Upload> */}
-          <Upload {...props}>
-            <Button icon={<UploadOutlined />}>选择文件</Button>
-            <p
-              className='color-gray'
-              style={{ fontSize: '12px', margin: '0px' }}>
-              仅支持 TXT , CSV, VCF , excel 格式
-            </p>
-          </Upload>
-          {/* <Button
-            type='primary'
-            onClick={handleUpload}
-            disabled={fileList.length === 0}
-            loading={uploading}
-            style={{ marginTop: 16 }}>
-            {uploading ? 'Uploading' : 'Start Upload'}
-          </Button> */}
+          <div key={Math.random()}>
+            <Upload {...props} onRemove={(file) => deleFile(file)}>
+              <Button icon={<UploadOutlined />}>选择文件</Button>
+              <p
+                className='color-gray'
+                style={{ fontSize: '12px', margin: '0px' }}>
+                仅支持 TXT , CSV, VCF , excel 格式
+              </p>
+            </Upload>
+          </div>
         </Form.Item>
-        {/* <Form.Item
-          label='黑名单手机号'
-          name='mobile'
-          validateTrigger='onSubmit'
-          rules={
-            [
-              // { message: '请输入' },
-              // {
-              //   type: 'number',
-              //   message: '请输入正确的手机号!',
-              // },
-            ]
-          }>
-          <Input placeholder='请输入手机号' maxLength={30} />
-        </Form.Item> */}
       </Form>
     </Modal>
   )

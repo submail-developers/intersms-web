@@ -141,7 +141,7 @@ export default function NumberChannelsRoute() {
           <>
             <span>
               {record.type == '1' ? (
-                <span>{record.sender_mail}</span>
+                <span>{record.sender}</span>
               ) : record.type == '2' ? (
                 <span>{record.channel_name}</span>
               ) : record.type == '3' ? (

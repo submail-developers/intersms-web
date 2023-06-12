@@ -678,6 +678,7 @@ declare module 'apis' {
       datetime: string
       sender_mail: string
       channel_name: string
+      sender: string
     }
     // 保存报警设置
     interface SaveAlarmConfigListParams {

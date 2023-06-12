@@ -37,6 +37,7 @@ const Dialog = (props: Props, ref: any) => {
   const [tableData, setTableData] = useState<API.ChannelCountryConfigItem[]>([])
 
   const tableref: MutableRefObject<any> = useRef(null)
+  const timer = useRef(null)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -64,9 +65,10 @@ const Dialog = (props: Props, ref: any) => {
         channel: channelId,
         ...formVal,
       })
-      let timer = setTimeout(() => {
+      clearTimeout(timer.current)
+      timer.current = setTimeout(() => {
         setTableData(res.data)
-        clearTimeout(timer)
+        clearTimeout(timer.current)
       }, 20)
       setIndeterminate(res.list_status == '2')
       setCheckAll(res.list_status == '1')

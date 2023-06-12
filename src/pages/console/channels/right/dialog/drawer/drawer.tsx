@@ -42,6 +42,7 @@ const Dialog = (props: Props, ref: any) => {
   const [checkAll, setCheckAll] = useState(false)
 
   const tableref: MutableRefObject<any> = useRef(null)
+  const timer = useRef(null)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -70,9 +71,11 @@ const Dialog = (props: Props, ref: any) => {
         channel_id: channelId,
         ...formVal,
       })
-      let timer = setTimeout(() => {
+
+      clearTimeout(timer.current)
+      timer.current = setTimeout(() => {
         setTableData(res.data)
-        clearTimeout(timer)
+        clearTimeout(timer.current)
       }, 0)
       setIndeterminate(res.list_status == '2')
       setCheckAll(res.list_status == '1')
@@ -80,7 +83,6 @@ const Dialog = (props: Props, ref: any) => {
   }
 
   const close = () => {
-    setTableData([])
     setchannelId('')
     setShow(false)
   }

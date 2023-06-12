@@ -67,7 +67,6 @@ export default function Right() {
     try {
       const res = await getBlackItemsList(params)
       settableData(res.data)
-      console.log(res)
       setTotal(res.total)
     } catch (error) {
       console.log(error)
