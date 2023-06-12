@@ -51,12 +51,14 @@ function Code(props: Props, ref: any) {
     inputRef5: useRef<InputRef>(null),
     inputRef6: useRef<InputRef>(null),
   }
+  const timer = useRef(null)
 
   const initForm = () => {
+    clearTimeout(timer.current)
     form.resetFields()
-    let timer = setTimeout(() => {
+    timer.current = setTimeout(() => {
       refs.inputRef1.current?.focus()
-      clearTimeout(timer)
+      clearTimeout(timer.current)
     }, 500)
   }
 
