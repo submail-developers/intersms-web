@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-  memo,
-  useCallback,
-} from 'react'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 
 import type { TableColumnsType } from 'antd'
 import { Form, Input, Table, App, Button, Switch } from 'antd'
@@ -44,7 +37,7 @@ let bgContry = {
 }
 
 // Switch组件
-const Enbled = memo((enbledProps: EnbledProps) => {
+const Enbled = (enbledProps: EnbledProps) => {
   const channlesStore = useAppSelector(channelsState)
   const [loading, setLoading] = useState(false)
   const checkEnbled = async () => {
@@ -69,7 +62,7 @@ const Enbled = memo((enbledProps: EnbledProps) => {
       size='small'
     />
   )
-})
+}
 
 function MyTable(props: Props, ref: any) {
   const { message } = App.useApp()

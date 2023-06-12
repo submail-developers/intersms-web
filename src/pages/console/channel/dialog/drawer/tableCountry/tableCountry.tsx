@@ -1,11 +1,4 @@
-import {
-  useEffect,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-  memo,
-  useCallback,
-} from 'react'
+import { useState, forwardRef, useImperativeHandle } from 'react'
 import { TableColumnsType, App } from 'antd'
 import { Form, Input, Table, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
@@ -40,7 +33,7 @@ let bgContry = {
   action: 0,
 }
 
-const Enbled = memo((enbledProps: EnbledProps) => {
+const Enbled = (enbledProps: EnbledProps) => {
   const [loading, setLoading] = useState(false)
   const checkEnbled = async () => {
     try {
@@ -67,7 +60,7 @@ const Enbled = memo((enbledProps: EnbledProps) => {
       size='small'
     />
   )
-})
+}
 
 function MyTable(props: Props, ref: any) {
   const { message } = App.useApp()
