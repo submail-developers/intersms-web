@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
-import { getOpenSensitiveWordList, channelGroupBindSensitiveWord } from '@/api'
+import { getSensitiveWordList, channelGroupBindSensitiveWord } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import { API } from 'apis'
 import { bindTypeOptions } from '@/utils/options'
@@ -40,7 +40,7 @@ const Dialog = (props: Props, ref: any) => {
     initWord()
   }
   const initWord = async () => {
-    const res = await getOpenSensitiveWordList({ id: '' })
+    const res = await getSensitiveWordList({ id: '' })
     setWordList(res.data)
   }
 
@@ -63,7 +63,7 @@ const Dialog = (props: Props, ref: any) => {
         formValues.bind,
       )
       message.success('保存成功！')
-      props.onSearch(true)
+      props.onSearch(false)
       setIsModalOpen(false)
     } catch (error) {}
   }

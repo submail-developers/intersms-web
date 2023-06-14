@@ -25,6 +25,10 @@ export const useSize = () => {
   }
 }
 
+/**
+ * 当前窗口大小是否达到某个临界值
+ * @param 参数可选值 'xxl' | 'xl' | 'lg' | 'md' | 'sm' | 'xs'
+ */
 export const usePoint = (point: Points) => {
   const { useBreakpoint } = Grid
   const screens = useBreakpoint()

@@ -4,21 +4,17 @@ import {
   Select,
   Form,
   Input,
-  DatePicker,
   ConfigProvider,
   Table,
-  App,
   Row,
   Col,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import UpdateCountryConfig from './dialog/updateCountry'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
 import { getCountryList, getAllGroupId } from '@/api'
 import { API } from 'apis'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import './country.scss'
 
@@ -87,23 +83,28 @@ export default function Channel() {
   const [tableData, settableData] = useState<API.GetCountryListItems[]>([])
   const columns: ColumnsType<DataType> = [
     {
-      title: <span style={{ paddingLeft: '40px' }}>国家/地区名</span>,
+      title: (
+        <span style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
+          国家/地区名
+        </span>
+      ),
       dataIndex: 'country_cn',
       width: 160,
       ellipsis: true,
+      fixed: true,
       render: (_, record) => (
-        <div style={{ paddingLeft: '40px' }}>
-          <span>{record.country_cn}</span> <br />
-          <span className='color-gray'>{record.country}</span>
+        <div style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
+          <div className='country_cn g-ellipsis' title={record.country_cn}>
+            {record.country_cn}
+          </div>
+          <div
+            className='color-gray country_cn g-ellipsis'
+            title={record.country}>
+            {record.country}
+          </div>
         </div>
-        // <span style={{ paddingLeft: '40px' }}>{record.country_cn}</span>
       ),
     },
-    // {
-    //   title: '国家/地区英文',
-    //   dataIndex: 'country',
-    //   width: 220,
-    // },
     {
       title: '代码',
       dataIndex: 'region_code',
@@ -118,7 +119,8 @@ export default function Channel() {
     {
       title: '洲属',
       dataIndex: 'area',
-      width: 80,
+      width: 90,
+      ellipsis: true,
     },
     {
       title: '行业通道组',
@@ -130,7 +132,7 @@ export default function Channel() {
       title: '行业Sender',
       className: 'trade-1',
       dataIndex: 'tra_sender',
-      width: 90,
+      width: 120,
     },
     {
       title: '营销通道组',
@@ -142,7 +144,7 @@ export default function Channel() {
       title: '营销Sender',
       dataIndex: 'mke_sender',
       className: 'sale-1',
-      width: 90,
+      width: 120,
     },
     {
       title: '操作',
@@ -182,7 +184,10 @@ export default function Channel() {
               layout='inline'
               wrapperCol={{ span: 24 }}
               autoComplete='off'>
-              <Form.Item label='' name='group_id' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='group_id'
+                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Select
                   placeholder='全部通道组'
                   style={{ width: 162 }}
@@ -204,14 +209,17 @@ export default function Channel() {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='keyword'
+                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Input
                   size={size}
                   placeholder='国家/国家代码'
                   maxLength={20}
                   style={{ width: 162 }}></Input>
               </Form.Item>
-              <Form.Item style={{ marginBottom: 10 }}>
+              <Form.Item style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <ConfigProvider
                   theme={{
                     token: {
@@ -240,7 +248,7 @@ export default function Channel() {
           },
         }}>
         <Table
-          className='theme-cell bg-white reset-table'
+          className='theme-cell reset-table'
           columns={columns}
           dataSource={tableData}
           rowKey={'id'}

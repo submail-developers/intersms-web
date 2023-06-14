@@ -8,7 +8,6 @@ import {
   Popconfirm,
   Switch,
   Button,
-  Tooltip,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddSensitive from './dialog/addSensitiveWord'
@@ -19,11 +18,13 @@ import {
   sensitiveWordListStopUsing,
 } from '@/api'
 import { API } from 'apis'
+import { useSize } from '@/hooks'
 
 import './sensitiveWord.scss'
 interface DataType extends API.GetSensitiveWordListItems {}
 // 发送列表
 export default function Channel() {
+  const size = useSize()
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
   // 选中的keys
@@ -45,7 +46,8 @@ export default function Channel() {
     }
   }
   const rowSelection = {
-    columnWidth: 60,
+    columnWidth: size == 'small' ? 32 : 60,
+    fixed: true,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
@@ -71,22 +73,32 @@ export default function Channel() {
   const columns: ColumnsType<DataType> = [
     {
       title: '条目名称',
-      dataIndex: 'name',
-      width: 220,
-      className: 'paddingL30',
+      width: size == 'small' ? 80 : 200,
+      className: size == 'small' ? '' : 'paddingL30',
+      fixed: true,
+      render: (_, record) => (
+        <div
+          className='g-ellipsis'
+          style={{ width: size == 'small' ? '80px' : '160px' }}
+          title={record.name}>
+          {record.name}
+        </div>
+      ),
     },
     {
       title: '敏感词',
       dataIndex: 'keywords',
-      width: 480,
+      width: 240,
       render: (_, record) => (
-        <span className='color-words g-ellipsis-2'>{record.keywords}</span>
+        <span className='color-words g-ellipsis-2' title={record.keywords}>
+          {record.keywords}
+        </span>
       ),
     },
     {
       title: '备注',
       dataIndex: 'comment',
-      width: 190,
+      width: 160,
       className: 'paddingL50',
       render: (_, record) => (
         <span className='g-ellipsis-2'>{record.comment}</span>
@@ -95,7 +107,7 @@ export default function Channel() {
     {
       title: '启用状态',
       dataIndex: 'enabled',
-      width: 190,
+      width: 120,
       render: (_, record: DataType) => (
         <div className='switch-all fx-shrink'>
           <Switch
@@ -113,7 +125,7 @@ export default function Channel() {
     },
     {
       title: '操作',
-      width: 220,
+      width: 160,
       className: 'paddingL50',
       render: (_, record) => (
         <>

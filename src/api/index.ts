@@ -260,6 +260,21 @@ export const channelGroupBindSensitiveWord = (
     API.updateChannelsBindSensitiveWordParams
   >(url, { ...data })
 }
+// 通道组绑定/取消绑定黑名单
+export const channelGroupBindBlack = (
+  data: API.updateChannelsBindBlackParams,
+  bind: '0' | '1', // 1绑定0取消绑定
+) => {
+  const url =
+    bind == '1'
+      ? 'console/api/customer/save_group_related_mobile_block'
+      : 'console/api/customer/delete_group_related_mobile_block'
+  return request.post<
+    any,
+    API.Response<any>,
+    API.updateChannelsBindBlackParams
+  >(url, { ...data })
+}
 
 // 获取通道组管理配置列表
 export const getGroupChannelList = (data: API.GetGroupChannelListParams) => {
@@ -448,6 +463,20 @@ export const channelBindSensitiveWord = (
     API.Response<any>,
     API.updateChannelBindSensitiveWordParams
   >(url, { ...data })
+}
+// 通道绑定/取消绑定黑名单
+export const channelBindBlack = (
+  data: API.updateChannelBindBlackParams,
+  bind: '0' | '1', // 1绑定0取消绑定
+) => {
+  const url =
+    bind == '1'
+      ? 'console/api/customer/save_channel_related_mobile_block'
+      : 'console/api/customer/delete_channel_related_mobile_block'
+  return request.post<any, API.Response<any>, API.updateChannelBindBlackParams>(
+    url,
+    { ...data },
+  )
 }
 /**
  * 通道管理end

@@ -62,6 +62,7 @@ export default function Right() {
   }
   const rowSelection = {
     columnWidth: 60,
+    fixed: true,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
@@ -109,8 +110,11 @@ export default function Right() {
     {
       title: <div style={{ marginLeft: '20px' }}>通道名</div>,
       width: 160,
+      fixed: true,
       render: (_, record) => (
-        <div style={{ marginLeft: '20px' }}>{record.channel_name}</div>
+        <div style={{ marginLeft: '20px', width: 140 }} className='g-ellipsis'>
+          {record.channel_name}
+        </div>
       ),
     },
     {
@@ -123,12 +127,12 @@ export default function Right() {
     },
     {
       title: '连接状态',
-      width: 160,
+      width: 120,
       render: (_, record) => <div style={{ color: '#e81f1f' }}>没有字段</div>,
     },
     {
       title: '关键字',
-      width: 180,
+      width: 140,
       render: (_, record) => {
         let keywords = ''
         keywords = record.keyroute_list[0]?.keyroute_name || ''

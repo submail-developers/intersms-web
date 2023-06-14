@@ -13,7 +13,6 @@ import {
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
 import { getNetWorkList, deleteNetWorkList } from '@/api'
 import { API } from 'apis'
@@ -29,6 +28,7 @@ interface FormValues {
 // 国家信息配置
 export default function Network() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
+  const size = useSize()
 
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
@@ -51,14 +51,14 @@ export default function Network() {
     }
   }
   const rowSelection = {
-    columnWidth: 60,
+    columnWidth: size == 'small' ? 32 : 60,
+    fixed: true,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
     },
   }
 
-  const size = useSize()
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<API.GetNetWorkListItems[]>([])
   // 初始化form的值
@@ -95,38 +95,47 @@ export default function Network() {
     {
       title: '运营商网络',
       dataIndex: 'name',
-      width: 220,
-      className: 'paddingL30',
+      width: size == 'small' ? 90 : 160,
+      className: size == 'small' ? '' : 'paddingL30',
+      fixed: true,
+      render: (_, record: DataType) => (
+        <div
+          style={{ width: size == 'small' ? '90px' : '130px' }}
+          className='g-ellipsis'
+          title={record.name}>
+          {record.name}
+        </div>
+      ),
     },
     {
       title: '国家/地区名',
       dataIndex: 'country_cn',
-      width: 220,
+      width: 160,
       ellipsis: true,
     },
     {
       title: '代码',
       dataIndex: 'region_code',
-      width: 220,
+      width: 60,
     },
     {
       title: '洲属',
       dataIndex: 'area',
-      width: 220,
+      width: 120,
     },
     {
       title: '成本价格',
       dataIndex: 'cost_price',
-      width: 220,
+      width: 120,
     },
     {
       title: '建议零售价格',
       dataIndex: 'sug_price',
-      // width: '14%',
+      width: 120,
     },
     {
       title: '操作',
-      width: 220,
+      width: 180,
       className: 'paddingL30',
       render: (_, record) => (
         <div>
@@ -179,7 +188,9 @@ export default function Network() {
       <MenuTitle title='网络信息配置'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
-          <div className='btn-group' style={{ marginBottom: '10px' }}>
+          <div
+            className='btn-group'
+            style={{ marginBottom: size == 'small' ? 5 : 10 }}>
             <div className='btn' onClick={() => updateCountryEvent()}>
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
@@ -212,14 +223,17 @@ export default function Network() {
               layout='inline'
               wrapperCol={{ span: 24 }}
               autoComplete='off'>
-              <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='keyword'
+                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Input
                   size={size}
                   placeholder='网络名称/国家/地区/国家代码'
                   maxLength={20}
                   style={{ width: 220 }}></Input>
               </Form.Item>
-              <Form.Item style={{ marginBottom: 10 }}>
+              <Form.Item style={{ marginBottom: size == 'small' ? 5 : 10 }}>
                 <ConfigProvider
                   theme={{
                     token: {

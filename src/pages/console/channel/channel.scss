@@ -1,4 +1,12 @@
 [data-class='channel'] {
+  .btn-group {
+    &.small {
+      overflow-x: scroll;
+      .btn {
+        min-width: fit-content;
+      }
+    }
+  }
   .config-wrap {
     .iconfont {
       cursor: pointer;

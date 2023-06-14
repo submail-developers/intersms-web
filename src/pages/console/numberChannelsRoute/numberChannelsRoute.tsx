@@ -37,6 +37,7 @@ interface FormValues {
 
 // 号码通道路由
 export default function NumberChannelsRoute() {
+  const size = useSize()
   const addDialogRef: MutableRefObject<any> = useRef(null)
   const { Option } = Select
   // 被点击的客户(不是被checkbox选中的客户)
@@ -60,13 +61,13 @@ export default function NumberChannelsRoute() {
     }
   }
   const rowSelection = {
-    columnWidth: 60,
+    columnWidth: size == 'small' ? 32 : 60,
+    fixed: true,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
     },
   }
-  const size = useSize()
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<API.GetMobileRouteListItems[]>([])
 
@@ -125,12 +126,13 @@ export default function NumberChannelsRoute() {
     {
       title: '手机号码',
       dataIndex: 'mobile',
-      className: 'paddingL30',
-      width: 280,
+      className: size == 'small' ? '' : 'paddingL30',
+      width: size == 'small' ? 90 : 140,
+      fixed: true,
     },
     {
       title: '短信类型',
-      width: 150,
+      width: 120,
       dataIndex: 'type',
       render: (_, record: DataType) => (
         <div>
@@ -141,35 +143,36 @@ export default function NumberChannelsRoute() {
     {
       title: '关联账号',
       dataIndex: 'account',
-      width: 280,
+      width: 140,
     },
     {
       title: '关联国家/地区',
       dataIndex: 'country_cn',
-      width: 280,
+      width: 140,
     },
     {
       title: '通道',
       dataIndex: 'channel_name',
+      width: 140,
       render: (_, record: DataType) => (
-        <div>
+        <div style={{ width: '140px' }} className='g-ellipsis'>
           {record.channel_name == null ? (
             <span>该通道已删除</span>
           ) : (
-            <span>{record.channel_name}</span>
+            <span title={record.channel_name}>{record.channel_name}</span>
           )}
         </div>
       ),
     },
     {
       title: '发送名',
-      width: 320,
+      width: 100,
       className: 'paddingL30',
       dataIndex: 'name',
     },
     {
       title: '操作',
-      width: 220,
+      width: 120,
       render: (_, record) => (
         <div>
           <Button
@@ -219,7 +222,9 @@ export default function NumberChannelsRoute() {
       <MenuTitle title='号码通道路由'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
-          <div className='btn-group' style={{ marginBottom: '10px' }}>
+          <div
+            className='btn-group'
+            style={{ marginBottom: size == 'small' ? 5 : 10 }}>
             <div className='btn' onClick={() => updateMobileRouteEvent()}>
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
@@ -253,14 +258,20 @@ export default function NumberChannelsRoute() {
               layout='inline'
               wrapperCol={{ span: 24 }}
               autoComplete='off'>
-              <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='keyword'
+                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Input
                   size={size}
                   placeholder='手机号码/发送名/账号/国家地区'
                   maxLength={20}
                   style={{ width: 220 }}></Input>
               </Form.Item>
-              <Form.Item label='' name='type' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='type'
+                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Select
                   placeholder='短信类型'
                   style={{ width: 162 }}
@@ -282,7 +293,10 @@ export default function NumberChannelsRoute() {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label='' name='channel' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='channel'
+                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Select
                   placeholder='全部通道'
                   style={{ width: 162 }}
@@ -304,7 +318,7 @@ export default function NumberChannelsRoute() {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item style={{ marginBottom: 10 }}>
+              <Form.Item style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <ConfigProvider
                   theme={{
                     token: {

@@ -16,7 +16,7 @@ import {
   Checkbox,
 } from 'antd'
 import TableCountry from './tableCountry/tableCountry'
-import { useSize } from '@/hooks'
+import { useSize, usePoint } from '@/hooks'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
 
@@ -34,6 +34,7 @@ const Dialog = (props: Props, ref: any) => {
   const { message } = App.useApp()
   const channlesStore = useAppSelector(channelsState)
   const size = useSize()
+  const point = usePoint('xl')
   const [form] = Form.useForm()
   const [channelId, setchannelId] = useState<string>('') // 通道ID
   const [tableData, setTableData] = useState<API.GroupRelatedDataItem[]>([])
@@ -114,18 +115,28 @@ const Dialog = (props: Props, ref: any) => {
       open={show}
       bodyStyle={{ backgroundColor: 'transparent' }}
       rootClassName='drawer channels-drawer'
-      width={'70vw'}>
+      width={point ? '70vw' : '90vw'}>
       <div className='drawer-container' onClick={close}>
-        <div className='drawer-content' onClick={(e) => e.stopPropagation()}>
-          <header className='drawer-header fx-between-center'>
+        <div
+          className='drawer-content'
+          onClick={(e) => e.stopPropagation()}
+          style={{ height: size == 'middle' ? '70vh' : '100vh' }}>
+          <header
+            className={`drawer-header ${
+              size == 'middle' ? 'fx-between-center' : 'xl'
+            }`}>
             <div className='fx-y-center'>
-              <div className='fx-y-center'>
-                <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
-                <span className='fn20' style={{ marginLeft: '10px' }}>
-                  通道关联国家/地区
-                </span>
-              </div>
-              <div className=' switch-all'>
+              {point && (
+                <div className='fx-y-center'>
+                  <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
+                  <span className='fn20' style={{ marginLeft: '10px' }}>
+                    通道关联国家/地区
+                  </span>
+                </div>
+              )}
+              <div
+                className=' switch-all'
+                style={{ marginLeft: point ? 40 : 0 }}>
                 <div className='fx-y-center'>
                   <Checkbox
                     indeterminate={indeterminate}
@@ -140,7 +151,8 @@ const Dialog = (props: Props, ref: any) => {
             <ConfigProvider
               theme={{
                 token: {
-                  controlHeight: 40,
+                  controlHeight: point ? 40 : 32,
+                  fontSize: point ? 14 : 12,
                 },
               }}>
               <Form
@@ -169,7 +181,7 @@ const Dialog = (props: Props, ref: any) => {
                       type='primary'
                       size={size}
                       htmlType='submit'
-                      style={{ width: 110, marginLeft: 0 }}>
+                      style={{ width: point ? 110 : 64, marginLeft: 0 }}>
                       搜索
                     </Button>
                   </ConfigProvider>

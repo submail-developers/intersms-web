@@ -1,3 +1,10 @@
 [data-class='warning'] {
-  color: black;
+  .btn-group {
+    &.small {
+      overflow-x: scroll;
+      .btn {
+        min-width: fit-content;
+      }
+    }
+  }
 }

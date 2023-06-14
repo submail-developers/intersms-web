@@ -27,7 +27,7 @@
       tbody.ant-table-tbody {
         tr:hover > td,
         tr.active > td {
-          background-color: transparent !important;
+          background-color: #fff !important;
         }
       }
     }
@@ -82,5 +82,8 @@
         background-color: #ff4d4f;
       }
     }
+  }
+  .country_cn {
+    width: 130px;
   }
 }

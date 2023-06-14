@@ -20,7 +20,6 @@ import {
   updateAlarmConfigStatus,
   deleteAlarmConfigList,
 } from '@/api'
-import type { Dayjs } from 'dayjs'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 
@@ -60,6 +59,7 @@ export default function NumberChannelsRoute() {
   }
   const rowSelection = {
     columnWidth: 60,
+    fixed: true,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
@@ -113,7 +113,7 @@ export default function NumberChannelsRoute() {
       title: '报警类型',
       dataIndex: 'type',
       className: 'paddingL30',
-      width: '14%',
+      width: 160,
       render: (_, record) => {
         return (
           <>
@@ -135,7 +135,7 @@ export default function NumberChannelsRoute() {
     {
       title: '报警对象',
       dataIndex: 'country_cn',
-      width: '14%',
+      width: 160,
       render: (_, record) => {
         return (
           <>
@@ -157,7 +157,7 @@ export default function NumberChannelsRoute() {
     {
       title: '报警最小条数',
       dataIndex: 'row',
-      width: '14%',
+      width: 160,
       render: (_, record) => {
         return (
           <>
@@ -169,7 +169,7 @@ export default function NumberChannelsRoute() {
     {
       title: '报警时间范围',
       dataIndex: 'time',
-      width: '14%',
+      width: 160,
       render: (_, record) => {
         return <span>{record.time + ' 分钟'} </span>
       },
@@ -177,14 +177,14 @@ export default function NumberChannelsRoute() {
     {
       title: '报警失败率',
       dataIndex: 'fail',
-      width: '14%',
+      width: 160,
       render: (_, record) => {
         return <span>{record.fail + '%'} </span>
       },
     },
     {
       title: '报警开关',
-      width: '14%',
+      width: 160,
       render: (_, record) => {
         return (
           <>
@@ -201,6 +201,7 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '操作',
+      width: 240,
       render: (_, record) => (
         <>
           <Button
@@ -283,11 +284,13 @@ export default function NumberChannelsRoute() {
     setSelectedRowKeys([])
   }
   return (
-    <div data-class='numberChannelsRoute'>
+    <div data-class='warning'>
       <MenuTitle title='报警设置'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
-          <div className='btn-group' style={{ marginBottom: '10px' }}>
+          <div
+            className={`btn-group ${size}`}
+            style={{ marginBottom: size == 'small' ? 5 : 10 }}>
             <div className='btn' onClick={() => updateWaringEvent()}>
               <i className='icon iconfont icon-bianji'></i>
               <span>新增</span>
@@ -340,19 +343,24 @@ export default function NumberChannelsRoute() {
             <Form
               name='basic'
               form={form}
-              // initialValues={{ message_type: 'all', channels_type: 'all' }}
               layout='inline'
               wrapperCol={{ span: 24 }}
               onFinish={onFinish}
               autoComplete='off'>
-              <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='keyword'
+                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Input
                   size={size}
                   placeholder='国家/地区/通道/账号'
                   maxLength={20}
                   style={{ width: 220 }}></Input>
               </Form.Item>
-              <Form.Item label='' name='type' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='type'
+                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Select
                   placeholder='报警类型'
                   style={{ width: 162 }}
@@ -374,7 +382,7 @@ export default function NumberChannelsRoute() {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item style={{ marginBottom: 10 }}>
+              <Form.Item style={{ marginBottom: size == 'small' ? 5 : 10 }}>
                 <ConfigProvider
                   theme={{
                     token: {

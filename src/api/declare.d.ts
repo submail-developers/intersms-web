@@ -311,7 +311,8 @@ declare module 'apis' {
     }
     // 获取通道组列表
     interface GetChannelGroupListItem extends UpdateChannelGroupParams {
-      sens_word_list: ChannelsBindSensitiveItem[]
+      sens_word_list: ChannelsBindSensitiveItem[] // 敏感词
+      mobile_block_list: GetBlackListItems[] // 黑名单
     }
     // 通道组下的通道关联国家的网络类型
     interface ChannelsChannelNetworkItem {
@@ -344,9 +345,15 @@ declare module 'apis' {
       keyroute_list: ChannelsChannelKeywordItem[]
       network_list: ChannelsChannelNetworkItem[]
     }
+    // 绑定敏感词
     interface updateChannelsBindSensitiveWordParams {
       group_id: string
       sens_id: string // 敏感词ID
+    }
+    // 绑定黑名单
+    interface updateChannelsBindBlackParams {
+      group_id: string
+      block_id?: string // 黑名单ID
     }
     interface GetGroupChannelListParams {
       group_id: string
@@ -438,7 +445,10 @@ declare module 'apis' {
       udh: string // 是否使用udh模式，1是0否
       mobile_type: string // 0:无前缀, 1:+前缀, 2:00前缀, 3:0前缀
       sens_id: string // 敏感词ID
-      keywords: string // 敏感词
+      sens_name: string // 敏感词条目名称
+      keywords: string // 敏感词明细
+      block_id: string // 黑名单ID
+      block_name: string // 黑名单名称
     }
     // 新增/修改通道
     interface AddChannelParams {
@@ -545,10 +555,15 @@ declare module 'apis' {
       channel_id: string
       status: '0' | '1' // 1启用0禁用
     }
-    // 一键启用/禁用所有关联国家和运营商
+    // 通道绑定/取消绑定敏感词
     interface updateChannelBindSensitiveWordParams {
       channel_id: string
       sens_id: string // 敏感词ID
+    }
+    // 通道绑定/取消绑定黑名单
+    interface updateChannelBindBlackParams {
+      channel_id: string
+      block_id?: string // 敏感词ID
     }
     /**
      * 通道管理end
@@ -820,7 +835,7 @@ declare module 'apis' {
     interface GetBlackListItems {
       id: string
       name: string
-      enabled: string
+      enabled: '0' | '1' // 0关闭1开启
     }
     // 新增黑名单
     interface AddBlackListParams {

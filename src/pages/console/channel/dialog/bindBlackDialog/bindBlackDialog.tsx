@@ -1,10 +1,9 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
-import { getkeyWord, channelGroupUpdateKeyword } from '@/api'
+import { getBlackList, channelBindBlack } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import { API } from 'apis'
 import { bindTypeOptions } from '@/utils/options'
-
 interface Props {
   onSearch: (flag?: boolean) => void
 }
@@ -15,57 +14,51 @@ const initialValues = {
 }
 
 const Dialog = (props: Props, ref: any) => {
-  const [form] = Form.useForm()
-  const { message } = App.useApp()
-  const [wordList, setWordList] = useState<API.GetKeywordEnabledItems[]>([])
   useImperativeHandle(ref, () => {
     return {
       open,
     }
   })
+  const [form] = Form.useForm()
+  const { message } = App.useApp()
+  const [blackList, setblackList] = useState<API.GetBlackListItems[]>([])
+  const [channelItem, setchannelItem] = useState<API.ChannelItem>()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const [channelItem, setchannelItem] = useState<API.GroupChannelItem>()
-
-  const open = (record: API.GroupChannelItem) => {
+  const open = (record: API.ChannelItem) => {
     setchannelItem(record)
-    initWord()
     form.resetFields()
     let initVlaues
-    if (record.keyroute_list.length > 0) {
-      const { keyroute_id, keyroute_keywords } = record.keyroute_list[0]
-      initVlaues = {
-        keywords_route_id: keyroute_id,
-        keywords: keyroute_keywords,
-        bind: '1',
-      }
+    if (record.block_id) {
+      initVlaues = { ...record, bind: '1' }
     } else {
       initVlaues = initialValues
     }
     form.setFieldsValue(initVlaues)
     setIsModalOpen(true)
+    initWord()
   }
   const initWord = async () => {
-    const res = await getkeyWord({ id: '' })
-    setWordList(res.data)
+    const res = await getBlackList({ id: '', page: '' })
+    setblackList(res.data)
   }
 
   const handleOk = async () => {
     try {
       if (channelItem == undefined) return
       let formValues = await form.getFieldsValue()
-      let keywords_route_id = formValues.keywords_route_id
+      let block_id = formValues.block_id
       if (formValues.bind == '0') {
-        keywords_route_id = ''
-        channelItem.keyroute_list.forEach(
-          (item) => (keywords_route_id += `${item.keyroute_id},`),
-        )
+        if (!channelItem.block_id) {
+          setIsModalOpen(false)
+          return
+        }
+        block_id = channelItem.block_id || ''
       }
-      await channelGroupUpdateKeyword(
+      await channelBindBlack(
         {
-          group_id: channelItem.group_id,
-          channel_id: channelItem.channel_id,
-          keywords_route_id: formValues.keywords_route_id,
+          channel_id: channelItem.id,
+          block_id: block_id,
         },
         formValues.bind,
       )
@@ -86,7 +79,7 @@ const Dialog = (props: Props, ref: any) => {
 
   return (
     <Modal
-      title='关键词绑定'
+      title='黑名单绑定'
       width={640}
       closable={false}
       wrapClassName='modal-reset'
@@ -101,14 +94,14 @@ const Dialog = (props: Props, ref: any) => {
         autoComplete='off'>
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
-            <Form.Item label='关键词绑定' name='bind'>
+            <Form.Item label='黑名单绑定' name='bind'>
               <Radio.Group options={bindTypeOptions}></Radio.Group>
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
-            <Form.Item label='选择关键词条目' name='keywords_route_id'>
+            <Form.Item label='选择黑名单条目' name='block_id'>
               <Select
                 fieldNames={{ label: 'name', value: 'id' }}
                 showSearch
@@ -120,15 +113,8 @@ const Dialog = (props: Props, ref: any) => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={wordList}
+                options={blackList}
               />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row justify='space-between' gutter={30}>
-          <Col span={24}>
-            <Form.Item label='' name='keywords'>
-              <Input.TextArea disabled autoSize={{ minRows: 2, maxRows: 6 }} />
             </Form.Item>
           </Col>
         </Row>

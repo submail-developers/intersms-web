@@ -83,7 +83,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         <Row>
           <Col span={24}>
             <Form.Item label='条目名称' name='name'>
-              <Input placeholder='请输入条目名称' maxLength={30} />
+              <Input placeholder='请输入条目名称' maxLength={20} />
             </Form.Item>
           </Col>
         </Row>

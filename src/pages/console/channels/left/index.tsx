@@ -5,8 +5,9 @@ import { Input, ConfigProvider, Table, Switch, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
 import BindSensitiveWordDialog from './bindSensitiveWordDialog/bindSensitiveWordDialog'
+import BindBlackDialog from './bindBlackDialog/bindBlackDialog'
 
-import { useSize, usePoint } from '@/hooks'
+import { usePoint } from '@/hooks'
 import {
   getChannelGroupList,
   deleteChannelGroup,
@@ -25,6 +26,7 @@ interface SwitchProps {
 export default function Left() {
   const dialogRef: MutableRefObject<any> = useRef(null)
   const bindSensitiveWordDialogRef: MutableRefObject<any> = useRef(null)
+  const bindBlackDialogRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
   const point = usePoint('xl')
@@ -70,19 +72,32 @@ export default function Left() {
       title: '通道组名称',
       dataIndex: 'name',
       className: 'paddingL30',
-      width: 180,
+      width: 130,
       ellipsis: true,
     },
     {
-      title: '敏感词绑定',
-      width: 100,
-      render: (_, record) => (
-        <div className='color-gray'>
-          {record.sens_word_list && record.sens_word_list.length > 0
+      title: '敏感词&黑名单',
+      width: 200,
+      render: (_, record) => {
+        let sens_word =
+          record.sens_word_list && record.sens_word_list.length > 0
             ? record.sens_word_list[0].name
-            : ''}
-        </div>
-      ),
+            : ''
+        let block_name =
+          record.mobile_block_list && record.mobile_block_list.length > 0
+            ? record.mobile_block_list[0].name
+            : ''
+        return (
+          <div className='fx word-wrap'>
+            <div className='sens-word g-ellipsis' title={sens_word}>
+              {sens_word}
+            </div>
+            <div className='black-word g-ellipsis' title={sens_word}>
+              {block_name}
+            </div>
+          </div>
+        )
+      },
     },
     {
       title: '状态',
@@ -142,9 +157,17 @@ export default function Left() {
       message.warning('请选择通道组！')
     }
   }
-  const showBindDialog = () => {
+  const showBindSensDialog = () => {
     if (activeRow) {
       bindSensitiveWordDialogRef.current.open(activeRow)
+    } else {
+      message.warning('请选择通道组！')
+    }
+  }
+
+  const showBindBlackDialog = () => {
+    if (activeRow) {
+      bindBlackDialogRef.current.open(activeRow)
     } else {
       message.warning('请选择通道组！')
     }
@@ -161,9 +184,13 @@ export default function Left() {
           <i className='icon iconfont icon-bianji'></i>
           <span>编辑</span>
         </div>
-        <div className='btn' onClick={showBindDialog}>
+        <div className='btn' onClick={showBindSensDialog}>
           <i className='icon iconfont icon-bangding'></i>
           <span>敏感词绑定</span>
+        </div>
+        <div className='btn' onClick={showBindBlackDialog}>
+          <i className='icon iconfont icon-bangding'></i>
+          <span>黑名单绑定</span>
         </div>
         <Popconfirm
           placement='bottom'
@@ -228,6 +255,7 @@ export default function Left() {
         ref={bindSensitiveWordDialogRef}
         onSearch={search}
       />
+      <BindBlackDialog ref={bindBlackDialogRef} onSearch={search} />
     </section>
   )
 }

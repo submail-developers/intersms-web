@@ -1,11 +1,13 @@
 import { useEffect, useState, MutableRefObject, useRef } from 'react'
-import { Button, ConfigProvider, Table, Row, Col, Popconfirm, App } from 'antd'
+import { Button, Table, Row, Col, Popconfirm, App } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddChannel from './dialog/addChannel'
 import MyDrawer from './dialog/drawer/drawer'
 import BindSensitiveWordDialog from './dialog/bindSensitiveWordDialog/bindSensitiveWordDialog'
+import BindBlackDialog from './dialog/bindBlackDialog/bindBlackDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import { getChannelList, deleteChannel } from '@/api'
+import { useSize } from '@/hooks'
 import { API } from 'apis'
 import {
   mobileTypeOptions,
@@ -20,7 +22,9 @@ interface DataType extends API.ChannelItem {}
 // 发送列表
 export default function Channel() {
   const { message } = App.useApp()
+  const size = useSize()
   const bindSensitiveWordDialogRef: MutableRefObject<any> = useRef(null)
+  const bindBlackDialogRef: MutableRefObject<any> = useRef(null)
   const addChannelDialogRef: MutableRefObject<any> = useRef(null)
   const drawerRef: MutableRefObject<any> = useRef(null)
   const [list, setlist] = useState<DataType[]>([])
@@ -46,7 +50,8 @@ export default function Channel() {
     }
   }
   const rowSelection = {
-    columnWidth: 60,
+    columnWidth: size == 'small' ? 32 : 60,
+    fixed: true,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
@@ -74,13 +79,22 @@ export default function Channel() {
   const columns: ColumnsType<DataType> = [
     {
       title: '通道名',
-      width: 200,
-      className: 'paddingL30',
-      dataIndex: 'name',
+      width: size == 'small' ? 100 : 180,
+      className: size == 'small' ? '' : 'paddingL30',
+      fixed: true,
+      render: (_, record: DataType) => (
+        <div
+          style={{ width: size == 'small' ? '100px' : '180px' }}
+          className='g-ellipsis'
+          title={record.name}>
+          {record.name}
+        </div>
+      ),
     },
     {
       title: '通道类型',
-      width: 160,
+      width: 120,
+      className: 'paddingL30',
       dataIndex: 'type',
       render: (_, record: DataType) => (
         <>{getOptionsLabel(channelTypeOptions, record.type)}</>
@@ -88,19 +102,19 @@ export default function Channel() {
     },
     {
       title: '流速',
-      width: 120,
+      width: 80,
       render: (_, record: DataType) => <>{record.flow}t/s</>,
     },
     {
       title: '号码前缀',
-      width: 120,
+      width: 100,
       render: (_, record: DataType) => {
         return <>{getOptionsLabel(mobileTypeOptions, record.mobile_type)}</>
       },
     },
     {
       title: '关联国家/地区',
-      width: 160,
+      width: 120,
       render: (_, record) => (
         <Button
           type='link'
@@ -112,15 +126,31 @@ export default function Channel() {
     },
     {
       title: '敏感词绑定',
-      width: 180,
+      width: 160,
       render: (_, record) => (
         <div className='bind-wrap color-gray'>
-          <span className='text g-ellipsis' title={record.keywords || ''}>
-            {record.keywords || '未绑定'}
+          <span className='text g-ellipsis' title={record.sens_name || ''}>
+            {record.sens_name || '未绑定'}
           </span>
           <div
             className='icon-wrap fx-center-center'
-            onClick={() => showBindDialog(record)}>
+            onClick={() => showBindSensDialog(record)}>
+            <span className='icon iconfont icon-bangding fn14'></span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: '黑名单绑定',
+      width: 160,
+      render: (_, record) => (
+        <div className='bind-wrap color-gray'>
+          <span className='text g-ellipsis' title={record.block_name || ''}>
+            {record.block_name || '未绑定'}
+          </span>
+          <div
+            className='icon-wrap fx-center-center'
+            onClick={() => showBindBlackDialog(record)}>
             <span className='icon iconfont icon-bangding fn14'></span>
           </div>
         </div>
@@ -128,17 +158,17 @@ export default function Channel() {
     },
     {
       title: '连接状态',
-      width: 160,
+      width: 100,
       render: (_, record) => <div className='color-success'>无字段</div>,
     },
     {
       title: '链路数量',
-      width: 120,
+      width: 80,
       render: (_, record) => <div>1</div>,
     },
     {
       title: '配置',
-      width: 240,
+      width: 160,
       render: RenderConfig,
     },
     {
@@ -176,8 +206,11 @@ export default function Channel() {
   const showDetail = (record: DataType) => {
     drawerRef.current.open(record.id)
   }
-  const showBindDialog = (record: DataType) => {
+  const showBindSensDialog = (record: DataType) => {
     bindSensitiveWordDialogRef.current.open(record)
+  }
+  const showBindBlackDialog = (record: DataType) => {
+    bindBlackDialogRef.current.open(record)
   }
 
   useEffect(() => {
@@ -218,7 +251,7 @@ export default function Channel() {
   return (
     <div data-class='channel'>
       <MenuTitle title='通道管理'></MenuTitle>
-      <div className='btn-group' style={{ marginBottom: '10px' }}>
+      <div className={`btn-group ${size}`} style={{ marginBottom: '10px' }}>
         <div className='btn' onClick={addChannelEvent}>
           <i className='icon iconfont icon-xinzeng'></i>
           <span>新增</span>
@@ -293,6 +326,7 @@ export default function Channel() {
         ref={bindSensitiveWordDialogRef}
         onSearch={initData}
       />
+      <BindBlackDialog ref={bindBlackDialogRef} onSearch={initData} />
       <MyDrawer ref={drawerRef} />
     </div>
   )

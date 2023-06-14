@@ -75,6 +75,7 @@ function Channel(props: Props, ref: any) {
 
   const rowSelection = {
     columnWidth: 60,
+    fixed: true,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
@@ -111,8 +112,15 @@ function Channel(props: Props, ref: any) {
     },
     {
       title: '通道组',
-      width: 120,
-      dataIndex: 'group_name',
+      width: 140,
+      render: (_, record: DataType) => (
+        <div
+          style={{ width: '140px' }}
+          className='g-ellipsis'
+          title={record.group_name}>
+          {record.group_name}
+        </div>
+      ),
     },
     {
       title: '短信类型',

@@ -8,6 +8,7 @@ import {
   updateChannelCountryNetworkStatus,
 } from '@/api'
 import { API } from 'apis'
+import { usePoint } from '@/hooks'
 
 interface DataType extends API.ChannelCountryConfigItem {}
 interface EnbledProps {
@@ -63,6 +64,7 @@ const Enbled = (enbledProps: EnbledProps) => {
 }
 
 function MyTable(props: Props, ref: any) {
+  const point = usePoint('xl')
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
@@ -153,8 +155,8 @@ function MyTable(props: Props, ref: any) {
   const columns: TableColumnsType<DataType> = [
     {
       title: <div></div>,
-      width: 100,
-      className: 'paddingL30',
+      width: point ? 60 : 32,
+      fixed: true,
       render(_, record) {
         return (
           <div className='td-content'>
@@ -171,14 +173,16 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '国家/地区名称',
-      width: 150,
+      className: 'paddingL10',
+      fixed: true,
+      width: point ? 130 : 110,
       render(_, record) {
         return <div className={`td-content fw500`}>{record.country_cn}</div>
       },
     },
     {
       title: '代码',
-      width: 100,
+      width: 80,
       className: 'paddingL30',
       render(_, record) {
         return <div className={`td-content`}>{record.region_code}</div>
@@ -186,7 +190,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>行业价格</div>,
-      width: 180,
+      width: 110,
       render(_, record) {
         return (
           <div className='td-content paddingR10'>
@@ -203,7 +207,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>营销价格</div>,
-      width: 180,
+      width: 110,
       render(_, record) {
         return (
           <div className='td-content paddingR10'>
@@ -221,7 +225,7 @@ function MyTable(props: Props, ref: any) {
     {
       title: <div className='paddingL30'>运营商网络</div>,
       className: 'col-line',
-      width: 240,
+      width: 120,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -254,7 +258,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>行业价格</div>,
-      width: 180,
+      width: 110,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -293,7 +297,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>营销价格</div>,
-      width: 180,
+      width: 110,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -332,6 +336,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '状态',
+      width: 60,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (

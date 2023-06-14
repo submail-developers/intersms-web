@@ -11,6 +11,7 @@ import {
 import { API } from 'apis'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
+import { usePoint } from '@/hooks'
 
 interface DataType extends API.GroupRelatedDataItem {}
 
@@ -65,6 +66,7 @@ const Enbled = (enbledProps: EnbledProps) => {
 }
 
 function MyTable(props: Props, ref: any) {
+  const point = usePoint('xl')
   const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
@@ -161,8 +163,8 @@ function MyTable(props: Props, ref: any) {
   const columns: TableColumnsType<DataType> = [
     {
       title: <div></div>,
-      width: 100,
-      className: 'paddingL30',
+      width: point ? 60 : 32,
+      fixed: true,
       render(_, record) {
         return (
           <div className='td-content'>
@@ -179,23 +181,24 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '国家/地区名称',
-      width: 150,
+      width: point ? 130 : 110,
+      fixed: true,
       ellipsis: true,
       render(_, record) {
-        return <div className={`td-content fw500`}>{record.country_cn}</div>
+        return <div className='td-content fw500'>{record.country_cn}</div>
       },
     },
     {
       title: '代码',
-      width: 100,
+      width: 80,
       className: 'paddingL30',
       render(_, record) {
-        return <div className={`td-content`}>{record.region_code}</div>
+        return <div className='td-content'>{record.region_code}</div>
       },
     },
     {
       title: <div className='paddingL12'>国家/地区权重</div>,
-      width: 180,
+      width: 110,
       render(_, record) {
         return record.id == editCountryId ? (
           <div className='td-content sub-td'>
@@ -211,6 +214,7 @@ function MyTable(props: Props, ref: any) {
     {
       title: <div className='paddingL30'>运营商网络</div>,
       className: 'col-line',
+      width: 120,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -243,7 +247,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>运营商权重</div>,
-      width: 180,
+      width: 110,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -282,6 +286,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>状态</div>,
+      width: 60,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -322,8 +327,8 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL30'>操作</div>,
-      width: 160,
+      title: '操作',
+      width: 120,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -337,7 +342,7 @@ function MyTable(props: Props, ref: any) {
                 return (
                   <div
                     key={'active' + item.id}
-                    className={`${trClassName} sub-td paddingL30`}>
+                    className={`${trClassName} sub-td`}>
                     {record.id == editCountryId && item.id == editNetworkId ? (
                       <>
                         <Button
@@ -370,7 +375,7 @@ function MyTable(props: Props, ref: any) {
           }
           bgContry.action += 1
           return (
-            <div className={`${trClassName} sub-td paddingL30`}>
+            <div className={`${trClassName} sub-td`}>
               {record.id == editCountryId ? (
                 <>
                   <Button

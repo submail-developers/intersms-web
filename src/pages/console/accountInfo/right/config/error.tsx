@@ -75,6 +75,7 @@ function Error(props: Props, ref: any) {
 
   const rowSelection = {
     columnWidth: 60,
+    fixed: true,
     selectedRowKeys: selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys)
