@@ -134,8 +134,10 @@ declare module 'apis' {
       account: string // 账户ID
       title: string // 发送名称
       content: string
-      type: '0' | '1' // 短信类型
+      type: '1' | '2' // 短信类型 1行业2营销
       net_type: '0' | '1' // 网络类型
+      network: string // 运营商ID
+      network_name: string // 运营商-网络类型
       send: string // 发送时间
       sent: string // 完成时间
       sender: string
@@ -903,6 +905,30 @@ declare module 'apis' {
     interface LoginParams {
       mob: string
       code: string
+    }
+
+    interface UserInfo {
+      mail: string
+      mob: string
+      name: string
+    }
+    interface GetLogParams {
+      page: number
+      limit: number
+    }
+    // 登陆日志
+    interface LoginLogItem {
+      ip: string
+      platform: string // 操作系统
+      agent: string // 浏览器版本
+      datetime: string
+      country: string
+      province: string
+      city: string
+    }
+
+    interface LogRes extends Response<LoginLogItem[]> {
+      total: number
     }
 
     /**

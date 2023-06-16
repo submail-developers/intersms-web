@@ -79,12 +79,12 @@ export default function Channel() {
   const columns: ColumnsType<DataType> = [
     {
       title: '通道名',
-      width: size == 'small' ? 100 : 180,
+      width: size == 'small' ? 100 : 130,
       className: size == 'small' ? '' : 'paddingL30',
       fixed: true,
       render: (_, record: DataType) => (
         <div
-          style={{ width: size == 'small' ? '100px' : '180px' }}
+          style={{ width: size == 'small' ? '100px' : '130px' }}
           className='g-ellipsis'
           title={record.name}>
           {record.name}

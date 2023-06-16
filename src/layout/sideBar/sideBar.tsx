@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { routerList } from '@/routes'
 import './sideBar.scss'
-import user from '@/assets/img/user.png'
+import user from '@/assets/img/user.jpg'
 
 // 一级导航
 export default function SizeBar() {

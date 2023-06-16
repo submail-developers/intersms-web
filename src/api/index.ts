@@ -826,6 +826,22 @@ export const logout = () => {
   )
 }
 
+// 获取登陆信息
+export const getUserInfo = () => {
+  return request.post<any, API.Response<API.UserInfo>, any>(
+    'console/api/account/get_account_info',
+    {},
+  )
+}
+
+// 获取登陆日志
+export const getLoginLog = (data: API.GetLogParams) => {
+  return request.post<any, API.LogRes, API.GetLogParams>(
+    'console/api/account/get_sign_log',
+    { ...data },
+  )
+}
+
 /**
  * 登陆end
  */

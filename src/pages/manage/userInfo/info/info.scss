@@ -1,0 +1,32 @@
+[data-class='user-info'] {
+  width: 700px;
+  max-width: 100%;
+  overflow-x: scroll;
+  height: fit-content;
+  background-color: #fff;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 16px 16px 24px 16px;
+  border-radius: 8px;
+  .form {
+    width: 500px;
+    max-width: 100%;
+    min-width: 240px;
+    .title {
+      color: #000;
+    }
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
+    .form {
+      margin-top: 16px;
+      .ant-form-item {
+        label {
+          color: #555555;
+        }
+      }
+    }
+  }
+}

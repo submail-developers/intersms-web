@@ -60,7 +60,7 @@ export const baseRouterList: RouteObject[] = [
   },
   {
     path: '/manage',
-    element: <Navigate to='/manage/center/index' />,
+    element: <Navigate to='/manage/index/userinfo' />,
   },
   {
     path: '*',
@@ -291,23 +291,38 @@ export const routerList: RouteObject[] = [
   {
     path: '/manage',
     element: <Layout />,
-    loader: loaderFn({ name: '管理中心' }),
+    loader: loaderFn({ name: '管理设置' }),
     handle: handleFn({ alias: '管理', icon: 'icon-wode' }),
     children: [
       {
-        path: 'center',
-        handle: handleFn({ alias: '管理中心' }),
+        path: 'index',
+        handle: handleFn({ alias: '管理设置' }),
         children: [
           {
-            path: 'index',
+            path: 'userinfo',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/test'))}
+                lazyChildren={lazy(
+                  () => import('@/pages/manage/userInfo/userInfo'),
+                )}
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '管理' }),
-            handle: handleFn({ alias: '管理中心' }),
+            loader: loaderFn({ name: '账号信息管理' }),
+            handle: handleFn({ alias: '账号信息管理' }),
+          },
+          {
+            path: 'userability',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/manage/userAbility/userAbility'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '账号功能管理' }),
+            handle: handleFn({ alias: '账号功能管理' }),
           },
         ],
       },

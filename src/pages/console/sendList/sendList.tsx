@@ -216,12 +216,12 @@ export default function SendList() {
     },
     {
       title: '网络类型',
-      render: (_, record) => <span>{record.net_type}</span>,
+      render: (_, record) => <span>{record.network_name}</span>,
     },
     {
       title: '短信类型',
       render: (_, record) => (
-        <span>{record.type == '1' ? '营销短信' : '行业短信'}</span>
+        <span>{record.type == '2' ? '营销短信' : '行业短信'}</span>
       ),
     },
     {
