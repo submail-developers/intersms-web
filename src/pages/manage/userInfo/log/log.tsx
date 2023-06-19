@@ -73,7 +73,7 @@ export default function Fn() {
       title: '日期',
       dataIndex: 'datetime',
       className: 'pdL16',
-      width: 160,
+      width: 170,
     },
     {
       title: '地点',

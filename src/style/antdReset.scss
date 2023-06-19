@@ -47,6 +47,7 @@
             background-color: transparent;
             border: none;
             color: #222;
+            -webkit-text-fill-color: #222;
           }
         }
         // 输入框带后缀
@@ -69,6 +70,7 @@
         textarea.ant-input {
           &.ant-input-disabled {
             color: #999;
+            -webkit-text-fill-color: #999;
           }
         }
         // 下拉框
@@ -109,6 +111,7 @@
               border: none;
               .ant-select-selection-item {
                 color: #222;
+                -webkit-text-fill-color: #222;
               }
             }
             .ant-select-arrow {
