@@ -107,10 +107,11 @@ export default function Fn() {
           sticky
           pagination={false}
           rowKey={'datetime'}
-          scroll={{ x: 'max-content', y: 300 }}
+          scroll={{ x: 'max-content', y: 400 }}
           ref={(c) => {
             scrollRef.current = c
           }}
+          loading={page == 1 && loading}
         />
       </div>
     </div>
