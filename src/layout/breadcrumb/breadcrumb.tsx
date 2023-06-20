@@ -1,5 +1,5 @@
 import './breadcrumb.scss'
-import { useMatches } from 'react-router-dom'
+import { useLoaderData } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/store/hook'
 import { changeClose, menuCloseStatus } from '@/store/reducers/menu'
 
@@ -9,16 +9,20 @@ import { changeClose, menuCloseStatus } from '@/store/reducers/menu'
 export default function BreadCrumb() {
   const status = useAppSelector(menuCloseStatus)
   const dispatch = useAppDispatch()
+  const loaderData = useLoaderData() as { name: string }
 
-  const matches = useMatches()
-  // 获取一级菜单的name
-  let crumbs = matches
-    .filter((match) =>
-      // @ts-ignore
-      Boolean(match.handle && match.handle?.crumb && !match.id.includes('-')),
-    )
-    // @ts-ignore
-    .map((match) => match.handle.crumb(match.data))
+  // const matches = useMatches()
+  // // 获取一级菜单的name
+  // let crumbs = matches
+  //   .filter((match) =>
+  //     // @ts-ignore
+  //     Boolean(match.handle && match.handle?.crumb && !match.id.includes('-')),
+  //   )
+  //   // @ts-ignore
+  //   .map((match) => match.handle.crumb(match.data))
+  // console.log(matches, 'matches')
+  // console.log(crumbs, 'crumbs')
+  // console.log(loaderData, 'loaderData')
 
   return (
     <div data-class='breadcrumb-wrap'>
@@ -31,7 +35,7 @@ export default function BreadCrumb() {
               status ? 'shouhui' : 'shouhui1'
             }`}></i>
         </div>
-        <div className='crumb fn18'>{crumbs.map((item) => item)}</div>
+        <div className='crumb fn18'>{loaderData.name}</div>
       </div>
     </div>
   )

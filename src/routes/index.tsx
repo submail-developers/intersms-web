@@ -123,6 +123,7 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
+            loader: loaderFn({ name: '通道管理' }),
             handle: handleFn({ alias: '通道管理' }),
           },
           {
@@ -135,6 +136,7 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
+            loader: loaderFn({ name: '通道组管理' }),
             handle: handleFn({ alias: '通道组管理' }),
           },
         ],
