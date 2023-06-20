@@ -68,6 +68,7 @@ export default function NumberChannelsRoute() {
   const size = useSize()
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<API.GetalArmConfigListItems[]>([])
+  const [loading, setloading] = useState(false)
   // 初始化form的值
   const initFormValues: FormValues = {
     id: '',
@@ -89,10 +90,12 @@ export default function NumberChannelsRoute() {
   }
   const searchEvent = async (params: API.GetalArmConfigListParams) => {
     try {
+      setloading(true)
       const res = await getalArmConfigList(params)
       settableData(res.data)
+      setloading(false)
     } catch (error) {
-      console.log(error)
+      setloading(false)
     }
   }
   useEffect(() => {
@@ -423,6 +426,7 @@ export default function NumberChannelsRoute() {
           sticky
           pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
+          loading={loading}
         />
       </ConfigProvider>
       <AddDialog ref={addDialogRef} onSearch={search} />

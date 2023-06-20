@@ -29,6 +29,7 @@ interface FormValues {
 export default function Network() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
   const size = useSize()
+  const [loading, setloading] = useState(false)
 
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
@@ -80,10 +81,12 @@ export default function Network() {
   }
   const searchEvent = async (params: API.GetNetWorkParams) => {
     try {
+      setloading(true)
       const res = await getNetWorkList(params)
       settableData(res.data)
+      setloading(false)
     } catch (error) {
-      console.log(error)
+      setloading(false)
     }
   }
 
@@ -274,6 +277,7 @@ export default function Network() {
           sticky
           pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
+          loading={loading}
         />
       </ConfigProvider>
       <AddDialog onSearch={search} ref={addDialogRef} />

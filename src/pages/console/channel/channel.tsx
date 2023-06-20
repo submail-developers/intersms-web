@@ -28,6 +28,7 @@ export default function Channel() {
   const addChannelDialogRef: MutableRefObject<any> = useRef(null)
   const drawerRef: MutableRefObject<any> = useRef(null)
   const [list, setlist] = useState<DataType[]>([])
+  const [loading, setloading] = useState(false)
 
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
@@ -220,9 +221,13 @@ export default function Channel() {
   // 获取列表
   const initData = async () => {
     try {
+      setloading(true)
       const res = await getChannelList({ id: '' })
       setlist(res.data)
-    } catch (error) {}
+      setloading(false)
+    } catch (error) {
+      setloading(false)
+    }
   }
   // 删除通道
   const deleteEvent = async (ids: string | React.Key[]) => {
@@ -320,6 +325,7 @@ export default function Channel() {
         rowSelection={rowSelection}
         rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
         scroll={{ x: 'max-content' }}
+        loading={loading}
       />
       <AddChannel ref={addChannelDialogRef} initData={initData} />
       <BindSensitiveWordDialog

@@ -122,16 +122,18 @@ export default function Left() {
 
   // noResetActive是否重置当前选中项
   const search = async (noResetActive?: boolean) => {
-    const res = await getChannelGroupList({ id: '', keyword })
-    settableData(res.data)
-    if (noResetActive) return
-    if (res.data.length > 0) {
-      dispatch(changeActiveChannels(res.data[0]))
-      setactiveRow(res.data[0])
-    } else {
-      dispatch(changeActiveChannels(null))
-      setactiveRow(null)
-    }
+    try {
+      const res = await getChannelGroupList({ id: '', keyword })
+      settableData(res.data)
+      if (noResetActive) return
+      if (res.data.length > 0) {
+        dispatch(changeActiveChannels(res.data[0]))
+        setactiveRow(res.data[0])
+      } else {
+        dispatch(changeActiveChannels(null))
+        setactiveRow(null)
+      }
+    } catch (error) {}
   }
 
   // 删除通道组

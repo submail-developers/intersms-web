@@ -18,6 +18,7 @@ interface DataType extends API.GroupChannelItem {}
 export default function Right() {
   // 列表
   const [tableData, settableData] = useState<DataType[]>([])
+
   const channlesStore = useAppSelector(channelsState)
   const addChannelDialogRef: MutableRefObject<any> = useRef(null)
   const bindKeywordRef: MutableRefObject<any> = useRef(null)
@@ -35,10 +36,12 @@ export default function Right() {
     }
   }, [channlesStore.activeChannels])
   const getList = async () => {
-    const res = await getGroupChannelList({
-      group_id: channlesStore.activeChannels?.id || '',
-    })
-    settableData(res.data)
+    try {
+      const res = await getGroupChannelList({
+        group_id: channlesStore.activeChannels?.id || '',
+      })
+      settableData(res.data)
+    } catch (error) {}
   }
 
   const updateList = async () => {

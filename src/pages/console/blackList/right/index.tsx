@@ -23,141 +23,125 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 interface DataType extends API.GetBlackDetailListItems {}
-interface FormValues {
-  list_id: string
-  keyword: string
-  limit: number
-  page: number
+
+const observerBle = {
+  xs: 24,
+  sm: 12,
+  md: 8,
+  lg: 6,
+  xl: 8,
+  xxl: 4,
+}
+const observerGutter = {
+  xs: 6,
+  sm: 6,
+  md: 8,
+  lg: 10,
+  xl: 12,
+  xxl: 14,
 }
 
 export default function Right() {
+  const size = useSize()
+  const { message } = App.useApp()
+
   const addDialogRef: MutableRefObject<any> = useRef(null)
   const [selectedList, setselectedList] = useState<CheckboxValueType[]>([])
   const [total, setTotal] = useState(0)
   const [current, setCurrent] = useState(1)
+  const [pageSize, setpageSize] = useState(100)
   const [tableData, settableData] = useState<DataType[]>([])
   const [indeterminate, setIndeterminate] = useState(false) //控制半选状态
   const [checkAll, setCheckAll] = useState(false) //控制全选状态
   const CheckboxGroup = Checkbox.Group
-
   const blackStore = useAppSelector(blackState)
   const [form] = Form.useForm()
-  // 初始化form的值
-  const initFormValues: FormValues = {
-    list_id: '',
-    keyword: '',
-    limit: 100,
-    page: 1,
-  }
+
+  useEffect(() => {
+    if (blackStore.activeBlack) {
+      search()
+    }
+  }, [current, pageSize, blackStore.activeBlack])
+
+  useEffect(() => {
+    let hasChecked = false
+    let checkedAll = true
+    if (tableData.length === 0 || selectedList.length == 0) {
+      setIndeterminate(false)
+      setCheckAll(false)
+      return
+    }
+    tableData.forEach((item) => {
+      if (selectedList.includes(item.id)) {
+        hasChecked = true
+      } else {
+        checkedAll = false
+      }
+    })
+    setIndeterminate(!checkedAll && hasChecked)
+    setCheckAll(checkedAll)
+  }, [tableData, selectedList])
+
   const search = async () => {
+    setselectedList([])
     const values = await form.getFieldsValue()
-    formatSearchValue(values)
-  }
-  const formatSearchValue = (params: FormValues) => {
-    const { list_id, keyword, limit, page } = params
-    const searchParams = {
+    const { keyword } = values
+    searchEvent({
       list_id: blackStore.activeBlack?.id || '',
       keyword,
-      limit: 100,
-      page: 1,
-    }
-    searchEvent(searchParams)
+      limit: pageSize,
+      page: current,
+    })
   }
   const searchEvent = async (params: API.GetBlackDetailListParams) => {
     try {
       const res = await getBlackItemsList(params)
       settableData(res.data)
       setTotal(res.total)
+      // 处理数量边界问题
+      let _lastCurrent = Math.ceil(res.total / pageSize)
+      if (_lastCurrent != 0 && _lastCurrent < current) {
+        setCurrent(_lastCurrent)
+      }
     } catch (error) {
       console.log(error)
     }
   }
   // 点击分页
   const changePage = async (page: number, pageSize: number) => {
-    const pageParams = {
-      list_id: blackStore.activeBlack?.id || '',
-      keyword: '',
-      limit: pageSize,
-      page: page,
-    }
-    try {
-      const res = await getBlackItemsList(pageParams)
-      settableData(res.data)
-      setCurrent(page)
-      console.log(pageParams)
-    } catch (error) {
-      console.log(error)
-    }
+    setCurrent(page)
+    setpageSize(pageSize)
   }
-  useEffect(() => {
-    if (blackStore.activeBlack) {
-      formatSearchValue(initFormValues)
-    }
-  }, [blackStore.activeBlack])
 
-  const size = useSize()
   // 展示新增弹框
   const showDialog = () => {
     addDialogRef.current.open()
   }
-  const observerBle = {
-    xs: 24,
-    sm: 24,
-    md: 12,
-    lg: 12,
-    xl: 8,
-    xxl: 4,
-  }
-  const observerGutter = {
-    xs: 6,
-    sm: 6,
-    md: 8,
-    lg: 10,
-    xl: 12,
-    xxl: 14,
-  }
-  const { message } = App.useApp()
 
-  let isChecked: any = []
   const onChange = (checkedValues: CheckboxValueType[]) => {
-    isChecked = checkedValues
     setselectedList(checkedValues)
-    if (checkedValues.length > 0) {
-      if (checkedValues.length == tableData.length) {
-        setIndeterminate(false)
-        setCheckAll(true)
-      } else {
-        setIndeterminate(true)
-        setCheckAll(false)
-      }
-    } else {
-      setIndeterminate(false)
-      setCheckAll(false)
-    }
   }
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
     setCheckAll(e.target.checked)
     if (e.target.checked) {
-      let ids: string[] = []
-      tableData.forEach((item) => ids.push(item.id))
-      setselectedList(ids)
+      let _select = []
+      tableData.forEach((item) => {
+        _select.push(item.id)
+      })
+      setselectedList(_select)
     } else {
       setselectedList([])
     }
-    setIndeterminate(false)
   }
   // 批量删除事件
   const deleteEvent = async () => {
-    console.log(selectedList)
     if (selectedList.length === 0) {
       message.warning('请勾选要删除的黑名单！')
       return
     }
-    const id = selectedList.join(',')
+    const id = [...new Set(selectedList)].join(',')
     await deleteBlackMobileList({ id })
     await search()
-    setCheckAll(false)
-    setIndeterminate(false)
   }
   // 单独删除
   const singleDeleteEvent = async (id: any) => {
@@ -200,14 +184,22 @@ export default function Right() {
               layout='inline'
               wrapperCol={{ span: 24 }}
               autoComplete='off'>
-              <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
+              <Form.Item
+                label=''
+                name='keyword'
+                style={{
+                  marginBottom: size == 'small' ? 0 : 10,
+                }}>
                 <Input
                   size={size}
                   placeholder='手机号'
                   maxLength={20}
                   style={{ width: 162 }}></Input>
               </Form.Item>
-              <Form.Item style={{ marginBottom: 10 }}>
+              <Form.Item
+                style={{
+                  marginBottom: size == 'small' ? 0 : 10,
+                }}>
                 <ConfigProvider
                   theme={{
                     token: {
@@ -246,14 +238,15 @@ export default function Right() {
               size='small'
               total={total}
               current={current}
-              defaultPageSize={100}
+              defaultPageSize={pageSize}
               showSizeChanger
               showQuickJumper
               pageSizeOptions={[100, 200, 300]}
-              // showTotal={(total) => `一共${total}条`}
               onChange={changePage}
               showTotal={(total, range) =>
-                `当前展示${range[0]}-${range[1]}条 / 共 ${total} 条`
+                total > 1
+                  ? `当前展示${range[0]}-${range[1]}条 / 共 ${total} 条`
+                  : `共${total}条`
               }
             />
           </Col>

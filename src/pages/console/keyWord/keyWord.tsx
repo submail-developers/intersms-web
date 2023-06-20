@@ -15,6 +15,10 @@ import MenuTitle from '@/components/menuTitle/menuTitle'
 import { getkeyWord, deletekeyWord, keyWordStopUsing } from '@/api'
 import { API } from 'apis'
 import { useSize } from '@/hooks'
+interface DataType extends API.GetkeyWordItems {}
+interface SwitchProps {
+  record: DataType
+}
 
 // 发送列表
 export default function Channel() {
@@ -62,8 +66,6 @@ export default function Channel() {
   const addSensitiveWordListRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
 
-  interface DataType extends API.GetkeyWordItems {}
-
   const columns: ColumnsType<DataType> = [
     {
       title: '条目名称',
@@ -102,10 +104,7 @@ export default function Channel() {
       width: 120,
       render: (_, record: DataType) => (
         <div className='switch-all fx-shrink'>
-          <Switch
-            size={'small'}
-            checked={record.enabled == '1'}
-            onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
+          <SwitchNode record={record}></SwitchNode>
           &nbsp;
           {record.enabled == '1' ? (
             <span className='color-gray'>已启用</span>
@@ -157,19 +156,30 @@ export default function Channel() {
     await deletekeyWord({ id })
     await search()
   }
-  //单独启用 停用事件
-  const setSwicth = async (record: any, checked: any) => {
-    let id = record.id
-    if (checked == true) {
-      const status = '1'
-      await keyWordStopUsing({ id, status })
+
+  // switch
+  const SwitchNode = (props: SwitchProps) => {
+    const [loading, setloading] = useState(false)
+    // 修改开启状态
+    const changeState = async (_: any, event: any) => {
+      event.stopPropagation()
+      setloading(true)
+      await keyWordStopUsing({
+        id: props.record.id,
+        status: props.record.enabled == '1' ? '0' : '1',
+      })
       await search()
-    } else {
-      const status = '0'
-      await keyWordStopUsing({ id, status })
-      await search()
+      setloading(false)
     }
+    return (
+      <Switch
+        size='small'
+        checked={props.record.enabled == '1'}
+        loading={loading}
+        onClick={(_, event) => changeState(_, event)}></Switch>
+    )
   }
+
   // 批量停用/启用
   const batchDeactivation = async (isOnOff: any) => {
     if (isOnOff === '0') {

@@ -22,6 +22,9 @@ import { useSize } from '@/hooks'
 
 import './sensitiveWord.scss'
 interface DataType extends API.GetSensitiveWordListItems {}
+interface SwitchProps {
+  record: DataType
+}
 // 发送列表
 export default function Channel() {
   const size = useSize()
@@ -110,10 +113,7 @@ export default function Channel() {
       width: 120,
       render: (_, record: DataType) => (
         <div className='switch-all fx-shrink'>
-          <Switch
-            size={'small'}
-            checked={record.enabled == '1'}
-            onChange={(checked) => setSwicth(record, checked)}></Switch>{' '}
+          <SwitchNode record={record}></SwitchNode>
           &nbsp;
           {record.enabled == '1' ? (
             <span className='color-gray'>已启用</span>
@@ -166,19 +166,30 @@ export default function Channel() {
     await search()
     setSelectedRowKeys([])
   }
-  //单独启用 停用事件
-  const setSwicth = async (record: any, checked: any) => {
-    let id = record.id
-    if (checked == true) {
-      const status = '1'
-      await sensitiveWordListStopUsing({ id, status })
+
+  // switch
+  const SwitchNode = (props: SwitchProps) => {
+    const [loading, setloading] = useState(false)
+    // 修改开启状态
+    const changeState = async (_: any, event: any) => {
+      event.stopPropagation()
+      setloading(true)
+      await sensitiveWordListStopUsing({
+        id: props.record.id,
+        status: props.record.enabled == '1' ? '0' : '1',
+      })
       await search()
-    } else {
-      const status = '0'
-      await sensitiveWordListStopUsing({ id, status })
-      await search()
+      setloading(false)
     }
+    return (
+      <Switch
+        size='small'
+        checked={props.record.enabled == '1'}
+        loading={loading}
+        onClick={(_, event) => changeState(_, event)}></Switch>
+    )
   }
+
   //批量停用/启用
   const batchDeactivation = async (isOnOff: any) => {
     if (isOnOff === '0') {

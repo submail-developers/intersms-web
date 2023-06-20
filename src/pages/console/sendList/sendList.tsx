@@ -41,6 +41,7 @@ export default function SendList() {
   const size = useSize()
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<DataType[]>([])
+  const [loading, setloading] = useState(false)
   const [total, settotal] = useState<number>(0)
   const [page, setpage] = useState<number>(1)
   const [pageSize, setpageSize] = useState<number>(20)
@@ -90,6 +91,7 @@ export default function SendList() {
 
   // 获取列表数据
   const search = async () => {
+    setloading(true)
     const values = await form.getFieldsValue()
     const { channel, group, time, keyword } = values
     const start = (time && time[0].format('YYYY-MM-DD')) || ''
@@ -108,7 +110,10 @@ export default function SendList() {
       const res = await getSendList(params)
       settableData(res.data)
       settotal(res.total)
-    } catch (error) {}
+      setloading(false)
+    } catch (error) {
+      setloading(false)
+    }
   }
 
   const resetForm = () => {
@@ -351,6 +356,7 @@ export default function SendList() {
         // rowSelection={rowSelection}
         rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
         scroll={{ x: 'max-content' }}
+        loading={loading}
       />
     </div>
   )

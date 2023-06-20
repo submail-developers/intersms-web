@@ -38,6 +38,7 @@ function Left(props: any, ref: any) {
   const point = usePoint('xl')
   const [keyword, setkeyword] = useState<string>('') // 搜索关键字
   const [tableData, settableData] = useState<API.AccountListItem[]>([]) // table列表
+  const [loading, setloading] = useState(false)
   const [activeRow, setactiveRow] = useState<DataType | null>(null) // 被点击的客户(不是被checkbox选中的客户)
   const onRow = (record: DataType, index?: number) => {
     return {
@@ -94,22 +95,29 @@ function Left(props: any, ref: any) {
     setkeyword(e.target.value)
   }
   const search = async (activeAccountId: string = '') => {
-    const res = await getAccountList({
-      keyword,
-    })
-    settableData(res.data)
-    if (res.data.length > 0) {
-      let defaultIndex = 0
-      if (activeAccountId) {
-        defaultIndex = res.data.findIndex(
-          (item) => item.account == activeAccountId,
-        )
+    try {
+      setloading(true)
+      const res = await getAccountList({
+        keyword,
+      })
+      settableData(res.data)
+      setloading(false)
+
+      if (res.data.length > 0) {
+        let defaultIndex = 0
+        if (activeAccountId) {
+          defaultIndex = res.data.findIndex(
+            (item) => item.account == activeAccountId,
+          )
+        }
+        dispatch(changeActiveAccount(res.data[defaultIndex]))
+        setactiveRow(res.data[defaultIndex])
+      } else {
+        dispatch(changeActiveAccount(null))
+        setactiveRow(null)
       }
-      dispatch(changeActiveAccount(res.data[defaultIndex]))
-      setactiveRow(res.data[defaultIndex])
-    } else {
-      dispatch(changeActiveAccount(null))
-      setactiveRow(null)
+    } catch (error) {
+      setloading(false)
     }
   }
 
@@ -190,6 +198,7 @@ function Left(props: any, ref: any) {
             }
             pagination={false}
             scroll={{ y: 450 }}
+            loading={loading}
           />
         </ConfigProvider>
       </div>

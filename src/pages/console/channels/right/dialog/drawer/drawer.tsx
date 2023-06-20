@@ -38,6 +38,7 @@ const Dialog = (props: Props, ref: any) => {
   const [form] = Form.useForm()
   const [channelId, setchannelId] = useState<string>('') // 通道ID
   const [tableData, setTableData] = useState<API.GroupRelatedDataItem[]>([])
+  const [loading, setloading] = useState(false)
 
   const [indeterminate, setIndeterminate] = useState(false)
   const [checkAll, setCheckAll] = useState(false)
@@ -65,6 +66,7 @@ const Dialog = (props: Props, ref: any) => {
 
   const search = async () => {
     try {
+      setloading(true)
       tableref && tableref.current?.cancel()
       const formVal = await form.getFieldsValue()
       const res = await getGroupRelatedData({
@@ -76,11 +78,14 @@ const Dialog = (props: Props, ref: any) => {
       clearTimeout(timer.current)
       timer.current = setTimeout(() => {
         setTableData(res.data)
+        setloading(false)
         clearTimeout(timer.current)
       }, 0)
       setIndeterminate(res.list_status == '2')
       setCheckAll(res.list_status == '1')
-    } catch (error) {}
+    } catch (error) {
+      setloading(false)
+    }
   }
 
   const close = () => {
@@ -198,6 +203,7 @@ const Dialog = (props: Props, ref: any) => {
               search={search}
               channelId={channelId}
               tabData={tableData}
+              loading={loading}
             />
           </div>
         </div>

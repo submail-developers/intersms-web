@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, startTransition } from 'react'
 import { NavLink, RouteObject, useMatches, useLocation } from 'react-router-dom'
 import { routerList } from '@/routes'
 import { useAppSelector } from '@/store/hook'
@@ -20,7 +20,9 @@ export default function SideMenu() {
         currentMatchBaseRouteObj &&
         item.path == currentMatchBaseRouteObj.pathname
       ) {
-        setMenuList(item?.children || [])
+        startTransition(() => {
+          setMenuList(item?.children || [])
+        })
       }
     })
   }, [location.pathname, currentMatchBaseRouteObj?.pathname])

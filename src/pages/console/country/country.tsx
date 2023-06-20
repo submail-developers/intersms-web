@@ -30,6 +30,7 @@ export default function Channel() {
   const updateCountryDialogRef: MutableRefObject<any> = useRef(null)
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
+  const [loading, setloading] = useState(false)
 
   const onRow = (record: DataType, index?: number) => {
     return {
@@ -63,10 +64,12 @@ export default function Channel() {
   }
   const searchEvent = async (params: API.GetCountryListParams) => {
     try {
+      setloading(true)
       const res = await getCountryList(params)
       settableData(res.data)
+      setloading(false)
     } catch (error) {
-      console.log(error)
+      setloading(false)
     }
   }
 
@@ -259,6 +262,7 @@ export default function Channel() {
           sticky
           pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
+          loading={loading}
         />
       </ConfigProvider>
       <UpdateCountryConfig

@@ -23,6 +23,7 @@ function Channel(props: Props, ref: any) {
     }
   })
   const [tableData, settableData] = useState<DataType[]>([])
+  const [loading, setloading] = useState(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const { message } = App.useApp()
 
@@ -40,11 +41,15 @@ function Channel(props: Props, ref: any) {
   }, [accountInfoStore.activeAccount])
   const updateTableData = async () => {
     try {
+      setloading(true)
       const res = await getAccountChannelList({
         sender: accountInfoStore.activeAccount?.account || '', // 客户account
       })
       settableData(res.data)
-    } catch (error) {}
+      setloading(false)
+    } catch (error) {
+      setloading(false)
+    }
   }
   // 编辑弹框
   const editEvent = (record: DataType) => {
@@ -177,6 +182,7 @@ function Channel(props: Props, ref: any) {
           sticky
           pagination={false}
           scroll={{ x: 'max-content' }}
+          loading={loading}
         />
       </ConfigProvider>
     </div>

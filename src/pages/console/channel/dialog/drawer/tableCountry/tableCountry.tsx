@@ -21,6 +21,7 @@ interface EnbledProps {
 }
 
 interface Props {
+  loading: boolean
   channelId: string
   tabData: DataType[]
   search: () => void
@@ -465,6 +466,7 @@ function MyTable(props: Props, ref: any) {
         rowClassName={(record, index) => {
           return record.country_enabled == '0' ? 'lock-row' : ''
         }}
+        loading={props.loading}
         scroll={{ x: 'max-content' }}
       />
     </Form>

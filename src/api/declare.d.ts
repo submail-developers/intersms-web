@@ -761,7 +761,7 @@ declare module 'apis' {
     //敏感词批量启用/停用  0关闭 1启用
     interface SensitiveWordListStopUsingParams {
       id: string
-      status: string
+      status: '0' | '1' // 1开启0关闭
     }
     // 通道组绑定的敏感词
     interface ChannelsBindSensitiveItem {

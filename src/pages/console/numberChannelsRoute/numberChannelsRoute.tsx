@@ -42,6 +42,7 @@ export default function NumberChannelsRoute() {
   const { Option } = Select
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
+  const [loading, setloading] = useState(false)
   // 选中的keys
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const onRow = (record: DataType, index?: number) => {
@@ -98,10 +99,12 @@ export default function NumberChannelsRoute() {
   }
   const searchEvent = async (params: API.GetMobileRouteListParams) => {
     try {
+      setloading(true)
       const res = await getMobileRouteList(params)
       settableData(res.data)
+      setloading(false)
     } catch (error) {
-      console.log(error)
+      setloading(false)
     }
   }
   useEffect(() => {
@@ -359,6 +362,7 @@ export default function NumberChannelsRoute() {
           sticky
           pagination={{ position: ['bottomRight'] }}
           scroll={{ x: 'max-content' }}
+          loading={loading}
         />
       </ConfigProvider>
       <AddDialog
