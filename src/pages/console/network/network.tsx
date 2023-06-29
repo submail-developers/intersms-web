@@ -67,6 +67,10 @@ export default function Network() {
     id: '',
     keyword: '',
   }
+  const handleSearch = () => {
+    setSelectedRowKeys([])
+    search()
+  }
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
@@ -145,7 +149,7 @@ export default function Network() {
           <Button
             type='link'
             style={{ paddingLeft: 0 }}
-            onClick={() => updateCountryEvent(false, record)}>
+            onClick={() => updateCountryEvent(record)}>
             编辑
           </Button>
           <Button type='link'>
@@ -164,8 +168,8 @@ export default function Network() {
     },
   ]
 
-  const updateCountryEvent = (isAdd: boolean = true, record?: DataType) => {
-    addDialogRef.current.open({ isAdd, record })
+  const updateCountryEvent = (record?: DataType) => {
+    addDialogRef.current.open({ record })
   }
 
   const { message } = App.useApp()
@@ -247,7 +251,7 @@ export default function Network() {
                   <Button
                     type='primary'
                     size={size}
-                    onClick={search}
+                    onClick={() => handleSearch()}
                     htmlType='submit'
                     style={{ width: 110, marginLeft: 0 }}>
                     搜索

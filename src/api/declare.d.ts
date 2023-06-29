@@ -612,6 +612,7 @@ declare module 'apis' {
       id: string
       country_cn: string
       region_code: string
+      area: string
       name: string
       cost_price: string
       sug_price: string

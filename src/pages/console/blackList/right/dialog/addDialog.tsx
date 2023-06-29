@@ -17,9 +17,8 @@ import { useAppSelector } from '@/store/hook'
 import { blackState } from '@/store/reducers/black'
 import { addBlackMobileList, uploadBlackMobileList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
-import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface'
 import { UploadOutlined } from '@ant-design/icons'
-import type { RadioChangeEvent } from 'antd'
 interface Props {
   onSearch: () => void
 }
@@ -41,30 +40,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   }
 
   const [fileList, setFileList] = useState<UploadFile[]>([])
-  const [uploading, setUploading] = useState(false)
-  const handleUpload = () => {
-    const formData = new FormData()
-    fileList.forEach((file) => {
-      formData.append('files[]', file as RcFile)
-    })
-    setUploading(true)
-    // You can use any AJAX library you like
-    fetch('apiscustomer/save_mobile_block_items', {
-      method: 'POST',
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then(() => {
-        setFileList([])
-        message.success('upload successfully.')
-      })
-      .catch(() => {
-        message.error('upload failed.')
-      })
-      .finally(() => {
-        setUploading(false)
-      })
-  }
   const props: UploadProps = {
     onRemove: (file) => {
       const index = fileList.indexOf(file)
@@ -73,7 +48,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       setFileList(newFileList)
     },
     beforeUpload: (file) => {
-      console.log(file.type)
       const isConform =
         file.type === 'text/plain' ||
         file.type === 'text/csv' ||
@@ -121,18 +95,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     }
   }
 
-  const onFinish = () => {}
-  const onFinishFailed = () => {}
-
-  const onChange = (e: RadioChangeEvent) => {
-    console.log('checked = ', e)
-  }
-
-  const options = [
-    { label: '行业短信', value: '1' },
-    { label: '营销短信', value: '2' },
-  ]
-
   const { TextArea } = Input
   return (
     <Modal
@@ -149,8 +111,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete='off'>
         <Row>
           <Col span={24}>

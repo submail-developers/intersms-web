@@ -98,7 +98,9 @@ const Dialog = (props: Props, ref: any) => {
             optionFilterProp='children'
             fieldNames={{ value: 'label' }}
             filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              (option?.label + option.value ?? '')
+                .toLowerCase()
+                .includes(input.toLowerCase())
             }
             options={props.allCountry}></Select>
         </Form.Item>

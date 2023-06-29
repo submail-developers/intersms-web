@@ -131,7 +131,9 @@ const Dialog = (props: Props, ref: any) => {
             placeholder='请选择'
             optionFilterProp='children'
             filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              (option?.label + option.value ?? '')
+                .toLowerCase()
+                .includes(input.toLowerCase())
             }
             options={props.allCountry}
           />

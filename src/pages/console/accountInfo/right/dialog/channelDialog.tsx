@@ -121,7 +121,9 @@ function Dialog(props: Props, ref: any) {
             fieldNames={{ value: 'label' }}
             optionFilterProp='children'
             filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              (option?.label + option.value ?? '')
+                .toLowerCase()
+                .includes(input.toLowerCase())
             }
             options={props.allCountry}
           />

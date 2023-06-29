@@ -265,7 +265,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
                         disabled={!isAdd}
                         fieldNames={{ label: 'label', value: 'value' }}
                         filterOption={(input, option) =>
-                          (option?.label ?? '')
+                          (option?.label + option.value ?? '')
                             .toLowerCase()
                             .includes(input.toLowerCase())
                         }
