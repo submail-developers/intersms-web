@@ -6,15 +6,7 @@ import {
   useRef,
   useEffect,
 } from 'react'
-import {
-  Form,
-  Input,
-  ConfigProvider,
-  Button,
-  Drawer,
-  App,
-  Checkbox,
-} from 'antd'
+import { Form, Input, ConfigProvider, Button, Drawer, Checkbox } from 'antd'
 import TableCountry from './tableCountry/tableCountry'
 import { useSize, usePoint } from '@/hooks'
 import { useAppSelector } from '@/store/hook'
@@ -31,7 +23,6 @@ interface Props {
 }
 
 const Dialog = (props: Props, ref: any) => {
-  const { message } = App.useApp()
   const channlesStore = useAppSelector(channelsState)
   const size = useSize()
   const point = usePoint('xl')
@@ -56,18 +47,20 @@ const Dialog = (props: Props, ref: any) => {
     setchannelId(record.channel_id)
     setShow(true)
   }
+  const showTableLoading = () => {
+    setloading(true)
+  }
 
   useEffect(() => {
     if (show && channelId) {
       form.resetFields()
-      search()
+      search(true)
     }
   }, [show, channelId])
 
-  const search = async () => {
+  const search = async (ifsetloading = false) => {
     try {
-      setloading(true)
-      tableref && tableref.current?.cancel()
+      ifsetloading && setloading(true)
       const formVal = await form.getFieldsValue()
       const res = await getGroupRelatedData({
         group_id: channlesStore.activeChannels?.id || '',
@@ -75,17 +68,20 @@ const Dialog = (props: Props, ref: any) => {
         ...formVal,
       })
 
-      clearTimeout(timer.current)
-      timer.current = setTimeout(() => {
-        setTableData(res.data)
-        setloading(false)
-        clearTimeout(timer.current)
-      }, 0)
+      let length = 0
+      let _data = res.data.map((item) => {
+        item.bg_start = (length % 2) as 0 | 1
+        length += item.network_list.length > 1 ? item.network_list.length : 1
+        return item
+      })
+      setTableData(_data)
+      setloading(false)
       setIndeterminate(res.list_status == '2')
       setCheckAll(res.list_status == '1')
     } catch (error) {
       setloading(false)
     }
+    tableref && tableref.current?.cancel()
   }
 
   const close = () => {
@@ -95,18 +91,13 @@ const Dialog = (props: Props, ref: any) => {
 
   // 一键开启/关闭
   const onCheckAllChange = async () => {
-    tableref && tableref.current?.cancel()
-    message.loading({
-      content: '',
-      duration: 0,
-    })
+    showTableLoading()
     try {
       await oneTouchGroupCountryNetworkStatus({
         group_id: channlesStore.activeChannels?.id || '',
         channel_id: channelId,
         status: checkAll ? '0' : '1',
       })
-      message.destroy()
     } catch (error) {}
     await search()
   }
@@ -182,7 +173,7 @@ const Dialog = (props: Props, ref: any) => {
                       },
                     }}>
                     <Button
-                      onClick={search}
+                      onClick={() => search(true)}
                       type='primary'
                       size={size}
                       htmlType='submit'
@@ -201,6 +192,7 @@ const Dialog = (props: Props, ref: any) => {
             <TableCountry
               ref={tableref}
               search={search}
+              showTableLoading={showTableLoading}
               channelId={channelId}
               tabData={tableData}
               loading={loading}

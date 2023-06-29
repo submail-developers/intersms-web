@@ -60,10 +60,10 @@ export default function SendList() {
     label: string
     value: [Dayjs, Dayjs]
   }[] = [
-    { label: '最近7天', value: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近14天', value: [dayjs().add(-15, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近30天', value: [dayjs().add(-31, 'd'), dayjs().add(-1, 'd')] },
-    { label: '最近90天', value: [dayjs().add(-91, 'd'), dayjs().add(-1, 'd')] },
+    { label: '最近7天', value: [dayjs().add(-7, 'd'), dayjs().add(0, 'd')] },
+    { label: '最近14天', value: [dayjs().add(-14, 'd'), dayjs().add(0, 'd')] },
+    { label: '最近30天', value: [dayjs().add(-30, 'd'), dayjs().add(0, 'd')] },
+    { label: '最近90天', value: [dayjs().add(-90, 'd'), dayjs().add(0, 'd')] },
   ]
 
   const changePage = async (_page: number, _pageSize: number) => {
@@ -85,7 +85,7 @@ export default function SendList() {
   const initFormValues: FormValues = {
     channel: 'all',
     group: 'all',
-    time: [dayjs().add(-8, 'd'), dayjs().add(-1, 'd')],
+    time: [dayjs().add(-7, 'd'), dayjs().add(0, 'd')],
     keyword: '',
   }
 
@@ -160,8 +160,10 @@ export default function SendList() {
     {
       title: '号码',
       dataIndex: 'mobile',
-      className: 'paddingL30',
-      width: 150,
+      className: size == 'small' ? '' : 'paddingL30',
+      width: size == 'small' ? 120 : 150,
+      align: size == 'small' ? 'center' : 'left',
+      fixed: true,
     },
     {
       title: '短信正文',
@@ -176,7 +178,16 @@ export default function SendList() {
     {
       title: '发送名称',
       dataIndex: 'sender',
-      width: 100,
+      className: 'paddingL30',
+      width: 124,
+      render: (_, record) => (
+        <div
+          style={{ width: 120 }}
+          className='g-ellipsis'
+          title={record.sender}>
+          {record.sender}
+        </div>
+      ),
     },
     {
       title: '请求/完成时间',
@@ -195,7 +206,7 @@ export default function SendList() {
     {
       title: '下行耗时',
       dataIndex: 'timer',
-      width: 100,
+      width: 80,
       render: (_, record) => (
         <span style={{ color: '#0074d7' }}>{record.downlink_time}s</span>
       ),
@@ -203,6 +214,7 @@ export default function SendList() {
     {
       title: '回执',
       dataIndex: 'report_state',
+      width: 80,
       render: (_, record) => (
         <span style={{ color: '#00ae6f' }}>{record.report_state}</span>
       ),
@@ -210,21 +222,48 @@ export default function SendList() {
     {
       title: '国家/地区',
       dataIndex: 'country_cn',
+      width: 124,
+      render: (_, record) => (
+        <div
+          style={{ width: 120 }}
+          className='g-ellipsis'
+          title={record.country_cn}>
+          {record.country_cn}
+        </div>
+      ),
     },
     {
       title: '通道',
-      dataIndex: 'channel_name',
+      width: 124,
+      render: (_, record) => (
+        <div
+          style={{ width: 120 }}
+          className='g-ellipsis'
+          title={record.channel_name}>
+          {record.channel_name}
+        </div>
+      ),
     },
     {
       title: '通道组',
-      dataIndex: 'group_name',
+      width: 124,
+      render: (_, record) => (
+        <div
+          style={{ width: 120 }}
+          className='g-ellipsis'
+          title={record.group_name}>
+          {record.group_name}
+        </div>
+      ),
     },
     {
       title: '网络类型',
+      width: 100,
       render: (_, record) => <span>{record.network_name}</span>,
     },
     {
       title: '短信类型',
+      width: 100,
       render: (_, record) => (
         <span>{record.type == '2' ? '营销短信' : '行业短信'}</span>
       ),
@@ -346,14 +385,13 @@ export default function SendList() {
         </Form>
       </ConfigProvider>
       <Table
-        className='theme-cell bg-white'
+        className='theme-cell'
         columns={columns}
         dataSource={tableData}
         sticky
-        pagination={false}
+        pagination={pagination}
         rowKey={'id'}
         onRow={onRow}
-        // rowSelection={rowSelection}
         rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
         scroll={{ x: 'max-content' }}
         loading={loading}

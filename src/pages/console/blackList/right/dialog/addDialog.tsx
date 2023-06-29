@@ -111,7 +111,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   // 点击取消
   const handleCancel = () => {
-    // setIsModalOpen(false)
+    setIsModalOpen(false)
     // deleFile()
   }
 

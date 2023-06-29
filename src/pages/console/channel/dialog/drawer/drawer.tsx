@@ -30,7 +30,6 @@ interface Props {
 }
 
 const Dialog = (props: Props, ref: any) => {
-  const { message } = App.useApp()
   const size = useSize()
   const point = usePoint('xl')
   const [form] = Form.useForm()
@@ -51,34 +50,39 @@ const Dialog = (props: Props, ref: any) => {
     setShow(true)
     setchannelId(id)
   }
+  const showTableLoading = () => {
+    setloading(true)
+  }
 
   useEffect(() => {
     if (channelId) {
       form.resetFields()
-      search()
+      search(true)
     }
   }, [channelId])
 
-  const search = async () => {
+  const search = async (ifsetloading = false) => {
     try {
-      setloading(true)
-      tableref && tableref.current?.cancel()
+      ifsetloading && setloading(true)
       const formVal = await form.getFieldsValue()
       const res = await getChannelCountryList({
         channel: channelId,
         ...formVal,
       })
-      clearTimeout(timer.current)
-      timer.current = setTimeout(() => {
-        setTableData(res.data)
-        setloading(false)
-        clearTimeout(timer.current)
-      }, 20)
+      let length = 0
+      let _data = res.data.map((item) => {
+        item.bg_start = (length % 2) as 0 | 1
+        length += item.network_list.length > 1 ? item.network_list.length : 1
+        return item
+      })
+      setTableData(_data)
+      setloading(false)
       setIndeterminate(res.list_status == '2')
       setCheckAll(res.list_status == '1')
     } catch (error) {
       setloading(false)
     }
+    tableref && tableref.current?.cancel()
   }
 
   const close = () => {
@@ -89,17 +93,12 @@ const Dialog = (props: Props, ref: any) => {
   const [checkAll, setCheckAll] = useState(false)
 
   const onCheckAllChange = async () => {
-    tableref && tableref.current?.cancel()
-    message.loading({
-      content: '',
-      duration: 0,
-    })
+    setloading(true)
     try {
       await oneTouchChannelCountryNetworkStatus({
         channel_id: channelId,
         status: checkAll ? '0' : '1',
       })
-      message.destroy()
     } catch (error) {}
     await search()
   }
@@ -209,7 +208,7 @@ const Dialog = (props: Props, ref: any) => {
                       },
                     }}>
                     <Button
-                      onClick={search}
+                      onClick={() => search(true)}
                       type='primary'
                       size={size}
                       htmlType='submit'
@@ -228,6 +227,7 @@ const Dialog = (props: Props, ref: any) => {
             <TableCountry
               ref={tableref}
               search={search}
+              showTableLoading={showTableLoading}
               tabData={tableData}
               channelId={channelId}
               loading={loading}

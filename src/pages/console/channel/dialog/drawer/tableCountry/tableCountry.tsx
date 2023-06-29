@@ -1,5 +1,5 @@
 import { useState, forwardRef, useImperativeHandle } from 'react'
-import { TableColumnsType, App } from 'antd'
+import { TableColumnsType } from 'antd'
 import { Form, Input, Table, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
 import '@/style/drawerTable.scss'
@@ -25,14 +25,7 @@ interface Props {
   channelId: string
   tabData: DataType[]
   search: () => void
-}
-
-let bgContry = {
-  enabled: 0,
-  network: 0,
-  price_mke: 0,
-  price_tra: 0,
-  action: 0,
+  showTableLoading: () => void
 }
 
 const Enbled = (enbledProps: EnbledProps) => {
@@ -66,7 +59,6 @@ const Enbled = (enbledProps: EnbledProps) => {
 
 function MyTable(props: Props, ref: any) {
   const point = usePoint('xl')
-  const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
       cancel,
@@ -77,10 +69,7 @@ function MyTable(props: Props, ref: any) {
   const [form] = Form.useForm()
 
   const changeLock = async (record: DataType) => {
-    message.loading({
-      content: '',
-      duration: 0,
-    })
+    props.showTableLoading()
     try {
       await updateChannelCountryNetworkStatus({
         channel_id: props.channelId,
@@ -89,10 +78,8 @@ function MyTable(props: Props, ref: any) {
         status: record.country_enabled == '1' ? '0' : '1', // 0禁用1启用,
         type: '1', // 1操作国家  2操作运营商网络
       })
-      message.destroy()
     } catch (error) {}
     await props.search()
-    cancel()
   }
 
   const showEdit = (record: DataType, index: number = -1) => {
@@ -107,10 +94,7 @@ function MyTable(props: Props, ref: any) {
   }
   // 编辑保存
   const save = async (record: DataType, index: number = -1) => {
-    message.loading({
-      content: '',
-      duration: 0,
-    })
+    props.showTableLoading()
     let value = await form.validateFields()
     try {
       let countryParams: API.UpdateChannelCountryNetworkPriceParams,
@@ -134,23 +118,12 @@ function MyTable(props: Props, ref: any) {
         netParams && updateChannelCountryNetworkPrice(netParams),
       ]
       await Promise.all(list)
-      message.destroy()
     } catch (error) {}
     await props.search()
-    seteditCountryId('')
-    seteditNetId('')
   }
   const cancel = () => {
     seteditCountryId('')
     seteditNetId('')
-  }
-
-  bgContry = {
-    enabled: 0, // 是否启用   1是  0否
-    network: 0, // 运营商网络
-    price_mke: 0, // 营销价格
-    price_tra: 0, // 行业价格
-    action: 0,
   }
 
   const columns: TableColumnsType<DataType> = [
@@ -231,12 +204,11 @@ function MyTable(props: Props, ref: any) {
         if (record.network_list.length > 0) {
           return (
             <div className='grid'>
-              {record.network_list.map((item) => {
+              {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.network % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.network += 1
                 return (
                   <div
                     key={'name' + item.id}
@@ -248,11 +220,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.network % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.network += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return <div className={`sub-td paddingL30 ${trClassName}`}>-</div>
         }
       },
@@ -264,12 +232,11 @@ function MyTable(props: Props, ref: any) {
         if (record.network_list.length > 0) {
           return (
             <div className='grid'>
-              {record.network_list.map((item) => {
+              {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.price_tra % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.price_tra += 1
                 return (
                   <div
                     key={'price_tra' + item.id}
@@ -287,11 +254,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.price_tra % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.price_tra += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return <div className={`sub-td paddingL12 ${trClassName}`}>-</div>
         }
       },
@@ -303,12 +266,11 @@ function MyTable(props: Props, ref: any) {
         if (record.network_list.length > 0) {
           return (
             <div className='grid'>
-              {record.network_list.map((item) => {
+              {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.price_mke % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.price_mke += 1
                 return (
                   <div
                     key={'price_mke' + item.id}
@@ -326,11 +288,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.price_mke % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.price_mke += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return <div className={`sub-td paddingL12 ${trClassName}`}>-</div>
         }
       },
@@ -342,12 +300,11 @@ function MyTable(props: Props, ref: any) {
         if (record.network_list.length > 0) {
           return (
             <div className='grid'>
-              {record.network_list.map((item) => {
+              {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.enabled % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.enabled += 1
                 return (
                   <div
                     key={'state' + item.id}
@@ -368,11 +325,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.enabled % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.enabled += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return <div className={`sub-td ${trClassName}`}>-</div>
         }
       },
@@ -386,10 +339,9 @@ function MyTable(props: Props, ref: any) {
             <div className='grid'>
               {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.action % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.action += 1
                 return (
                   <div
                     key={'action' + item.id}
@@ -420,11 +372,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.action % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.action += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return (
             <div key={'action' + record.id} className={`${trClassName} sub-td`}>
               {record.id == editCountryId ? (

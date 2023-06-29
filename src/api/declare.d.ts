@@ -384,6 +384,7 @@ declare module 'apis' {
       network_id: string
       country_enabled: '1' | '0'
       network_list: GroupRelatedDataNetItem[]
+      bg_start: 0 | 1 // 手动添加的属性。运营商背景色 0-白色开始1灰色开始
     }
 
     interface GroupRelatedData extends Response<GroupRelatedDataItem[]> {
@@ -509,6 +510,7 @@ declare module 'apis' {
       region_code: string
       sug_price: string
       cost_price: string
+      bg_start: 0 | 1 // 手动添加的属性。运营商背景色 0-白色开始1灰色开始
     }
 
     interface ChannelRelatedDataRes

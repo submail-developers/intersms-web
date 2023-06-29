@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react'
 
 import type { TableColumnsType } from 'antd'
-import { Form, Input, Table, App, Button, Switch } from 'antd'
+import { Form, Input, Table, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
 import '@/style/drawerTable.scss'
 import {
@@ -29,13 +29,7 @@ interface Props {
   channelId: string
   tabData: DataType[]
   search: () => void
-}
-
-let bgContry = {
-  name: 0,
-  weight: 0,
-  status: 0,
-  action: 0,
+  showTableLoading: () => void
 }
 
 // Switch组件
@@ -68,7 +62,6 @@ const Enbled = (enbledProps: EnbledProps) => {
 
 function MyTable(props: Props, ref: any) {
   const point = usePoint('xl')
-  const { message } = App.useApp()
   useImperativeHandle(ref, () => {
     return {
       cancel,
@@ -81,10 +74,7 @@ function MyTable(props: Props, ref: any) {
 
   // 修改国家状态
   const changeLock = async (record: DataType) => {
-    message.loading({
-      content: '',
-      duration: 0,
-    })
+    props.showTableLoading()
     try {
       await updateGroupCountryNetworkStatus({
         group_id: channlesStore.activeChannels?.id || '',
@@ -94,10 +84,8 @@ function MyTable(props: Props, ref: any) {
         status: record.country_enabled == '1' ? '0' : '1', // 0禁用1启用,
         type: '1', // 1操作国家  2操作运营商网络
       })
-      message.destroy()
     } catch (error) {}
     await props.search()
-    cancel()
   }
   // 编辑
   const showEdit = (record: DataType, index: number = -1) => {
@@ -110,10 +98,7 @@ function MyTable(props: Props, ref: any) {
   }
   // 编辑保存
   const save = async (record: DataType, index: number = -1) => {
-    message.loading({
-      content: '',
-      duration: 0,
-    })
+    props.showTableLoading()
     let value = await form.validateFields()
     try {
       let countryParams: API.UpdateChannelsCountryNetworkParams,
@@ -142,11 +127,8 @@ function MyTable(props: Props, ref: any) {
       ]
       // 保存权重
       await Promise.all(list)
-      message.destroy()
     } catch (error) {}
     await props.search()
-    seteditNetworkId('')
-    seteditCountryId('')
   }
   // 取消编辑
   const cancel = () => {
@@ -154,13 +136,6 @@ function MyTable(props: Props, ref: any) {
     seteditCountryId('')
   }
 
-  // 初始化背景色状态
-  bgContry = {
-    name: 0,
-    weight: 0,
-    status: 0,
-    action: 0,
-  }
   const columns: TableColumnsType<DataType> = [
     {
       title: <div></div>,
@@ -220,12 +195,11 @@ function MyTable(props: Props, ref: any) {
         if (record.network_list.length > 0) {
           return (
             <div className='grid'>
-              {record.network_list.map((item) => {
+              {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.name % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.name += 1
                 return (
                   <div
                     key={'name' + item.id}
@@ -237,11 +211,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.name % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.name += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return <div className={`sub-td paddingL30 ${trClassName}`}>-</div>
         }
       },
@@ -253,12 +223,11 @@ function MyTable(props: Props, ref: any) {
         if (record.network_list.length > 0) {
           return (
             <div className='grid'>
-              {record.network_list.map((item) => {
+              {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.weight % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.weight += 1
                 return (
                   <div
                     key={'network_weight' + item.id}
@@ -276,11 +245,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.weight % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.weight += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return <div className={`sub-td paddingL12 ${trClassName}`}>-</div>
         }
       },
@@ -292,12 +257,11 @@ function MyTable(props: Props, ref: any) {
         if (record.network_list.length > 0) {
           return (
             <div className='grid'>
-              {record.network_list.map((item) => {
+              {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.status % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.status += 1
                 return (
                   <div
                     key={'status' + item.id}
@@ -318,11 +282,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.status % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.status += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return <div className={`${trClassName} sub-td paddingL12`}>-</div>
         }
       },
@@ -336,10 +296,9 @@ function MyTable(props: Props, ref: any) {
             <div className='grid'>
               {record.network_list.map((item, index) => {
                 let trClassName = ''
-                if (bgContry.action % 2 != 0) {
+                if ((index + record.bg_start) % 2 == 1) {
                   trClassName = 'bg-gray'
                 }
-                bgContry.action += 1
                 return (
                   <div
                     key={'active' + item.id}
@@ -370,11 +329,7 @@ function MyTable(props: Props, ref: any) {
             </div>
           )
         } else {
-          let trClassName = ''
-          if (bgContry.action % 2 != 0) {
-            trClassName = 'bg-gray'
-          }
-          bgContry.action += 1
+          let trClassName = record.bg_start == 0 ? '' : 'bg-gray'
           return (
             <div className={`${trClassName} sub-td`}>
               {record.id == editCountryId ? (
