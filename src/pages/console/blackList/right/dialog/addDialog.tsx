@@ -36,16 +36,15 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   const open = () => {
     form.resetFields()
+    setFileList([])
     setIsModalOpen(true)
   }
 
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const props: UploadProps = {
     onRemove: (file) => {
-      const index = fileList.indexOf(file)
-      const newFileList = fileList.slice()
-      newFileList.splice(index, 1)
-      setFileList(newFileList)
+      const arr = fileList.filter((item) => item != file)
+      setFileList(arr)
     },
     beforeUpload: (file) => {
       const isConform =
@@ -60,39 +59,44 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         return isConform || Upload.LIST_IGNORE
       }
       setFileList([...fileList, file])
-
       return false
     },
     fileList,
   }
 
-  let list_id: any
-  list_id = blackStore.activeBlack?.id || ''
   const handleOk = async () => {
+    message.loading('')
     try {
       const params = await form.validateFields()
-      params.list_id = list_id
-      fileList.map((item) => (params.file = item))
-
-      const res = await uploadBlackMobileList(params)
-      if (res) {
-        message.success('保存成功！')
-      }
+      let promiseList = [
+        uploadBlackMobileList({
+          ...params,
+          list_id: blackStore.activeBlack?.id,
+        }),
+      ]
+      fileList.forEach((item) =>
+        promiseList.push(
+          uploadBlackMobileList({
+            file: item,
+            list_id: blackStore.activeBlack?.id,
+            mobile: '',
+          }),
+        ),
+      )
+      await Promise.all(promiseList)
+      message.destroy()
+      message.success('保存成功！')
       setIsModalOpen(false)
       onSearch()
-    } catch (error) {}
+    } catch (error) {
+      message.destroy()
+      message.error('存在上传失败的文件')
+    }
   }
 
   // 点击取消
   const handleCancel = () => {
     setIsModalOpen(false)
-    // deleFile()
-  }
-
-  const deleFile = (file) => {
-    if (file.status === 'removed') {
-      return true
-    }
   }
 
   const { TextArea } = Input
@@ -112,13 +116,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         wrapperCol={{ span: 24 }}
         layout='vertical'
         autoComplete='off'>
-        <Row>
-          <Col span={24}>
-            <Form.Item label='list_id' name='list_id' hidden>
-              <Input placeholder='list_id' maxLength={30} />
-            </Form.Item>
-          </Col>
-        </Row>
         <Form.Item
           label={
             <div>
@@ -140,7 +137,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         </Form.Item>
         <Form.Item label='从文件导入'>
           <div key={Math.random()}>
-            <Upload {...props} onRemove={(file) => deleFile(file)}>
+            <Upload {...props}>
               <Button icon={<UploadOutlined />}>选择文件</Button>
               <p
                 className='color-gray'
