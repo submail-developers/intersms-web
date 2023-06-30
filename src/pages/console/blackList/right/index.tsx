@@ -104,7 +104,7 @@ export default function Right() {
         setCurrent(_lastCurrent)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   }
   // 点击分页
