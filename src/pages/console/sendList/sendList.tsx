@@ -170,7 +170,11 @@ export default function SendList() {
       dataIndex: 'message',
       width: 320,
       render: (_, record) => (
-        <Tooltip title={record.content} placement='bottom'>
+        <Tooltip
+          title={record.content}
+          placement='bottom'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
           <div className='g-ellipsis-2'>{record.content}</div>
         </Tooltip>
       ),
