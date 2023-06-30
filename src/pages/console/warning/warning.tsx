@@ -31,6 +31,9 @@ interface FormValues {
   type: string
   keyword: string
 }
+interface SwitchProps {
+  record: DataType
+}
 
 // 国家信息配置
 export default function NumberChannelsRoute() {
@@ -69,29 +72,11 @@ export default function NumberChannelsRoute() {
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<API.GetalArmConfigListItems[]>([])
   const [loading, setloading] = useState(false)
-  // 初始化form的值
-  const initFormValues: FormValues = {
-    id: '',
-    type: 'all',
-    keyword: '',
-  }
-  const search = async () => {
-    const values = await form.getFieldsValue()
-    formatSearchValue(values)
-  }
-  const formatSearchValue = (params: FormValues) => {
-    const { id, type, keyword } = params
-    const searchParams = {
-      id,
-      type,
-      keyword,
-    }
-    searchEvent(searchParams)
-  }
-  const searchEvent = async (params: API.GetalArmConfigListParams) => {
+  const search = async (ifshowLoading = false) => {
     try {
-      setloading(true)
-      const res = await getalArmConfigList(params)
+      ifshowLoading && setloading(true)
+      const values = await form.getFieldsValue()
+      const res = await getalArmConfigList(values)
       settableData(res.data)
       setloading(false)
     } catch (error) {
@@ -99,7 +84,7 @@ export default function NumberChannelsRoute() {
     }
   }
   useEffect(() => {
-    formatSearchValue(initFormValues)
+    search(true)
   }, [])
 
   const typeList = [
@@ -191,11 +176,7 @@ export default function NumberChannelsRoute() {
       render: (_, record) => {
         return (
           <>
-            <Switch
-              size='small'
-              checked={record.status == '1'}
-              onChange={(checked) => setSwicth(record, checked)}
-            />
+            <SwitchNode record={record}></SwitchNode>
             &nbsp;&nbsp;
             <span>{record.status == '1' ? '已启用' : '未启用'}</span>
           </>
@@ -234,19 +215,6 @@ export default function NumberChannelsRoute() {
   }
 
   const { message } = App.useApp()
-  //单独启用 停用事件
-  const setSwicth = async (record: any, checked: any) => {
-    let id = record.id
-    if (checked == true) {
-      const status = '1'
-      await updateAlarmConfigStatus({ id, status })
-      await search()
-    } else {
-      const status = '0'
-      await updateAlarmConfigStatus({ id, status })
-      await search()
-    }
-  }
   //批量停用/启用
   const batchDeactivation = async (isOnOff: any) => {
     if (isOnOff === '0') {
@@ -286,6 +254,30 @@ export default function NumberChannelsRoute() {
     await search()
     setSelectedRowKeys([])
   }
+
+  // switch
+  const SwitchNode = (props: SwitchProps) => {
+    const [loading, setloading] = useState(false)
+    // 修改开启状态
+    const changeState = async (_: any, event: any) => {
+      event.stopPropagation()
+      setloading(true)
+      await updateAlarmConfigStatus({
+        id: props.record.id,
+        status: props.record.status == '1' ? '0' : '1',
+      })
+      await search()
+      setloading(false)
+    }
+    return (
+      <Switch
+        size='small'
+        checked={props.record.status == '1'}
+        loading={loading}
+        onClick={(_, event) => changeState(_, event)}></Switch>
+    )
+  }
+
   return (
     <div data-class='warning'>
       <MenuTitle title='报警设置'></MenuTitle>
@@ -396,7 +388,7 @@ export default function NumberChannelsRoute() {
                   <Button
                     type='primary'
                     size={size}
-                    onClick={search}
+                    onClick={() => search(true)}
                     htmlType='submit'
                     style={{ width: 110, marginLeft: 0 }}>
                     搜索
