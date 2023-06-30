@@ -92,17 +92,21 @@ export default function Channel() {
         </span>
       ),
       dataIndex: 'country_cn',
-      width: 160,
-      ellipsis: true,
+      width: size == 'middle' ? 160 : 100,
+      // ellipsis: true,
       fixed: true,
       render: (_, record) => (
         <div style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
-          <div className='country_cn g-ellipsis' title={record.country_cn}>
+          <div
+            className='g-ellipsis'
+            title={record.country_cn}
+            style={{ width: size == 'middle' ? 160 : 100 }}>
             {record.country_cn}
           </div>
           <div
-            className='color-gray country_cn g-ellipsis'
-            title={record.country}>
+            className='color-gray g-ellipsis'
+            title={record.country}
+            style={{ width: size == 'middle' ? 160 : 100 }}>
             {record.country}
           </div>
         </div>
@@ -130,6 +134,11 @@ export default function Channel() {
       dataIndex: 'tra_group_name',
       className: 'trade-0',
       width: 160,
+      // render: (_, record) => (
+      //   <div style={{ width: 156 }} className='g-ellipsis'>
+      //     {record.tra_group_name}
+      //   </div>
+      // ),
     },
     {
       title: '行业Sender',
