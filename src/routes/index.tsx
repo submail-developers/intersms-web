@@ -31,7 +31,7 @@ const loaderFn = (props?: RouteExtParams, cb?: () => void) => {
 const handleFn = (params?: RouteExtParams) => {
   return {
     crumb: (data: RouteExtParams) => {
-      // 获取loader上的数据
+      //  获取loader上的数据
       return data.name
     },
     ...params,
