@@ -478,6 +478,58 @@ export const channelBindBlack = (
     { ...data },
   )
 }
+// 通道添加配置
+export const channelCreateListener = (data: API.updateChannelListener) => {
+  return request.post<any, API.Response<any>, API.updateChannelListener>(
+    'console/api/customer/create_listener',
+    {
+      ...data,
+    },
+  )
+}
+// 通道建立连接
+export const channelOpenListener = (data: API.updateChannelListener) => {
+  return request.post<any, API.Response<any>, API.updateChannelListener>(
+    'console/api/customer/open_listener',
+    {
+      ...data,
+    },
+  )
+}
+// 通道关闭SMPP连接
+export const channelCloseListener = (data: API.updateChannelListener) => {
+  return request.post<any, API.Response<any>, API.updateChannelListener>(
+    'console/api/customer/close_listener',
+    {
+      ...data,
+    },
+  )
+}
+// 通道删除配置信息
+export const channelDeleteListener = (data: API.updateChannelListener) => {
+  return request.post<any, API.Response<any>, API.updateChannelListener>(
+    'console/api/customer/delete_listener',
+    {
+      ...data,
+    },
+  )
+}
+// 通道删除配置信息
+enum Listener_url {
+  'console/api/customer/create_listener',
+  'console/api/customer/open_listener',
+  'console/api/customer/close_listener',
+  'console/api/customer/delete_listener',
+}
+export const channelUpdateListener = (
+  data: API.updateChannelListener,
+  type: '0' | '1' | '2' | '3',
+) => {
+  let url = Listener_url[type]
+  return request.post<any, API.Response<any>, API.updateChannelListener>(url, {
+    ...data,
+  })
+}
 /**
  * 通道管理end
  */

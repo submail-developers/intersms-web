@@ -452,6 +452,8 @@ declare module 'apis' {
       keywords: string // 敏感词明细
       block_id: string // 黑名单ID
       block_name: string // 黑名单名称
+      listener_status: '0' | '1' | '2' // 0配置未添加，1配置已添加未建立连接，2已建立连接
+      connection_status: '0' | '-1' | '-2' | '99' // 0无连接，-1连接失败正在重试，-2绑定失败正在重试，99连接异常无响应，其他值连接正常
     }
     // 新增/修改通道
     interface AddChannelParams {
@@ -568,6 +570,9 @@ declare module 'apis' {
     interface updateChannelBindBlackParams {
       channel_id: string
       block_id?: string // 敏感词ID
+    }
+    interface updateChannelListener {
+      channel_id: string
     }
     /**
      * 通道管理end

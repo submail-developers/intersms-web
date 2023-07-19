@@ -6,7 +6,14 @@ import MyDrawer from './dialog/drawer/drawer'
 import BindSensitiveWordDialog from './dialog/bindSensitiveWordDialog/bindSensitiveWordDialog'
 import BindBlackDialog from './dialog/bindBlackDialog/bindBlackDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import { getChannelList, deleteChannel } from '@/api'
+import {
+  getChannelList,
+  deleteChannel,
+  channelUpdateListener,
+  channelOpenListener,
+  channelCloseListener,
+  channelDeleteListener,
+} from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 import {
@@ -14,10 +21,91 @@ import {
   getOptionsLabel,
   channelTypeOptions,
 } from '@/utils/options'
+import { LoadingOutlined } from '@ant-design/icons'
 
 import './channel.scss'
 
 interface DataType extends API.ChannelItem {}
+type ConfigItemProps = {
+  record: DataType
+  type: '0' | '1' | '2' | '3' // 0添加配置1建立连接2删除连接3还原配置
+  initData: () => void
+}
+enum Titles {
+  '添加配置',
+  '建立连接',
+  '断开连接',
+  '还原配置',
+}
+
+enum Icons {
+  'peizhi',
+  'lianjie',
+  'duanlian',
+  'huanyuan',
+}
+const ConfigItem = (props: ConfigItemProps) => {
+  const [loading, setloading] = useState(false)
+  let active = false
+  switch (props.type) {
+    case '0':
+      active = props.record.listener_status == '0'
+      break
+    case '1':
+      active = props.record.listener_status == '1'
+      break
+    case '2':
+      active = props.record.listener_status == '2'
+      break
+    case '3':
+      active = props.record.listener_status != '0'
+      break
+    default:
+      break
+  }
+  const handleEvent = async () => {
+    if (!active) return
+    setloading(true)
+    await channelUpdateListener(
+      {
+        channel_id: props.record.id,
+      },
+      props.type,
+    )
+    setloading(false)
+    props.initData()
+  }
+  return (
+    <>
+      {loading ? (
+        <LoadingOutlined style={{ fontSize: '16px' }} className='active' />
+      ) : props.type == '3' && active ? (
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定还原该通道的配置吗？'
+          onConfirm={() => handleEvent()}
+          okText='确定'
+          cancelText='取消'>
+          <div
+            title={Titles[props.type]}
+            className={`icon iconfont icon-${Icons[props.type]} config ${
+              active && 'active'
+            }`}
+            aria-disabled={true}></div>
+        </Popconfirm>
+      ) : (
+        <div
+          title={Titles[props.type]}
+          className={`icon iconfont icon-${Icons[props.type]} config ${
+            active && 'active'
+          }`}
+          aria-disabled={true}
+          onClick={() => handleEvent()}></div>
+      )}
+    </>
+  )
+}
 
 // 发送列表
 export default function Channel() {
@@ -60,20 +148,14 @@ export default function Channel() {
   }
 
   const RenderConfig = (_: any, record: DataType) => {
+    const arr: ConfigItemProps['type'][] = ['0', '1', '2', '3']
     return (
       <Row gutter={16} className='config-wrap'>
-        <Col>
-          <div title='添加配置' className={`icon iconfont icon-peizhi`}></div>
-        </Col>
-        <Col>
-          <div title='建立连接' className={`icon iconfont icon-lianjie`}></div>
-        </Col>
-        <Col>
-          <div title='关闭连接' className={`icon iconfont icon-duanlian`}></div>
-        </Col>
-        <Col>
-          <div title='删除配置' className={`icon iconfont icon-huanyuan`}></div>
-        </Col>
+        {arr.map((item) => (
+          <Col key={item}>
+            <ConfigItem type={item} record={record} initData={initData} />
+          </Col>
+        ))}
       </Row>
     )
   }
@@ -160,7 +242,33 @@ export default function Channel() {
     {
       title: '连接状态',
       width: 100,
-      render: (_, record) => <div className='color-success'>无字段</div>,
+      render: (_, record) => {
+        let text = ''
+        let color = ''
+        switch (record.connection_status + '') {
+          case '0':
+            text = '无连接'
+            color = ''
+            break
+          case '-1':
+            text = '连接失败：正在重试'
+            color = 'color-error'
+            break
+          case '-2':
+            text = '绑定失败：正在重试'
+            color = 'color-error'
+            break
+          case '99':
+            text = '连接异常'
+            color = 'color-error'
+            break
+          default:
+            color = 'color-success'
+            text = '连接正常'
+        }
+
+        return <div className={color}>{text}</div>
+      },
     },
     {
       title: '链路数量',
@@ -253,6 +361,63 @@ export default function Channel() {
     } catch (error) {}
   }
 
+  // 批量处理配置
+  const updateListner = async (type: ConfigItemProps['type']) => {
+    if (selectedRowKeys.length == 0) {
+      message.warning('请选择通道！')
+      return
+    }
+    const selectedRows = list.filter((item) =>
+      selectedRowKeys.includes(item.id),
+    )
+    let actives = true
+    switch (type) {
+      case '0':
+      case '1':
+      case '2':
+        selectedRows.forEach((item) => {
+          console.log(type, item.listener_status, 'item.listener_status')
+          if (item.listener_status != type) {
+            actives = false
+          }
+        })
+        break
+      case '3':
+        selectedRows.forEach((item) => {
+          if (item.listener_status == '0') {
+            actives = false
+          }
+        })
+        break
+    }
+    if (!actives) {
+      switch (type) {
+        case '0':
+          message.warning('存在已添加配置的通道！')
+          break
+        case '1':
+          message.warning('存在未添加配置或已建立连接的通道！')
+          break
+        case '2':
+          message.warning('存在未建立连接的通道！')
+          break
+        case '3':
+          message.warning('存在未添加配置的通道！')
+          break
+      }
+      return
+    }
+    const channel_ids = selectedRowKeys.join(',')
+    await channelUpdateListener(
+      {
+        channel_id: channel_ids,
+      },
+      type,
+    )
+    // message.success('操作成功！')
+    initData()
+  }
+
   return (
     <div data-class='channel'>
       <MenuTitle title='通道管理'></MenuTitle>
@@ -261,15 +426,24 @@ export default function Channel() {
           <i className='icon iconfont icon-xinzeng'></i>
           <span>新增</span>
         </div>
-        <div className='btn'>
-          <i className='icon iconfont icon-peizhi'></i>
-          <span>配置</span>
-        </div>
+
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定配置选中的通道吗？'
+          onConfirm={() => updateListner('0')}
+          okText='确定'
+          cancelText='取消'>
+          <div className='btn'>
+            <i className='icon iconfont icon-peizhi'></i>
+            <span>配置</span>
+          </div>
+        </Popconfirm>
         <Popconfirm
           placement='bottom'
           title='警告'
           description='确定连接选中的通道吗？'
-          // onConfirm={deleteEvent}
+          onConfirm={() => updateListner('1')}
           okText='确定'
           cancelText='取消'>
           <div className='btn'>
@@ -281,7 +455,7 @@ export default function Channel() {
           placement='bottom'
           title='警告'
           description='确定断连选中的通道吗？'
-          // onConfirm={deleteEvent}
+          onConfirm={() => updateListner('2')}
           okText='确定'
           cancelText='取消'>
           <div className='btn'>
@@ -293,7 +467,7 @@ export default function Channel() {
           placement='bottom'
           title='警告'
           description='确定还原选中的通道吗？'
-          // onConfirm={deleteEvent}
+          onConfirm={() => updateListner('3')}
           okText='确定'
           cancelText='取消'>
           <div className='btn delete'>

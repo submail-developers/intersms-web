@@ -11,6 +11,13 @@
     .iconfont {
       cursor: pointer;
     }
+    .config {
+      cursor: not-allowed;
+    }
+    .active {
+      color: #0074d7;
+      cursor: pointer;
+    }
   }
   .bind-wrap {
     width: fit-content;
