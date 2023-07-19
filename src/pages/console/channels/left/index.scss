@@ -60,26 +60,34 @@
     color: #888;
     padding-left: 10px;
     .sens-word {
-      width: 100px;
-      text-align: right;
+      width: 130px;
+      text-align: left;
       padding-right: 8px;
       box-sizing: border-box;
     }
     .black-word {
-      width: 100px;
+      // width: 100px;
       position: relative;
       padding-left: 8px;
       box-sizing: border-box;
     }
-    .black-word::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 1px;
-      height: 14px;
-      background-color: #888;
+    .icon-guanjianci,
+    .icon-heimingdan {
+      color: #999;
     }
+    .icon-guanjianci:hover,
+    .icon-heimingdan:hover {
+      color: #282b31;
+    }
+    // .black-word::after {
+    //   content: '';
+    //   position: absolute;
+    //   left: 0;
+    //   top: 50%;
+    //   transform: translateY(-50%);
+    //   width: 1px;
+    //   height: 14px;
+    //   background-color: #888;
+    // }
   }
 }

@@ -1,7 +1,19 @@
 import { useAppDispatch, useAppSelector } from '@/store/hook'
 import { changeActiveChannels } from '@/store/reducers/channels'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import { Input, ConfigProvider, Table, Switch, Popconfirm, App } from 'antd'
+import {
+  Input,
+  ConfigProvider,
+  Table,
+  Switch,
+  Popconfirm,
+  App,
+  Button,
+  Dropdown,
+  Space,
+  Tooltip,
+} from 'antd'
+import { PaperClipOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
 import BindSensitiveWordDialog from './bindSensitiveWordDialog/bindSensitiveWordDialog'
@@ -89,11 +101,25 @@ export default function Left() {
             : ''
         return (
           <div className='fx word-wrap'>
-            <div className='sens-word g-ellipsis' title={sens_word}>
-              {sens_word}
-            </div>
-            <div className='black-word g-ellipsis' title={sens_word}>
-              {block_name}
+            <div
+              className='sens-word g-ellipsis'
+              style={{ marginLeft: 'auto' }}>
+              {sens_word && (
+                <Tooltip title={sens_word}>
+                  <Button
+                    style={{ border: '0', paddingRight: '0' }}
+                    className='icon iconfont icon-guanjianci'></Button>
+                </Tooltip>
+              )}
+              {/* </div>
+            <div className='black-word g-ellipsis' title={block_name}> */}
+              {block_name && (
+                <Tooltip title={block_name}>
+                  <Button
+                    style={{ border: '0' }}
+                    className='icon iconfont icon-heimingdan'></Button>
+                </Tooltip>
+              )}
             </div>
           </div>
         )
@@ -174,38 +200,77 @@ export default function Left() {
       message.warning('请选择通道组！')
     }
   }
+  const onMenuClick = (e) => {
+    // console.log('click', e)
+    if (e.key == '1') {
+      showBindSensDialog()
+    } else if (e.key == '2') {
+      showBindBlackDialog()
+    }
+  }
+  const items = [
+    {
+      key: '1',
+      label: '敏感词绑定',
+      icon: <PaperClipOutlined />,
+    },
+    {
+      key: '2',
+      label: '黑名单绑定',
+      icon: <PaperClipOutlined />,
+    },
+    // {
+    //   key: '3',
+    //   label: '模板套用绑定',
+    //   icon: <PaperClipOutlined />,
+    // },
+  ]
 
   return (
     <section data-class='channels-left' className={`${point ? '' : 'xl'}`}>
-      <div className='btn-group'>
-        <div className='btn' onClick={openAddDialog}>
-          <i className='icon iconfont icon-xinzeng'></i>
-          <span>新增</span>
-        </div>
-        <div className='btn' onClick={editEvent}>
-          <i className='icon iconfont icon-bianji'></i>
-          <span>编辑</span>
-        </div>
-        <div className='btn' onClick={showBindSensDialog}>
-          <i className='icon iconfont icon-bangding'></i>
-          <span>敏感词绑定</span>
-        </div>
-        <div className='btn' onClick={showBindBlackDialog}>
-          <i className='icon iconfont icon-bangding'></i>
-          <span>黑名单绑定</span>
-        </div>
-        <Popconfirm
-          placement='bottom'
-          title='警告'
-          description='确定删除当前通道组吗？'
-          onConfirm={deleteEvent}
-          okText='确定'
-          cancelText='取消'>
-          <div className='btn delete'>
-            <i className='icon iconfont icon-shanchu'></i>
-            <span>删除</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className='btn-group'>
+          <div className='btn' onClick={openAddDialog}>
+            <i className='icon iconfont icon-xinzeng'></i>
+            <span>新增</span>
           </div>
-        </Popconfirm>
+          <div className='btn' onClick={editEvent}>
+            <i className='icon iconfont icon-bianji'></i>
+            <span>编辑</span>
+          </div>
+          {/*  <div className='btn' onClick={showBindSensDialog}>
+            <i className='icon iconfont icon-bangding'></i>
+            <span>敏感词绑定</span>
+          </div>
+         <div className='btn' onClick={showBindBlackDialog}>
+            <i className='icon iconfont icon-bangding'></i>
+            <span>黑名单绑定</span>
+          </div> */}
+          <Popconfirm
+            placement='bottom'
+            title='警告'
+            description='确定删除当前通道组吗？'
+            onConfirm={deleteEvent}
+            okText='确定'
+            cancelText='取消'>
+            <div className='btn delete'>
+              <i className='icon iconfont icon-shanchu'></i>
+              <span>删除</span>
+            </div>
+          </Popconfirm>
+        </div>
+        <div>
+          <Space direction='vertical'>
+            <Dropdown.Button
+              menu={{
+                items,
+                onClick: onMenuClick,
+              }}
+              icon={<PaperClipOutlined />}>
+              &nbsp;绑定 &nbsp;
+            </Dropdown.Button>
+          </Space>
+        </div>
       </div>
       <div className='filter-wrap fx-col'>
         <div className='input-wrap'>
