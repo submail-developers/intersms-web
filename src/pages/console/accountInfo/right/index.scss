@@ -1,5 +1,12 @@
 [data-class='account-right'] {
   min-width: 430px;
+  @media (max-width: 1592px) {
+    .style-acc {
+      margin: 10px 0;
+      padding: 0 !important;
+    }
+  }
+
   .tabbar-head {
     margin-top: 12px;
     .panle-list {
