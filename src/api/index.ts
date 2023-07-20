@@ -451,7 +451,7 @@ export const oneTouchChannelCountryNetworkStatus = (
 
 // 通道绑定/取消绑定敏感词
 export const channelBindSensitiveWord = (
-  data: API.updateChannelBindSensitiveWordParams,
+  data: API.UpdateChannelBindSensitiveWordParams,
   bind: '0' | '1', // 1绑定0取消绑定
 ) => {
   const url =
@@ -461,72 +461,37 @@ export const channelBindSensitiveWord = (
   return request.post<
     any,
     API.Response<any>,
-    API.updateChannelBindSensitiveWordParams
+    API.UpdateChannelBindSensitiveWordParams
   >(url, { ...data })
 }
 // 通道绑定/取消绑定黑名单
 export const channelBindBlack = (
-  data: API.updateChannelBindBlackParams,
+  data: API.UpdateChannelBindBlackParams,
   bind: '0' | '1', // 1绑定0取消绑定
 ) => {
   const url =
     bind == '1'
       ? 'console/api/customer/save_channel_related_mobile_block'
       : 'console/api/customer/delete_channel_related_mobile_block'
-  return request.post<any, API.Response<any>, API.updateChannelBindBlackParams>(
+  return request.post<any, API.Response<any>, API.UpdateChannelBindBlackParams>(
     url,
     { ...data },
   )
 }
-// 通道添加配置
-export const channelCreateListener = (data: API.updateChannelListener) => {
-  return request.post<any, API.Response<any>, API.updateChannelListener>(
-    'console/api/customer/create_listener',
-    {
-      ...data,
-    },
-  )
-}
-// 通道建立连接
-export const channelOpenListener = (data: API.updateChannelListener) => {
-  return request.post<any, API.Response<any>, API.updateChannelListener>(
-    'console/api/customer/open_listener',
-    {
-      ...data,
-    },
-  )
-}
-// 通道关闭SMPP连接
-export const channelCloseListener = (data: API.updateChannelListener) => {
-  return request.post<any, API.Response<any>, API.updateChannelListener>(
-    'console/api/customer/close_listener',
-    {
-      ...data,
-    },
-  )
-}
-// 通道删除配置信息
-export const channelDeleteListener = (data: API.updateChannelListener) => {
-  return request.post<any, API.Response<any>, API.updateChannelListener>(
-    'console/api/customer/delete_listener',
-    {
-      ...data,
-    },
-  )
-}
-// 通道删除配置信息
+// 更新通道配置
 enum Listener_url {
-  'console/api/customer/create_listener',
-  'console/api/customer/open_listener',
-  'console/api/customer/close_listener',
-  'console/api/customer/delete_listener',
+  'console/api/customer/create_listener', // 添加配置
+  'console/api/customer/open_listener', // 建立连接
+  'console/api/customer/close_listener', // 断开连接
+  'console/api/customer/delete_listener', // 还原配置
 }
+// 4合1接口， 更新通道配置
 export const channelUpdateListener = (
-  data: API.updateChannelListener,
-  type: '0' | '1' | '2' | '3',
+  data: API.UpdateChannelListener,
+  type: '0' | '1' | '2' | '3', // 0添加配置，1建立连接，2断开连接，3还原配置
 ) => {
   let url = Listener_url[type]
-  return request.post<any, API.Response<any>, API.updateChannelListener>(url, {
+  return request.post<any, API.Response<any>, API.UpdateChannelListener>(url, {
     ...data,
   })
 }

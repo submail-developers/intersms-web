@@ -562,16 +562,16 @@ declare module 'apis' {
       status: '0' | '1' // 1启用0禁用
     }
     // 通道绑定/取消绑定敏感词
-    interface updateChannelBindSensitiveWordParams {
+    interface UpdateChannelBindSensitiveWordParams {
       channel_id: string
       sens_id: string // 敏感词ID
     }
     // 通道绑定/取消绑定黑名单
-    interface updateChannelBindBlackParams {
+    interface UpdateChannelBindBlackParams {
       channel_id: string
       block_id?: string // 敏感词ID
     }
-    interface updateChannelListener {
+    interface UpdateChannelListener {
       channel_id: string
     }
     /**

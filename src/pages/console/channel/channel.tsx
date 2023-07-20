@@ -6,14 +6,7 @@ import MyDrawer from './dialog/drawer/drawer'
 import BindSensitiveWordDialog from './dialog/bindSensitiveWordDialog/bindSensitiveWordDialog'
 import BindBlackDialog from './dialog/bindBlackDialog/bindBlackDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import {
-  getChannelList,
-  deleteChannel,
-  channelUpdateListener,
-  channelOpenListener,
-  channelCloseListener,
-  channelDeleteListener,
-} from '@/api'
+import { getChannelList, deleteChannel, channelUpdateListener } from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 import {
