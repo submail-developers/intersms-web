@@ -265,31 +265,31 @@ export const routerList: RouteObject[] = [
       },
     ],
   },
-  {
-    path: '/data',
-    element: <Layout />,
-    loader: loaderFn({ name: '数据管理' }),
-    handle: handleFn({ alias: '数据', icon: 'icon-tongji1' }),
-    children: [
-      {
-        path: 'manage',
-        handle: handleFn({ alias: '数据管理' }),
-        children: [
-          {
-            path: 'index',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/test'))}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: '数据管理' }),
-            handle: handleFn({ alias: '数据管理' }),
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   path: '/data',
+  //   element: <Layout />,
+  //   loader: loaderFn({ name: '数据管理' }),
+  //   handle: handleFn({ alias: '数据', icon: 'icon-tongji1' }),
+  //   children: [
+  //     {
+  //       path: 'manage',
+  //       handle: handleFn({ alias: '数据管理' }),
+  //       children: [
+  //         {
+  //           path: 'index',
+  //           element: (
+  //             <LazyImportComponent
+  //               lazyChildren={lazy(() => import('@/pages/test'))}
+  //             />
+  //           ),
+  //           errorElement: <Error />,
+  //           loader: loaderFn({ name: '数据管理' }),
+  //           handle: handleFn({ alias: '数据管理' }),
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     path: '/manage',
     element: <Layout />,
@@ -313,19 +313,19 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '账号信息管理' }),
             handle: handleFn({ alias: '账号信息管理' }),
           },
-          {
-            path: 'userability',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(
-                  () => import('@/pages/manage/userAbility/userAbility'),
-                )}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: '账号功能管理' }),
-            handle: handleFn({ alias: '账号功能管理' }),
-          },
+          // {
+          //   path: 'userability',
+          //   element: (
+          //     <LazyImportComponent
+          //       lazyChildren={lazy(
+          //         () => import('@/pages/manage/userAbility/userAbility'),
+          //       )}
+          //     />
+          //   ),
+          //   errorElement: <Error />,
+          //   loader: loaderFn({ name: '账号功能管理' }),
+          //   handle: handleFn({ alias: '账号功能管理' }),
+          // },
         ],
       },
     ],

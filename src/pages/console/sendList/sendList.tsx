@@ -44,7 +44,7 @@ export default function SendList() {
   const [loading, setloading] = useState(false)
   const [total, settotal] = useState<number>(0)
   const [page, setpage] = useState<number>(1)
-  const [pageSize, setpageSize] = useState<number>(20)
+  const [pageSize, setpageSize] = useState<number>(10)
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
   // 通道列表

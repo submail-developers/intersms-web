@@ -110,6 +110,8 @@ export default function Channel() {
   const drawerRef: MutableRefObject<any> = useRef(null)
   const [list, setlist] = useState<DataType[]>([])
   const [loading, setloading] = useState(false)
+  let timer = useRef(null) // 轮询
+  const [resetTime, setResetTime] = useState(0) // 查询次数
 
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
@@ -233,7 +235,7 @@ export default function Channel() {
       ),
     },
     {
-      title: '连接状态',
+      title: <span title='每10秒刷新一次列表'>连接状态</span>,
       width: 100,
       render: (_, record) => {
         let text = ''
@@ -319,15 +321,27 @@ export default function Channel() {
     initData()
   }, [])
 
+  useEffect(() => {
+    timer.current && clearTimeout(timer.current)
+    timer.current = setTimeout(() => {
+      initData(false)
+    }, 10000) // 10s轮询一次，更新连接状态
+    return () => {
+      if (timer) clearTimeout(timer.current)
+    }
+  }, [resetTime])
+
   // 获取列表
-  const initData = async () => {
+  const initData = async (showLoading = true) => {
     try {
-      setloading(true)
+      setloading(showLoading)
       const res = await getChannelList({ id: '' })
       setlist(res.data)
       setloading(false)
+      setResetTime(() => resetTime + 1)
     } catch (error) {
       setloading(false)
+      setResetTime(() => resetTime + 1)
     }
   }
   // 删除通道
