@@ -147,7 +147,7 @@ declare module 'apis' {
       channel_name: string // 通道
       country_cn: string //国家名称
       region_code: string
-      report_state: string // 发送状态
+      report_state: '0' | '1' | '2' // 发送状态 0失败， 1成功，2发送中
       report_code: string // 状态码
       report_desc: string // 状态描述
       downlink_time: string // 下行耗时

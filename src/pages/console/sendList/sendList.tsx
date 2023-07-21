@@ -29,6 +29,12 @@ interface FormValues {
   keyword: string
 }
 
+enum reportClassName {
+  'color-error',
+  'color-success',
+  'color-gray',
+}
+
 const allChannel = { name: '全部通道', id: 'all' } as API.ChannelItem
 const allChannels = {
   name: '全部通道组',
@@ -217,10 +223,12 @@ export default function SendList() {
     },
     {
       title: '回执',
-      dataIndex: 'report_state',
-      width: 80,
+      dataIndex: 'report_code',
+      width: 100,
       render: (_, record) => (
-        <span style={{ color: '#00ae6f' }}>{record.report_state}</span>
+        <span className={`${reportClassName[record.report_state]}`}>
+          {record.report_code || '回执未返回'}
+        </span>
       ),
     },
     {
