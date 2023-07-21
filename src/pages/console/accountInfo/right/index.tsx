@@ -185,7 +185,8 @@ export default function Right(props: Props) {
             </div>
           ))}
         </div>
-        <div className={`fx-auto ext-switch fx-between-center ${size}`}>
+        <div
+          className={`style-acc fx-auto ext-switch fx-between-center ${size}`}>
           {activeKey == '1' ? (
             <div className='switch-all fx-shrink'>
               <Switch
