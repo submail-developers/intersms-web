@@ -59,8 +59,10 @@
   .word-wrap {
     color: #888;
     padding-left: 10px;
+    height: 32px;
+    line-height: 32px;
     .sens-word {
-      width: 130px;
+      width: 100px;
       text-align: left;
       padding-right: 8px;
       box-sizing: border-box;

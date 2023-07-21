@@ -106,18 +106,19 @@ export default function Left() {
               style={{ marginLeft: 'auto' }}>
               {sens_word && (
                 <Tooltip title={sens_word}>
-                  <Button
+                  <i
                     style={{ border: '0', paddingRight: '0' }}
-                    className='icon iconfont icon-guanjianci'></Button>
+                    className='icon iconfont icon-guanjianci'></i>{' '}
+                  &nbsp; &nbsp;
                 </Tooltip>
               )}
               {/* </div>
             <div className='black-word g-ellipsis' title={block_name}> */}
               {block_name && (
                 <Tooltip title={block_name}>
-                  <Button
+                  <i
                     style={{ border: '0' }}
-                    className='icon iconfont icon-heimingdan'></Button>
+                    className='icon iconfont icon-heimingdan'></i>
                 </Tooltip>
               )}
             </div>
@@ -303,7 +304,7 @@ export default function Left() {
             },
           }}>
           <Table
-            className='theme-cell bg-gray'
+            className='acc-table theme-cell bg-gray'
             showHeader={false}
             columns={columns}
             dataSource={tableData}
