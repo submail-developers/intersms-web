@@ -25,14 +25,13 @@ React18 + vite + Typescript4.9 + react-routerV6 + axios + reduxjs/toolkit + antd
 - **Install：**
 
 ```text
-+ npm install
-+ pnpm install
+  npm install
 ```
 
 - **Run：**
 
   ```text
-    + npm run dev
+    npm run dev
   ```
 
 - **Build：**
