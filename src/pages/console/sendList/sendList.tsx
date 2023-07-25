@@ -351,7 +351,7 @@ export default function SendList() {
 
           <MyFormItem
             size={size}
-            label='注册时间'
+            label='发送时间'
             style={{ marginBottom: '10px' }}>
             <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
               <RangePicker
