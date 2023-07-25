@@ -200,22 +200,22 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '报警设置' }),
             handle: handleFn({ alias: '报警设置' }),
           },
-          {
-            path: 'numberattribution',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(
-                  () =>
-                    import(
-                      '@/pages/console/numberAttribution/numberAttribution'
-                    ),
-                )}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: '号码归属查询' }),
-            handle: handleFn({ alias: '号码归属查询' }),
-          },
+          // {
+          //   path: 'numberattribution',
+          //   element: (
+          //     <LazyImportComponent
+          //       lazyChildren={lazy(
+          //         () =>
+          //           import(
+          //             '@/pages/console/numberAttribution/numberAttribution'
+          //           ),
+          //       )}
+          //     />
+          //   ),
+          //   errorElement: <Error />,
+          //   loader: loaderFn({ name: '号码归属查询' }),
+          //   handle: handleFn({ alias: '号码归属查询' }),
+          // },
           {
             path: 'sensitiveword',
             element: (
