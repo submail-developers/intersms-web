@@ -24,33 +24,35 @@ React18 + vite + Typescript4.9 + react-routerV6 + axios + reduxjs/toolkit + antd
 
 - **Install：**
 
-````text
-npm install
-pnpm install
-
+```text
++ npm install
++ pnpm install
+```
 
 - **Run：**
 
 ```text
-npm run dev
-
++ npm run dev
+```
 
 - **Build：**
 
-+ 打包本地环境
+* 打包本地环境
 
 npm run build:dev
 
-+ 打包测试环境（后端的本地环境）
+- 打包测试环境（后端的本地环境）
 
 npm run build:test
 
-+ 打包正式环境（正式上线环境）
+- 打包正式环境（正式上线环境）
 
 npm run build:pro
 
-+ 预览(npm run build:dev后运行)
+- 预览(npm run build:dev 后运行)
 
 npm run preview
 
-````
+```
+
+```
