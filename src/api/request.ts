@@ -5,10 +5,12 @@ import type {
   AxiosInstance,
   AxiosResponse,
 } from 'axios'
-
+const baseURL = import.meta.env.DEV
+  ? '/apis/'
+  : (import.meta.env.VITE_API_URL as string)
 const request: AxiosInstance = axios.create({
   timeout: 60 * 1000,
-  baseURL: import.meta.env.VITE_API_URL as string,
+  baseURL: baseURL,
 })
 // 前置拦截
 request.interceptors.request.use(

@@ -112,7 +112,7 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
           rewrite: (path) => path.replace(/^\/mytest/, ''),
         },
         '/apis/': {
-          target: 'http://zjhtest.submail.intersms.com',
+          target: viteEnv.VITE_API_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/apis/, ''),
           // secure: false,
