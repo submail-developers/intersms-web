@@ -30,9 +30,9 @@ React18 + vite + Typescript4.9 + react-routerV6 + axios + reduxjs/toolkit + antd
 
 - **Run：**
 
-  ```text
-    npm run dev
-  ```
+```text
+  npm run dev
+```
 
 - **Build：**
 
