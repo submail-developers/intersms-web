@@ -86,7 +86,9 @@ export default function Channel() {
       width: 240,
       dataIndex: 'keywords',
       render: (_, record) => (
-        <span className='color-words g-ellipsis-2'>{record.keywords}</span>
+        <span className='color-words g-ellipsis-2' title={record.keywords}>
+          {record.keywords}
+        </span>
       ),
     },
     {
