@@ -240,20 +240,20 @@ export default function Channel() {
       render: (_, record) => {
         let text = ''
         let color = ''
-        switch (record.connection_status + '') {
-          case '0':
+        switch (record.connection_status) {
+          case 0:
             text = '无连接'
             color = ''
             break
-          case '-1':
+          case -1:
             text = '连接失败：正在重试'
             color = 'color-error'
             break
-          case '-2':
+          case -2:
             text = '绑定失败：正在重试'
             color = 'color-error'
             break
-          case '99':
+          case 99:
             text = '连接异常'
             color = 'color-error'
             break
@@ -268,7 +268,21 @@ export default function Channel() {
     {
       title: '链路数量',
       width: 80,
-      render: (_, record) => <div>1</div>,
+      render: (_, record) => {
+        let num: number
+        switch (record.connection_status) {
+          case 0:
+          case -1:
+          case -2:
+          case 99:
+            num = 0
+            break
+          default:
+            num = record.connection_status
+        }
+
+        return <div>{num}</div>
+      },
     },
     {
       title: '配置',

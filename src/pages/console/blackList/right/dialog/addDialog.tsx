@@ -72,10 +72,15 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       duration: 0,
     })
     if (Boolean(params.mobile)) {
-      uploadBlackMobileList({
+      await uploadBlackMobileList({
         ...params,
         list_id: blackStore.activeBlack?.id,
       })
+      if (fileList.length == 0) {
+        message.destroy()
+        message.success('保存成功！')
+        setIsModalOpen(false)
+      }
     }
     if (fileList.length > 0) {
       await uploadFileEvent(0)
@@ -102,7 +107,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       // 全部上传成功
       if (copyFileList.current.length == 0) {
         message.destroy()
-        message.success('保存成功！')
+        message.success('上传成功！')
         setIsModalOpen(false)
       } else {
         // 存在上传失败的文件

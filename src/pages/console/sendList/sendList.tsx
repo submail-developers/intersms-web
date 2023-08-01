@@ -287,9 +287,9 @@ export default function SendList() {
       render: (_, record) => {
         return (
           <span>
-            <span style={{ color: '#888888' }}>{record.fee}</span>
+            <span style={{ color: '#888888' }}>{record.cost}</span>
             <br />
-            {record.cost}
+            {record.fee}
           </span>
         )
       },

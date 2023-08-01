@@ -25,6 +25,8 @@ export default function Right() {
   const drawerRef: MutableRefObject<any> = useRef(null)
   const size = useSize()
   const { message } = App.useApp()
+  let timer = useRef(null) // 轮询
+  const [resetTime, setResetTime] = useState(0) // 查询次数
   // 展示新增弹框
   const showAddDialog = () => {
     addChannelDialogRef.current.open()
@@ -35,13 +37,28 @@ export default function Right() {
       getList()
     }
   }, [channlesStore.activeChannels])
+
+  useEffect(() => {
+    if (channlesStore.activeChannels) {
+      timer.current && clearTimeout(timer.current)
+      timer.current = setTimeout(() => {
+        getList()
+      }, 10000) // 10s轮询一次，更新连接状态
+    }
+    return () => {
+      if (timer) clearTimeout(timer.current)
+    }
+  }, [channlesStore.activeChannels, resetTime])
   const getList = async () => {
     try {
       const res = await getGroupChannelList({
         group_id: channlesStore.activeChannels?.id || '',
       })
       settableData(res.data)
-    } catch (error) {}
+      setResetTime(() => resetTime + 1)
+    } catch (error) {
+      setResetTime(() => resetTime + 1)
+    }
   }
 
   const updateList = async () => {
@@ -131,7 +148,33 @@ export default function Right() {
     {
       title: '连接状态',
       width: 120,
-      render: (_, record) => <div style={{ color: '#e81f1f' }}>没有字段</div>,
+      render: (_, record) => {
+        let text = ''
+        let color = ''
+        switch (record.connection_status) {
+          case 0:
+            text = '无连接'
+            color = ''
+            break
+          case -1:
+            text = '连接失败：正在重试'
+            color = 'color-error'
+            break
+          case -2:
+            text = '绑定失败：正在重试'
+            color = 'color-error'
+            break
+          case 99:
+            text = '连接异常'
+            color = 'color-error'
+            break
+          default:
+            color = 'color-success'
+            text = '连接正常'
+        }
+
+        return <div className={color}>{text}</div>
+      },
     },
     {
       title: '关键字',
