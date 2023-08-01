@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import {
   Button,
   Select,
@@ -9,7 +9,8 @@ import {
   Table,
   Tooltip,
 } from 'antd'
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
+import { findDOMNode } from 'react-dom'
+import type { ColumnsType } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
@@ -17,10 +18,10 @@ import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import { getSendList, getChannelList, getChannelGroupList } from '@/api'
 import { useSize } from '@/hooks'
+import { useThrottleFn } from 'ahooks'
 import { API } from 'apis'
 
 import './sendList.scss'
-
 interface DataType extends API.SendListItem {}
 interface FormValues {
   channel: string
@@ -48,9 +49,10 @@ export default function SendList() {
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<DataType[]>([])
   const [loading, setloading] = useState(false)
+  const loadingTag = useRef(false)
   const [total, settotal] = useState<number>(0)
-  const [page, setpage] = useState<number>(1)
-  const [pageSize, setpageSize] = useState<number>(10)
+  const scrollRef = useRef(null)
+  const pageInfo = useRef(0)
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
   // 通道列表
@@ -72,20 +74,13 @@ export default function SendList() {
     { label: '最近90天', value: [dayjs().add(-90, 'd'), dayjs().add(0, 'd')] },
   ]
 
-  const changePage = async (_page: number, _pageSize: number) => {
-    if (_page != page) setpage(_page)
-    if (_pageSize != pageSize) setpageSize(_pageSize)
-  }
+  const [tableWrapHeight, settableWrapHeight] = useState(0)
 
-  const pagination: TablePaginationConfig = {
-    position: ['bottomRight'],
-    onChange: changePage,
-    total: total,
-    defaultPageSize: 10,
-    pageSizeOptions: [10, 20, 50, 100],
-    showQuickJumper: true, // 快速跳转
-    showTotal: (total, range) => `共 ${total} 条`,
-  }
+  const tableWrapRef = useCallback((node) => {
+    if (node !== null) {
+      settableWrapHeight(node.getBoundingClientRect().height)
+    }
+  }, [])
 
   // 初始化form的值
   const initFormValues: FormValues = {
@@ -96,8 +91,15 @@ export default function SendList() {
   }
 
   // 获取列表数据
-  const search = async () => {
-    setloading(true)
+  const search = async (next = false) => {
+    console.log(pageInfo.current, 'pageInfo.current')
+    loadingTag.current = true
+    let p = pageInfo.current + 1
+    if (!next) {
+      setloading(true)
+      p = 1
+      pageInfo.current = 1
+    }
     const values = await form.getFieldsValue()
     const { channel, group, time, keyword } = values
     const start = (time && time[0].format('YYYY-MM-DD')) || ''
@@ -109,22 +111,73 @@ export default function SendList() {
       channel,
       group,
       keyword,
-      page,
-      limit: pageSize,
+      page: p,
+      limit: 15,
     }
+
     try {
       const res = await getSendList(params)
-      settableData(res.data)
-      settotal(res.total)
+      if (res.data.length > 0) {
+        if (next) {
+          pageInfo.current += 1
+          settableData([...tableData, ...res.data])
+        } else {
+          settableData(res.data)
+          toTop()
+        }
+        settotal(res.total)
+      }
       setloading(false)
+      loadingTag.current = false
     } catch (error) {
       setloading(false)
+      loadingTag.current = false
+    }
+  }
+
+  // 节流
+  const { run } = useThrottleFn(search, {
+    wait: 1000,
+  })
+
+  // 返回顶部
+  const toTop = () => {
+    // 获取表格滚动元素
+    const table = findDOMNode(scrollRef.current)
+    const tableBody = (table as Element)?.querySelector('.ant-table-body')
+    tableBody?.scrollTo(0, 0)
+  }
+
+  const scrollEvent = () => {
+    // 如果正在加载数据中，不重复进行操作
+    if (loadingTag.current) return
+    if (total <= tableData.length) return
+
+    // 获取表格滚动元素
+    const table = findDOMNode(scrollRef.current)
+    const tableBody = (table as Element)?.querySelector('.ant-table-body')
+
+    // 容器可视区高度
+    const tableBodyHeight: number = tableBody?.clientHeight
+      ? tableBody?.clientHeight
+      : 0
+
+    // 内容高度
+    const contentHeight = tableBody?.scrollHeight ? tableBody?.scrollHeight : 0
+
+    // 距离顶部的高度
+    const toTopHeight = tableBody?.scrollTop ? tableBody?.scrollTop : 0
+
+    // 当距离底部只有100时，重新获取数据
+    if (contentHeight - (toTopHeight + tableBodyHeight) <= 100) {
+      // 如果当前页数据大于等于总页数，则代表没有数据了
+      run(true)
     }
   }
 
   const resetForm = () => {
     form.resetFields()
-    search()
+    run()
   }
 
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
@@ -135,11 +188,9 @@ export default function SendList() {
     form.resetFields()
     getChannel()
     getChannels()
+    pageInfo.current = 1
+    run()
   }, [])
-
-  useEffect(() => {
-    search()
-  }, [page, pageSize])
   // 获取通道列表
   const getChannel = async () => {
     try {
@@ -381,7 +432,7 @@ export default function SendList() {
               <Button
                 type='primary'
                 size={size}
-                onClick={search}
+                onClick={() => run()}
                 style={{ width: 110, marginLeft: 0 }}>
                 搜索
               </Button>
@@ -396,18 +447,32 @@ export default function SendList() {
           </Form.Item>
         </Form>
       </ConfigProvider>
-      <Table
-        className='theme-cell'
-        columns={columns}
-        dataSource={tableData}
-        sticky
-        pagination={pagination}
-        rowKey={'id'}
-        onRow={onRow}
-        rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
-        scroll={{ x: 'max-content' }}
-        loading={loading}
-      />
+      <div
+        className='table-wrap'
+        onScrollCapture={scrollEvent}
+        ref={tableWrapRef}>
+        <Table
+          className='theme-cell'
+          columns={columns}
+          dataSource={tableData}
+          sticky
+          pagination={false}
+          rowKey={'id'}
+          onRow={onRow}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
+          // 50表头的高度
+          scroll={{
+            x: 'max-content',
+            y: tableWrapHeight - (size == 'small' ? 0 : 50),
+          }}
+          loading={loading}
+          ref={(c) => {
+            scrollRef.current = c
+          }}
+        />
+      </div>
     </div>
   )
 }

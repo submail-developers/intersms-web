@@ -1,4 +1,7 @@
 [data-class='sendlist'] {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   .refresh {
     height: 100%;
     &.middle {
@@ -26,5 +29,10 @@
       transform-origin: center;
       transform: rotate(180deg);
     }
+  }
+  .table-wrap {
+    flex: 1;
+    flex-shrink: 0;
+    overflow-y: hidden;
   }
 }
