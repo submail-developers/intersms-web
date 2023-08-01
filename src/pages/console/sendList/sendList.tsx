@@ -462,7 +462,6 @@ export default function SendList() {
           rowClassName={(record, index) =>
             index == activeIndex ? 'active' : ''
           }
-          // 50表头的高度
           scroll={{
             x: 'max-content',
             y: tableWrapHeight - (size == 'small' ? 0 : 50),
