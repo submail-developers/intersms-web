@@ -309,7 +309,7 @@ export default function Channel() {
             placement='left'
             title='警告'
             description='确定删除该通道吗？'
-            onConfirm={() => deleteEvent(record.id)}
+            onConfirm={() => deleteEvent(record)}
             okText='确定'
             cancelText='取消'>
             <Button type='link'>删除</Button>
@@ -363,30 +363,20 @@ export default function Channel() {
     }
   }
   // 删除通道
-  const deleteEvent = async (ids: string | React.Key[]) => {
-    let id = ''
-    if (Array.isArray(ids)) {
-      if (ids.length === 0) {
-        message.warning('请选择删除的通道！')
-        return
-      }
-      id = ids.join(',')
-    } else {
-      id = ids
+  const deleteEvent = async (record: DataType) => {
+    if (record.listener_status == '2') {
+      message.warning('请断开连接后再删除！')
+      return
     }
     try {
-      await deleteChannel({ id })
+      await deleteChannel({ id: record.id })
       message.success('删除成功')
       initData()
-      if (Array.isArray(ids)) {
-        setSelectedRowKeys([])
-      } else {
-        setSelectedRowKeys(selectedRowKeys.filter((item) => item != ids))
-      }
+      setSelectedRowKeys(selectedRowKeys.filter((item) => item != record.id))
     } catch (error) {}
   }
 
-  // 批量处理配置
+  // 批量处理配置（批量断连和批量还原不要这两个需求，但逻辑还在）
   const updateListner = async (type: ConfigItemProps['type']) => {
     if (selectedRowKeys.length == 0) {
       message.warning('请选择通道！')
@@ -401,7 +391,6 @@ export default function Channel() {
       case '1':
       case '2':
         selectedRows.forEach((item) => {
-          console.log(type, item.listener_status, 'item.listener_status')
           if (item.listener_status != type) {
             actives = false
           }
@@ -476,7 +465,7 @@ export default function Channel() {
             <span>连接</span>
           </div>
         </Popconfirm>
-        <Popconfirm
+        {/* <Popconfirm
           placement='bottom'
           title='警告'
           description='确定断连选中的通道吗？'
@@ -499,19 +488,7 @@ export default function Channel() {
             <i className='icon iconfont icon-huanyuan'></i>
             <span>还原</span>
           </div>
-        </Popconfirm>
-        <Popconfirm
-          placement='bottom'
-          title='警告'
-          description='确定删除选中的通道吗？'
-          onConfirm={() => deleteEvent(selectedRowKeys)}
-          okText='确定'
-          cancelText='取消'>
-          <div className='btn delete line'>
-            <i className='icon iconfont icon-shanchu'></i>
-            <span>删除</span>
-          </div>
-        </Popconfirm>
+        </Popconfirm> */}
       </div>
       <Table
         className='theme-cell bg-white'
