@@ -22,7 +22,6 @@ export default function Fn() {
   }, [])
 
   const getInfo = async (next = false) => {
-    console.log('page---', page, next)
     setloading(true)
     let p = next ? page + 1 : page
     const res = await getLoginLog({
@@ -43,8 +42,7 @@ export default function Fn() {
 
   const scrollEvent = () => {
     // 如果正在加载数据中，不重复进行操作
-    if (loading) return
-    if (total <= tabData.length) return
+    if (loading || total <= tabData.length) return
 
     // 获取表格dom元素
     const table = findDOMNode(scrollRef.current)

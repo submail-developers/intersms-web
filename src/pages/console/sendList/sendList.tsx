@@ -92,7 +92,6 @@ export default function SendList() {
 
   // 获取列表数据
   const search = async (next = false) => {
-    console.log(pageInfo.current, 'pageInfo.current')
     loadingTag.current = true
     let p = pageInfo.current + 1
     if (!next) {
@@ -112,21 +111,19 @@ export default function SendList() {
       group,
       keyword,
       page: p,
-      limit: 15,
+      limit: 50,
     }
 
     try {
       const res = await getSendList(params)
-      if (res.data.length > 0) {
-        if (next) {
-          pageInfo.current += 1
-          settableData([...tableData, ...res.data])
-        } else {
-          settableData(res.data)
-          toTop()
-        }
-        settotal(res.total)
+      if (next) {
+        pageInfo.current += 1
+        settableData([...tableData, ...res.data])
+      } else {
+        settableData(res.data)
+        toTop()
       }
+      settotal(res.total)
       setloading(false)
       loadingTag.current = false
     } catch (error) {
@@ -137,7 +134,7 @@ export default function SendList() {
 
   // 节流
   const { run } = useThrottleFn(search, {
-    wait: 1000,
+    wait: 2000,
   })
 
   // 返回顶部
@@ -150,8 +147,7 @@ export default function SendList() {
 
   const scrollEvent = () => {
     // 如果正在加载数据中，不重复进行操作
-    if (loadingTag.current) return
-    if (total <= tableData.length) return
+    if (loadingTag.current || total <= tableData.length) return
 
     // 获取表格滚动元素
     const table = findDOMNode(scrollRef.current)
