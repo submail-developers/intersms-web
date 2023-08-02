@@ -11,7 +11,7 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react'
-import { Input, ConfigProvider, Table, Popconfirm, App } from 'antd'
+import { Input, ConfigProvider, Table, Popconfirm, App, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
 
@@ -56,6 +56,11 @@ function Left(props: any, ref: any) {
       className: 'paddingL30',
       ellipsis: true,
       width: '45%',
+      render: (_, record) => (
+        <Tooltip title={record.sender}>
+          <span>{record.sender}</span>
+        </Tooltip>
+      ),
     },
     {
       title: 'account',

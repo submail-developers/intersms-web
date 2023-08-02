@@ -1,5 +1,5 @@
 import { useEffect, useState, MutableRefObject, useRef } from 'react'
-import { Button, Table, Row, Col, Popconfirm, App } from 'antd'
+import { Button, Table, Row, Col, Popconfirm, App, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddChannel from './dialog/addChannel'
 import MyDrawer from './dialog/drawer/drawer'
@@ -206,32 +206,36 @@ export default function Channel() {
       title: '敏感词绑定',
       width: 160,
       render: (_, record) => (
-        <div className='bind-wrap color-gray'>
-          <span className='text g-ellipsis' title={record.sens_name || ''}>
-            {record.sens_name || '未绑定'}
-          </span>
-          <div
-            className='icon-wrap fx-center-center'
-            onClick={() => showBindSensDialog(record)}>
-            <span className='icon iconfont icon-bangding fn14'></span>
+        <Tooltip title={record.sens_name}>
+          <div className='bind-wrap color-gray'>
+            <span className='text g-ellipsis' title={record.sens_name || ''}>
+              {record.sens_name || '未绑定'}
+            </span>
+            <div
+              className='icon-wrap fx-center-center'
+              onClick={() => showBindSensDialog(record)}>
+              <span className='icon iconfont icon-bangding fn14'></span>
+            </div>
           </div>
-        </div>
+        </Tooltip>
       ),
     },
     {
       title: '黑名单绑定',
       width: 160,
       render: (_, record) => (
-        <div className='bind-wrap color-gray'>
-          <span className='text g-ellipsis' title={record.block_name || ''}>
-            {record.block_name || '未绑定'}
-          </span>
-          <div
-            className='icon-wrap fx-center-center'
-            onClick={() => showBindBlackDialog(record)}>
-            <span className='icon iconfont icon-bangding fn14'></span>
+        <Tooltip title={record.block_name}>
+          <div className='bind-wrap color-gray'>
+            <span className='text g-ellipsis' title={record.block_name || ''}>
+              {record.block_name || '未绑定'}
+            </span>
+            <div
+              className='icon-wrap fx-center-center'
+              onClick={() => showBindBlackDialog(record)}>
+              <span className='icon iconfont icon-bangding fn14'></span>
+            </div>
           </div>
-        </div>
+        </Tooltip>
       ),
     },
     {
