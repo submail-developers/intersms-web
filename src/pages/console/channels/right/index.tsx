@@ -147,7 +147,7 @@ export default function Right() {
     },
     {
       title: <span title='每10秒刷新一次列表'>连接状态</span>,
-      width: 120,
+      width: 140,
       render: (_, record) => {
         let text = ''
         let color = ''

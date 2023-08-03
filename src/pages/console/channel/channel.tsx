@@ -240,7 +240,7 @@ export default function Channel() {
     },
     {
       title: <span title='每10秒刷新一次列表'>连接状态</span>,
-      width: 100,
+      width: 140,
       render: (_, record) => {
         let text = ''
         let color = ''
