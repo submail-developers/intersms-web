@@ -298,22 +298,34 @@ export default function Channel() {
       width: 120,
       render: (_, record) => (
         <>
-          <Button
-            type='link'
-            style={{ paddingLeft: 0 }}
-            onClick={() => editChannelEvent(record)}>
-            编辑
-          </Button>
-
-          <Popconfirm
-            placement='left'
-            title='警告'
-            description='确定删除该通道吗？'
-            onConfirm={() => deleteEvent(record)}
-            okText='确定'
-            cancelText='取消'>
-            <Button type='link'>删除</Button>
-          </Popconfirm>
+          {[0, -1, -2, 99].includes(record.connection_status) ? (
+            <>
+              <Button
+                type='link'
+                style={{ paddingLeft: 0 }}
+                onClick={() => editChannelEvent(record)}>
+                编辑
+              </Button>
+              <Popconfirm
+                placement='left'
+                title='警告'
+                description='确定删除该通道吗？'
+                onConfirm={() => deleteEvent(record.id)}
+                okText='确定'
+                cancelText='取消'>
+                <Button type='link'>删除</Button>
+              </Popconfirm>
+            </>
+          ) : (
+            <span title='连接状态，无法操作'>
+              <Button type='link' style={{ paddingLeft: 0 }} disabled>
+                编辑
+              </Button>
+              <Button type='link' disabled>
+                删除
+              </Button>
+            </span>
+          )}
         </>
       ),
     },
@@ -363,16 +375,12 @@ export default function Channel() {
     }
   }
   // 删除通道
-  const deleteEvent = async (record: DataType) => {
-    if (record.listener_status == '2') {
-      message.warning('请断开连接后再删除！')
-      return
-    }
+  const deleteEvent = async (id: string) => {
     try {
-      await deleteChannel({ id: record.id })
+      await deleteChannel({ id })
       message.success('删除成功')
       initData()
-      setSelectedRowKeys(selectedRowKeys.filter((item) => item != record.id))
+      setSelectedRowKeys(selectedRowKeys.filter((item) => item != id))
     } catch (error) {}
   }
 

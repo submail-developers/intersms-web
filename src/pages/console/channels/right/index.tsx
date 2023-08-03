@@ -146,7 +146,7 @@ export default function Right() {
       ),
     },
     {
-      title: '连接状态',
+      title: <span title='每10秒刷新一次列表'>连接状态</span>,
       width: 120,
       render: (_, record) => {
         let text = ''
@@ -214,17 +214,30 @@ export default function Right() {
       dataIndex: 'actions',
       width: 120,
       render: (_, record) => (
-        <Popconfirm
-          placement='bottom'
-          title='警告'
-          description='确定删除该通道吗？'
-          onConfirm={() => deleteChannel(record)}
-          okText='确定'
-          cancelText='取消'>
-          <Button type='link' style={{ paddingLeft: 0, paddingRight: 0 }}>
-            删除
-          </Button>
-        </Popconfirm>
+        <>
+          {[0, -1, -2, 99].includes(record.connection_status) ? (
+            <Popconfirm
+              placement='bottom'
+              title='警告'
+              description='确定删除该通道吗？'
+              onConfirm={() => deleteChannel(record)}
+              okText='确定'
+              cancelText='取消'>
+              <Button type='link' style={{ paddingLeft: 0, paddingRight: 0 }}>
+                删除
+              </Button>
+            </Popconfirm>
+          ) : (
+            <span title='连接状态，无法操作'>
+              <Button
+                type='link'
+                style={{ paddingLeft: 0, paddingRight: 0 }}
+                disabled>
+                删除
+              </Button>
+            </span>
+          )}
+        </>
       ),
     },
   ]
