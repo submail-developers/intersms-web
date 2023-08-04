@@ -174,6 +174,7 @@ declare module 'apis' {
       channel_id: string
       network: string
       name: string
+      info_path: string
       mke_flg: '0' | '1' // 是否开启全部营销 0关闭1开启
       test_flg: '0' | '1' // 是否是测试账户 0关闭1开启
     }
