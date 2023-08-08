@@ -110,9 +110,7 @@ function Price(props: Props, ref: any) {
     },
     {
       title: '单价',
-      render: (_, record) => {
-        return <>{record.type == '1' ? record.price_mke : record.price_tra}</>
-      },
+      dataIndex: 'price',
     },
     {
       title: '短信类型',

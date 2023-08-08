@@ -105,8 +105,8 @@ export const waringTimeOptions = [
 ]
 // 通道类型-价格
 export const channelPriceTypeOptions = [
-  { label: '行业短信', value: '2' },
-  { label: '营销短信', value: '1' },
+  { label: '行业短信', value: '1' },
+  { label: '营销短信', value: '2' },
 ]
 
 // 通道组类型

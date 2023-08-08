@@ -20,10 +20,9 @@ interface FormType extends API.UpdateAccountPriceParams {
 const initialValues: FormType = {
   id: '',
   sender: '',
-  price_tra: '',
-  price_mke: '',
+  price: '',
   country_cn: undefined,
-  type: '2', // 默认行业短信
+  type: '1', // 默认行业短信
 }
 const Dialog = (props: Props, ref: any) => {
   const accountInfoStore = useAppSelector(accountInfoState)
@@ -116,27 +115,8 @@ const Dialog = (props: Props, ref: any) => {
               return (
                 <Col span={12}>
                   <Form.Item
-                    hidden={type != '1'}
-                    label='营销价格'
-                    name='price_mke'
-                    validateTrigger='onSubmit'
-                    rules={[
-                      { message: '请输入' },
-                      {
-                        type: 'number',
-                        message: '请输入正确的数字!',
-                      },
-                    ]}>
-                    <Input
-                      type='number'
-                      placeholder='请输入价格'
-                      maxLength={30}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    hidden={type != '2'}
-                    label='行业价格'
-                    name='price_tra'
+                    label={type == '1' ? '行业价格' : '营销价格'}
+                    name='price'
                     validateTrigger='onSubmit'
                     rules={[
                       { message: '请输入' },

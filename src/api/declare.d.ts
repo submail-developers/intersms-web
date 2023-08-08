@@ -193,10 +193,9 @@ declare module 'apis' {
     interface UpdateAccountPriceParams {
       id: string // 客户ID
       sender: string // 客户account
-      price_tra: string // 行业价格
-      price_mke: string // 营销价格
+      price: string // 价格
       country_cn: string | undefined // 国家中文名称
-      type: '1' | '2' // 短信类型  1营销2行业
+      type: '1' | '2' // 短信类型  1行业2营销
     }
     // 客户信息-新增/修改国家通道配置
     interface UpdateAccountChannelParams {
@@ -231,8 +230,7 @@ declare module 'apis' {
       region_code: string
       country_cn: string
       type: '1' | '2' // 1营销2行业
-      price_tra: string // 行业价格
-      price_mke: string // 营销价格
+      price: string // 价格
       date: string
     }
     // 客户信息-通道配置item
