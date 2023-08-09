@@ -145,7 +145,7 @@ export default function Left() {
       dispatch(changeActiveChannels(null))
       setactiveRow(null)
     }
-  }, [])
+  }, [keyword])
 
   // noResetActive是否重置当前选中项
   const search = async (noResetActive?: boolean) => {

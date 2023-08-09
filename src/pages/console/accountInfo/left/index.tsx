@@ -108,7 +108,7 @@ function Left(props: any, ref: any) {
     return () => {
       dispatch(changeActiveAccount(null))
     }
-  }, [])
+  }, [keyword])
 
   const setValue = (e: any) => {
     setkeyword(e.target.value)
