@@ -64,4 +64,16 @@
       font-size: 18px;
     }
   }
+  .icon-tiaozhuan {
+    display: none;
+    font-size: 14px;
+  }
+  .icon-tiaozhuan:hover {
+    color: #0074d7;
+  }
+  tr:hover {
+    .icon-tiaozhuan {
+      display: block;
+    }
+  }
 }

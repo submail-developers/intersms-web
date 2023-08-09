@@ -63,12 +63,26 @@ function Left(props: any, ref: any) {
       ),
     },
     {
+      title: 'info_path',
+      ellipsis: true,
+      width: '10%',
+      render: (_, record) => (
+        <span className='color-gray'>
+          <a
+            href={record.info_path}
+            target='_blank'
+            className='icon iconfont icon-tiaozhuan color-gray'></a>{' '}
+        </span>
+      ),
+    },
+    {
       title: 'account',
       className: 'paddingL30',
       ellipsis: true,
       width: '45%',
       render: (_, record) => <span className='color-gray'>{record.name}</span>,
     },
+
     {
       title: 'qizi',
       width: '10%',
@@ -94,7 +108,7 @@ function Left(props: any, ref: any) {
     return () => {
       dispatch(changeActiveAccount(null))
     }
-  }, [])
+  }, [keyword])
 
   const setValue = (e: any) => {
     setkeyword(e.target.value)
