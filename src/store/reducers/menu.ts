@@ -18,11 +18,17 @@ export const menuSlice = createSlice({
     changeClose: (state) => {
       state.isclose = !state.isclose
     },
+    closeIt: (state) => {
+      state.isclose = true
+    },
+    openIt: (state) => {
+      state.isclose = false
+    },
   },
 })
 
 // 导出action
-export const { changeClose } = menuSlice.actions
+export const { changeClose, closeIt, openIt } = menuSlice.actions
 
 // 导出state
 export const menuCloseStatus = (state: RootState) => state.menuReducer.isclose

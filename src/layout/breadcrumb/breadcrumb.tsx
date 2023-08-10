@@ -1,8 +1,14 @@
 import './breadcrumb.scss'
 import { useLoaderData } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/store/hook'
-import { changeClose, menuCloseStatus } from '@/store/reducers/menu'
+import {
+  changeClose,
+  closeIt,
+  openIt,
+  menuCloseStatus,
+} from '@/store/reducers/menu'
 import React, { useState, useEffect } from 'react'
+import { useSize } from '@/hooks'
 /**
  * 面包屑
  */
@@ -12,6 +18,16 @@ export default function BreadCrumb() {
   const dispatch = useAppDispatch()
   const loaderData = useLoaderData() as { name: string }
   const [height, setHeight] = useState(0)
+  const size = useSize()
+
+  useEffect(() => {
+    if (size == 'small') {
+      dispatch(closeIt())
+    } else {
+      dispatch(openIt())
+    }
+  }, [size])
+
   const resizeUpdate = (e) => {
     // 通过事件对象获取浏览器窗口的宽度
     let w = e.target.innerWidth
