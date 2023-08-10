@@ -6,7 +6,9 @@ import user from '@/assets/img/user.jpg'
 // 一级导航
 export default function SizeBar() {
   return (
-    <dl data-components='sidebar' className='fx-col-start-center fx-shrink'>
+    <dl
+      data-components='sidebar'
+      className='fx-col-start-center fx-shrink sidebar-content'>
       <dt className='fx-center-center'>
         <NavLink to='/console'>
           <img src={user} className='user' alt='' />

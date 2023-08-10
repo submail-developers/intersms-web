@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { NavLink, RouteObject, useMatches, useLocation } from 'react-router-dom'
 import { routerList } from '@/routes'
-import { useAppSelector } from '@/store/hook'
-import { menuCloseStatus } from '@/store/reducers/menu'
+import { useAppDispatch, useAppSelector } from '@/store/hook'
 import './sideMenu.scss'
+import { useSize } from '@/hooks'
+import { closeIt, openIt, menuCloseStatus } from '@/store/reducers/menu'
 
 // 二级导航
 export default function SideMenu() {
@@ -12,9 +13,16 @@ export default function SideMenu() {
   const currentMatchBaseRouteObj = matchList.find(
     (match) => !match.id.includes('-'),
   )
+  const size = useSize()
+  const dispatch = useAppDispatch()
 
   let [menuList, setMenuList] = useState<Array<RouteObject>>([])
   useEffect(() => {
+    if (size == 'small') {
+      dispatch(closeIt())
+    } else {
+      dispatch(openIt())
+    }
     routerList.map((item) => {
       if (
         currentMatchBaseRouteObj &&
