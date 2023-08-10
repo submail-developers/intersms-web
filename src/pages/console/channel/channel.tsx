@@ -172,7 +172,7 @@ export default function Channel() {
     {
       title: '通道类型',
       width: 120,
-      className: 'paddingL30',
+      className: 'paddingL20',
       dataIndex: 'type',
       render: (_, record: DataType) => (
         <>{getOptionsLabel(channelTypeOptions, record.type)}</>
@@ -181,11 +181,13 @@ export default function Channel() {
     {
       title: '流速',
       width: 80,
-      render: (_, record: DataType) => <>{record.flow}t/s</>,
+      className: 'paddingL20',
+      render: (_, record: DataType) => <>{record.flow}</>,
     },
     {
       title: '号码前缀',
       width: 100,
+      className: 'paddingL20',
       render: (_, record: DataType) => {
         return <>{getOptionsLabel(mobileTypeOptions, record.mobile_type)}</>
       },
@@ -193,6 +195,7 @@ export default function Channel() {
     {
       title: '关联国家/地区',
       width: 120,
+      className: 'paddingL20',
       render: (_, record) => (
         <Button
           type='link'
@@ -205,6 +208,7 @@ export default function Channel() {
     {
       title: '敏感词绑定',
       width: 160,
+      className: 'paddingL20',
       render: (_, record) => (
         <Tooltip title={record.sens_name}>
           <div className='bind-wrap color-gray'>
@@ -223,6 +227,7 @@ export default function Channel() {
     {
       title: '黑名单绑定',
       width: 160,
+      className: 'paddingL20',
       render: (_, record) => (
         <Tooltip title={record.block_name}>
           <div className='bind-wrap color-gray'>
@@ -241,6 +246,7 @@ export default function Channel() {
     {
       title: <span title='每10秒刷新一次列表'>连接状态</span>,
       width: 140,
+      className: 'paddingL20',
       render: (_, record) => {
         let text = ''
         let color = ''
@@ -272,6 +278,7 @@ export default function Channel() {
     {
       title: '链路数量',
       width: 80,
+      className: 'paddingL20',
       render: (_, record) => {
         let num: number
         switch (record.connection_status) {
@@ -291,11 +298,13 @@ export default function Channel() {
     {
       title: '配置',
       width: 160,
+      className: 'paddingL20',
       render: RenderConfig,
     },
     {
       title: '操作',
       width: 120,
+      className: 'paddingL20',
       render: (_, record) => (
         <>
           {[0, -1, -2, 99].includes(record.connection_status) ? (

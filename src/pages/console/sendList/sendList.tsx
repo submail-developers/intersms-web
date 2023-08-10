@@ -222,6 +222,7 @@ export default function SendList() {
       title: '短信正文',
       dataIndex: 'message',
       width: 320,
+      className: 'paddingL20',
       render: (_, record) => (
         <Tooltip
           title={record.content}
@@ -235,7 +236,7 @@ export default function SendList() {
     {
       title: '发送名称',
       dataIndex: 'sender',
-      className: 'paddingL30',
+      className: 'paddingL20',
       width: 124,
       render: (_, record) => (
         <div
@@ -249,6 +250,7 @@ export default function SendList() {
     {
       title: '请求/完成时间',
       dataIndex: 'time',
+      className: 'paddingL20',
       width: 200,
       render: (_, record) => {
         return (
@@ -263,6 +265,7 @@ export default function SendList() {
     {
       title: '下行耗时',
       dataIndex: 'timer',
+      className: 'paddingL20',
       width: 80,
       render: (_, record) => (
         <span style={{ color: '#0074d7' }}>{record.downlink_time}s</span>
@@ -271,16 +274,22 @@ export default function SendList() {
     {
       title: '回执',
       dataIndex: 'report_code',
+      className: 'paddingL20',
       width: 100,
       render: (_, record) => (
-        <span className={`${reportClassName[record.report_state]}`}>
-          {record.report_code || '回执未返回'}
-        </span>
+        <div className='g-ellipsis-2'>
+          <Tooltip title={record.report_code || '回执未返回'}>
+            <span className={`${reportClassName[record.report_state]}`}>
+              {record.report_code || '回执未返回'}
+            </span>
+          </Tooltip>
+        </div>
       ),
     },
     {
       title: '国家/地区',
       dataIndex: 'country_cn',
+      className: 'paddingL20',
       width: 124,
       render: (_, record) => (
         <div
@@ -293,6 +302,7 @@ export default function SendList() {
     },
     {
       title: '通道',
+      className: 'paddingL20',
       width: 124,
       render: (_, record) => (
         <div
@@ -305,6 +315,7 @@ export default function SendList() {
     },
     {
       title: '通道组',
+      className: 'paddingL20',
       width: 124,
       render: (_, record) => (
         <div
@@ -317,11 +328,13 @@ export default function SendList() {
     },
     {
       title: '网络类型',
+      className: 'paddingL20',
       width: 100,
       render: (_, record) => <span>{record.network_name}</span>,
     },
     {
       title: '短信类型',
+      className: 'paddingL20',
       width: 100,
       render: (_, record) => (
         <span>{record.type == '2' ? '营销短信' : '行业短信'}</span>
@@ -330,6 +343,7 @@ export default function SendList() {
     {
       title: '成本/计费价',
       dataIndex: 'price',
+      className: 'paddingL20',
       width: 140,
       render: (_, record) => {
         return (
