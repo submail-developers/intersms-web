@@ -48,7 +48,9 @@ function Dialog(props: Props, ref: any) {
         ...initialValues,
         ...record,
       }
-      _initValues.signature = _initValues.signature.replace(/【|】/g, '')
+      // _initValues.signature = _initValues.signature.replace(/【|】/g, '')
+      _initValues.signature = _initValues.signature
+
       form.setFieldsValue(_initValues)
     } else {
       setisAdd(true)
@@ -83,7 +85,7 @@ function Dialog(props: Props, ref: any) {
         ...formvalues,
         sender: accountInfoStore.activeAccount?.account,
       }
-      params.signature = `【${params.signature}】`
+      params.signature = `${params.signature}`
       await updateAccountChannel(params)
       message.success('保存成功！')
       props.onUpdateTable()
@@ -170,7 +172,7 @@ function Dialog(props: Props, ref: any) {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label='签名' name='signature'>
+            <Form.Item label='Sender' name='signature'>
               <Input placeholder='请输入签名' maxLength={30} />
             </Form.Item>
           </Col>
