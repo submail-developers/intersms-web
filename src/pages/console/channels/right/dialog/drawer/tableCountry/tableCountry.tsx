@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react'
 
 import type { TableColumnsType } from 'antd'
-import { Form, Input, Table, Button, Switch } from 'antd'
+import { Form, Input, Table, Button, Switch, Popconfirm, Select } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
 import '@/style/drawerTable.scss'
 import {
@@ -12,6 +12,7 @@ import { API } from 'apis'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
 import { usePoint } from '@/hooks'
+import { allChannelsNum } from '@/utils/options'
 
 interface DataType extends API.GroupRelatedDataItem {}
 
@@ -135,6 +136,10 @@ function MyTable(props: Props, ref: any) {
     seteditNetworkId('')
     seteditCountryId('')
   }
+  // 批量设置
+  const batchSettings = () => {
+    console.log('213123')
+  }
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -186,6 +191,34 @@ function MyTable(props: Props, ref: any) {
           <div className='td-content paddingL12'>{record.weight}</div>
         )
       },
+    },
+    {
+      title: (
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定批量设置吗？'
+          onConfirm={batchSettings}
+          okText='确定'
+          cancelText='取消'>
+          <Button type='link' style={{ padding: 0 }}>
+            批量设置
+          </Button>
+          <Select
+            className='bath-input'
+            style={{ display: 'none' }}
+            showSearch
+            placeholder='请选择'
+            optionFilterProp='children'
+            // onChange={onChange1}
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            options={allChannelsNum}
+          />
+        </Popconfirm>
+      ),
+      width: 110,
     },
     {
       title: <div className='paddingL30'>运营商网络</div>,
