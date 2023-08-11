@@ -1,4 +1,4 @@
-import { useState, useImperativeHandle, forwardRef } from 'react'
+import { useState, useImperativeHandle, forwardRef, useRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
 import { allUpdateChannelsNetworkWeight, getChannelList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
@@ -19,6 +19,7 @@ const Dialog = (props: Props, ref: any) => {
   const channlesStore = useAppSelector(channelsState)
   const [form] = Form.useForm()
   const { message } = App.useApp()
+  const weightType = useRef(null)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -27,22 +28,21 @@ const Dialog = (props: Props, ref: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [channelList, setchannelList] = useState<API.ChannelItem[]>([])
 
-  var type: string
-  const open = (initFomeValue: any) => {
+  const open = (initFomeValue: number) => {
     form.resetFields()
     setIsModalOpen(true)
-    const { types } = initFomeValue
-    type = initFomeValue
-    console.log(type, 'type')
+    weightType.current = initFomeValue
     // getChannels()
   }
 
   const handleOk = async () => {
+    console.log(weightType.current)
+    return
     try {
       let formValues = await form.validateFields()
       let params: API.allUpdateChannelsNetworkParams = {
         ...formValues,
-        type: type,
+        type: weightType.current,
         weight: formValues.weight,
         group_id: channlesStore.activeChannels?.id || '',
         channel_id: props.channelId,

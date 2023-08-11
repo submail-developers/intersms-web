@@ -83,12 +83,10 @@ function MyTable(props: Props, ref: any) {
   // 展示新增弹框
 
   const showAddDialog = () => {
-    let type = 1
-    batchSetDialogRef.current.open(type)
+    batchSetDialogRef.current.open(1)
   }
   const showOperatorDialog = () => {
-    let type = 2
-    batchSetDialogRef.current.open(type)
+    batchSetDialogRef.current.open(2)
   }
 
   // 修改国家状态
