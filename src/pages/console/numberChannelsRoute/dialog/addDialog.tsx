@@ -50,6 +50,20 @@ const Dialog = (props: Props, ref: any) => {
       countryName()
       associatedAccount()
     } else {
+      setAssociatedAccountData([
+        {
+          sender: '全平台',
+          id: '0',
+          account: '0',
+          region_code: '0',
+          channel_id: '0',
+          network: '0',
+          name: '',
+          info_path: '',
+          mke_flg: '0',
+          test_flg: '0',
+        },
+      ])
       if (record) {
         let arr: API.GetRegioncodeByCountryItems[] = [
           {
@@ -213,8 +227,7 @@ const Dialog = (props: Props, ref: any) => {
           <Col span={12}>
             <Form.Item
               label='关联账号'
-              // name='account'
-              name={sender == '0' ? '全平台' : 'account'}
+              name='account'
               validateTrigger='onSubmit'>
               <Select
                 showSearch
