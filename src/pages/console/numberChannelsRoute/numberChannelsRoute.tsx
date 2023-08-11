@@ -27,7 +27,7 @@ import './numberChannelsRoute.scss'
 
 interface DataType extends API.GetMobileRouteListItems {}
 interface FormValues {
-  mobile: string
+  id: string
   type: string
   keyword: string
   channel: string
@@ -51,12 +51,12 @@ export default function NumberChannelsRoute() {
         setactiveIndex(index)
       },
       onDoubleClick: () => {
-        if (selectedRowKeys.includes(record.id)) {
+        if (selectedRowKeys.includes(record.mobile)) {
           setSelectedRowKeys(
-            selectedRowKeys.filter((item) => item != record.id),
+            selectedRowKeys.filter((item) => item != record.mobile),
           )
         } else {
-          setSelectedRowKeys([...selectedRowKeys, record.id])
+          setSelectedRowKeys([...selectedRowKeys, record.mobile])
         }
       },
     }
@@ -75,7 +75,7 @@ export default function NumberChannelsRoute() {
   // 初始化form的值
   const initFormValues: FormValues = {
     account: '',
-    mobile: '',
+    id: '',
     type: 'all',
     keyword: '',
     channel: '',
@@ -86,9 +86,9 @@ export default function NumberChannelsRoute() {
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { mobile, type, keyword, channel, channel_name, account } = params
+    const { id, type, keyword, channel, channel_name, account } = params
     const searchParams = {
-      mobile,
+      id,
       type,
       keyword,
       channel,
@@ -224,7 +224,7 @@ export default function NumberChannelsRoute() {
       message.warning('请勾选要删除的号码通道路由！')
       return
     }
-    const is = selectedRowKeys.join(',')
+    const id = selectedRowKeys.join(',')
     await deleteMobileRouteList({ id })
     await search()
     setSelectedRowKeys([])
@@ -246,7 +246,7 @@ export default function NumberChannelsRoute() {
               placement='bottom'
               title='警告'
               description='确定删除选中的网络吗？'
-              // onConfirm={deleteEvent}
+              onConfirm={deleteEvent}
               okText='确定'
               cancelText='取消'>
               <div className='btn delete'>
@@ -362,7 +362,7 @@ export default function NumberChannelsRoute() {
           className='theme-cell bg-white reset-table'
           columns={columns}
           dataSource={tableData}
-          rowKey={'mobile'}
+          rowKey={'id'}
           onRow={onRow}
           rowSelection={rowSelection}
           rowClassName={(record, index) =>

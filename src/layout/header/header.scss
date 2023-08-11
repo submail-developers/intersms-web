@@ -15,11 +15,25 @@
     word-break: keep-all;
     .logout-wrap {
       cursor: pointer;
-      margin-left: 150px;
+      margin-left: 40px;
       .icon {
         margin-right: 8px;
       }
     }
+  }
+  .icon-a-tongbu2x,
+  .tongbu2x,
+  .icon-tuichu,
+  .tuichu {
+    color: #888;
+  }
+  .tongbu2x-con:hover .icon-a-tongbu2x,
+  .tongbu2x-con:hover .tongbu2x {
+    color: #282b31;
+  }
+  .tuichu-con:hover .icon-tuichu,
+  .tuichu-con:hover .tuichu {
+    color: #282b31;
   }
 
   &.small {

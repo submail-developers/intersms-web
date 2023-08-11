@@ -655,7 +655,7 @@ declare module 'apis' {
      */
     // 获取号码通道路由
     interface GetMobileRouteListParams {
-      mobile: string
+      id: string
       type: string
       keyword: string
       channel: string

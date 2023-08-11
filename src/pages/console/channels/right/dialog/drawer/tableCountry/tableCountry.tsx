@@ -174,11 +174,15 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '国家/地区名称',
-      width: point ? 130 : 110,
+      width: point ? 120 : 110,
       fixed: true,
       ellipsis: true,
       render(_, record) {
-        return <div className='td-content fw500'>{record.country_cn}</div>
+        return (
+          <div className='td-content fw500' style={{ width: '100px' }}>
+            {record.country_cn}
+          </div>
+        )
       },
     },
     {
@@ -190,8 +194,25 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL12'>国家/地区权重</div>,
-      width: 80,
+      title: (
+        <div
+          className='paddingL12'
+          style={{ display: 'flex', alignItems: 'center' }}>
+          国家/地区权重 &nbsp;
+          <Popconfirm
+            placement='bottom'
+            title='警告'
+            description='确定批量设置吗？'
+            onConfirm={showAddDialog}
+            okText='确定'
+            cancelText='取消'>
+            <Button type='link' style={{ padding: 0 }}>
+              批量设置
+            </Button>
+          </Popconfirm>
+        </div>
+      ),
+      width: 150,
       render(_, record) {
         return record.id == editCountryId ? (
           <div className='td-content sub-td'>
@@ -203,22 +224,6 @@ function MyTable(props: Props, ref: any) {
           <div className='td-content paddingL12'>{record.weight}</div>
         )
       },
-    },
-    {
-      title: (
-        <Popconfirm
-          placement='bottom'
-          title='警告'
-          description='确定批量设置吗？'
-          onConfirm={showAddDialog}
-          okText='确定'
-          cancelText='取消'>
-          <Button type='link' style={{ padding: 0 }}>
-            批量设置
-          </Button>
-        </Popconfirm>
-      ),
-      width: 110,
     },
     {
       title: <div className='paddingL30'>运营商网络</div>,
@@ -250,8 +255,25 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL12'>运营商权重</div>,
-      width: 70,
+      title: (
+        <div
+          className='paddingL12'
+          style={{ display: 'flex', alignItems: 'center' }}>
+          运营商权重 &nbsp;
+          <Popconfirm
+            placement='bottom'
+            title='警告'
+            description='确定批量设置吗？'
+            onConfirm={showOperatorDialog}
+            okText='确定'
+            cancelText='取消'>
+            <Button type='link' style={{ padding: 0 }}>
+              批量设置
+            </Button>
+          </Popconfirm>
+        </div>
+      ),
+      width: 120,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -284,24 +306,8 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: (
-        <Popconfirm
-          placement='bottom'
-          title='警告'
-          description='确定批量设置吗？'
-          onConfirm={showOperatorDialog}
-          okText='确定'
-          cancelText='取消'>
-          <Button type='link' style={{ padding: 0 }}>
-            批量设置
-          </Button>
-        </Popconfirm>
-      ),
-      width: 110,
-    },
-    {
       title: <div className='paddingL12'>状态</div>,
-      width: 60,
+      width: 80,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -338,7 +344,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '操作',
-      width: 120,
+      width: 70,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (

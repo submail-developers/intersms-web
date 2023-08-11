@@ -28,14 +28,18 @@ export default function Header() {
       className={`fx-between-center fx-shrink ${size}`}>
       <img src={logo} alt='' className='logo' onClick={() => nav('/console')} />
       <div className='right fn16 fx-y-center'>
-        <div className='logout-wrap' onClick={synchronousCon}>
+        <div className='logout-wrap tongbu2x-con' onClick={synchronousCon}>
           <i className='icon iconfont icon-a-tongbu2x fn16'></i>
-          <span>{size == 'middle' ? '同步配置' : ''}</span>
+          <span className='fn14 tongbu2x'>
+            {size == 'middle' ? '同步配置' : ''}
+          </span>
         </div>
         &nbsp;&nbsp;
-        <div className='logout-wrap' onClick={logoutEvent}>
+        <div className='logout-wrap tuichu-con' onClick={logoutEvent}>
           <i className='icon iconfont icon-tuichu fn16'></i>
-          <span>{size == 'middle' ? '退出登录' : ''}</span>
+          <span className='fn14 tuichu'>
+            {size == 'middle' ? '退出登录' : ''}
+          </span>
         </div>
       </div>
     </div>
