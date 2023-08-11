@@ -152,7 +152,7 @@ export const getOptionsLabel = (options: any[], value: string | number) => {
 export const allChannelsNum = [
   {
     value: '0',
-    label: '1',
+    label: '0',
   },
   {
     value: '10',

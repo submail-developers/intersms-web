@@ -269,7 +269,11 @@ export default function Channel() {
             index == activeIndex ? 'active' : ''
           }
           sticky
-          pagination={{ position: ['bottomRight'] }}
+          pagination={{
+            position: ['bottomRight'],
+            pageSize: 100,
+            pageSizeOptions: [100, 200, 300],
+          }}
           scroll={{ x: 'max-content' }}
           loading={loading}
         />

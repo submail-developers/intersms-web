@@ -134,7 +134,7 @@ function Channel(props: Props, ref: any) {
       render: (_, record) => <>{record.group_type == '1' ? '行业' : '营销'}</>,
     },
     {
-      title: '签名',
+      title: 'Sender',
       width: 120,
       dataIndex: 'signature',
     },

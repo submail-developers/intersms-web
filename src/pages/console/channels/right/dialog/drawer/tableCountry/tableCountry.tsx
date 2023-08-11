@@ -1,7 +1,13 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react'
+import React, {
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+  MutableRefObject,
+} from 'react'
 
 import type { TableColumnsType } from 'antd'
-import { Form, Input, Table, Button, Switch, Popconfirm, Select } from 'antd'
+import { Form, Input, Table, Button, Switch, Popconfirm } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
 import '@/style/drawerTable.scss'
 import {
@@ -12,7 +18,7 @@ import { API } from 'apis'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
 import { usePoint } from '@/hooks'
-import { allChannelsNum } from '@/utils/options'
+import BatchSetDialog from '../../batchSetDialog'
 
 interface DataType extends API.GroupRelatedDataItem {}
 
@@ -72,6 +78,12 @@ function MyTable(props: Props, ref: any) {
   const [editNetworkId, seteditNetworkId] = useState<string>('') // 当前运营商权重的ID
   const [editCountryId, seteditCountryId] = useState<React.Key>('') // 编辑国家权重的ID
   const [form] = Form.useForm()
+
+  const batchSetDialogRef: MutableRefObject<any> = useRef(null)
+  // 展示新增弹框
+  const showAddDialog = () => {
+    batchSetDialogRef.current.open()
+  }
 
   // 修改国家状态
   const changeLock = async (record: DataType) => {
@@ -136,10 +148,6 @@ function MyTable(props: Props, ref: any) {
     seteditNetworkId('')
     seteditCountryId('')
   }
-  // 批量设置
-  const batchSettings = () => {
-    console.log('213123')
-  }
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -179,7 +187,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>国家/地区权重</div>,
-      width: 110,
+      width: 80,
       render(_, record) {
         return record.id == editCountryId ? (
           <div className='td-content sub-td'>
@@ -198,24 +206,12 @@ function MyTable(props: Props, ref: any) {
           placement='bottom'
           title='警告'
           description='确定批量设置吗？'
-          onConfirm={batchSettings}
+          onConfirm={showAddDialog}
           okText='确定'
           cancelText='取消'>
           <Button type='link' style={{ padding: 0 }}>
             批量设置
           </Button>
-          <Select
-            className='bath-input'
-            style={{ display: 'none' }}
-            showSearch
-            placeholder='请选择'
-            optionFilterProp='children'
-            // onChange={onChange1}
-            filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-            }
-            options={allChannelsNum}
-          />
         </Popconfirm>
       ),
       width: 110,
@@ -407,6 +403,7 @@ function MyTable(props: Props, ref: any) {
         scroll={{ x: 'max-content' }}
         loading={props.loading}
       />
+      <BatchSetDialog ref={batchSetDialogRef} />
     </Form>
   )
 }

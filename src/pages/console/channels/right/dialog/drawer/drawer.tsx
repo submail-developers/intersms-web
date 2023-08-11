@@ -102,11 +102,6 @@ const Dialog = (props: Props, ref: any) => {
     await search()
   }
 
-  const cleanSearch = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    search(true)
-  }
   return (
     <Drawer
       title=''
@@ -164,8 +159,6 @@ const Dialog = (props: Props, ref: any) => {
                 autoComplete='off'>
                 <Form.Item label='' name='keyword'>
                   <Input
-                    allowClear
-                    onChange={cleanSearch}
                     size={size}
                     placeholder='国家名称/代码'
                     maxLength={20}
