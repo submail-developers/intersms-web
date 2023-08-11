@@ -845,6 +845,13 @@ export const login = (data: API.LoginParams) => {
     { ...data },
   )
 }
+// 同步配置
+export const updateConfig = () => {
+  return request.get<any, API.Response<any>, any>(
+    'console/api/customer/update_config',
+    {},
+  )
+}
 
 // 退出登录
 export const logout = () => {

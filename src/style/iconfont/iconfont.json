@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "36877361",
+      "name": "同步@2x",
+      "font_class": "a-tongbu2x",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
       "icon_id": "36782577",
       "name": "跳转",
       "font_class": "tiaozhuan",

@@ -675,6 +675,7 @@ declare module 'apis' {
     }
     // 保存号码通道路由
     interface SaveMobileRouteParams {
+      id: string
       mobile: string
       name: string
       type: string

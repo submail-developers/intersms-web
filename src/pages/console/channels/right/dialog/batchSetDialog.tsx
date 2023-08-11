@@ -36,8 +36,6 @@ const Dialog = (props: Props, ref: any) => {
   }
 
   const handleOk = async () => {
-    console.log(weightType.current)
-    return
     try {
       let formValues = await form.validateFields()
       let params: API.allUpdateChannelsNetworkParams = {

@@ -147,6 +147,15 @@ export default function NumberChannelsRoute() {
       title: '关联账号',
       dataIndex: 'account',
       width: 140,
+      render: (_, record: DataType) => (
+        <div>
+          {record.sender == '0' ? (
+            <span>全平台</span>
+          ) : (
+            <span>{record.sender}</span>
+          )}
+        </div>
+      ),
     },
     {
       title: '关联国家/地区',
