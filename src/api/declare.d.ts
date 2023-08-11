@@ -662,6 +662,7 @@ declare module 'apis' {
     }
     // 获取号码通道路由的数据
     interface GetMobileRouteListItems {
+      id: string
       mobile: string
       name: string
       type: string
@@ -686,7 +687,7 @@ declare module 'apis' {
     }
     //删除号码通道路由
     interface DeleteMobileRouteListParams {
-      mobile: string
+      id: string
     }
     /**
      * 号码通道路由end

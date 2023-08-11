@@ -51,12 +51,12 @@ export default function NumberChannelsRoute() {
         setactiveIndex(index)
       },
       onDoubleClick: () => {
-        if (selectedRowKeys.includes(record.mobile)) {
+        if (selectedRowKeys.includes(record.id)) {
           setSelectedRowKeys(
-            selectedRowKeys.filter((item) => item != record.mobile),
+            selectedRowKeys.filter((item) => item != record.id),
           )
         } else {
-          setSelectedRowKeys([...selectedRowKeys, record.mobile])
+          setSelectedRowKeys([...selectedRowKeys, record.id])
         }
       },
     }
@@ -198,7 +198,7 @@ export default function NumberChannelsRoute() {
               placement='left'
               title='警告'
               description='确定删除该条号码通道路由吗？'
-              onConfirm={() => singleDeleteEvent(record.mobile)}
+              onConfirm={() => singleDeleteEvent(record.id)}
               okText='确定'
               cancelText='取消'>
               删除
@@ -214,8 +214,8 @@ export default function NumberChannelsRoute() {
   const { message } = App.useApp()
 
   // 单独删除事件
-  const singleDeleteEvent = async (mobile: any) => {
-    await deleteMobileRouteList({ mobile })
+  const singleDeleteEvent = async (id: any) => {
+    await deleteMobileRouteList({ id })
     await search()
   }
   // 批量删除号码通道路由
@@ -224,8 +224,8 @@ export default function NumberChannelsRoute() {
       message.warning('请勾选要删除的号码通道路由！')
       return
     }
-    const mobile = selectedRowKeys.join(',')
-    await deleteMobileRouteList({ mobile })
+    const is = selectedRowKeys.join(',')
+    await deleteMobileRouteList({ id })
     await search()
     setSelectedRowKeys([])
   }
@@ -246,7 +246,7 @@ export default function NumberChannelsRoute() {
               placement='bottom'
               title='警告'
               description='确定删除选中的网络吗？'
-              onConfirm={deleteEvent}
+              // onConfirm={deleteEvent}
               okText='确定'
               cancelText='取消'>
               <div className='btn delete'>
