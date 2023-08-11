@@ -400,6 +400,14 @@ declare module 'apis' {
       network_id: string
       weight: string
     }
+
+    // 批量修改通道组关联通道-国家/运营商权重
+    interface allUpdateChannelsNetworkParams {
+      group_id: string
+      channel_id: string
+      region_code: string
+      type: '1' | '2' // 1操作国家  2操作运营商网络
+    }
     // 禁用启用通道组关联通道-国家/运营商
 
     interface UpdateGroupCountryNetworkStatusParams {

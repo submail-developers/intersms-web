@@ -81,8 +81,14 @@ function MyTable(props: Props, ref: any) {
 
   const batchSetDialogRef: MutableRefObject<any> = useRef(null)
   // 展示新增弹框
+
   const showAddDialog = () => {
-    batchSetDialogRef.current.open()
+    let type = 1
+    batchSetDialogRef.current.open(type)
+  }
+  const showOperatorDialog = () => {
+    let type = 2
+    batchSetDialogRef.current.open(type)
   }
 
   // 修改国家状态
@@ -247,7 +253,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: <div className='paddingL12'>运营商权重</div>,
-      width: 110,
+      width: 70,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -278,6 +284,22 @@ function MyTable(props: Props, ref: any) {
           return <div className={`sub-td paddingL12 ${trClassName}`}>-</div>
         }
       },
+    },
+    {
+      title: (
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定批量设置吗？'
+          onConfirm={showOperatorDialog}
+          okText='确定'
+          cancelText='取消'>
+          <Button type='link' style={{ padding: 0 }}>
+            批量设置
+          </Button>
+        </Popconfirm>
+      ),
+      width: 110,
     },
     {
       title: <div className='paddingL12'>状态</div>,
@@ -403,7 +425,11 @@ function MyTable(props: Props, ref: any) {
         scroll={{ x: 'max-content' }}
         loading={props.loading}
       />
-      <BatchSetDialog ref={batchSetDialogRef} />
+      <BatchSetDialog
+        ref={batchSetDialogRef}
+        channelId={props.channelId}
+        onSearch={props.search}
+      />
     </Form>
   )
 }

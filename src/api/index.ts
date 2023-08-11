@@ -345,6 +345,17 @@ export const updateGroupCountryNetworkStatus = (
     API.UpdateGroupCountryNetworkStatusParams
   >('console/api/customer/update_countrynetwork_weight_status', { ...data })
 }
+// 修改通道组关联通道-国家/运营商权重
+export const allUpdateChannelsNetworkWeight = (
+  data: API.allUpdateChannelsNetworkParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.allUpdateChannelsNetworkParams
+  >('console/api/customer/batch_update_countrynetwork_weight', { ...data })
+}
+
 // 一键启用/禁用所有关联国家和运营商
 export const oneTouchGroupCountryNetworkStatus = (
   data: API.OneTouchGroupCountryNetworkStatusParams,

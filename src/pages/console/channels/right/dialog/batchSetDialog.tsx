@@ -1,6 +1,6 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
-import { channelGroupAddChannel, getChannelList } from '@/api'
+import { allUpdateChannelsNetworkWeight, getChannelList } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import { API } from 'apis'
 import { useAppSelector } from '@/store/hook'
@@ -11,14 +11,8 @@ interface DataType extends API.GroupChannelItem {}
 
 interface Props {
   onSearch: () => void
-  disableList: DataType[]
-}
-interface Props {
-  loading: boolean
+  // disableList: DataType[]
   channelId: string
-  tabData: DataType[]
-  search: () => void
-  showTableLoading: () => void
 }
 
 const Dialog = (props: Props, ref: any) => {
@@ -33,22 +27,27 @@ const Dialog = (props: Props, ref: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [channelList, setchannelList] = useState<API.ChannelItem[]>([])
 
-  const open = () => {
+  var type: string
+  const open = (initFomeValue: any) => {
     form.resetFields()
     setIsModalOpen(true)
+    const { types } = initFomeValue
+    type = initFomeValue
+    console.log(type, 'type')
     // getChannels()
   }
 
   const handleOk = async () => {
     try {
       let formValues = await form.validateFields()
-      let params: API.ChannelGroupAddChannelParams = {
+      let params: API.allUpdateChannelsNetworkParams = {
         ...formValues,
+        type: type,
+        weight: formValues.weight,
         group_id: channlesStore.activeChannels?.id || '',
         channel_id: props.channelId,
       }
-      console.log(props, '?????')
-      await channelGroupAddChannel(params)
+      await allUpdateChannelsNetworkWeight(params)
       setIsModalOpen(false)
       props.onSearch()
       message.success('保存成功！')
@@ -74,7 +73,7 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'>
-        <Form.Item label='' name='type'>
+        <Form.Item label='' name='weight'>
           <Select
             showSearch
             placeholder='请选择'
