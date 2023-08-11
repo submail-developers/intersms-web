@@ -28,28 +28,6 @@ export default function BreadCrumb() {
     }
   }, [size])
 
-  const resizeUpdate = (e) => {
-    // 通过事件对象获取浏览器窗口的宽度
-    let w = e.target.innerWidth
-    setHeight(w)
-    if (w < 568) {
-      changeClose()
-    }
-  }
-  useEffect(() => {
-    // 页面刚加载完成后获取浏览器窗口的大小
-    let w = window.innerWidth
-    setHeight(w)
-
-    // 页面变化时获取浏览器窗口的大小
-    window.addEventListener('resize', resizeUpdate)
-
-    return () => {
-      // 组件销毁时移除监听事件
-      window.removeEventListener('resize', resizeUpdate)
-    }
-  }, [])
-
   // const matches = useMatches()
   // // 获取一级菜单的name
   // let crumbs = matches
@@ -75,7 +53,6 @@ export default function BreadCrumb() {
             }`}></i>
         </div>
         <div className='crumb fn18'>{loaderData.name}</div>
-        <div>浏览器的宽度为：{height}</div>
       </div>
     </div>
   )

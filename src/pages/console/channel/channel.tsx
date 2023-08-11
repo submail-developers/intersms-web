@@ -303,7 +303,7 @@ export default function Channel() {
     },
     {
       title: '操作',
-      width: 120,
+      width: 160,
       className: 'paddingL20',
       render: (_, record) => (
         <>
