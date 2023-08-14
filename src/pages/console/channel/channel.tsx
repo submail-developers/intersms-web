@@ -71,7 +71,11 @@ const ConfigItem = (props: ConfigItemProps) => {
   return (
     <>
       {loading ? (
-        <LoadingOutlined style={{ fontSize: '16px' }} className='active' />
+        <LoadingOutlined
+          style={{ fontSize: '16px' }}
+          className='active'
+          rev={undefined}
+        />
       ) : props.type == '3' && active ? (
         <Popconfirm
           placement='bottom'

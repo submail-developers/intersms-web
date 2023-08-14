@@ -163,9 +163,9 @@ function MyTable(props: Props, ref: any) {
           <div className='td-content'>
             <div onClick={() => changeLock(record)} className='lock'>
               {record.country_enabled != '1' ? (
-                <LockFilled className='color-gray fn16' />
+                <LockFilled className='color-gray fn16' rev={undefined} />
               ) : (
-                <UnlockOutlined className='color fn16' />
+                <UnlockOutlined className='color fn16' rev={undefined} />
               )}
             </div>
           </div>

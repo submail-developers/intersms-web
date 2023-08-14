@@ -213,12 +213,12 @@ export default function Left() {
     {
       key: '1',
       label: '敏感词绑定',
-      icon: <PaperClipOutlined />,
+      icon: <PaperClipOutlined rev={undefined} />,
     },
     {
       key: '2',
       label: '黑名单绑定',
-      icon: <PaperClipOutlined />,
+      icon: <PaperClipOutlined rev={undefined} />,
     },
     // {
     //   key: '3',
@@ -267,7 +267,7 @@ export default function Left() {
                 items,
                 onClick: onMenuClick,
               }}
-              icon={<PaperClipOutlined />}>
+              icon={<PaperClipOutlined rev={undefined} />}>
               &nbsp;绑定 &nbsp;
             </Dropdown.Button>
           </Space>

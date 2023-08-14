@@ -190,7 +190,7 @@ function Code(props: Props, ref: any) {
   return (
     <div data-class='code' style={{ opacity: props.step == 1 ? '1' : '0' }}>
       <div className='back' onClick={() => props.beforeStep()}>
-        <LeftOutlined />
+        <LeftOutlined rev={undefined} />
         返回
       </div>
       <div className='title'>输入手机号验证码</div>

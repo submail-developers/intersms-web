@@ -164,7 +164,9 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         <Form.Item label='从文件导入'>
           <div key={Math.random()}>
             <Upload {...props}>
-              <Button icon={<UploadOutlined />}>选择文件</Button>
+              <Button icon={<UploadOutlined rev={undefined} />}>
+                选择文件
+              </Button>
               <p
                 className='color-gray'
                 style={{ fontSize: '12px', margin: '0px' }}>
