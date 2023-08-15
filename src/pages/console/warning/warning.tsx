@@ -280,7 +280,7 @@ export default function NumberChannelsRoute() {
 
   return (
     <div data-class='warning'>
-      <MenuTitle title='报警设置'></MenuTitle>
+      <MenuTitle title='报警配置'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div
