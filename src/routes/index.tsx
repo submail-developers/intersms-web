@@ -59,6 +59,10 @@ export const baseRouterList: RouteObject[] = [
     element: <Navigate to='/data/manage/index' />,
   },
   {
+    path: '/finance',
+    element: <Navigate to='/finance/manage/index' />,
+  },
+  {
     path: '/manage',
     element: <Navigate to='/manage/index/userinfo' />,
   },
@@ -242,14 +246,8 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '关键词管理' }),
             handle: handleFn({ alias: '关键词管理' }),
           },
-        ],
-      },
-      {
-        path: 'black',
-        handle: handleFn({ alias: '黑名单管理' }),
-        children: [
           {
-            path: 'index',
+            path: 'blackList',
             element: (
               <LazyImportComponent
                 lazyChildren={lazy(
@@ -258,8 +256,40 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '黑名单' }),
-            handle: handleFn({ alias: '黑名单' }),
+            loader: loaderFn({ name: '黑名单管理' }),
+            handle: handleFn({ alias: '黑名单管理' }),
+          },
+        ],
+      },
+      {
+        path: 'index',
+        handle: handleFn({ alias: '信息查询' }),
+        children: [
+          {
+            path: 'smsUplink',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/console/smsUplink/smsUplink'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '短信上行查询' }),
+            handle: handleFn({ alias: '短信上行查询' }),
+          },
+          {
+            path: 'numSearch',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/console/numSearch/numSearch'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '号码归属查询' }),
+            handle: handleFn({ alias: '号码归属查询' }),
           },
         ],
       },
@@ -291,10 +321,60 @@ export const routerList: RouteObject[] = [
   //   ],
   // },
   {
+    path: '/data',
+    element: <Layout />,
+    loader: loaderFn({ name: '统计管理' }),
+    handle: handleFn({ alias: '统计', icon: 'icon-tongji1' }),
+    children: [
+      {
+        path: 'manage',
+        handle: handleFn({ alias: '统计管理' }),
+        children: [
+          {
+            path: 'index',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/counts'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '统计管理' }),
+            handle: handleFn({ alias: '统计管理' }),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/finance',
+    element: <Layout />,
+    loader: loaderFn({ name: '财务管理' }),
+    handle: handleFn({ alias: '财务', icon: 'icon-tongji1' }),
+    children: [
+      {
+        path: 'manage',
+        handle: handleFn({ alias: '财务管理' }),
+        children: [
+          {
+            path: 'index',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/finance'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '财务管理' }),
+            handle: handleFn({ alias: '财务管理' }),
+          },
+        ],
+      },
+    ],
+  },
+  {
     path: '/manage',
     element: <Layout />,
-    loader: loaderFn({ name: '管理设置' }),
-    handle: handleFn({ alias: '管理', icon: 'icon-wode' }),
+    loader: loaderFn({ name: '账号设置' }),
+    handle: handleFn({ alias: '账号', icon: 'icon-wode' }),
     children: [
       {
         path: 'index',
