@@ -184,8 +184,8 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '号码通道路由' }),
-            handle: handleFn({ alias: '号码通道路由' }),
+            loader: loaderFn({ name: '单号通道路由' }),
+            handle: handleFn({ alias: '单号通道路由' }),
           },
           {
             path: 'warning',
@@ -197,8 +197,8 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '报警设置' }),
-            handle: handleFn({ alias: '报警设置' }),
+            loader: loaderFn({ name: '报警配置' }),
+            handle: handleFn({ alias: '报警配置' }),
           },
           // {
           //   path: 'numberattribution',

@@ -231,7 +231,7 @@ export default function NumberChannelsRoute() {
   }
   return (
     <div data-class='numberChannelsRoute'>
-      <MenuTitle title='号码通道路由'></MenuTitle>
+      <MenuTitle title='单号通道路由'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div
