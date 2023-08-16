@@ -203,7 +203,7 @@ function Code(props: Props, ref: any) {
       </div>
       <div style={{ width: '100%', overflow: 'hidden' }}>
         <Form
-          name='form'
+          name='code'
           id='code'
           form={form}
           labelCol={{ span: 8 }}
