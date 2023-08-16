@@ -16,7 +16,7 @@ import MenuTitle from '@/components/menuTitle/menuTitle'
 export default function Fn() {
   return (
     <div data-class='warning'>
-      <MenuTitle title='财务'></MenuTitle>
+      <MenuTitle title='订单'></MenuTitle>
       <ConfigProvider
         theme={{
           token: {

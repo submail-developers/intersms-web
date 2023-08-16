@@ -152,7 +152,7 @@ export default function NumberChannelsRoute() {
           {record.sender == '0' ? (
             <span>全平台</span>
           ) : (
-            <span>{record.sender}</span>
+            <span>{record.account}</span>
           )}
         </div>
       ),

@@ -323,12 +323,12 @@ export const routerList: RouteObject[] = [
   {
     path: '/data',
     element: <Layout />,
-    loader: loaderFn({ name: '统计管理' }),
-    handle: handleFn({ alias: '统计', icon: 'icon-tongji1' }),
+    loader: loaderFn({ name: '行业短信数据' }),
+    handle: handleFn({ alias: '行业', icon: 'icon-tongji1' }),
     children: [
       {
         path: 'manage',
-        handle: handleFn({ alias: '统计管理' }),
+        handle: handleFn({ alias: '行业短信数据' }),
         children: [
           {
             path: 'index',
@@ -338,8 +338,52 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '统计管理' }),
-            handle: handleFn({ alias: '统计管理' }),
+            loader: loaderFn({ name: '行业短信数据' }),
+            handle: handleFn({ alias: '行业短信数据' }),
+          },
+          {
+            path: 'marketing',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/counts'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '营销短信数据' }),
+            handle: handleFn({ alias: '营销短信数据' }),
+          },
+          {
+            path: 'marketing',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/counts'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '国家统计数据 ' }),
+            handle: handleFn({ alias: '国家统计数据 ' }),
+          },
+          {
+            path: 'marketing',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/counts'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '通道统计数据 ' }),
+            handle: handleFn({ alias: '通道统计数据 ' }),
+          },
+          {
+            path: 'marketing',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/counts'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '账号统计数据 ' }),
+            handle: handleFn({ alias: '通道统计数据 ' }),
           },
         ],
       },
@@ -348,12 +392,12 @@ export const routerList: RouteObject[] = [
   {
     path: '/finance',
     element: <Layout />,
-    loader: loaderFn({ name: '财务管理' }),
-    handle: handleFn({ alias: '财务', icon: 'icon-tongji1' }),
+    loader: loaderFn({ name: '订单列表' }),
+    handle: handleFn({ alias: '订单', icon: 'icon-tongji1' }),
     children: [
       {
         path: 'manage',
-        handle: handleFn({ alias: '财务管理' }),
+        handle: handleFn({ alias: '订单列表' }),
         children: [
           {
             path: 'index',
@@ -363,8 +407,63 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '财务管理' }),
-            handle: handleFn({ alias: '财务管理' }),
+            loader: loaderFn({ name: '订单列表' }),
+            handle: handleFn({ alias: '订单列表' }),
+          },
+          {
+            path: 'finance',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/finance'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '账单列表' }),
+            handle: handleFn({ alias: '账单列表' }),
+          },
+          {
+            path: 'finance',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/finance'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '发票管理' }),
+            handle: handleFn({ alias: '发票管理' }),
+          },
+          {
+            path: 'finance',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/finance'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '退款管理' }),
+            handle: handleFn({ alias: '退款管理' }),
+          },
+          {
+            path: 'finance',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/finance'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '返佣管理' }),
+            handle: handleFn({ alias: '返佣管理' }),
+          },
+          {
+            path: 'finance',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/finance'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '业务统计' }),
+            handle: handleFn({ alias: '业务统计' }),
           },
         ],
       },
@@ -373,15 +472,41 @@ export const routerList: RouteObject[] = [
   {
     path: '/manage',
     element: <Layout />,
-    loader: loaderFn({ name: '账号设置' }),
+    loader: loaderFn({ name: '账号信息配置' }),
     handle: handleFn({ alias: '账号', icon: 'icon-wode' }),
     children: [
       {
         path: 'index',
-        handle: handleFn({ alias: '管理设置' }),
+        handle: handleFn({ alias: '账号信息配置' }),
         children: [
           {
             path: 'userinfo',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/manage/userInfo/userInfo'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '账号权限配置' }),
+            handle: handleFn({ alias: '账号权限配置' }),
+          },
+          {
+            path: 'manage',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/manage/userInfo/userInfo'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '账号安全配置' }),
+            handle: handleFn({ alias: '账号安全配置' }),
+          },
+          {
+            path: 'manage',
             element: (
               <LazyImportComponent
                 lazyChildren={lazy(
