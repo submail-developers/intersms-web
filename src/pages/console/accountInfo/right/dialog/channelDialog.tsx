@@ -173,7 +173,7 @@ function Dialog(props: Props, ref: any) {
           </Col>
           <Col span={12}>
             <Form.Item label='Sender' name='signature'>
-              <Input placeholder='请输入签名' maxLength={30} />
+              <Input placeholder='SUBMAIL' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>

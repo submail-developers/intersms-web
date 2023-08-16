@@ -5,7 +5,7 @@ import './userInfo.scss'
 export default function Fn() {
   return (
     <div data-class='userInfo'>
-      <MenuTitle title='账号信息管理'></MenuTitle>
+      <MenuTitle title='账号信息配置'></MenuTitle>
       <Info />
       <Log />
     </div>
