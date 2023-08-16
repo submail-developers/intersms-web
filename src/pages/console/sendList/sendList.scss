@@ -24,7 +24,6 @@
     transition: transform 0.3s;
     will-change: transform;
     color: #555;
-
     &:hover {
       transform-origin: center;
       transform: rotate(180deg);
