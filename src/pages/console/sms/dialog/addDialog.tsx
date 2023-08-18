@@ -1,4 +1,0 @@
-import {
-  saveAlarmConfigList,
-  getAllChannelId,
-  getAccountList,
