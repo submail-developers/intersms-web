@@ -353,21 +353,22 @@ export const routerList: RouteObject[] = [
           //   handle: handleFn({ alias: '营销短信数据' }),
           // },
           {
-            path: 'marketing',
+            path: 'counts2',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/counts'))}
+                lazyChildren={lazy(() => import('@/pages/counts2'))}
               />
             ),
             errorElement: <Error />,
             loader: loaderFn({ name: '国家统计数据 ' }),
             handle: handleFn({ alias: '国家统计数据 ' }),
           },
+
           {
-            path: 'marketing',
+            path: 'counts1',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/counts'))}
+                lazyChildren={lazy(() => import('@/pages/counts1'))}
               />
             ),
             errorElement: <Error />,
@@ -493,7 +494,7 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '账号权限配置' }),
           },
           {
-            path: 'manage',
+            path: 'userInfo1',
             element: (
               <LazyImportComponent
                 lazyChildren={lazy(
