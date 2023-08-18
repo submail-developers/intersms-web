@@ -412,10 +412,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '订单列表' }),
           },
           {
-            path: 'finance',
+            path: 'finance2',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/finance2'))}
               />
             ),
             errorElement: <Error />,
@@ -423,10 +423,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '账单列表' }),
           },
           {
-            path: 'finance',
+            path: 'finance3',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/finance3'))}
               />
             ),
             errorElement: <Error />,
@@ -434,10 +434,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '发票管理' }),
           },
           {
-            path: 'finance',
+            path: 'finance4',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/finance4'))}
               />
             ),
             errorElement: <Error />,
@@ -445,10 +445,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '退款管理' }),
           },
           {
-            path: 'finance',
+            path: 'finance5',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/finance5'))}
               />
             ),
             errorElement: <Error />,
