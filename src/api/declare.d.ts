@@ -132,6 +132,8 @@ declare module 'apis' {
       id: string
       mobile: string
       account: string // 账户ID
+      account_mail: string // 账户邮箱
+      account_path: string // 跳转链接
       title: string // 发送名称
       content: string
       type: '1' | '2' // 短信类型 1行业2营销

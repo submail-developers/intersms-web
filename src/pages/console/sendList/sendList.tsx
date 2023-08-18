@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Button,
   Select,
@@ -9,8 +9,7 @@ import {
   Table,
   Tooltip,
 } from 'antd'
-import { findDOMNode } from 'react-dom'
-import type { ColumnsType } from 'antd/es/table'
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
@@ -18,10 +17,10 @@ import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import { getSendList, getChannelList, getChannelGroupList } from '@/api'
 import { useSize } from '@/hooks'
-import { useThrottleFn } from 'ahooks'
 import { API } from 'apis'
 
 import './sendList.scss'
+
 interface DataType extends API.SendListItem {}
 interface FormValues {
   channel: string
@@ -49,10 +48,9 @@ export default function SendList() {
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<DataType[]>([])
   const [loading, setloading] = useState(false)
-  const loadingTag = useRef(false)
   const [total, settotal] = useState<number>(0)
-  const scrollRef = useRef(null)
-  const pageInfo = useRef(0)
+  const [page, setpage] = useState<number>(1)
+  const [pageSize, setpageSize] = useState<number>(50)
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
   // 通道列表
@@ -74,13 +72,20 @@ export default function SendList() {
     { label: '最近90天', value: [dayjs().add(-90, 'd'), dayjs().add(0, 'd')] },
   ]
 
-  const [tableWrapHeight, settableWrapHeight] = useState(0)
+  const changePage = async (_page: number, _pageSize: number) => {
+    if (_page != page) setpage(_page)
+    if (_pageSize != pageSize) setpageSize(_pageSize)
+  }
 
-  const tableWrapRef = useCallback((node) => {
-    if (node !== null) {
-      settableWrapHeight(node.getBoundingClientRect().height)
-    }
-  }, [])
+  const pagination: TablePaginationConfig = {
+    position: ['bottomRight'],
+    onChange: changePage,
+    total: total,
+    defaultPageSize: 50,
+    pageSizeOptions: [10, 20, 50, 100],
+    showQuickJumper: true, // 快速跳转
+    showTotal: (total, range) => `共 ${total} 条`,
+  }
 
   // 初始化form的值
   const initFormValues: FormValues = {
@@ -91,14 +96,8 @@ export default function SendList() {
   }
 
   // 获取列表数据
-  const search = async (next = false) => {
-    loadingTag.current = true
-    let p = pageInfo.current + 1
-    if (!next) {
-      setloading(true)
-      p = 1
-      pageInfo.current = 1
-    }
+  const search = async () => {
+    setloading(true)
     const values = await form.getFieldsValue()
     const { channel, group, time, keyword } = values
     const start = (time && time[0].format('YYYY-MM-DD')) || ''
@@ -110,70 +109,22 @@ export default function SendList() {
       channel,
       group,
       keyword,
-      page: p,
-      limit: 50,
+      page,
+      limit: pageSize,
     }
-
     try {
       const res = await getSendList(params)
-      if (next) {
-        pageInfo.current += 1
-        settableData([...tableData, ...res.data])
-      } else {
-        settableData(res.data)
-        toTop()
-      }
+      settableData(res.data)
       settotal(res.total)
       setloading(false)
-      loadingTag.current = false
     } catch (error) {
       setloading(false)
-      loadingTag.current = false
-    }
-  }
-
-  // 节流
-  const { run } = useThrottleFn(search, {
-    wait: 2000,
-  })
-
-  // 返回顶部
-  const toTop = () => {
-    // 获取表格滚动元素
-    const table = findDOMNode(scrollRef.current)
-    const tableBody = (table as Element)?.querySelector('.ant-table-body')
-    tableBody?.scrollTo(0, 0)
-  }
-
-  const scrollEvent = () => {
-    // 如果正在加载数据中，不重复进行操作
-    if (loadingTag.current || total <= tableData.length) return
-
-    // 获取表格滚动元素
-    const table = findDOMNode(scrollRef.current)
-    const tableBody = (table as Element)?.querySelector('.ant-table-body')
-
-    // 容器可视区高度
-    const tableBodyHeight: number = tableBody?.clientHeight
-      ? tableBody?.clientHeight
-      : 0
-
-    // 内容高度
-    const contentHeight = tableBody?.scrollHeight ? tableBody?.scrollHeight : 0
-
-    // 距离顶部的高度
-    const toTopHeight = tableBody?.scrollTop ? tableBody?.scrollTop : 0
-
-    // 当距离底部只有100时，重新获取数据
-    if (contentHeight - (toTopHeight + tableBodyHeight) <= 100) {
-      // 如果当前页数据大于等于总页数，则代表没有数据了
-      run(true)
     }
   }
 
   const resetForm = () => {
     form.resetFields()
-    run()
+    search()
   }
 
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
@@ -184,9 +135,11 @@ export default function SendList() {
     form.resetFields()
     getChannel()
     getChannels()
-    pageInfo.current = 1
-    run()
   }, [])
+
+  useEffect(() => {
+    search()
+  }, [page, pageSize])
   // 获取通道列表
   const getChannel = async () => {
     try {
@@ -217,6 +170,24 @@ export default function SendList() {
       width: size == 'small' ? 120 : 150,
       align: size == 'small' ? 'center' : 'left',
       fixed: true,
+    },
+    {
+      title: '发送账户',
+      className: size == 'small' ? '' : 'paddingL30',
+      width: size == 'small' ? 140 : 180,
+      render: (_, record) => (
+        <Tooltip
+          title={record.account_mail}
+          placement='bottom'
+          mouseEnterDelay={0.3}
+          trigger={['hover']}>
+          <div className='g-ellipsis'>
+            <a href={record.account_path} target='_blank'>
+              {record.account_mail}
+            </a>
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '短信正文',
@@ -302,8 +273,8 @@ export default function SendList() {
     },
     {
       title: '通道',
-      className: 'paddingL20',
       width: 124,
+      className: 'paddingL20',
       render: (_, record) => (
         <div
           style={{ width: 120 }}
@@ -328,14 +299,14 @@ export default function SendList() {
     },
     {
       title: '网络类型',
-      className: 'paddingL20',
       width: 100,
+      className: 'paddingL20',
       render: (_, record) => <span>{record.network_name}</span>,
     },
     {
       title: '短信类型',
-      className: 'paddingL20',
       width: 100,
+      className: 'paddingL20',
       render: (_, record) => (
         <span>{record.type == '2' ? '营销短信' : '行业短信'}</span>
       ),
@@ -343,8 +314,8 @@ export default function SendList() {
     {
       title: '成本/计费价',
       dataIndex: 'price',
-      className: 'paddingL20',
       width: 140,
+      className: 'paddingL20',
       render: (_, record) => {
         return (
           <span>
@@ -442,7 +413,7 @@ export default function SendList() {
               <Button
                 type='primary'
                 size={size}
-                onClick={() => run()}
+                onClick={search}
                 style={{ width: 110, marginLeft: 0 }}>
                 搜索
               </Button>
@@ -457,31 +428,18 @@ export default function SendList() {
           </Form.Item>
         </Form>
       </ConfigProvider>
-      <div
-        className='table-wrap'
-        onScrollCapture={scrollEvent}
-        ref={tableWrapRef}>
-        <Table
-          className='theme-cell'
-          columns={columns}
-          dataSource={tableData}
-          sticky
-          pagination={false}
-          rowKey={'id'}
-          onRow={onRow}
-          rowClassName={(record, index) =>
-            index == activeIndex ? 'active' : ''
-          }
-          scroll={{
-            x: 'max-content',
-            y: tableWrapHeight - (size == 'small' ? 0 : 50),
-          }}
-          loading={loading}
-          ref={(c) => {
-            scrollRef.current = c
-          }}
-        />
-      </div>
+      <Table
+        className='theme-cell'
+        columns={columns}
+        dataSource={tableData}
+        sticky
+        pagination={pagination}
+        rowKey={'id'}
+        onRow={onRow}
+        rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
+        scroll={{ x: 'fix-content' }}
+        loading={loading}
+      />
     </div>
   )
 }
