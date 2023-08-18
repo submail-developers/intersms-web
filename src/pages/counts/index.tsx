@@ -147,7 +147,7 @@ function Echart() {
   return (
     <>
       <div>
-        <MenuTitle title='行业短信数据'></MenuTitle>
+        <MenuTitle title='国际短信数据'></MenuTitle>
         <Row justify='space-between' gutter={30}>
           <Col span={24}>
             <Card size='small' title='API 分析报告'>

@@ -323,12 +323,12 @@ export const routerList: RouteObject[] = [
   {
     path: '/data',
     element: <Layout />,
-    loader: loaderFn({ name: '行业短信数据' }),
+    loader: loaderFn({ name: '国际短信数据' }),
     handle: handleFn({ alias: '行业', icon: 'icon-tongji1' }),
     children: [
       {
         path: 'manage',
-        handle: handleFn({ alias: '行业短信数据' }),
+        handle: handleFn({ alias: '国际短信数据' }),
         children: [
           {
             path: 'index',
@@ -338,20 +338,20 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '行业短信数据' }),
-            handle: handleFn({ alias: '行业短信数据' }),
+            loader: loaderFn({ name: '国际短信数据' }),
+            handle: handleFn({ alias: '国际短信数据' }),
           },
-          {
-            path: 'marketing',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/counts'))}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: '营销短信数据' }),
-            handle: handleFn({ alias: '营销短信数据' }),
-          },
+          // {
+          //   path: 'marketing',
+          //   element: (
+          //     <LazyImportComponent
+          //       lazyChildren={lazy(() => import('@/pages/counts'))}
+          //     />
+          //   ),
+          //   errorElement: <Error />,
+          //   loader: loaderFn({ name: '营销短信数据' }),
+          //   handle: handleFn({ alias: '营销短信数据' }),
+          // },
           {
             path: 'marketing',
             element: (
