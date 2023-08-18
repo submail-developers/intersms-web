@@ -359,6 +359,7 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '国家统计数据 ' }),
             handle: handleFn({ alias: '国家统计数据 ' }),
           },
+
           {
             path: 'channel',
             element: (
