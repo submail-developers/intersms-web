@@ -201,9 +201,18 @@ export default function Channel() {
                 name='group_id'
                 style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Select
+                  showSearch
                   placeholder='全部通道组'
                   style={{ width: 162 }}
                   size={size}
+                  options={allGruopData}
+                  fieldNames={{ label: 'name', value: 'id' }}
+                  optionFilterProp='name'
+                  filterOption={(input, option) =>
+                    (option?.name ?? '')
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
                   suffixIcon={
                     <i
                       className='icon iconfont icon-xiala'
@@ -213,13 +222,7 @@ export default function Channel() {
                         transform: 'scale(.45)',
                       }}
                     />
-                  }>
-                  {allGruopData.map((item) => (
-                    <Option value={item.id} key={item.id}>
-                      {item.name}
-                    </Option>
-                  ))}
-                </Select>
+                  }></Select>
               </Form.Item>
               <Form.Item
                 label=''

@@ -310,9 +310,18 @@ export default function NumberChannelsRoute() {
                 name='channel'
                 style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Select
+                  showSearch
                   placeholder='全部通道'
                   style={{ width: 162 }}
                   size={size}
+                  options={allChannelData}
+                  fieldNames={{ label: 'name', value: 'id' }}
+                  optionFilterProp='name'
+                  filterOption={(input, option) =>
+                    (option?.name ?? '')
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
                   suffixIcon={
                     <i
                       className='icon iconfont icon-xiala'
@@ -322,13 +331,7 @@ export default function NumberChannelsRoute() {
                         transform: 'scale(.45)',
                       }}
                     />
-                  }>
-                  {allChannelData.map((item) => (
-                    <Option value={item.id} key={item.id}>
-                      {item.name}
-                    </Option>
-                  ))}
-                </Select>
+                  }></Select>
               </Form.Item>
               <Form.Item style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <ConfigProvider
