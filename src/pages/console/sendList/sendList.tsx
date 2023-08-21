@@ -384,11 +384,16 @@ export default function SendList() {
           </Form.Item>
           <Form.Item label='' name='group' style={{ marginBottom: 10 }}>
             <Select
+              showSearch
               placeholder='请选择通道组'
               style={{ width: 162 }}
               size={size}
               options={channelsList}
               fieldNames={{ label: 'name', value: 'id' }}
+              optionFilterProp='name'
+              filterOption={(input, option) =>
+                (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
+              }
               suffixIcon={
                 <i
                   className='icon iconfont icon-xiala'
