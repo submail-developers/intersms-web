@@ -73,7 +73,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
       <Form
-        name='form'
+        name='form-0'
         form={form}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
