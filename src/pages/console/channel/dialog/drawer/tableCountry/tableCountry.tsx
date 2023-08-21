@@ -163,7 +163,7 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL12'>行业价格</div>,
+      title: <div className='paddingL12'>行业成本</div>,
       width: 110,
       render(_, record) {
         return (
@@ -180,7 +180,7 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL12'>营销价格</div>,
+      title: <div className='paddingL12'>营销成本</div>,
       width: 110,
       render(_, record) {
         return (
@@ -226,7 +226,7 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL12'>行业价格</div>,
+      title: <div className='paddingL12'>行业成本</div>,
       width: 110,
       render(_, record) {
         if (record.network_list.length > 0) {
@@ -260,7 +260,7 @@ function MyTable(props: Props, ref: any) {
       },
     },
     {
-      title: <div className='paddingL12'>营销价格</div>,
+      title: <div className='paddingL12'>营销成本</div>,
       width: 110,
       render(_, record) {
         if (record.network_list.length > 0) {
