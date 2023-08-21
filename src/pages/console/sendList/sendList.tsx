@@ -74,10 +74,17 @@ export default function SendList() {
 
   const changePage = async (_page: number, _pageSize: number) => {
     if (_page != page) setpage(_page)
-    if (_pageSize != pageSize) setpageSize(_pageSize)
+    if (_pageSize != pageSize) {
+      // pagesize由大到小切换时，此时tableData.length大于pagesize，会有个报错警告。解决掉这个警告
+      if (_pageSize < pageSize) {
+        settableData(tableData.slice(0, _pageSize))
+      }
+      setpageSize(_pageSize)
+    }
   }
 
   const pagination: TablePaginationConfig = {
+    current: page,
     position: ['bottomRight'],
     onChange: changePage,
     total: total,
@@ -136,6 +143,14 @@ export default function SendList() {
     getChannel()
     getChannels()
   }, [])
+
+  const handleSearch = () => {
+    if (page == 1) {
+      search()
+    } else {
+      changePage(1, pageSize)
+    }
+  }
 
   useEffect(() => {
     search()
@@ -346,11 +361,16 @@ export default function SendList() {
           autoComplete='off'>
           <Form.Item label='' name='channel' style={{ marginBottom: 10 }}>
             <Select
+              showSearch
               placeholder='请选择通道'
               style={{ width: 162 }}
               size={size}
               options={channelList}
               fieldNames={{ label: 'name', value: 'id' }}
+              optionFilterProp='name'
+              filterOption={(input, option) =>
+                (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
+              }
               suffixIcon={
                 <i
                   className='icon iconfont icon-xiala'
@@ -364,11 +384,16 @@ export default function SendList() {
           </Form.Item>
           <Form.Item label='' name='group' style={{ marginBottom: 10 }}>
             <Select
+              showSearch
               placeholder='请选择通道组'
               style={{ width: 162 }}
               size={size}
               options={channelsList}
               fieldNames={{ label: 'name', value: 'id' }}
+              optionFilterProp='name'
+              filterOption={(input, option) =>
+                (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
+              }
               suffixIcon={
                 <i
                   className='icon iconfont icon-xiala'
@@ -413,7 +438,7 @@ export default function SendList() {
               <Button
                 type='primary'
                 size={size}
-                onClick={search}
+                onClick={() => handleSearch()}
                 style={{ width: 110, marginLeft: 0 }}>
                 搜索
               </Button>

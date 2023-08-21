@@ -269,9 +269,7 @@ export const routerList: RouteObject[] = [
             path: 'smsUplink',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(
-                  () => import('@/pages/console/smsUplink/smsUplink'),
-                )}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -282,9 +280,7 @@ export const routerList: RouteObject[] = [
             path: 'numSearch',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(
-                  () => import('@/pages/console/numSearch/numSearch'),
-                )}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -323,12 +319,12 @@ export const routerList: RouteObject[] = [
   {
     path: '/data',
     element: <Layout />,
-    loader: loaderFn({ name: '行业短信数据' }),
+    loader: loaderFn({ name: '国际短信数据' }),
     handle: handleFn({ alias: '行业', icon: 'icon-tongji1' }),
     children: [
       {
         path: 'manage',
-        handle: handleFn({ alias: '行业短信数据' }),
+        handle: handleFn({ alias: '国际短信数据' }),
         children: [
           {
             path: 'index',
@@ -338,36 +334,37 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '行业短信数据' }),
-            handle: handleFn({ alias: '行业短信数据' }),
+            loader: loaderFn({ name: '国际短信数据' }),
+            handle: handleFn({ alias: '国际短信数据' }),
           },
+          // {
+          //   path: 'marketing',
+          //   element: (
+          //     <LazyImportComponent
+          //       lazyChildren={lazy(() => import('@/pages/counts'))}
+          //     />
+          //   ),
+          //   errorElement: <Error />,
+          //   loader: loaderFn({ name: '营销短信数据' }),
+          //   handle: handleFn({ alias: '营销短信数据' }),
+          // },
           {
-            path: 'marketing',
+            path: 'country',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/counts'))}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: '营销短信数据' }),
-            handle: handleFn({ alias: '营销短信数据' }),
-          },
-          {
-            path: 'marketing',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/counts'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
             loader: loaderFn({ name: '国家统计数据 ' }),
             handle: handleFn({ alias: '国家统计数据 ' }),
           },
+
           {
-            path: 'marketing',
+            path: 'channel',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/counts'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -375,15 +372,15 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '通道统计数据 ' }),
           },
           {
-            path: 'marketing',
+            path: 'account',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/counts'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
             loader: loaderFn({ name: '账号统计数据 ' }),
-            handle: handleFn({ alias: '通道统计数据 ' }),
+            handle: handleFn({ alias: '账号统计数据 ' }),
           },
         ],
       },
@@ -403,7 +400,7 @@ export const routerList: RouteObject[] = [
             path: 'index',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -411,10 +408,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '订单列表' }),
           },
           {
-            path: 'finance',
+            path: 'bill',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -422,10 +419,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '账单列表' }),
           },
           {
-            path: 'finance',
+            path: 'invoice',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -433,10 +430,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '发票管理' }),
           },
           {
-            path: 'finance',
+            path: 'return',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -444,10 +441,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '退款管理' }),
           },
           {
-            path: 'finance',
+            path: 'rebate',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -455,10 +452,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '返佣管理' }),
           },
           {
-            path: 'finance',
+            path: 'business',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/finance'))}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -483,9 +480,7 @@ export const routerList: RouteObject[] = [
             path: 'userinfo',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(
-                  () => import('@/pages/manage/userInfo/userInfo'),
-                )}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -493,12 +488,10 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '账号权限配置' }),
           },
           {
-            path: 'manage',
+            path: 'safe',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(
-                  () => import('@/pages/manage/userInfo/userInfo'),
-                )}
+                lazyChildren={lazy(() => import('@/pages/web'))}
               />
             ),
             errorElement: <Error />,
@@ -506,7 +499,7 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '账号安全配置' }),
           },
           {
-            path: 'manage',
+            path: 'info',
             element: (
               <LazyImportComponent
                 lazyChildren={lazy(
