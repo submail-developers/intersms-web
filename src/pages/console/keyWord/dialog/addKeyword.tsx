@@ -53,6 +53,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       title={isAdd ? '添加关键字' : '编辑关键字'}
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>

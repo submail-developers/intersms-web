@@ -64,6 +64,7 @@ const Dialog = (props: Props, ref: any) => {
       title='新增通道'
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>

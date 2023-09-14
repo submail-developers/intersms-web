@@ -27,6 +27,7 @@ export default function Left() {
   const [tableData, settableData] = useState<API.GetBlackListItems[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<DataType | null>(null)
+  const [blackNum, setblackNum] = useState<number>() //通道组数量
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
@@ -84,6 +85,7 @@ export default function Left() {
       page: '1',
     })
     settableData(res.data)
+    setblackNum(res.data.length)
     if (noResetActive) return
     if (res.data.length > 0) {
       dispatch(changeActiveBlack(res.data[0]))
@@ -143,7 +145,7 @@ export default function Left() {
         </Popconfirm>
       </div>
       <div className='filter-wrap fx-col'>
-        <div className='table-title'>黑名单表</div>
+        <div className='table-title'>黑名单表 ({blackNum})</div>
         <ConfigProvider
           theme={{
             token: {

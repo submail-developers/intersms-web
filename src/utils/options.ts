@@ -109,6 +109,12 @@ export const channelPriceTypeOptions = [
   { label: '营销短信', value: '2' },
 ]
 
+// Sender管理
+export const senderManageOptions = [
+  { label: '国际Sender', value: '1' },
+  { label: '本地Sender', value: '2' },
+]
+
 // 通道组类型
 export const channelsTypeOptions = [
   { label: '行业通道组', value: '0' },

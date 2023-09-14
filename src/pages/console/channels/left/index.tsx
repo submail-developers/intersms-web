@@ -43,6 +43,7 @@ export default function Left() {
   const dispatch = useAppDispatch()
   const point = usePoint('xl')
   const [keyword, setkeyword] = useState<string>('')
+  const [channelsNum, setchannelsNum] = useState<number>() //通道组数量
   // 列表
   const [tableData, settableData] = useState<DataType[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
@@ -84,12 +85,12 @@ export default function Left() {
       title: '通道组名称',
       dataIndex: 'name',
       className: 'paddingL30',
-      width: 130,
+      width: 230,
       ellipsis: true,
     },
     {
       title: '敏感词&黑名单',
-      width: 200,
+      width: 60,
       render: (_, record) => {
         let sens_word =
           record.sens_word_list && record.sens_word_list.length > 0
@@ -101,9 +102,7 @@ export default function Left() {
             : ''
         return (
           <div className='fx word-wrap'>
-            <div
-              className='sens-word g-ellipsis'
-              style={{ marginLeft: 'auto' }}>
+            <div className='sens-word g-ellipsis'>
               {sens_word && (
                 <Tooltip title={sens_word}>
                   <i
@@ -129,7 +128,7 @@ export default function Left() {
     {
       title: '状态',
       dataIndex: 'status',
-      width: 50,
+      width: 40,
       render: (_, record) => <SwitchNode record={record}></SwitchNode>,
     },
   ]
@@ -152,6 +151,7 @@ export default function Left() {
     try {
       const res = await getChannelGroupList({ id: '', keyword })
       settableData(res.data)
+      setchannelsNum(res.data.length)
       if (noResetActive) return
       if (res.data.length > 0) {
         dispatch(changeActiveChannels(res.data[0]))
@@ -296,7 +296,7 @@ export default function Left() {
             }}
           />
         </div>
-        <div className='table-title'>全部通道组</div>
+        <div className='table-title'>全部通道组 ({channelsNum})</div>
         <ConfigProvider
           theme={{
             token: {
@@ -314,7 +314,7 @@ export default function Left() {
               record.id == activeRow?.id ? 'active' : ''
             }
             pagination={false}
-            scroll={{ y: 450 }}
+            scroll={{ y: 474 }}
           />
         </ConfigProvider>
       </div>

@@ -838,6 +838,66 @@ declare module 'apis' {
     /**
      * 关键词管理end
      */
+    /**
+     * 获取客户注册文件记录start
+     */
+    interface GetSenderEvidenceParams {
+      id: string
+      keyword: string
+      status: string
+      limit: string
+      page: string
+    }
+
+    // 获取客户注册文件记录的数据
+    interface GetSenderEvidenceItems {
+      id: string
+      maid: string
+      account: string
+      region_code: string
+      country_cn: string
+      channel_id: string
+      sender: string
+      sender_type: string
+      sender_status: string
+      business_license: string
+      registration: string
+      date: string
+      date_last: string
+      channel_name: string
+    }
+    //新增客户注册文件记录参数
+    interface AddSenderEvidenceParams {
+      mail: string
+      region_code: string
+      country_cn: string
+      channel_id: string
+      sender: string
+      sender_type: string
+      sender_status: string
+      business_license: any
+      registration: any
+    }
+    // 更新客户注册文件记录参数
+    interface UpdateSenderEvidenceParams {
+      id: string
+      user_id: string
+      sender: string
+      sender_type: string
+      sender_status: string
+      business_license: any
+      registration: any
+    }
+
+    // 删除客户注册文件记录参数
+    interface DeleteSenderEvidenceParams {
+      id: string
+    }
+
+    /**
+     * 获取客户注册文件记录end
+     */
+    //
 
     /**
      * 状态码对照表start

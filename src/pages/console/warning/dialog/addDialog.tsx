@@ -70,24 +70,11 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     sender = option.account
   }
   const handleOk = async () => {
-    // try {
-    //   const params = await form.validateFields()
-    //   let newParams
-    //   newParams = { country_cn, region_code, ...params }
-    //   const res = await saveAlarmConfigList(newParams)
-    //   console.log(newParams, '?????')
-    //   if (res) {
-    //     message.success('保存成功！')
-    //   }
-    //   onSearch()
-    //   setIsModalOpen(false)
-    // } catch (error) {}
     try {
       const params = await form.validateFields()
       let newParams
       if (isAdd) {
         newParams = { country_cn, area, region_code, ...params }
-        console.log(newParams, 'add')
       } else {
         if (record) newParams = { ...record, ...params }
       }
@@ -163,6 +150,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       title={isAdd ? '新增报警设置' : '编辑报警设置'}
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       data-class='net-config-dialog'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}

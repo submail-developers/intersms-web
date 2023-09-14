@@ -60,6 +60,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       title={isAdd ? '添加敏感词' : '编辑敏感词'}
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>

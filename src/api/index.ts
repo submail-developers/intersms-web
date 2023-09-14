@@ -558,6 +558,7 @@ export const deleteNetWorkList = (data: API.DeleteNetWorkParams) => {
     { ...data },
   )
 }
+
 /**
  * 网络信息配置end
  */
@@ -739,6 +740,53 @@ export const keyWordStopUsing = (data: API.keyWordStopUsingParams) => {
 }
 /**
  * 关键词管理end
+ */
+
+/**
+ * 获取客户注册文件记录start
+ */
+
+// 获取客户注册文件记录
+export const getSenderEvidence = (data: API.GetSenderEvidenceParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetSenderEvidenceItems[]>,
+    API.GetSenderEvidenceParams
+  >('console/api/user/get_sender_evidence', { ...data })
+}
+// 新增客户注册文件记录
+export const addSenderEvidence = (data: API.AddSenderEvidenceParams) => {
+  return request.post<any, API.Response<any>, API.AddSenderEvidenceParams>(
+    'console/api/user/add_sender_evidence',
+    { ...data },
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  )
+}
+// 更新客户注册文件记录
+export const updateSenderEvidence = (data: API.UpdateSenderEvidenceParams) => {
+  return request.post<any, API.Response<any>, API.UpdateSenderEvidenceParams>(
+    'console/api/user/update_sender_evidence',
+    { ...data },
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  )
+}
+// 删除客户注册文件记录
+export const deleteSenderEvidence = (data: API.DeleteSenderEvidenceParams) => {
+  return request.post<any, API.Response<any>, API.DeleteSenderEvidenceParams>(
+    'console/api/user/delete_sender_evidence',
+    { ...data },
+  )
+}
+/**
+ * 获取客户注册文件记录end
  */
 
 /**

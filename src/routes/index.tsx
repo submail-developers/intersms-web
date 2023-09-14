@@ -107,6 +107,19 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '客户信息' }),
             handle: handleFn({ alias: '客户信息' }),
           },
+          {
+            path: 'senderManage',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/console/senderManage/senderManage'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: 'Sender管理' }),
+            handle: handleFn({ alias: 'Sender管理' }),
+          },
         ],
       },
       {

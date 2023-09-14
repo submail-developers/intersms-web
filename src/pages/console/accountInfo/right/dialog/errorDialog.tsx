@@ -45,6 +45,8 @@ const Dialog = (props: Props, ref: any) => {
   const [isAdd, setisAdd] = useState(false)
   const [appidList, setappidList] = useState<API.GetAppidItem[]>([])
 
+  const [contrylList, setcontrylList] = useState<API.GetAppidItem[]>([])
+
   const open = (record: API.UpdateAccountErrorParams = initialValues) => {
     form.resetFields()
     if (record.id != '') {
@@ -68,9 +70,9 @@ const Dialog = (props: Props, ref: any) => {
       sender: accountInfoStore.activeAccount?.account || '',
     })
     let list = [...res.data]
-    list.unshift({
-      id: '0',
-      app: '全部',
+    list.map((item) => {
+      item.app += `(${item.id})`
+      return item
     })
     setappidList(list)
   }
@@ -108,11 +110,12 @@ const Dialog = (props: Props, ref: any) => {
       title={`${isAdd ? '新增' : '编辑'}失败处理配置`}
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
       <Form
-        name='form'
+        name='formfail'
         form={form}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
@@ -173,48 +176,48 @@ const Dialog = (props: Props, ref: any) => {
               labelCol={{ span: 24 }}
               label='response_time'
               name='response_time'>
-              <Input placeholder='' maxLength={30} />
+              <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item labelCol={{ span: 24 }} label='delivrd' name='delivrd'>
-              <Input placeholder='' maxLength={30} />
+              <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item labelCol={{ span: 24 }} label='undeliv' name='undeliv'>
-              <Input placeholder='' maxLength={30} />
+              <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item labelCol={{ span: 24 }} label='expired' name='expired'>
-              <Input placeholder='' maxLength={30} />
+              <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item labelCol={{ span: 24 }} label='accepted' name='accepted'>
-              <Input placeholder='' maxLength={30} />
+              <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item labelCol={{ span: 24 }} label='unknown' name='unknown'>
-              <Input placeholder='' maxLength={30} />
+              <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item labelCol={{ span: 24 }} label='rejected' name='rejected'>
-              <Input placeholder='' maxLength={30} />
+              <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item labelCol={{ span: 24 }} label='spname' name='spname'>
-              <Input placeholder='' maxLength={30} />
+              <Input placeholder='Austolist' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>

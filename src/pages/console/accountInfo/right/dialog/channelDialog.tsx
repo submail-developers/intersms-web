@@ -17,7 +17,7 @@ interface FormType extends API.UpdateAccountChannelParams {}
 const initialValues: FormType = {
   id: '', // 客户ID
   sender: '', // 客户account
-  appid: '0', // 0所有
+  appid: '', // 0所有
   group_type: '1', // 通道类型   1行业通道  2营销通道
   signature: '', // 签名 需带【】
   country_cn: undefined, // 国家中文名称
@@ -71,9 +71,9 @@ function Dialog(props: Props, ref: any) {
       sender: accountInfoStore.activeAccount?.account || '',
     })
     let list = [...res.data]
-    list.unshift({
-      id: '0',
-      app: '全部',
+    list.map((item) => {
+      item.app += `(${item.id})`
+      return item
     })
     setappidList(list)
   }
@@ -103,11 +103,12 @@ function Dialog(props: Props, ref: any) {
       title={`${isAdd ? '新增' : '编辑'}国家通道配置`}
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
       <Form
-        name='form'
+        name='formchannel'
         form={form}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
@@ -173,7 +174,7 @@ function Dialog(props: Props, ref: any) {
           </Col>
           <Col span={12}>
             <Form.Item label='Sender' name='signature'>
-              <Input placeholder='请输入签名' maxLength={30} />
+              <Input placeholder='SUBMAIL' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>

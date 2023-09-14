@@ -40,6 +40,8 @@ function Left(props: any, ref: any) {
   const [tableData, settableData] = useState<API.AccountListItem[]>([]) // table列表
   const [loading, setloading] = useState(false)
   const [activeRow, setactiveRow] = useState<DataType | null>(null) // 被点击的客户(不是被checkbox选中的客户)
+  const [peopelNum, setpeopelNum] = useState<number>() //客户数量
+
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
@@ -119,6 +121,7 @@ function Left(props: any, ref: any) {
       const res = await getAccountList({
         keyword,
       })
+      setpeopelNum(res.data.length)
       settableData(res.data)
       setloading(false)
 
@@ -198,7 +201,7 @@ function Left(props: any, ref: any) {
             }}
           />
         </div>
-        <div className='table-title'>全部客户</div>
+        <div className='table-title'>全部客户 ({peopelNum})</div>
         <ConfigProvider
           theme={{
             token: {

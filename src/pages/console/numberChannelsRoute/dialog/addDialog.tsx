@@ -184,6 +184,7 @@ const Dialog = (props: Props, ref: any) => {
       title={isAdd ? '新增号码通道路由' : '编辑号码通道路由'}
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       data-class='net-config-dialog'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}

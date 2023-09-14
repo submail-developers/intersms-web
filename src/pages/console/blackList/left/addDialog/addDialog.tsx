@@ -69,6 +69,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       width={640}
       data-class='add-blacklist'
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>

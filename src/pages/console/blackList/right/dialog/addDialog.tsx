@@ -76,6 +76,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         ...params,
         list_id: blackStore.activeBlack?.id,
       })
+
       if (fileList.length == 0) {
         message.destroy()
         message.success('保存成功！')
@@ -132,6 +133,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       title='新增黑名单'
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>

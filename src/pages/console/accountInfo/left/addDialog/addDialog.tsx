@@ -46,6 +46,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       title='新增客户信息配置'
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
@@ -69,7 +70,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
               message: '请输入正确邮箱!',
             },
           ]}>
-          <Input placeholder='请输入客户邮箱' maxLength={30} />
+          <Input placeholder='请输入客户邮箱' maxLength={60} />
         </Form.Item>
       </Form>
     </Modal>

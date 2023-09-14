@@ -10,29 +10,25 @@ import {
   Col,
   App,
   Popconfirm,
+  Tooltip,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-
+import { CloudDownloadOutlined } from '@ant-design/icons'
 import { useSize } from '@/hooks'
-import {
-  getMobileRouteList,
-  getAllChannelId,
-  deleteMobileRouteList,
-} from '@/api'
+import { getSenderEvidence, getAllChannelId, deleteSenderEvidence } from '@/api'
 import { API } from 'apis'
 
-import './numberChannelsRoute.scss'
+import './senderManage.scss'
 
-interface DataType extends API.GetMobileRouteListItems {}
+interface DataType extends API.GetSenderEvidenceItems {}
 interface FormValues {
   id: string
-  type: string
+  status: string
   keyword: string
-  channel: string
-  channel_name: string
-  account: string
+  limit: string
+  page: string
 }
 
 // 号码通道路由
@@ -51,12 +47,12 @@ export default function NumberChannelsRoute() {
         setactiveIndex(index)
       },
       onDoubleClick: () => {
-        if (selectedRowKeys.includes(record.mobile)) {
+        if (selectedRowKeys.includes(record.id)) {
           setSelectedRowKeys(
-            selectedRowKeys.filter((item) => item != record.mobile),
+            selectedRowKeys.filter((item) => item != record.id),
           )
         } else {
-          setSelectedRowKeys([...selectedRowKeys, record.mobile])
+          setSelectedRowKeys([...selectedRowKeys, record.id])
         }
       },
     }
@@ -70,37 +66,35 @@ export default function NumberChannelsRoute() {
     },
   }
   const [form] = Form.useForm()
-  const [tableData, settableData] = useState<API.GetMobileRouteListItems[]>([])
+  const [tableData, settableData] = useState<API.GetSenderEvidenceItems[]>([])
 
   // 初始化form的值
   const initFormValues: FormValues = {
-    account: '',
     id: '',
-    type: 'all',
+    status: 'all',
     keyword: '',
-    channel: '',
-    channel_name: '',
+    limit: '50',
+    page: '1',
   }
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { id, type, keyword, channel, channel_name, account } = params
+    const { id, status, keyword, limit, page } = params
     const searchParams = {
       id,
-      type,
+      status,
       keyword,
-      channel,
-      channel_name,
-      account,
+      limit,
+      page,
     }
     searchEvent(searchParams)
   }
-  const searchEvent = async (params: API.GetMobileRouteListParams) => {
+  const searchEvent = async (params: API.GetSenderEvidenceParams) => {
     try {
       setloading(true)
-      const res = await getMobileRouteList(params)
+      const res = await getSenderEvidence(params)
       settableData(res.data)
       setloading(false)
     } catch (error) {
@@ -120,67 +114,141 @@ export default function NumberChannelsRoute() {
   >([])
 
   const messageList = [
-    { label: '短信类型', value: 'all' },
-    { label: '行业短信', value: '1' },
-    { label: '营销短信', value: '2' },
+    { label: '全部状态', value: 'all' },
+    { label: '申请中', value: '1' },
+    { label: '申请失败', value: '0' },
+    { label: '申请成功', value: '2' },
   ]
 
   const columns: ColumnsType<DataType> = [
     {
-      title: '手机号码',
-      dataIndex: 'mobile',
+      title: '账号',
+      dataIndex: 'mail',
       className: size == 'small' ? '' : 'paddingL30',
       width: size == 'small' ? 90 : 140,
       fixed: true,
     },
     {
-      title: '短信类型',
+      title: '国家',
       width: 120,
-      dataIndex: 'type',
-      render: (_, record: DataType) => (
-        <div>
-          {record.type == '1' ? <span>行业短信</span> : <span>营销短信</span>}
-        </div>
-      ),
-    },
-    {
-      title: '关联账号',
-      dataIndex: 'account',
-      width: 140,
-      render: (_, record: DataType) => (
-        <div>
-          {record.sender == '0' ? (
-            <span>全平台</span>
-          ) : (
-            <span>{record.account}</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      title: '关联国家/地区',
+      className: 'paddingL20',
       dataIndex: 'country_cn',
-      width: 140,
     },
     {
       title: '通道',
       dataIndex: 'channel_name',
-      width: 140,
+      width: 100,
+      className: 'paddingL20',
+    },
+    {
+      title: 'Sender名',
+      dataIndex: 'sender',
+      width: 120,
+    },
+    {
+      title: 'Sender属性',
+      dataIndex: 'channel_name',
+      className: 'paddingL20',
+      width: 100,
       render: (_, record: DataType) => (
-        <div style={{ width: '140px' }} className='g-ellipsis'>
-          {record.channel_name == null ? (
-            <span>该通道已删除</span>
+        <div style={{ width: '100px' }} className='g-ellipsis'>
+          {record.sender_type == '1' ? (
+            <span style={{ color: '#5765cc' }}>
+              <i className='iconfont icon-wangluo'></i> 国际
+            </span>
           ) : (
-            <span title={record.channel_name}>{record.channel_name}</span>
+            <span style={{ color: '#cd2fb1' }}>
+              {' '}
+              <i className='iconfont icon-dizhi'></i> 本地
+            </span>
           )}
         </div>
       ),
     },
     {
-      title: '发送名',
+      title: '营业执照',
       width: 100,
-      className: 'paddingL30',
-      dataIndex: 'name',
+      className: 'paddingL20',
+      dataIndex: 'business_license',
+      render: (_, record: DataType) => (
+        <div>
+          {record.business_license != '' ? (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span>已上传</span> &nbsp;&nbsp;
+              <Tooltip title={'点击下载'}>
+                <a href={`${record.business_license}`}>
+                  <CloudDownloadOutlined
+                    rev={undefined}
+                    style={{ fontSize: '16px' }}
+                  />
+                </a>
+              </Tooltip>
+            </div>
+          ) : (
+            <span className='color-gray'>未上传</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: '注册资料',
+      width: 100,
+      className: 'paddingL20',
+      dataIndex: 'registration',
+      render: (_, record: DataType) => (
+        <div>
+          {record.registration != '' ? (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span>已上传</span> &nbsp;&nbsp;
+              <Tooltip title={'点击下载'}>
+                <a href={`${record.registration}`}>
+                  <CloudDownloadOutlined
+                    rev={undefined}
+                    style={{ fontSize: '16px' }}
+                  />
+                </a>
+              </Tooltip>
+            </div>
+          ) : (
+            <span className='color-gray'>未上传</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: '状态',
+      width: 100,
+      className: 'paddingL20',
+      dataIndex: 'sender_status',
+      render: (_, record: DataType) => {
+        let text = ''
+        let txtColor = ''
+        switch (record.sender_status) {
+          case '0':
+            text = '申请失败'
+            txtColor = 'color-warning'
+            break
+          case '1':
+            text = '申请中'
+            break
+          case '2':
+            text = '申请成功'
+            txtColor = 'color-success'
+            break
+        }
+        return <div className={txtColor}>{text}</div>
+      },
+    },
+    {
+      title: '最后创建/编辑时间',
+      width: 230,
+      dataIndex: '',
+      render: (_, record: DataType) => (
+        <div>
+          <div>{record.date}</div>
+          <div>{record.date_last}</div>
+        </div>
+      ),
     },
     {
       title: '操作',
@@ -197,7 +265,7 @@ export default function NumberChannelsRoute() {
             <Popconfirm
               placement='left'
               title='警告'
-              description='确定删除该条号码通道路由吗？'
+              description='确定删除该条管理信息吗？'
               onConfirm={() => singleDeleteEvent(record.id)}
               okText='确定'
               cancelText='取消'>
@@ -215,23 +283,23 @@ export default function NumberChannelsRoute() {
 
   // 单独删除事件
   const singleDeleteEvent = async (id: any) => {
-    await deleteMobileRouteList({ id })
+    await deleteSenderEvidence({ id })
     await search()
   }
-  // 批量删除号码通道路由
+  // 批量删除管理信息
   const deleteEvent = async () => {
     if (selectedRowKeys.length === 0) {
-      message.warning('请勾选要删除的号码通道路由！')
+      message.warning('请勾选要删除的管理信息！')
       return
     }
     const id = selectedRowKeys.join(',')
-    await deleteMobileRouteList({ id })
+    await deleteSenderEvidence({ id })
     await search()
     setSelectedRowKeys([])
   }
   return (
     <div data-class='numberChannelsRoute'>
-      <MenuTitle title='单号通道路由'></MenuTitle>
+      <MenuTitle title='Sender管理'></MenuTitle>
       <Row justify='space-between' wrap align={'bottom'}>
         <Col>
           <div
@@ -245,7 +313,7 @@ export default function NumberChannelsRoute() {
             <Popconfirm
               placement='bottom'
               title='警告'
-              description='确定删除选中的网络吗？'
+              description='确定删除选中的信息吗？'
               onConfirm={deleteEvent}
               okText='确定'
               cancelText='取消'>
@@ -276,16 +344,16 @@ export default function NumberChannelsRoute() {
                 style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Input
                   size={size}
-                  placeholder='手机号码/发送名/账号/国家地区'
+                  placeholder='账号/国家/通道/Sender名'
                   maxLength={20}
                   style={{ width: 220 }}></Input>
               </Form.Item>
               <Form.Item
                 label=''
-                name='type'
+                name='status'
                 style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Select
-                  placeholder='短信类型'
+                  placeholder='全部状态'
                   style={{ width: 162 }}
                   size={size}
                   suffixIcon={
@@ -304,34 +372,6 @@ export default function NumberChannelsRoute() {
                     </Option>
                   ))}
                 </Select>
-              </Form.Item>
-              <Form.Item
-                label=''
-                name='channel'
-                style={{ marginBottom: size == 'small' ? 0 : 10 }}>
-                <Select
-                  showSearch
-                  placeholder='全部通道'
-                  style={{ width: 162 }}
-                  size={size}
-                  options={allChannelData}
-                  fieldNames={{ label: 'name', value: 'id' }}
-                  optionFilterProp='name'
-                  filterOption={(input, option) =>
-                    (option?.name ?? '')
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  suffixIcon={
-                    <i
-                      className='icon iconfont icon-xiala'
-                      style={{
-                        color: '#000',
-                        fontSize: '12px',
-                        transform: 'scale(.45)',
-                      }}
-                    />
-                  }></Select>
               </Form.Item>
               <Form.Item style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <ConfigProvider

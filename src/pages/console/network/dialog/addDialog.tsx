@@ -103,6 +103,7 @@ const Dialog = (props: Props, ref: any) => {
       title={isAdd ? '新增网络信息' : '编辑网络信息'}
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       data-class='net-config-dialog'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}

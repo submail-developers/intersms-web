@@ -117,7 +117,7 @@ function Error(props: Props, ref: any) {
       width: 120,
       dataIndex: 'Sms_type',
       render: (_, record) => (
-        <div>{record.sms_type == '1' ? '短信通道组' : '营销通道组'}</div>
+        <div>{record.sms_type == '1' ? '行业通道组' : '营销通道组'}</div>
       ),
     },
     {

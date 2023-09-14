@@ -80,6 +80,7 @@ const Dialog = (props: Props, ref: any) => {
       title={isAdd ? '新增通道' : '编辑通道'}
       width={640}
       wrapClassName='modal-reset'
+      onCancel={handleCancel}
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
       <Form

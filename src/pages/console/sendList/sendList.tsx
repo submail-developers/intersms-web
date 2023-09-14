@@ -254,7 +254,7 @@ export default function SendList() {
       className: 'paddingL20',
       width: 80,
       render: (_, record) => (
-        <span style={{ color: '#0074d7' }}>{record.downlink_time}s</span>
+        <span style={{ color: '#5765cc' }}>{record.downlink_time}s</span>
       ),
     },
     {

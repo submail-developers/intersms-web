@@ -63,6 +63,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       title={isAdd ? '新增通道组' : '编辑通道组'}
       width={640}
       closable={false}
+      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
