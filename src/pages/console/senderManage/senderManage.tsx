@@ -176,7 +176,9 @@ export default function NumberChannelsRoute() {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <span>已上传</span> &nbsp;&nbsp;
               <Tooltip title={'点击下载'}>
-                <a href={`${record.business_license}`}>
+                <a
+                  href={`${record.business_license}`}
+                  className='downlaoda-fail'>
                   <CloudDownloadOutlined
                     rev={undefined}
                     style={{ fontSize: '16px' }}
@@ -201,7 +203,7 @@ export default function NumberChannelsRoute() {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <span>已上传</span> &nbsp;&nbsp;
               <Tooltip title={'点击下载'}>
-                <a href={`${record.registration}`}>
+                <a href={`${record.registration}`} className='downlaoda-fail'>
                   <CloudDownloadOutlined
                     rev={undefined}
                     style={{ fontSize: '16px' }}

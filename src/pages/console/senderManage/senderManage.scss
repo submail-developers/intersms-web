@@ -3,4 +3,10 @@
   .ant-select-selection-placeholder {
     color: #282b31;
   }
+  .downlaoda-fail {
+    color: #888;
+    &:hover {
+      color: #0074d7;
+    }
+  }
 }

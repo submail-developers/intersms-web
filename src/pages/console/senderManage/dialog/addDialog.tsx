@@ -252,7 +252,6 @@ const Dialog = (props: PropsList, ref: any) => {
       width={640}
       closable={false}
       onCancel={handleCancel}
-      onCancel={handleCancel}
       wrapClassName='modal-reset'
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
