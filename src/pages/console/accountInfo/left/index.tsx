@@ -201,7 +201,9 @@ function Left(props: any, ref: any) {
             }}
           />
         </div>
-        <div className='table-title'>全部客户 ({peopelNum})</div>
+        <div className='table-title' style={{ marginTop: '14px' }}>
+          全部客户 ({peopelNum})
+        </div>
         <ConfigProvider
           theme={{
             token: {

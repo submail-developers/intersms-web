@@ -112,15 +112,15 @@ function Channel(props: Props, ref: any) {
     {
       title: '国家/地区',
       dataIndex: 'country_cn',
-      width: 200,
+      width: 150,
       ellipsis: true,
     },
     {
       title: '通道组',
-      width: 140,
+      width: 190,
       render: (_, record: DataType) => (
         <div
-          style={{ width: '140px' }}
+          style={{ width: '230px' }}
           className='g-ellipsis'
           title={record.group_name}>
           {record.group_name}
