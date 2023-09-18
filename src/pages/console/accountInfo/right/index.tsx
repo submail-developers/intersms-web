@@ -25,6 +25,7 @@ export default function Right(props: Props) {
   const size = useSize()
   const [activeKey, setactiveKey] = useState<string>('1')
   const [allCountry, setallCountry] = useState<API.CountryItem[]>([])
+  const [allErrorCountry, setallErrorCountry] = useState<API.CountryItem[]>([])
 
   const priceTableRef: MutableRefObject<any> = useRef(null)
   const channelTableRef: MutableRefObject<any> = useRef(null)
@@ -146,6 +147,11 @@ export default function Right(props: Props) {
       countrys = [...countrys, ...item.children]
     })
     setallCountry(countrys)
+    // area: string
+    // label: string
+    // value: string
+    setallErrorCountry([{ value: '0', area: '', label: '全部' }, ...countrys])
+    // setallGruopData([{ id: '', name: '全部通道组' }, ...res.data])
   }
 
   // 自定义tabs导航
@@ -259,7 +265,7 @@ export default function Right(props: Props) {
       <ErrorDialog
         onUpdateTable={updateTable}
         ref={errorDialogRef}
-        allCountry={allCountry}
+        allCountry={allErrorCountry}
       />
     </section>
   ) : null
