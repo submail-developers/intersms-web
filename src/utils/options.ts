@@ -52,6 +52,14 @@ export const channelTypeOptions = [
     label: '营销通道',
     value: '2',
   },
+  {
+    label: '自动处理',
+    value: '3',
+  },
+  {
+    label: '自动拦截',
+    value: '4',
+  },
 ]
 // 报警类型
 export const waringTypeOptions = [

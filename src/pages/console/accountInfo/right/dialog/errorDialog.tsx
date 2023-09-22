@@ -104,6 +104,13 @@ const Dialog = (props: Props, ref: any) => {
     }
   }
 
+  const onlyNum = (e) => {
+    function num(str) {
+      return str.replace(/[^\d]/g, '')
+    }
+    return num(e.target.value)
+  }
+
   return (
     <Modal
       data-class='dialog'
@@ -175,43 +182,68 @@ const Dialog = (props: Props, ref: any) => {
             <Form.Item
               labelCol={{ span: 24 }}
               label='response_time'
-              name='response_time'>
+              name='response_time'
+              getValueFromEvent={onlyNum}>
               <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item labelCol={{ span: 24 }} label='delivrd' name='delivrd'>
-              <Input placeholder='0' maxLength={30} />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row justify='space-between' gutter={30}>
-          <Col span={12}>
-            <Form.Item labelCol={{ span: 24 }} label='undeliv' name='undeliv'>
-              <Input placeholder='0' maxLength={30} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item labelCol={{ span: 24 }} label='expired' name='expired'>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              label='delivrd'
+              name='delivrd'
+              getValueFromEvent={onlyNum}>
               <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item labelCol={{ span: 24 }} label='accepted' name='accepted'>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              label='undeliv'
+              name='undeliv'
+              getValueFromEvent={onlyNum}>
               <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item labelCol={{ span: 24 }} label='unknown' name='unknown'>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              label='expired'
+              name='expired'
+              getValueFromEvent={onlyNum}>
               <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item labelCol={{ span: 24 }} label='rejected' name='rejected'>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              label='accepted'
+              name='accepted'
+              getValueFromEvent={onlyNum}>
+              <Input placeholder='0' maxLength={30} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              label='unknown'
+              name='unknown'
+              getValueFromEvent={onlyNum}>
+              <Input placeholder='0' maxLength={30} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row justify='space-between' gutter={30}>
+          <Col span={12}>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              label='rejected'
+              name='rejected'
+              getValueFromEvent={onlyNum}>
               <Input placeholder='0' maxLength={30} />
             </Form.Item>
           </Col>

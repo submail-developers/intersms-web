@@ -99,10 +99,29 @@ const Dialog = (props: Props, ref: any) => {
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24}>
+        <Row justify='space-between' gutter={30}>
+          <Col span={12}>
             <Form.Item label='通道名称' name='name'>
               <Input placeholder='请输入通道名称' maxLength={30} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label='通道类型' name='type'>
+              {/* <Radio.Group options={channelTypeOptions} /> */}
+              <Select
+                showSearch
+                // bordered={false}
+                placeholder='请选择'
+                optionFilterProp='children'
+                onChange={onChange1}
+                onSearch={onSearch}
+                filterOption={(input, option) =>
+                  (option?.label ?? '')
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={channelTypeOptions}
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -110,11 +129,6 @@ const Dialog = (props: Props, ref: any) => {
           <Col span={12}>
             <Form.Item label='接入类型' name='access_type'>
               <Radio.Group options={accessTypeOptions} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label='通道类型' name='type'>
-              <Radio.Group options={channelTypeOptions} />
             </Form.Item>
           </Col>
         </Row>
