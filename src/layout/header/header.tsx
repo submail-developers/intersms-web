@@ -29,8 +29,10 @@ export default function Header() {
       <img src={logo} alt='' className='logo' onClick={() => nav('/console')} />
       <div className='right fn16 fx-y-center'>
         <div className='logout-wrap tongbu2x-con' onClick={synchronousCon}>
-          <i className='icon iconfont icon-a-tongbu2x fn16'></i>
-          <span className='fn14 tongbu2x'>
+          <i
+            className='icon iconfont icon-a-tongbu2x fn16'
+            style={{ color: '#ff4d4f' }}></i>
+          <span className='fn14' style={{ color: '#ff4d4f' }}>
             {size == 'middle' ? '同步配置' : ''}
           </span>
         </div>

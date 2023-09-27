@@ -20,6 +20,7 @@ import {
   getMobileRouteList,
   getAllChannelId,
   deleteMobileRouteList,
+  getChannelGroupList,
 } from '@/api'
 import { API } from 'apis'
 
@@ -30,10 +31,15 @@ interface FormValues {
   id: string
   type: string
   keyword: string
-  channel: string
-  channel_name: string
+  group: string
+  group_name: string
   account: string
 }
+
+const allChannels = {
+  name: '全部通道组',
+  id: 'all',
+} as API.GetChannelGroupListItem
 
 // 号码通道路由
 export default function NumberChannelsRoute() {
@@ -78,21 +84,21 @@ export default function NumberChannelsRoute() {
     id: '',
     type: 'all',
     keyword: '',
-    channel: '',
-    channel_name: '',
+    group: '',
+    group_name: '',
   }
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { id, type, keyword, channel, channel_name, account } = params
+    const { id, type, keyword, group, group_name, account } = params
     const searchParams = {
       id,
       type,
       keyword,
-      channel,
-      channel_name,
+      group,
+      group_name,
       account,
     }
     searchEvent(searchParams)
@@ -109,8 +115,11 @@ export default function NumberChannelsRoute() {
   }
   useEffect(() => {
     formatSearchValue(initFormValues)
-    allGroupId()
+    // allGroupId()
+    getChannels()
   }, [])
+
+  // 全部通道
   const allGroupId = async () => {
     const res = await getAllChannelId('')
     setallChannelData([{ id: '', name: '全部通道' }, ...res.data])
@@ -118,6 +127,19 @@ export default function NumberChannelsRoute() {
   const [allChannelData, setallChannelData] = useState<
     API.GetAllChannelIdParamsItems[]
   >([])
+
+  // 通道组列表
+  const [channelsList, setchannelsList] = useState<
+    API.GetChannelGroupListItem[]
+  >([allChannels])
+
+  // 获取通道组列表
+  const getChannels = async () => {
+    try {
+      const res = await getChannelGroupList({})
+      setchannelsList([...channelsList, ...res.data])
+    } catch (error) {}
+  }
 
   const messageList = [
     { label: '短信类型', value: 'all' },
@@ -163,15 +185,15 @@ export default function NumberChannelsRoute() {
       width: 140,
     },
     {
-      title: '通道',
-      dataIndex: 'channel_name',
+      title: '通道组',
+      dataIndex: 'group_name',
       width: 140,
       render: (_, record: DataType) => (
         <div style={{ width: '140px' }} className='g-ellipsis'>
-          {record.channel_name == null ? (
+          {record.group_name == null ? (
             <span>该通道已删除</span>
           ) : (
-            <span title={record.channel_name}>{record.channel_name}</span>
+            <span title={record.group_name}>{record.group_name}</span>
           )}
         </div>
       ),
@@ -307,14 +329,14 @@ export default function NumberChannelsRoute() {
               </Form.Item>
               <Form.Item
                 label=''
-                name='channel'
+                name='group'
                 style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Select
                   showSearch
-                  placeholder='全部通道'
+                  placeholder='全部通道组'
                   style={{ width: 162 }}
                   size={size}
-                  options={allChannelData}
+                  options={channelsList}
                   fieldNames={{ label: 'name', value: 'id' }}
                   optionFilterProp='name'
                   filterOption={(input, option) =>
@@ -380,7 +402,7 @@ export default function NumberChannelsRoute() {
       <AddDialog
         onSearch={search}
         messageList={messageList}
-        allChannelData={allChannelData}
+        allChannelData={channelsList}
         ref={addDialogRef}
       />
     </div>

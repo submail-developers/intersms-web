@@ -152,6 +152,10 @@ export default function Right() {
         let text = ''
         let color = ''
         switch (record.connection_status) {
+          case -100:
+            text = '未配置'
+            color = ''
+            break
           case 0:
             text = '无连接'
             color = ''

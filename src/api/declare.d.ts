@@ -347,7 +347,7 @@ declare module 'apis' {
       channel_mobile_type: '0' // 0:无前缀, 1:+前缀, 2:00前缀, 3:0前缀
       keyroute_list: ChannelsChannelKeywordItem[]
       network_list: ChannelsChannelNetworkItem[]
-      connection_status: 0 | -1 | -2 | 99 // 0无连接，-1连接失败正在重试，-2绑定失败正在重试，99连接异常无响应，其他值连接正常-值为链路数量
+      connection_status: 0 | -1 | -2 | 99 | -100 // 0无连接，-1连接失败正在重试，-2绑定失败正在重试，99连接异常无响应，其他值连接正常-值为链路数量
     }
     // 绑定敏感词
     interface updateChannelsBindSensitiveWordParams {
@@ -463,7 +463,7 @@ declare module 'apis' {
       block_id: string // 黑名单ID
       block_name: string // 黑名单名称
       listener_status: '0' | '1' | '2' // 0配置未添加，1配置已添加未建立连接，2已建立连接
-      connection_status: 0 | -1 | -2 | 99 // 0无连接，-1连接失败正在重试，-2绑定失败正在重试，99连接异常无响应，其他值连接正常-值为链路数量
+      connection_status: 0 | -1 | -2 | 99 | -100 // 0无连接，-1连接失败正在重试，-2绑定失败正在重试，99连接异常无响应，其他值连接正常-值为链路数量
     }
     // 新增/修改通道
     interface AddChannelParams {
@@ -660,7 +660,7 @@ declare module 'apis' {
       id: string
       type: string
       keyword: string
-      channel: string
+      group: string
     }
     // 获取号码通道路由的数据
     interface GetMobileRouteListItems {
@@ -668,9 +668,10 @@ declare module 'apis' {
       mobile: string
       name: string
       type: string
-      channel: string
+      group: string
       datetime: string
-      channel_name: string
+      // channel_name: string
+      group_name: string
       sender: string
       account: string
       region_code: string

@@ -42,16 +42,18 @@ const ConfigItem = (props: ConfigItemProps) => {
   let active = false
   switch (props.type) {
     case '0':
-      active = props.record.listener_status == '0'
+      active = props.record.connection_status == -100
       break
     case '1':
-      active = props.record.listener_status == '1'
+      active = props.record.connection_status == 0
       break
     case '2':
-      active = props.record.listener_status == '2'
+      active = props.record.connection_status > 0
       break
     case '3':
-      active = props.record.listener_status != '0'
+      active =
+        props.record.connection_status == 0 ||
+        props.record.connection_status > 0
       break
     default:
       break
@@ -255,6 +257,10 @@ export default function Channel() {
         let text = ''
         let color = ''
         switch (record.connection_status) {
+          case -100:
+            text = '未配置'
+            color = ''
+            break
           case 0:
             text = '无连接'
             color = ''
@@ -286,6 +292,7 @@ export default function Channel() {
       render: (_, record) => {
         let num: number
         switch (record.connection_status) {
+          case -100:
           case 0:
           case -1:
           case -2:

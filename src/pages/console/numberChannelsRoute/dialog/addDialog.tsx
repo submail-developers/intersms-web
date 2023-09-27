@@ -273,11 +273,11 @@ const Dialog = (props: Props, ref: any) => {
 
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
-            <Form.Item label='通道' name='channel' validateTrigger='onSubmit'>
+            <Form.Item label='通道组' name='group' validateTrigger='onSubmit'>
               <Select
                 showSearch
                 // bordered={false}
-                placeholder='请选择通道'
+                placeholder='请选择通道组'
                 optionFilterProp='children'
                 options={props.allChannelData.slice(1)}
                 fieldNames={{ label: 'name', value: 'id' }}
