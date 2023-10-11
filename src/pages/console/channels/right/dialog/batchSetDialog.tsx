@@ -71,17 +71,11 @@ const Dialog = (props: Props, ref: any) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         layout='vertical'>
-        <Form.Item label='' name='weight'>
-          <Select
-            showSearch
-            placeholder='请选择'
-            optionFilterProp='children'
-            // onChange={onChange1}
-            filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-            }
-            options={allChannelsNum}
-          />
+        <Form.Item
+          name='weight'
+          validateTrigger='onSubmit'
+          rules={[{ message: '请输入' }]}>
+          <Input placeholder='请输入权重' />
         </Form.Item>
       </Form>
     </Modal>

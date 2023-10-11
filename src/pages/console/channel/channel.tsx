@@ -53,7 +53,8 @@ const ConfigItem = (props: ConfigItemProps) => {
     case '3':
       active =
         props.record.connection_status == 0 ||
-        props.record.connection_status > 0
+        props.record.connection_status > 0 ||
+        props.record.connection_status == -1
       break
     default:
       break
@@ -318,7 +319,7 @@ export default function Channel() {
       className: 'paddingL20',
       render: (_, record) => (
         <>
-          {[0, -1, -2, 99].includes(record.connection_status) ? (
+          {[-100].includes(record.connection_status) ? (
             <>
               <Button
                 type='link'

@@ -3,7 +3,7 @@ import './header.scss'
 import { logout, updateConfig } from '@/api'
 import { useSize } from '@/hooks'
 import { useNavigate } from 'react-router-dom'
-import { App } from 'antd'
+import { App, Popconfirm } from 'antd'
 export default function Header() {
   const nav = useNavigate()
   const size = useSize()
@@ -28,14 +28,24 @@ export default function Header() {
       className={`fx-between-center fx-shrink ${size}`}>
       <img src={logo} alt='' className='logo' onClick={() => nav('/console')} />
       <div className='right fn16 fx-y-center'>
-        <div className='logout-wrap tongbu2x-con' onClick={synchronousCon}>
-          <i
-            className='icon iconfont icon-a-tongbu2x fn16'
-            style={{ color: '#ff4d4f' }}></i>
-          <span className='fn14' style={{ color: '#ff4d4f' }}>
-            {size == 'middle' ? '同步配置' : ''}
-          </span>
-        </div>
+        <Popconfirm
+          placement='bottom'
+          title='警告'
+          description='确定同步配置吗？'
+          onConfirm={synchronousCon}
+          okText='确定'
+          cancelText='取消'>
+          <div
+            className='btn delete logout-wrap tongbu2x-con'
+            style={{ display: 'flex', alignItems: 'center' }}>
+            <i
+              className='icon iconfont icon-a-tongbu2x fn16'
+              style={{ color: '#ff4d4f' }}></i>
+            <span className='fn14' style={{ color: '#ff4d4f' }}>
+              同步配置
+            </span>
+          </div>
+        </Popconfirm>
         &nbsp;&nbsp;
         <div className='logout-wrap tuichu-con' onClick={logoutEvent}>
           <i className='icon iconfont icon-tuichu fn16'></i>
