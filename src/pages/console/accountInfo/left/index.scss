@@ -22,25 +22,6 @@
     box-sizing: border-box;
     transition: all 0.3s;
 
-    .input-wrap {
-      height: 38px;
-      .search {
-        input {
-          border: none;
-          box-shadow: none;
-          background-color: transparent;
-          &:hover {
-            border: none;
-            box-shadow: none;
-          }
-        }
-        .ant-input-group-addon {
-          border: none;
-          background-color: transparent;
-        }
-      }
-    }
-
     .table-title {
       font-weight: 500;
       margin: 14px 10px 2px;

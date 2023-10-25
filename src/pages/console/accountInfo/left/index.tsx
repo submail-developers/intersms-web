@@ -11,7 +11,15 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react'
-import { Input, ConfigProvider, Table, Popconfirm, App, Tooltip } from 'antd'
+import {
+  Input,
+  ConfigProvider,
+  Table,
+  Popconfirm,
+  App,
+  Tooltip,
+  Form,
+} from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
 
@@ -36,7 +44,7 @@ function Left(props: any, ref: any) {
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
   const point = usePoint('xl')
-  const [keyword, setkeyword] = useState<string>('') // 搜索关键字
+  const [form] = Form.useForm()
   const [tableData, settableData] = useState<API.AccountListItem[]>([]) // table列表
   const [loading, setloading] = useState(false)
   const [activeRow, setactiveRow] = useState<DataType | null>(null) // 被点击的客户(不是被checkbox选中的客户)
@@ -106,20 +114,17 @@ function Left(props: any, ref: any) {
   ]
 
   useEffect(() => {
-    if (!keyword) {
-      search()
-      return () => {
-        dispatch(changeActiveAccount(null))
-      }
+    search()
+    return () => {
+      dispatch(changeActiveAccount(null))
     }
-  }, [keyword])
+  }, [])
 
-  const setValue = (e: any) => {
-    setkeyword(e.target.value)
-  }
   const search = async (activeAccountId: string = '') => {
     try {
       setloading(true)
+      const values = await form.validateFields()
+      const { keyword } = values
       const res = await getAccountList({
         keyword,
       })
@@ -181,27 +186,37 @@ function Left(props: any, ref: any) {
         </Popconfirm>
       </div>
       <div className='filter-wrap fx-col'>
-        <div className='input-wrap'>
-          <Input
-            bordered={false}
-            placeholder='请输入关键字过滤'
-            allowClear
-            suffix={
-              <i
-                onClick={() => search()}
-                className='icon iconfont icon-sousuo fn12'
-                style={{ color: '#888', cursor: 'pointer' }}></i>
-            }
-            onChange={setValue}
-            onPressEnter={() => search()}
-            value={keyword}
-            style={{
-              height: '38px',
-              borderBottom: '1px solid #E7E7E6',
-              borderRadius: 0,
-            }}
-          />
-        </div>
+        <Form
+          name='search-form'
+          id='search-form'
+          form={form}
+          style={{ width: '100%' }}>
+          <Form.Item
+            label=''
+            name='keyword'
+            validateTrigger='onSubmit'
+            style={{ marginBottom: '0' }}>
+            <Input
+              bordered={false}
+              placeholder='请输入关键字过滤'
+              maxLength={20}
+              allowClear
+              autoComplete='off'
+              suffix={
+                <i
+                  onClick={() => search()}
+                  className='icon iconfont icon-sousuo fn12'
+                  style={{ color: '#888', cursor: 'pointer' }}></i>
+              }
+              onPressEnter={() => search()}
+              style={{
+                height: '38px',
+                borderBottom: '1px solid #E7E7E6',
+                borderRadius: 0,
+              }}
+            />
+          </Form.Item>
+        </Form>
         <div className='table-title' style={{ marginTop: '14px' }}>
           全部客户 ({peopelNum})
         </div>
