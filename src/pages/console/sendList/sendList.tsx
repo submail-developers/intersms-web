@@ -424,7 +424,6 @@ export default function SendList() {
             <Input
               size={size}
               placeholder='账户/手机号/国家/地区'
-              maxLength={20}
               style={{ width: 162 }}></Input>
           </Form.Item>
           <Form.Item style={{ marginBottom: 10 }}>
