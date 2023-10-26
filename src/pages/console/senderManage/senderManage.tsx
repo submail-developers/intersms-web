@@ -137,7 +137,7 @@ export default function NumberChannelsRoute() {
     {
       title: '通道',
       dataIndex: 'channel_name',
-      width: 100,
+      width: 180,
       className: 'paddingL20',
     },
     {
@@ -243,7 +243,7 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '最后创建/编辑时间',
-      width: 230,
+      width: 130,
       dataIndex: '',
       render: (_, record: DataType) => (
         <div>
@@ -254,7 +254,7 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '操作',
-      width: 120,
+      width: 100,
       render: (_, record) => (
         <div>
           <Button
