@@ -199,7 +199,6 @@ function Left(props: any, ref: any) {
             <Input
               bordered={false}
               placeholder='请输入关键字过滤'
-              maxLength={20}
               allowClear
               autoComplete='off'
               suffix={
