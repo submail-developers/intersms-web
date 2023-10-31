@@ -35,7 +35,6 @@ const Dialog = (props: Props, ref: any) => {
   const [checkAll, setCheckAll] = useState(false)
 
   const tableref: MutableRefObject<any> = useRef(null)
-  const timer = useRef(null)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -109,7 +108,6 @@ const Dialog = (props: Props, ref: any) => {
       onClose={close}
       closable={false}
       open={show}
-      bodyStyle={{ backgroundColor: 'transparent' }}
       rootClassName='drawer channels-drawer'
       width={point ? '70vw' : '90vw'}>
       <div className='drawer-container' onClick={close}>
