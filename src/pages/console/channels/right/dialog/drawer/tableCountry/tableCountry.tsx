@@ -4,6 +4,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
   MutableRefObject,
+  useEffect,
 } from 'react'
 
 import type { TableColumnsType } from 'antd'
@@ -17,8 +18,17 @@ import {
 import { API } from 'apis'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
-import { usePoint } from '@/hooks'
+import { usePoint, useSize } from '@/hooks'
 import BatchSetDialog from '../../batchSetDialog'
+
+import type { DrawerContentRectType } from '../drawer'
+type PointTablePopsType = {
+  virtual: boolean
+  scroll: {
+    x: number | string
+    y?: number | string
+  }
+}
 
 interface DataType extends API.GroupRelatedDataItem {}
 
@@ -35,6 +45,7 @@ interface Props {
   loading: boolean
   channelId: string
   tabData: DataType[]
+  drawerContentRect: DrawerContentRectType
   search: () => void
   showTableLoading: () => void
 }
@@ -78,6 +89,26 @@ function MyTable(props: Props, ref: any) {
   const [editNetworkId, seteditNetworkId] = useState<string>('') // 当前运营商权重的ID
   const [editCountryId, seteditCountryId] = useState<React.Key>('') // 编辑国家权重的ID
   const [form] = Form.useForm()
+
+  const size = useSize()
+  const [pointTablePops, setpointTablePops] = useState<PointTablePopsType>({
+    virtual: true,
+    scroll: { ...props.drawerContentRect },
+  })
+  // pc端使用虚拟表格，移动端不使用。原因：移动端虚拟表格无法左右滑动
+  useEffect(() => {
+    if (size == 'middle') {
+      setpointTablePops({
+        virtual: true,
+        scroll: { ...props.drawerContentRect },
+      })
+    } else {
+      setpointTablePops({
+        virtual: false,
+        scroll: { x: 'fit-content' },
+      })
+    }
+  }, [size, props.drawerContentRect])
 
   const batchSetDialogRef: MutableRefObject<any> = useRef(null)
   // 展示新增弹框
@@ -212,7 +243,7 @@ function MyTable(props: Props, ref: any) {
           </Popconfirm>
         </div>
       ),
-      width: 150,
+      width: 180,
       render(_, record) {
         return record.id == editCountryId ? (
           <div className='td-content sub-td'>
@@ -273,7 +304,7 @@ function MyTable(props: Props, ref: any) {
           </Popconfirm>
         </div>
       ),
-      width: 120,
+      width: 160,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -344,7 +375,7 @@ function MyTable(props: Props, ref: any) {
     },
     {
       title: '操作',
-      width: 70,
+      width: 120,
       render(_, record) {
         if (record.network_list.length > 0) {
           return (
@@ -420,14 +451,13 @@ function MyTable(props: Props, ref: any) {
         className='drawer-table'
         columns={columns}
         dataSource={props.tabData}
-        sticky
         pagination={false}
         rowKey={'id'}
         rowClassName={(record, index) => {
           return record.country_enabled == '0' ? 'lock-row' : ''
         }}
-        scroll={{ x: 'max-content' }}
         loading={props.loading}
+        {...pointTablePops}
       />
       <BatchSetDialog
         ref={batchSetDialogRef}

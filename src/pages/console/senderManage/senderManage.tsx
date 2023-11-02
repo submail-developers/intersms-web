@@ -243,7 +243,7 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '最后创建/编辑时间',
-      width: 130,
+      width: 160,
       dataIndex: '',
       render: (_, record: DataType) => (
         <div>
@@ -254,7 +254,7 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '操作',
-      width: 100,
+      width: 110,
       render: (_, record) => (
         <div>
           <Button

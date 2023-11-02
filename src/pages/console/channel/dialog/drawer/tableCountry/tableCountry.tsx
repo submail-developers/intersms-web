@@ -1,4 +1,4 @@
-import { useState, forwardRef, useImperativeHandle } from 'react'
+import { useState, forwardRef, useImperativeHandle, useEffect } from 'react'
 import { TableColumnsType } from 'antd'
 import { Form, Input, Table, Button, Switch } from 'antd'
 import { LockFilled, UnlockOutlined } from '@ant-design/icons'
@@ -8,7 +8,16 @@ import {
   updateChannelCountryNetworkStatus,
 } from '@/api'
 import { API } from 'apis'
-import { usePoint } from '@/hooks'
+import { usePoint, useSize } from '@/hooks'
+
+import type { DrawerContentRectType } from '../drawer'
+type PointTablePopsType = {
+  virtual: boolean
+  scroll: {
+    x: number | string
+    y?: number | string
+  }
+}
 
 interface DataType extends API.ChannelCountryConfigItem {}
 interface EnbledProps {
@@ -24,6 +33,7 @@ interface Props {
   loading: boolean
   channelId: string
   tabData: DataType[]
+  drawerContentRect: DrawerContentRectType
   search: () => void
   showTableLoading: () => void
 }
@@ -67,6 +77,26 @@ function MyTable(props: Props, ref: any) {
   const [editCountryId, seteditCountryId] = useState<string>('') // 当前编辑的国家ID
   const [editNetId, seteditNetId] = useState<string>('') // 当前编辑的运营商ID
   const [form] = Form.useForm()
+  const size = useSize()
+  const [pointTablePops, setpointTablePops] = useState<PointTablePopsType>({
+    virtual: true,
+    scroll: { ...props.drawerContentRect },
+  })
+
+  // pc端使用虚拟表格，移动端不使用。原因：移动端虚拟表格无法左右滑动
+  useEffect(() => {
+    if (size == 'middle') {
+      setpointTablePops({
+        virtual: true,
+        scroll: { ...props.drawerContentRect },
+      })
+    } else {
+      setpointTablePops({
+        virtual: false,
+        scroll: { x: 'fit-content' },
+      })
+    }
+  }, [size, props.drawerContentRect])
 
   const changeLock = async (record: DataType) => {
     props.showTableLoading()
@@ -408,14 +438,13 @@ function MyTable(props: Props, ref: any) {
         className='drawer-table'
         columns={columns}
         dataSource={props.tabData}
-        sticky
         pagination={false}
         rowKey={'id'}
         rowClassName={(record, index) => {
           return record.country_enabled == '0' ? 'lock-row' : ''
         }}
         loading={props.loading}
-        scroll={{ x: 'max-content' }}
+        {...pointTablePops}
       />
     </Form>
   )

@@ -22,6 +22,11 @@ interface Props {
   onUpdate: () => void
 }
 
+export type DrawerContentRectType = {
+  x: number
+  y: number
+}
+
 const Dialog = (props: Props, ref: any) => {
   const channlesStore = useAppSelector(channelsState)
   const size = useSize()
@@ -41,6 +46,31 @@ const Dialog = (props: Props, ref: any) => {
     }
   })
   const [show, setShow] = useState(false)
+
+  const drawerref: MutableRefObject<HTMLDivElement> = useRef(null)
+  // 因为内部table组件使用了虚拟表格，必须要配置scroll={{x: number, y: number}}，drawer的宽和高用的vh vw，所以需要获取drawer组件的内容区宽高
+  const [drawerContentRect, setdrawerContentRect] =
+    useState<DrawerContentRectType>({
+      x: 2000,
+      y: 400,
+    })
+  useEffect(() => {
+    // 获取drawer组件的内容区宽高
+    const observer = new ResizeObserver(([entry]) => {
+      setdrawerContentRect({
+        x: Math.floor(entry.contentRect.width),
+        y: Math.floor(entry.contentRect.height) - 50, // 去掉表头高度 50
+      })
+    })
+    if (show) {
+      observer.observe(drawerref?.current)
+    } else {
+      if (drawerref?.current) observer.unobserve(drawerref?.current)
+    }
+    return () => {
+      if (drawerref?.current) observer.unobserve(drawerref?.current)
+    }
+  }, [show])
 
   const open = async (record: DataType) => {
     setchannelId(record.channel_id)
@@ -114,7 +144,8 @@ const Dialog = (props: Props, ref: any) => {
         <div
           className='drawer-content'
           onClick={(e) => e.stopPropagation()}
-          style={{ height: size == 'middle' ? '70vh' : '100vh' }}>
+          ref={drawerref}
+          style={{ height: size == 'middle' ? '70vh' : '90vh' }}>
           <header
             className={`drawer-header ${
               size == 'middle' ? 'fx-between-center' : 'xl'
@@ -194,6 +225,7 @@ const Dialog = (props: Props, ref: any) => {
               channelId={channelId}
               tabData={tableData}
               loading={loading}
+              drawerContentRect={drawerContentRect}
             />
           </div>
         </div>
