@@ -31,7 +31,7 @@ export default function Header() {
         <Popconfirm
           placement='bottom'
           title='警告'
-          description='确定同步配置吗？'
+          description='确定同步全局配置吗？'
           onConfirm={synchronousCon}
           okText='确定'
           cancelText='取消'>
@@ -42,7 +42,7 @@ export default function Header() {
               className='icon iconfont icon-a-tongbu2x fn16'
               style={{ color: '#ff4d4f' }}></i>
             <span className='fn14' style={{ color: '#ff4d4f' }}>
-              同步配置
+              同步全局配置
             </span>
           </div>
         </Popconfirm>
