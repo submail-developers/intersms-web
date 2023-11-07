@@ -411,45 +411,45 @@ export default function Channel() {
       message.warning('请选择通道！')
       return
     }
-    const selectedRows = list.filter((item) =>
-      selectedRowKeys.includes(item.id),
-    )
-    let actives = true
-    switch (type) {
-      case '0':
-      case '1':
-      case '2':
-        selectedRows.forEach((item) => {
-          if (item.listener_status != type) {
-            actives = false
-          }
-        })
-        break
-      case '3':
-        selectedRows.forEach((item) => {
-          if (item.listener_status == '0') {
-            actives = false
-          }
-        })
-        break
-    }
-    if (!actives) {
-      switch (type) {
-        case '0':
-          message.warning('存在已添加配置的通道！')
-          break
-        case '1':
-          message.warning('存在未添加配置或已建立连接的通道！')
-          break
-        case '2':
-          message.warning('存在未建立连接的通道！')
-          break
-        case '3':
-          message.warning('存在未添加配置的通道！')
-          break
-      }
-      return
-    }
+    // const selectedRows = list.filter((item) =>
+    //   selectedRowKeys.includes(item.id),
+    // )
+    // let actives = true
+    // switch (type) {
+    //   case '0':
+    //   case '1':
+    //   case '2':
+    //     selectedRows.forEach((item) => {
+    //       if (item.listener_status != type) {
+    //         actives = false
+    //       }
+    //     })
+    //     break
+    //   case '3':
+    //     selectedRows.forEach((item) => {
+    //       if (item.listener_status == '0') {
+    //         actives = false
+    //       }
+    //     })
+    //     break
+    // }
+    // if (!actives) {
+    //   switch (type) {
+    //     case '0':
+    //       message.warning('存在已添加配置的通道！')
+    //       break
+    //     case '1':
+    //       message.warning('存在未添加配置或已建立连接的通道！')
+    //       break
+    //     case '2':
+    //       message.warning('存在未建立连接的通道！')
+    //       break
+    //     case '3':
+    //       message.warning('存在未添加配置的通道！')
+    //       break
+    //   }
+    //   return
+    // }
     const channel_ids = selectedRowKeys.join(',')
     await channelUpdateListener(
       {
