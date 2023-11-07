@@ -4,7 +4,7 @@
  * */
 export default {
   colorPrimary: '#0074d7',
-  colorPrimaryBg: 'rgba(0, 127, 252, 0.1)',
+  colorPrimaryBg: '#ebf2fe',
   colorText: '#282b31',
   colorLink: '#0074d7', // 控制超链接的颜色。
   colorLinkActive: '#006db6', // 控制超链接被点击时的颜色。
