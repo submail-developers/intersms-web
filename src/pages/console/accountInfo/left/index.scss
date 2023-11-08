@@ -1,7 +1,7 @@
 [data-class='account-left'] {
   margin-right: 12px;
   margin-bottom: 12px;
-  height: fit-content;
+  height: 100%;
   position: sticky;
   top: -34px;
   left: 0;
@@ -12,19 +12,23 @@
     top: 0;
     width: 100%;
   }
-  .filter-wrap {
-    border-radius: 6px;
-    width: 100%;
-    height: fit-content;
-    background-color: #f2f4f6;
-    margin-top: 12px;
-    padding: 16px 10px;
-    box-sizing: border-box;
-    transition: all 0.3s;
 
-    .table-title {
-      font-weight: 500;
-      margin: 14px 10px 2px;
+  .filter-container {
+    margin-top: 12px;
+    height: calc(100% - 32px - 12px);
+    background-color: transparent;
+    .filter-wrap {
+      border-radius: 6px;
+      width: 100%;
+      background-color: #f2f4f6;
+      padding: 16px 10px;
+      box-sizing: border-box;
+      transition: all 0.3s;
+
+      .table-title {
+        font-weight: 500;
+        margin: 14px 10px 2px;
+      }
     }
   }
   .color-gray {

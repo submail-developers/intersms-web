@@ -41,6 +41,7 @@ function Left(props: any, ref: any) {
   })
   const accountInfoStore = useAppSelector(accountInfoState)
   const dialogRef: MutableRefObject<any> = useRef(null)
+  const tableContainerRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
   const point = usePoint('xl')
@@ -49,6 +50,7 @@ function Left(props: any, ref: any) {
   const [loading, setloading] = useState(false)
   const [activeRow, setactiveRow] = useState<DataType | null>(null) // 被点击的客户(不是被checkbox选中的客户)
   const [peopelNum, setpeopelNum] = useState<number>() //客户数量
+  const [tableHeight, setTableHeight] = useState<number>(474) // table高度
 
   const onRow = (record: DataType, index?: number) => {
     return {
@@ -119,6 +121,23 @@ function Left(props: any, ref: any) {
       dispatch(changeActiveAccount(null))
     }
   }, [])
+  useEffect(() => {
+    // 获取tableContainer的内容区宽高
+    const observer = new ResizeObserver(([entry]) => {
+      setTableHeight(() => entry.contentRect.height - 118) // table 的滚动高度
+    })
+    if (point) {
+      observer.observe(tableContainerRef?.current)
+    } else {
+      setTableHeight(474)
+      if (tableContainerRef?.current)
+        observer.unobserve(tableContainerRef?.current)
+    }
+    return () => {
+      if (tableContainerRef?.current)
+        observer.unobserve(tableContainerRef?.current)
+    }
+  }, [point])
 
   const search = async (activeAccountId: string = '') => {
     try {
@@ -185,61 +204,63 @@ function Left(props: any, ref: any) {
           </div>
         </Popconfirm>
       </div>
-      <div className='filter-wrap fx-col'>
-        <Form
-          name='search-form'
-          id='search-form'
-          form={form}
-          style={{ width: '100%' }}>
-          <Form.Item
-            label=''
-            name='keyword'
-            validateTrigger='onSubmit'
-            style={{ marginBottom: '0' }}>
-            <Input
-              bordered={false}
-              placeholder='请输入关键字过滤'
-              allowClear
-              autoComplete='off'
-              suffix={
-                <i
-                  onClick={() => search()}
-                  className='icon iconfont icon-sousuo fn12'
-                  style={{ color: '#888', cursor: 'pointer' }}></i>
+      <div className='filter-container' ref={tableContainerRef}>
+        <div className='filter-wrap fx-col'>
+          <Form
+            name='search-form'
+            id='search-form'
+            form={form}
+            style={{ width: '100%' }}>
+            <Form.Item
+              label=''
+              name='keyword'
+              validateTrigger='onSubmit'
+              style={{ marginBottom: '0' }}>
+              <Input
+                bordered={false}
+                placeholder='请输入关键字过滤'
+                allowClear
+                autoComplete='off'
+                suffix={
+                  <i
+                    onClick={() => search()}
+                    className='icon iconfont icon-sousuo fn12'
+                    style={{ color: '#888', cursor: 'pointer' }}></i>
+                }
+                onPressEnter={() => search()}
+                style={{
+                  height: '38px',
+                  borderBottom: '1px solid #E7E7E6',
+                  borderRadius: 0,
+                }}
+              />
+            </Form.Item>
+          </Form>
+          <div className='table-title' style={{ marginTop: '14px' }}>
+            全部客户 ({peopelNum})
+          </div>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorBgContainer: 'transparent',
+              },
+            }}>
+            <Table
+              className='theme-cell bg-gray'
+              showHeader={false}
+              columns={columns}
+              dataSource={tableData}
+              rowKey={'account'}
+              onRow={onRow}
+              rowClassName={(record, index) =>
+                record.account == activeRow?.account ? 'active' : ''
               }
-              onPressEnter={() => search()}
-              style={{
-                height: '38px',
-                borderBottom: '1px solid #E7E7E6',
-                borderRadius: 0,
-              }}
+              pagination={false}
+              scroll={{ y: tableHeight }}
+              loading={loading}
             />
-          </Form.Item>
-        </Form>
-        <div className='table-title' style={{ marginTop: '14px' }}>
-          全部客户 ({peopelNum})
+          </ConfigProvider>
         </div>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorBgContainer: 'transparent',
-            },
-          }}>
-          <Table
-            className='theme-cell bg-gray'
-            showHeader={false}
-            columns={columns}
-            dataSource={tableData}
-            rowKey={'account'}
-            onRow={onRow}
-            rowClassName={(record, index) =>
-              record.account == activeRow?.account ? 'active' : ''
-            }
-            pagination={false}
-            scroll={{ y: 450 }}
-            loading={loading}
-          />
-        </ConfigProvider>
       </div>
       <AddDialog ref={dialogRef} onSearch={search} />
     </section>

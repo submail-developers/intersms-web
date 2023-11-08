@@ -23,11 +23,13 @@ export default function Left() {
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
   const point = usePoint('xl')
+  const tableContainerRef: MutableRefObject<any> = useRef(null)
   // 列表
   const [tableData, settableData] = useState<API.GetBlackListItems[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<DataType | null>(null)
   const [blackNum, setblackNum] = useState<number>() //通道组数量
+  const [tableHeight, setTableHeight] = useState<number>(474) // table高度
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
@@ -79,6 +81,23 @@ export default function Left() {
   useEffect(() => {
     search()
   }, [])
+  useEffect(() => {
+    // 获取tableContainer的内容区宽高
+    const observer = new ResizeObserver(([entry]) => {
+      setTableHeight(() => entry.contentRect.height - 80) // table 的滚动高度
+    })
+    if (point) {
+      observer.observe(tableContainerRef?.current)
+    } else {
+      setTableHeight(474)
+      if (tableContainerRef?.current)
+        observer.unobserve(tableContainerRef?.current)
+    }
+    return () => {
+      if (tableContainerRef?.current)
+        observer.unobserve(tableContainerRef?.current)
+    }
+  }, [point])
   const search = async (noResetActive?: boolean) => {
     const res = await getBlackList({
       id: '',
@@ -144,28 +163,30 @@ export default function Left() {
           </div>
         </Popconfirm>
       </div>
-      <div className='filter-wrap fx-col'>
-        <div className='table-title'>黑名单表 ({blackNum})</div>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorBgContainer: 'transparent',
-            },
-          }}>
-          <Table
-            className='theme-cell bg-gray'
-            showHeader={false}
-            columns={columns}
-            dataSource={tableData}
-            rowKey={'id'}
-            onRow={onRow}
-            rowClassName={(record) =>
-              record.id == activeIndex?.id ? 'active' : ''
-            }
-            pagination={false}
-            scroll={{ y: 450 }}
-          />
-        </ConfigProvider>
+      <div className='filter-container' ref={tableContainerRef}>
+        <div className='filter-wrap fx-col'>
+          <div className='table-title'>黑名单表 ({blackNum})</div>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorBgContainer: 'transparent',
+              },
+            }}>
+            <Table
+              className='theme-cell bg-gray'
+              showHeader={false}
+              columns={columns}
+              dataSource={tableData}
+              rowKey={'id'}
+              onRow={onRow}
+              rowClassName={(record) =>
+                record.id == activeIndex?.id ? 'active' : ''
+              }
+              pagination={false}
+              scroll={{ y: tableHeight }}
+            />
+          </ConfigProvider>
+        </div>
       </div>
       <AddDialog ref={dialogRef} onSearch={search} />
     </section>

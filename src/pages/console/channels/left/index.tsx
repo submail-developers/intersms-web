@@ -39,11 +39,13 @@ export default function Left() {
   const dialogRef: MutableRefObject<any> = useRef(null)
   const bindSensitiveWordDialogRef: MutableRefObject<any> = useRef(null)
   const bindBlackDialogRef: MutableRefObject<any> = useRef(null)
+  const tableContainerRef: MutableRefObject<any> = useRef(null)
   const { message } = App.useApp()
   const dispatch = useAppDispatch()
   const point = usePoint('xl')
   const [keyword, setkeyword] = useState<string>('')
   const [channelsNum, setchannelsNum] = useState<number>() //通道组数量
+  const [tableHeight, setTableHeight] = useState<number>(474) // table高度
   // 列表
   const [tableData, settableData] = useState<DataType[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
@@ -145,6 +147,23 @@ export default function Left() {
       setactiveRow(null)
     }
   }, [keyword])
+  useEffect(() => {
+    // 获取tableContainer的内容区宽高
+    const observer = new ResizeObserver(([entry]) => {
+      setTableHeight(() => entry.contentRect.height - 118) // table 的滚动高度
+    })
+    if (point) {
+      observer.observe(tableContainerRef?.current)
+    } else {
+      setTableHeight(474)
+      if (tableContainerRef?.current)
+        observer.unobserve(tableContainerRef?.current)
+    }
+    return () => {
+      if (tableContainerRef?.current)
+        observer.unobserve(tableContainerRef?.current)
+    }
+  }, [point])
 
   // noResetActive是否重置当前选中项
   const search = async (noResetActive?: boolean) => {
@@ -273,50 +292,52 @@ export default function Left() {
           </Space>
         </div>
       </div>
-      <div className='filter-wrap fx-col'>
-        <div className='input-wrap'>
-          <Input
-            bordered={false}
-            placeholder='请输入关键字过滤'
-            maxLength={20}
-            allowClear
-            suffix={
-              <i
-                onClick={() => search()}
-                className='icon iconfont icon-sousuo fn12'
-                style={{ color: '#888', cursor: 'pointer' }}></i>
-            }
-            onChange={setValue}
-            onPressEnter={() => search()}
-            value={keyword}
-            style={{
-              height: '38px',
-              borderBottom: '1px solid #E7E7E6',
-              borderRadius: 0,
-            }}
-          />
+      <div className='filter-container' ref={tableContainerRef}>
+        <div className='filter-wrap fx-col'>
+          <div className='input-wrap'>
+            <Input
+              bordered={false}
+              placeholder='请输入关键字过滤'
+              maxLength={20}
+              allowClear
+              suffix={
+                <i
+                  onClick={() => search()}
+                  className='icon iconfont icon-sousuo fn12'
+                  style={{ color: '#888', cursor: 'pointer' }}></i>
+              }
+              onChange={setValue}
+              onPressEnter={() => search()}
+              value={keyword}
+              style={{
+                height: '38px',
+                borderBottom: '1px solid #E7E7E6',
+                borderRadius: 0,
+              }}
+            />
+          </div>
+          <div className='table-title'>全部通道组 ({channelsNum})</div>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorBgContainer: 'transparent',
+              },
+            }}>
+            <Table
+              className='acc-table theme-cell bg-gray'
+              showHeader={false}
+              columns={columns}
+              dataSource={tableData}
+              rowKey={'id'}
+              onRow={onRow}
+              rowClassName={(record) =>
+                record.id == activeRow?.id ? 'active' : ''
+              }
+              pagination={false}
+              scroll={{ y: tableHeight }}
+            />
+          </ConfigProvider>
         </div>
-        <div className='table-title'>全部通道组 ({channelsNum})</div>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorBgContainer: 'transparent',
-            },
-          }}>
-          <Table
-            className='acc-table theme-cell bg-gray'
-            showHeader={false}
-            columns={columns}
-            dataSource={tableData}
-            rowKey={'id'}
-            onRow={onRow}
-            rowClassName={(record) =>
-              record.id == activeRow?.id ? 'active' : ''
-            }
-            pagination={false}
-            scroll={{ y: 474 }}
-          />
-        </ConfigProvider>
       </div>
       <AddDialog ref={dialogRef} onSearch={search} />
       <BindSensitiveWordDialog
