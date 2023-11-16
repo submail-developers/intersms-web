@@ -168,12 +168,13 @@ export default function Channel() {
       className: size == 'small' ? '' : 'paddingL30',
       fixed: true,
       render: (_, record: DataType) => (
-        <div
-          style={{ width: size == 'small' ? '100px' : '130px' }}
-          className='g-ellipsis'
-          title={record.name}>
-          {record.name}
-        </div>
+        <Tooltip
+          title={record.name}
+          placement='bottom'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
+          <div className='g-ellipsis-1'>{record.name}</div>
+        </Tooltip>
       ),
     },
     {
@@ -217,7 +218,10 @@ export default function Channel() {
       width: 160,
       className: 'paddingL20',
       render: (_, record) => (
-        <Tooltip title={record.sens_name}>
+        <Tooltip
+          title={record.sens_name}
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
           <div className='bind-wrap color-gray'>
             <span className='text g-ellipsis' title={record.sens_name || ''}>
               {record.sens_name || '未绑定'}
@@ -236,7 +240,10 @@ export default function Channel() {
       width: 160,
       className: 'paddingL20',
       render: (_, record) => (
-        <Tooltip title={record.block_name}>
+        <Tooltip
+          title={record.block_name}
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
           <div className='bind-wrap color-gray'>
             <span className='text g-ellipsis' title={record.block_name || ''}>
               {record.block_name || '未绑定'}

@@ -33,6 +33,7 @@ enum reportClassName {
   'color-error',
   'color-success',
   'color-gray',
+  'color-success-2',
 }
 
 const allChannel = { name: '全部通道', id: 'all' } as API.ChannelItem
@@ -66,10 +67,9 @@ export default function SendList() {
     label: string
     value: [Dayjs, Dayjs]
   }[] = [
-    { label: '最近7天', value: [dayjs().add(-7, 'd'), dayjs().add(0, 'd')] },
-    { label: '最近14天', value: [dayjs().add(-14, 'd'), dayjs().add(0, 'd')] },
-    { label: '最近30天', value: [dayjs().add(-30, 'd'), dayjs().add(0, 'd')] },
-    { label: '最近90天', value: [dayjs().add(-90, 'd'), dayjs().add(0, 'd')] },
+    { label: '今天', value: [dayjs().add(0, 'd'), dayjs().add(0, 'd')] },
+    { label: '最近3天', value: [dayjs().add(-2, 'd'), dayjs().add(0, 'd')] },
+    { label: '最近7天', value: [dayjs().add(-6, 'd'), dayjs().add(0, 'd')] },
   ]
 
   const changePage = async (_page: number, _pageSize: number) => {
@@ -98,7 +98,7 @@ export default function SendList() {
   const initFormValues: FormValues = {
     channel: 'all',
     group: 'all',
-    time: [dayjs().add(-7, 'd'), dayjs().add(0, 'd')],
+    time: [dayjs().add(0, 'd'), dayjs().add(0, 'd')],
     keyword: '',
   }
 
@@ -195,7 +195,7 @@ export default function SendList() {
           title={record.account_mail}
           placement='bottom'
           mouseEnterDelay={0.3}
-          trigger={['hover']}>
+          trigger={['hover', 'click']}>
           <div className='g-ellipsis'>
             <a href={record.account_path} target='_blank'>
               {record.account_mail}
@@ -223,10 +223,10 @@ export default function SendList() {
       title: '发送名称',
       dataIndex: 'sender',
       className: 'paddingL20',
-      width: 124,
+      width: 104,
       render: (_, record) => (
         <div
-          style={{ width: 120 }}
+          style={{ width: 100 }}
           className='g-ellipsis'
           title={record.sender}>
           {record.sender}
@@ -264,11 +264,16 @@ export default function SendList() {
       width: 100,
       render: (_, record) => (
         <div className='g-ellipsis-2'>
-          <Tooltip title={record.report_code || '回执未返回'}>
-            <span className={`${reportClassName[record.report_state]}`}>
-              {record.report_code || '回执未返回'}
-            </span>
-          </Tooltip>
+          <span
+            className={`${
+              reportClassName[
+                record.report_state == '0' && record.report_code == 'DELIVRD'
+                  ? '3'
+                  : record.report_state
+              ]
+            }`}>
+            {record.report_code || '未返回'}
+          </span>
         </div>
       ),
     },
@@ -304,12 +309,13 @@ export default function SendList() {
       className: 'paddingL20',
       width: 124,
       render: (_, record) => (
-        <div
-          style={{ width: 120 }}
-          className='g-ellipsis'
-          title={record.group_name}>
-          {record.group_name}
-        </div>
+        <Tooltip
+          title={record.group_name}
+          placement='bottom'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
+          <div className='g-ellipsis-1'>{record.group_name}</div>
+        </Tooltip>
       ),
     },
     {
@@ -329,7 +335,7 @@ export default function SendList() {
     {
       title: '成本/计费价',
       dataIndex: 'price',
-      width: 140,
+      width: 120,
       className: 'paddingL20',
       render: (_, record) => {
         return (
