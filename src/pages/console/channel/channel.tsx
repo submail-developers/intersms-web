@@ -54,7 +54,8 @@ const ConfigItem = (props: ConfigItemProps) => {
       active =
         props.record.connection_status == 0 ||
         props.record.connection_status > 0 ||
-        props.record.connection_status == -1
+        props.record.connection_status == -1 ||
+        props.record.connection_status == -2
       break
     default:
       break
