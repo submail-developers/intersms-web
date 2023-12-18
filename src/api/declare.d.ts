@@ -445,6 +445,7 @@ declare module 'apis' {
     interface ChannelItem {
       id: string
       name: string // 通道名称
+      data_total: string //队列数据
       access_type: '0' | '1' // 接入类型 0smpp  1http
       type: '1' | '2' // 通道类型  1行业  2营销
       smsc_ip: string // SMSC服务方ip地址

@@ -162,6 +162,110 @@ export default function Channel() {
       </Row>
     )
   }
+
+  // tip提示显示多个参数
+  type TipProps = {
+    record: DataType
+  }
+  const Tip = (props: TipProps) => {
+    let text = `
+      通道名: ${props.record.name}
+      接入类型: ${props.record.access_type == '0' ? 'SMPP' : 'HTTP'}
+    `
+    if (props.record.access_type == '0') {
+      text += `SMSC服务方IP地址: ${props.record.smsc_ip}
+      SMSC服务方端口号: ${props.record.smsc_port}`
+    } else {
+      text += `http接口地址: ${props.record.http_url}`
+    }
+
+    text += `
+        用户名: ${props.record.sysid}
+        用户密码: ${props.record.password}
+        服务类型: ${props.record.service_type}
+        项目类型: ${props.record.system_type}
+        流速(t/s): ${props.record.flow}
+        号码前缀类型: ${
+          props.record.mobile_type == '0' ? '无前缀' : props.record.mobile_type
+        }
+        UDH模式: ${props.record.udh == '0' ? '否' : '是'}
+      `
+
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>通道名: {props.record.name}</div>
+
+        {props.record.access_type == '0' && (
+          <>
+            <div>接入类型: SMPP</div>
+          </>
+        )}
+        {props.record.access_type == '1' && (
+          <>
+            <div>接入类型: HTTP</div>
+          </>
+        )}
+
+        {props.record.mobile_type == '0' && (
+          <>
+            <div>SMSC服务方IP地址: {props.record.smsc_ip}</div>
+            <div>SMSC服务方端口号: {props.record.smsc_port}</div>
+          </>
+        )}
+        {props.record.mobile_type == '1' && (
+          <>
+            <div>http接口地址: ${props.record.http_url}</div>
+          </>
+        )}
+
+        <div>用户名: {props.record.sysid}</div>
+        <div>用户密码: {props.record.password}</div>
+        <div>服务类型: {props.record.service_type}</div>
+        <div>项目类型: {props.record.system_type}</div>
+        <div>流速(t/s): {props.record.flow}</div>
+
+        {props.record.mobile_type == '0' && (
+          <>
+            <div>号码前缀类型: 无前缀</div>
+          </>
+        )}
+        {props.record.mobile_type == '1' && (
+          <>
+            <div>号码前缀类型: +</div>
+          </>
+        )}
+        {props.record.mobile_type == '2' && (
+          <>
+            <div>号码前缀类型: 00</div>
+          </>
+        )}
+        {props.record.mobile_type == '3' && (
+          <>
+            <div>号码前缀类型: 0</div>
+          </>
+        )}
+
+        {props.record.udh == '1' && (
+          <>
+            <div>UDH模式: 是</div>
+          </>
+        )}
+        {props.record.udh == '0' && (
+          <>
+            <div>UDH模式: 否</div>
+          </>
+        )}
+      </div>
+    )
+  }
   const columns: ColumnsType<DataType> = [
     {
       title: '通道名',
@@ -170,7 +274,7 @@ export default function Channel() {
       fixed: true,
       render: (_, record: DataType) => (
         <Tooltip
-          title={record.name}
+          title={<Tip record={record} />}
           placement='bottom'
           mouseEnterDelay={0.3}
           trigger={['hover', 'click']}>
@@ -293,6 +397,12 @@ export default function Channel() {
 
         return <div className={color}>{text}</div>
       },
+    },
+    {
+      title: '队列数据',
+      width: 80,
+      className: 'paddingL20',
+      render: (_, record: DataType) => <>{record.data_total}</>,
     },
     {
       title: '链路数量',
