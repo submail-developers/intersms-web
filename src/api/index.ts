@@ -605,7 +605,7 @@ export const getalArmConfigList = (data: API.GetalArmConfigListParams) => {
     API.GetalArmConfigListParams
   >('console/api/customer/get_alarm_config', { ...data })
 }
-// 保存报警设置
+// 保存报警人员设置
 export const saveAlarmConfigList = (data: API.SaveAlarmConfigListParams) => {
   return request.post<any, API.Response<any>, API.SaveAlarmConfigListParams>(
     'console/api/customer/save_alarm_config',
@@ -631,6 +631,37 @@ export const deleteAlarmConfigList = (
     { ...data },
   )
 }
+
+// 获取报警人员设置
+export const getAlarmNotifier = (data: API.GetAlarmNotifierParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetAlarmNotifierItems[]>,
+    API.GetAlarmNotifierParams
+  >('console/api/customer/get_alarm_notifier', { ...data })
+}
+
+// 保存报警人员设置
+export const saveAlarmNotifierList = (
+  data: API.SaveAlarmNotifierListParams,
+) => {
+  return request.post<any, API.Response<any>, API.SaveAlarmNotifierListParams>(
+    'console/api/customer/save_alarm_notifier',
+    { ...data },
+  )
+}
+
+// 删除报警人员设置
+export const deleteAlarmNotifierList = (
+  data: API.DeleteAlarmNotifierListParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.DeleteAlarmNotifierListParams
+  >('console/api/customer/delete_alarm_notifier', { ...data })
+}
+
 /**
  * 报警设置end
  */

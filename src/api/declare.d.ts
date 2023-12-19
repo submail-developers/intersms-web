@@ -721,6 +721,13 @@ declare module 'apis' {
       channel_name: string
       sender: string
     }
+    // 获取报警人员设置
+    interface GetAlarmNotifierParams {}
+    // 获取报警人员设置的数据
+    interface GetAlarmNotifierItems {
+      mob: string
+      name: string
+    }
     // 保存报警设置
     interface SaveAlarmConfigListParams {
       id: string
@@ -734,6 +741,11 @@ declare module 'apis' {
       channel_id: string
       sender_id: string
     }
+    // 保存报警人员设置
+    interface SaveAlarmNotifierListParams {
+      mob: string
+      name: string
+    }
     //报警设置量启用/停用  0关闭 1启用
     interface UpdateAlarmConfigStatusParams {
       id: string
@@ -742,6 +754,10 @@ declare module 'apis' {
     //删除报警设置
     interface DeleteAlarmConfigListParams {
       id: string
+    }
+    //删除报警人员设置
+    interface DeleteAlarmNotifierListParams {
+      mob: string
     }
     /**
      * 报警设置end
