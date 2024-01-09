@@ -122,6 +122,7 @@ declare module 'apis' {
       group?: string // 通道组类型
       type?: string // 短信类型
       keyword?: string // 搜索关键字
+      order_flg?: string //排序
     }
 
     // 发送列表返回值

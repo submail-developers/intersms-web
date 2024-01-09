@@ -27,6 +27,7 @@ interface FormValues {
   group: string
   time: [Dayjs, Dayjs] | null
   keyword: string
+  order_flg: string
 }
 
 enum reportClassName {
@@ -58,6 +59,7 @@ export default function SendList() {
   const [channelList, setchannelList] = useState<API.ChannelItem[]>([
     allChannel,
   ])
+
   // 通道组列表
   const [channelsList, setchannelsList] = useState<
     API.GetChannelGroupListItem[]
@@ -82,6 +84,18 @@ export default function SendList() {
       setpageSize(_pageSize)
     }
   }
+  const sortList = [
+    {
+      id: 0,
+      order_flg: 'send',
+      name: '按请求时间排序',
+    },
+    {
+      id: 1,
+      order_flg: 'sent',
+      name: '按完成时间排序',
+    },
+  ]
 
   const pagination: TablePaginationConfig = {
     current: page,
@@ -100,13 +114,14 @@ export default function SendList() {
     group: 'all',
     time: [dayjs().add(0, 'd'), dayjs().add(0, 'd')],
     keyword: '',
+    order_flg: 'send',
   }
 
   // 获取列表数据
   const search = async () => {
     setloading(true)
     const values = await form.getFieldsValue()
-    const { channel, group, time, keyword } = values
+    const { channel, group, time, keyword, order_flg } = values
     const start = (time && time[0].format('YYYY-MM-DD')) || ''
     const end = (time && time[1].format('YYYY-MM-DD')) || ''
     const params = {
@@ -118,6 +133,7 @@ export default function SendList() {
       keyword,
       page,
       limit: pageSize,
+      order_flg,
     }
     try {
       const res = await getSendList(params)
@@ -412,6 +428,29 @@ export default function SendList() {
               }></Select>
           </Form.Item>
 
+          <Form.Item label='' name='order_flg' style={{ marginBottom: 10 }}>
+            <Select
+              showSearch
+              style={{ width: 162 }}
+              size={size}
+              options={sortList}
+              fieldNames={{ label: 'name', value: 'order_flg' }}
+              optionFilterProp='name'
+              filterOption={(input, option) =>
+                (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
+              }
+              suffixIcon={
+                <i
+                  className='icon iconfont icon-xiala'
+                  style={{
+                    color: '#000',
+                    fontSize: '12px',
+                    transform: 'scale(.45)',
+                  }}
+                />
+              }></Select>
+          </Form.Item>
+
           <MyFormItem
             size={size}
             label='发送时间'
@@ -432,6 +471,7 @@ export default function SendList() {
               placeholder='账户/手机号/国家/地区'
               style={{ width: 162 }}></Input>
           </Form.Item>
+
           <Form.Item style={{ marginBottom: 10 }}>
             <ConfigProvider
               theme={{
