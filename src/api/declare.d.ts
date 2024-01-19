@@ -989,6 +989,34 @@ declare module 'apis' {
      */
 
     /**
+     * 统计管理start
+     */
+    // 统计管理参数
+    interface GetStatisticsParams {
+      page: number
+      limit: number
+      start: string
+      end: string
+      channel: string
+      region_code: string
+      network: string
+    }
+    // 获取统计管理返回数据
+    interface GetStatisticsItems {
+      channel_name: string
+      country_cn: string
+      network_name: string
+      request: number
+      deliveryed: number
+      sms_count: number
+      cost: number
+      fee: number
+    }
+    /**
+     * 统计管理end
+     */
+
+    /**
      * 登陆start
      */
 

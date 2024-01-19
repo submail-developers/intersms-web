@@ -292,31 +292,31 @@ export const routerList: RouteObject[] = [
       },
     ],
   },
-  // {
-  //   path: '/data',
-  //   element: <Layout />,
-  //   loader: loaderFn({ name: '数据管理' }),
-  //   handle: handleFn({ alias: '数据', icon: 'icon-tongji1' }),
-  //   children: [
-  //     {
-  //       path: 'manage',
-  //       handle: handleFn({ alias: '数据管理' }),
-  //       children: [
-  //         {
-  //           path: 'index',
-  //           element: (
-  //             <LazyImportComponent
-  //               lazyChildren={lazy(() => import('@/pages/test'))}
-  //             />
-  //           ),
-  //           errorElement: <Error />,
-  //           loader: loaderFn({ name: '数据管理' }),
-  //           handle: handleFn({ alias: '数据管理' }),
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    path: '/data',
+    element: <Layout />,
+    loader: loaderFn({ name: '统计管理' }),
+    handle: handleFn({ alias: '统计', icon: 'icon-tongji1' }),
+    children: [
+      {
+        path: 'manage',
+        handle: handleFn({ alias: '统计管理' }),
+        children: [
+          {
+            path: 'index',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/test'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '统计管理' }),
+            handle: handleFn({ alias: '统计管理' }),
+          },
+        ],
+      },
+    ],
+  },
   {
     path: '/manage',
     element: <Layout />,

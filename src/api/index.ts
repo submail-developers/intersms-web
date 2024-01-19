@@ -904,6 +904,20 @@ export const uploadBlackMobileList = (
 /**
  * 黑名单管理end
  */
+/**
+ * 统计管理start
+ */
+export const getStatistics = (data: API.GetStatisticsParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetStatisticsItems[]>,
+    API.GetStatisticsParams
+  >('console/api/customer/get_analysis_report', { ...data })
+}
+
+/**
+ * 统计管理end
+ */
 
 /**
  * 登陆start
