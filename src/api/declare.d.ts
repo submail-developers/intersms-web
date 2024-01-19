@@ -1011,6 +1011,18 @@ declare module 'apis' {
       sms_count: number
       cost: number
       fee: number
+      profit: number
+    }
+    interface TotalList {
+      cost: number
+      fee: number
+      profit: number
+      sms_count: number
+    }
+    interface GetStatisticsResList {
+      list: GetStatisticsItems[]
+      total: number
+      total_list: TotalList
     }
     /**
      * 统计管理end

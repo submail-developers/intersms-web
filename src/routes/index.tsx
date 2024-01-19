@@ -295,23 +295,23 @@ export const routerList: RouteObject[] = [
   {
     path: '/data',
     element: <Layout />,
-    loader: loaderFn({ name: '统计管理' }),
+    loader: loaderFn({ name: '统计列表' }),
     handle: handleFn({ alias: '统计', icon: 'icon-tongji1' }),
     children: [
       {
         path: 'manage',
-        handle: handleFn({ alias: '统计管理' }),
+        handle: handleFn({ alias: '通道计费' }),
         children: [
           {
             path: 'index',
             element: (
               <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/test'))}
+                lazyChildren={lazy(() => import('@/pages/count'))}
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '统计管理' }),
-            handle: handleFn({ alias: '统计管理' }),
+            loader: loaderFn({ name: '通道计费列表' }),
+            handle: handleFn({ alias: '通道计费列表' }),
           },
         ],
       },

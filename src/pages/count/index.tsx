@@ -7,9 +7,11 @@ import {
   DatePicker,
   ConfigProvider,
   Table,
+  Typography,
   Tooltip,
+  App,
 } from 'antd'
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
+import type { TableColumnsType } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
@@ -20,8 +22,10 @@ import { useSize } from '@/hooks'
 import { API } from 'apis'
 
 import './sendList.scss'
-
-interface DataType extends API.GetStatisticsItems {}
+const { Text } = Typography
+interface DataType extends API.GetStatisticsItems {
+  index: string
+}
 interface FormValues {
   channel: string
   time: [Dayjs, Dayjs] | null
@@ -40,10 +44,12 @@ const allChannel = { name: '全部通道', id: 'all' } as API.ChannelItem
 
 // 发送列表
 export default function SendList() {
+  const { message } = App.useApp()
   const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<DataType[]>([])
+  const [totalTableData, setTotalTableData] = useState<API.TotalList>()
   const [loading, setloading] = useState(false)
   const [total, settotal] = useState<number>(0)
   const [page, setpage] = useState<number>(1)
@@ -76,17 +82,6 @@ export default function SendList() {
     }
   }
 
-  const pagination: TablePaginationConfig = {
-    current: page,
-    position: ['bottomRight'],
-    onChange: changePage,
-    total: total,
-    defaultPageSize: 50,
-    pageSizeOptions: [10, 20, 50, 100],
-    showQuickJumper: true, // 快速跳转
-    showTotal: (total, range) => `共 ${total} 条`,
-  }
-
   // 初始化form的值
   const initFormValues: FormValues = {
     channel: 'all',
@@ -100,10 +95,10 @@ export default function SendList() {
     setloading(true)
     const values = await form.getFieldsValue()
     const { channel, network, time, region_code } = values
-    // const start = (time && time[0].format('YYYY-MM-DD')) || ''
-    // const end = (time && time[1].format('YYYY-MM-DD')) || ''
-    const start = '2023-10-10'
-    const end = '2023-10-15'
+    const start = (time && time[0].format('YYYY-MM-DD')) || ''
+    const end = (time && time[1].format('YYYY-MM-DD')) || ''
+    // const start = '2023-10-10'
+    // const end = '2023-10-15'
     const params = {
       start,
       end,
@@ -115,9 +110,13 @@ export default function SendList() {
     }
     try {
       const res = await getStatistics(params)
-      console.log(res.data, '??')
-      settableData(res.data)
-      // settotal(res.total)
+      let list: DataType[] = res.data.list.map((item, index) => {
+        let obj = { ...item, index: `${index}` }
+        return obj
+      })
+      settableData(list)
+      setTotalTableData(res.data.total_list)
+      settotal(res.data.total)
       setloading(false)
     } catch (error) {
       setloading(false)
@@ -159,37 +158,78 @@ export default function SendList() {
       },
     }
   }
+  // 点击提示复制
+  type TipProps = {
+    record: DataType
+  }
+  const Tip = (props: TipProps) => {
+    let text = `
+      ${props.record.channel_name}
+    `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.channel_name}</div>
+      </div>
+    )
+  }
 
-  const columns: ColumnsType<DataType> = [
+  const columns: TableColumnsType<DataType> = [
     {
       title: '通道名',
       dataIndex: 'channel_name',
+      className: size == 'small' ? '' : 'paddingL30',
+      align: size == 'small' ? 'center' : 'left',
+      width: size == 'small' ? 120 : 200,
+      fixed: true,
+      render: (_, record: DataType) => (
+        <Tooltip
+          title={<Tip record={record} />}
+          placement='left'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
+          <div className='g-ellipsis-1'>{record.channel_name}</div>
+        </Tooltip>
+      ),
     },
     {
       title: '国家',
       dataIndex: 'country_cn',
+      width: size == 'small' ? 120 : 200,
+      className: 'paddingL30',
     },
     {
       title: '网络',
       dataIndex: 'network_name',
+      width: size == 'small' ? 120 : 160,
     },
     {
-      title: '计费条数',
-      dataIndex: 'request',
+      title: '计费条数(条)',
+      dataIndex: 'sms_count',
+      width: size == 'small' ? 120 : 160,
     },
     {
-      title: '计费成本',
+      title: '计费成本(元)',
       dataIndex: 'cost',
+      width: size == 'small' ? 120 : 160,
     },
     {
-      title: '计费收入',
+      title: '计费收入(元)',
       dataIndex: 'fee',
+      width: size == 'small' ? 120 : 160,
     },
   ]
 
   return (
     <div data-class='sendlist'>
-      <MenuTitle title='发送列表'></MenuTitle>
+      <MenuTitle title='通道计费列表'></MenuTitle>
       <ConfigProvider
         theme={{
           token: {
@@ -227,12 +267,16 @@ export default function SendList() {
               }></Select>
           </Form.Item>
 
-          <Form.Item label='' name='region_code' hidden></Form.Item>
-          <Form.Item label='' name='network' hidden></Form.Item>
+          <Form.Item label='' name='region_code' hidden>
+            <Input />
+          </Form.Item>
+          <Form.Item label='' name='network' hidden>
+            <Input />
+          </Form.Item>
 
           <MyFormItem
             size={size}
-            label='发送时间'
+            label='时间范围'
             style={{ marginBottom: '10px' }}>
             <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
               <RangePicker
@@ -264,17 +308,44 @@ export default function SendList() {
           </Form.Item>
         </Form>
       </ConfigProvider>
+
       <Table
         className='theme-cell'
         columns={columns}
         dataSource={tableData}
-        sticky
-        pagination={pagination}
-        rowKey={'id'}
-        onRow={onRow}
-        rowClassName={(record, index) => (index == activeIndex ? 'active' : '')}
-        scroll={{ x: 'fix-content' }}
-        loading={loading}
+        pagination={false}
+        scroll={{ x: 800, y: 650 }}
+        rowKey={'index'}
+        summary={(pageData) => {
+          let total_sms_count = 0
+          let total_cost = 0
+          let total_fee = 0
+
+          pageData.forEach(({ profit }) => {
+            total_sms_count = totalTableData.sms_count //总计费条数
+            total_cost = totalTableData.cost //总计费成本
+            total_fee = totalTableData.fee //总计费收入
+          })
+
+          return (
+            <Table.Summary fixed>
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0}>汇总</Table.Summary.Cell>
+                <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                <Table.Summary.Cell index={2}></Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>
+                  <Text>{total_sms_count}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={4}>
+                  <Text>{total_cost}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={5}>
+                  <Text>{total_fee}</Text>
+                </Table.Summary.Cell>
+              </Table.Summary.Row>
+            </Table.Summary>
+          )
+        }}
       />
     </div>
   )

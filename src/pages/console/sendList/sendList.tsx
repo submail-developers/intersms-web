@@ -8,6 +8,7 @@ import {
   ConfigProvider,
   Table,
   Tooltip,
+  App,
 } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
@@ -45,6 +46,7 @@ const allChannels = {
 
 // 发送列表
 export default function SendList() {
+  const { message } = App.useApp()
   const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
@@ -193,6 +195,48 @@ export default function SendList() {
     }
   }
 
+  // 点击提示复制
+  type TipProps = {
+    record: DataType
+  }
+  const Tip = (props: TipProps) => {
+    let text = `
+        ${props.record.channel_name}
+      `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.channel_name}</div>
+      </div>
+    )
+  }
+  // 通道组复制
+  const Tip2 = (props: TipProps) => {
+    let text = `
+        ${props.record.group_name}
+      `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.group_name}</div>
+      </div>
+    )
+  }
+
   const columns: ColumnsType<DataType> = [
     {
       title: '号码',
@@ -312,12 +356,13 @@ export default function SendList() {
       width: 124,
       className: 'paddingL20',
       render: (_, record) => (
-        <div
-          style={{ width: 120 }}
-          className='g-ellipsis'
-          title={record.channel_name}>
-          {record.channel_name}
-        </div>
+        <Tooltip
+          title={<Tip record={record} />}
+          placement='bottom'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
+          <div className='g-ellipsis'>{record.channel_name}</div>
+        </Tooltip>
       ),
     },
     {
@@ -326,7 +371,7 @@ export default function SendList() {
       width: 124,
       render: (_, record) => (
         <Tooltip
-          title={record.group_name}
+          title={<Tip2 record={record} />}
           placement='bottom'
           mouseEnterDelay={0.3}
           trigger={['hover', 'click']}>

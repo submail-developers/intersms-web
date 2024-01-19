@@ -910,7 +910,7 @@ export const uploadBlackMobileList = (
 export const getStatistics = (data: API.GetStatisticsParams) => {
   return request.post<
     any,
-    API.Response<API.GetStatisticsItems[]>,
+    API.Response<API.GetStatisticsResList>,
     API.GetStatisticsParams
   >('console/api/customer/get_analysis_report', { ...data })
 }

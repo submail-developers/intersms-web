@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   App,
+  Tooltip,
   Popconfirm,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
@@ -147,6 +148,28 @@ export default function NumberChannelsRoute() {
     { label: '营销短信', value: '2' },
   ]
 
+  // 点击提示复制
+  type TipProps = {
+    record: DataType
+  }
+  const Tip = (props: TipProps) => {
+    let text = `
+          ${props.record.group_name}
+        `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.group_name}</div>
+      </div>
+    )
+  }
   const columns: ColumnsType<DataType> = [
     {
       title: '手机号码',
@@ -188,15 +211,30 @@ export default function NumberChannelsRoute() {
       title: '通道组',
       dataIndex: 'group_name',
       width: 140,
-      render: (_, record: DataType) => (
-        <div style={{ width: '140px' }} className='g-ellipsis'>
-          {record.group_name == null ? (
-            <span>该通道已删除</span>
-          ) : (
-            <span title={record.group_name}>{record.group_name}</span>
-          )}
-        </div>
+      render: (_, record) => (
+        <Tooltip
+          title={<Tip record={record} />}
+          placement='bottom'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
+          <div style={{ width: '140px' }} className='g-ellipsis'>
+            {record.group_name == null ? (
+              <span>该通道已删除</span>
+            ) : (
+              <span title={record.group_name}>{record.group_name}</span>
+            )}
+          </div>
+        </Tooltip>
       ),
+      // render: (_, record: DataType) => (
+      //   <div style={{ width: '140px' }} className='g-ellipsis'>
+      //     {record.group_name == null ? (
+      //       <span>该通道已删除</span>
+      //     ) : (
+      //       <span title={record.group_name}>{record.group_name}</span>
+      //     )}
+      //   </div>
+      // ),
     },
     {
       title: '发送名',

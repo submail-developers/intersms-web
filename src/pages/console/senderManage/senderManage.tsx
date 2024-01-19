@@ -119,7 +119,28 @@ export default function NumberChannelsRoute() {
     { label: '申请失败', value: '0' },
     { label: '申请成功', value: '2' },
   ]
-
+  // 点击提示复制
+  type TipProps = {
+    record: DataType
+  }
+  const Tip = (props: TipProps) => {
+    let text = `
+        ${props.record.channel_name}
+      `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.channel_name}</div>
+      </div>
+    )
+  }
   const columns: ColumnsType<DataType> = [
     {
       title: '账号',
@@ -139,6 +160,15 @@ export default function NumberChannelsRoute() {
       dataIndex: 'channel_name',
       width: 180,
       className: 'paddingL20',
+      render: (_, record) => (
+        <Tooltip
+          title={<Tip record={record} />}
+          placement='bottom'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
+          <div className='g-ellipsis'>{record.channel_name}</div>
+        </Tooltip>
+      ),
     },
     {
       title: 'Sender名',

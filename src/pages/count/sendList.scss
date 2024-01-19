@@ -30,4 +30,13 @@
       transform: rotate(180deg);
     }
   }
+  .ant-table-summary td {
+    font-weight: bold;
+  }
+  .ant-table-summary td:first-child {
+    padding-left: 30px;
+  }
+  .ant-table-summary td:not(:first-child) {
+    padding-left: 0;
+  }
 }

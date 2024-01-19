@@ -2,7 +2,7 @@ import { useState, useRef, MutableRefObject, useEffect } from 'react'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
 import BindKeyword from './dialog/bindKeyword/bindKeyword'
-import { Button, Popconfirm, ConfigProvider, Table, App } from 'antd'
+import { Button, Popconfirm, ConfigProvider, Table, App, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useSize } from '@/hooks'
 import { getGroupChannelList, channelGroupDeleteChannel } from '@/api'
@@ -125,17 +125,51 @@ export default function Right() {
       selectedRowKeys.filter((item) => item != record.channel_id),
     )
   }
-
+  // 点击提示复制
+  type TipProps = {
+    record: DataType
+  }
+  const Tip = (props: TipProps) => {
+    let text = `
+        ${props.record.channel_name}
+      `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.channel_name}</div>
+      </div>
+    )
+  }
   const columns: ColumnsType<DataType> = [
     {
       title: <div style={{ marginLeft: '20px' }}>通道名</div>,
       width: 160,
       fixed: true,
       render: (_, record) => (
-        <div style={{ marginLeft: '20px', width: 140 }} className='g-ellipsis'>
-          {record.channel_name}
-        </div>
+        <Tooltip
+          title={<Tip record={record} />}
+          placement='bottom'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
+          <div
+            style={{ marginLeft: '20px', width: 140 }}
+            className='g-ellipsis'>
+            {record.channel_name}
+          </div>
+        </Tooltip>
       ),
+      // render: (_, record) => (
+      //   <div style={{ marginLeft: '20px', width: 140 }} className='g-ellipsis'>
+      //     {record.channel_name}
+      //   </div>
+      // ),
     },
     {
       title: '通道类型',
