@@ -1,51 +1,18 @@
-import React, { useState, useEffect, Children } from 'react'
+import { useState } from 'react'
 import logo from '@/assets/img/logo.svg'
 import './header.scss'
 import { logout, updateConfig } from '@/api'
 import { useSize } from '@/hooks'
 import { useNavigate } from 'react-router-dom'
 import { App, Popconfirm, Drawer, Button, Space } from 'antd'
-import type { DrawerProps } from 'antd'
 import { UnorderedListOutlined } from '@ant-design/icons'
-import { routerList } from '@/routes'
-import { useAppDispatch, useAppSelector } from '@/store/hook'
-import { NavLink, RouteObject, useMatches, useLocation } from 'react-router-dom'
-import { closeIt, openIt, menuCloseStatus } from '@/store/reducers/menu'
 import MobileMenu from '../mobileMenu/mobileMenu'
 
 export default function Header() {
   const nav = useNavigate()
   const size = useSize()
   const { message } = App.useApp()
-  const [open, setOpen] = useState(false)
-  const [sizeSide, setSizeSide] = useState<DrawerProps['size']>()
-  const [childrenDrawer, setChildrenDrawer] = useState(false)
-  const [type, setType] = useState('user') //tab的type值
   const [showMobileMenu, setshowMobileMenu] = useState(false)
-  const location = useLocation()
-  const matchList = useMatches()
-  const currentMatchBaseRouteObj = matchList.find(
-    (match) => !match.id.includes('-'),
-  )
-  const dispatch = useAppDispatch()
-  let [menuList, setMenuList] = useState<Array<RouteObject>>([])
-  useEffect(() => {
-    if (size == 'small') {
-      dispatch(closeIt())
-    } else {
-      dispatch(openIt())
-    }
-    routerList.map((item) => {
-      if (
-        currentMatchBaseRouteObj &&
-        item.path == currentMatchBaseRouteObj.pathname
-      ) {
-        setMenuList(item?.children || [])
-      }
-    })
-  }, [location.pathname, currentMatchBaseRouteObj?.pathname])
-  // menu状态
-  const close = useAppSelector(menuCloseStatus)
 
   const logoutEvent = async () => {
     await logout()
@@ -65,31 +32,6 @@ export default function Header() {
 
   const showDefaultDrawer = () => {
     setshowMobileMenu(true)
-  }
-
-  const showLargeDrawer = () => {
-    setSizeSide('large')
-    setOpen(true)
-  }
-
-  const onClose = () => {
-    setOpen(false)
-  }
-  const showChildrenDrawer = () => {
-    setChildrenDrawer(true)
-  }
-
-  const onChildrenDrawerClose = () => {
-    setChildrenDrawer(false)
-  }
-
-  const handleSideBar = (path) => {
-    const sideBarData = routerList.find((item) => item.path == path)
-
-    if (sideBarData) {
-      setMenuList(sideBarData.children)
-      console.log(menuList)
-    }
   }
 
   return (
