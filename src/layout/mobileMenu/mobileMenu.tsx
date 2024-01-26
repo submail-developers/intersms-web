@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Drawer } from 'antd'
 import { routerList } from '@/routes'
 import { RouteObject, useMatches, useLocation } from 'react-router-dom'
+import { logout } from '@/api'
 import './mobileMenu.scss'
 
 type Props = {
@@ -42,6 +43,12 @@ export default function MobileMenu(props: Props) {
     handleSideBar(currentMatchBaseRouteObj.pathname)
   }, [props.show])
 
+  // 退出登录
+  const logoutEvent = async () => {
+    await logout()
+    nav('/')
+  }
+
   return (
     <Drawer
       title=''
@@ -60,13 +67,17 @@ export default function MobileMenu(props: Props) {
             </div>
           </dd>
         ))}
+        <div className='logout-wrap tuichu-con' onClick={logoutEvent}>
+          <i className='icon iconfont icon-tuichu fn16'></i> &nbsp;
+          <span className='fn14 tuichu'>退出登录</span>
+        </div>
       </ul>
 
       <ul className='nav-item'>
         <div
           data-class='sidemenu'
           className={`fx-col fx-shrink`}
-          style={{ background: 'none' }}>
+          style={{ background: 'none', overflow: 'hidden' }}>
           {menuList.map((menu, index) => (
             <dl className='col' key={index}>
               {menu.handle.alias && (

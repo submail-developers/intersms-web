@@ -5,7 +5,7 @@ import { logout, updateConfig } from '@/api'
 import { useSize } from '@/hooks'
 import { useNavigate } from 'react-router-dom'
 import { App, Popconfirm, Drawer, Button, Space } from 'antd'
-import { UnorderedListOutlined } from '@ant-design/icons'
+import { MenuOutlined } from '@ant-design/icons'
 import MobileMenu from '../mobileMenu/mobileMenu'
 
 export default function Header() {
@@ -58,22 +58,25 @@ export default function Header() {
               style={{ display: 'flex', alignItems: 'center' }}>
               <i
                 className='icon iconfont icon-a-tongbu2x fn16'
-                style={{ color: '#ff4d4f' }}></i>
+                style={{ color: '#ff4d4f' }}></i>{' '}
+              &nbsp;
               <span className='fn14' style={{ color: '#ff4d4f' }}>
-                同步全局配置
-              </span>
+                {size == 'small' ? '同步全局' : '同步全局配置'}
+              </span>{' '}
+              &nbsp;&nbsp;&nbsp;
             </div>
           </Popconfirm>
           &nbsp;&nbsp;
           {size == 'small' ? (
             <>
               <Space>
-                <Button type='primary' onClick={showDefaultDrawer}>
-                  <UnorderedListOutlined
-                    rev={undefined}
-                    style={{ color: '#fff', fontSize: '18px' }}
-                  />
-                </Button>
+                {/* <Button type='primary' > */}
+                <MenuOutlined
+                  rev={undefined}
+                  style={{ fontSize: '18px' }}
+                  onClick={showDefaultDrawer}
+                />
+                {/* </Button> */}
               </Space>
               <MobileMenu
                 show={showMobileMenu}

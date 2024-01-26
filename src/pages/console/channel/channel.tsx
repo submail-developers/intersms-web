@@ -271,7 +271,7 @@ export default function Channel() {
       title: '通道名',
       className: size == 'small' ? '' : 'paddingL30',
       width: size == 'small' ? 100 : 150,
-      align: size == 'small' ? 'center' : 'left',
+      align: size == 'small' ? 'left' : 'left',
       fixed: true,
       render: (_, record: DataType) => (
         <Tooltip

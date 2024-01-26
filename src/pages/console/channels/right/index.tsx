@@ -149,24 +149,38 @@ export default function Right() {
   }
   const columns: ColumnsType<DataType> = [
     {
-      title: <div style={{ marginLeft: '20px' }}>通道名</div>,
-      width: size == 'small' ? 80 : 130,
+      title: '通道名',
+      className: size == 'small' ? '' : 'paddingL30',
+      width: size == 'small' ? 80 : 150,
+      align: size == 'small' ? 'left' : 'left',
       fixed: true,
-      render: (_, record) => (
+      render: (_, record: DataType) => (
         <Tooltip
           title={<Tip record={record} />}
           placement='bottom'
           mouseEnterDelay={0.3}
           trigger={['hover', 'click']}>
-          <div className='g-ellipsis'>{record.channel_name}</div>
+          <div style={{ width: '80px' }} className='g-ellipsis-1'>
+            {record.channel_name}
+          </div>
         </Tooltip>
       ),
-      // render: (_, record) => (
-      //   <div style={{ marginLeft: '20px', width: 140 }} className='g-ellipsis'>
-      //     {record.channel_name}
-      //   </div>
-      // ),
     },
+    // {
+    //   title: <div style={{ marginLeft: '20px' }}>通道名</div>,
+    //   width: size == 'small' ? 80 : 130,
+    //   fixed: true,
+    //   align: size == 'small' ? 'left' : 'left',
+    //   render: (_, record) => (
+    //     <Tooltip
+    //       title={<Tip record={record} />}
+    //       placement='bottom'
+    //       mouseEnterDelay={0.3}
+    //       trigger={['hover', 'click']}>
+    //       <div className='g-ellipsis'>{record.channel_name}</div>
+    //     </Tooltip>
+    //   ),
+    // },
     {
       title: '通道类型',
       dataIndex: 'channel_type',
