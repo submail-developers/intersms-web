@@ -11,6 +11,7 @@ import { routerList } from '@/routes'
 import { useAppDispatch, useAppSelector } from '@/store/hook'
 import { NavLink, RouteObject, useMatches, useLocation } from 'react-router-dom'
 import { closeIt, openIt, menuCloseStatus } from '@/store/reducers/menu'
+import MobileMenu from '../mobileMenu/mobileMenu'
 
 export default function Header() {
   const nav = useNavigate()
@@ -20,6 +21,7 @@ export default function Header() {
   const [sizeSide, setSizeSide] = useState<DrawerProps['size']>()
   const [childrenDrawer, setChildrenDrawer] = useState(false)
   const [type, setType] = useState('user') //tab的type值
+  const [showMobileMenu, setshowMobileMenu] = useState(false)
   const location = useLocation()
   const matchList = useMatches()
   const currentMatchBaseRouteObj = matchList.find(
@@ -62,8 +64,7 @@ export default function Header() {
   // 多层抽屉
 
   const showDefaultDrawer = () => {
-    setSizeSide('default')
-    setOpen(true)
+    setshowMobileMenu(true)
   }
 
   const showLargeDrawer = () => {
@@ -132,47 +133,10 @@ export default function Header() {
                   />
                 </Button>
               </Space>
-              <Drawer
-                title=''
-                placement='left'
-                size={sizeSide}
-                onClose={onClose}
-                open={open}>
-                <ul className='nav-bar'>
-                  {routerList.map((item) => (
-                    <dd
-                      key={item.path}
-                      onClick={() => handleSideBar(item.path)}>
-                      <div className='fx-col-center-center'>
-                        <span>{item.handle.aliasMob}</span>
-                      </div>
-                    </dd>
-                  ))}
-                </ul>
-
-                <ul className='nav-item'>
-                  <div
-                    data-class='sidemenu'
-                    className={`fx-col fx-shrink`}
-                    style={{ background: 'none' }}>
-                    {menuList.map((menu, index) => (
-                      <dl className='col' key={index}>
-                        {menu.handle.alias && (
-                          <dt className='fn12'>{menu.handle.alias}</dt>
-                        )}
-                        {menu.children &&
-                          menu.children.map((ditem) => (
-                            <dd className='fn14' key={ditem.path}>
-                              <NavLink to={`/${menu.path}/${ditem.path}`}>
-                                {ditem.handle.alias}
-                              </NavLink>
-                            </dd>
-                          ))}
-                      </dl>
-                    ))}
-                  </div>
-                </ul>
-              </Drawer>
+              <MobileMenu
+                show={showMobileMenu}
+                onClose={() => setshowMobileMenu(false)}
+              />
             </>
           ) : (
             <div className='logout-wrap tuichu-con' onClick={logoutEvent}>
