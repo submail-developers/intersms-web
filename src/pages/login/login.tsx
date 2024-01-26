@@ -27,7 +27,7 @@ export default function Login() {
   return (
     <div data-class='login'>
       <img src={bg} className='bg' alt='' />
-      <img src={Logo} className='logo' alt='' />
+      <img src={size == 'small' ? '' : Logo} className='logo' alt='' />
       <div className={`form-wrap ${size}`}>
         <div
           className='anim'

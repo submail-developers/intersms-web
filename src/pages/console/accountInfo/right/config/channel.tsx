@@ -1,5 +1,5 @@
 import { useImperativeHandle, forwardRef, useState, useEffect } from 'react'
-import { Button, ConfigProvider, App, Table, Popconfirm } from 'antd'
+import { Button, ConfigProvider, App, Table, Popconfirm, Tooltip } from 'antd'
 import { useAppSelector } from '@/store/hook'
 import { accountInfoState } from '@/store/reducers/accountInfo'
 import type { ColumnsType } from 'antd/es/table'
@@ -100,6 +100,28 @@ function Channel(props: Props, ref: any) {
       },
     }
   }
+  // 点击提示复制
+  type TipProps = {
+    record: DataType
+  }
+  const Tip = (props: TipProps) => {
+    let text = `
+      ${props.record.group_name}
+    `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.group_name}</div>
+      </div>
+    )
+  }
   const columns: ColumnsType<DataType> = [
     {
       title: <div style={{ marginLeft: '20px' }}>Appid</div>,
@@ -119,13 +141,27 @@ function Channel(props: Props, ref: any) {
       title: '通道组',
       width: 190,
       render: (_, record: DataType) => (
-        <div
-          style={{ width: '230px' }}
-          className='g-ellipsis'
-          title={record.group_name}>
-          {record.group_name}
-        </div>
+        <Tooltip
+          title={<Tip record={record} />}
+          placement='left'
+          mouseEnterDelay={0.3}
+          trigger={['hover', 'click']}>
+          <div
+            style={{ width: '230px' }}
+            className='g-ellipsis'
+            title={record.group_name}>
+            {record.group_name}
+          </div>
+        </Tooltip>
       ),
+      // render: (_, record: DataType) => (
+      // <div
+      //   style={{ width: '230px' }}
+      //   className='g-ellipsis'
+      //   title={record.group_name}>
+      //   {record.group_name}
+      // </div>
+      // ),
     },
     {
       title: '短信类型',

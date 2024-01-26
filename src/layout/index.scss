@@ -11,6 +11,9 @@
       border-radius: 16px 0 0 0;
       height: 100%;
       width: calc(100% - 64px);
+      @media screen and (min-width: 0) and (max-width: 768px) {
+        border-radius: 0;
+      }
       .wrap {
         width: 100%;
         height: calc(100% - 56px);

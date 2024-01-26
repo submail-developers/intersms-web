@@ -12,6 +12,7 @@ import {
 import type { ColumnsType } from 'antd/es/table'
 import UpdateCountryConfig from './dialog/updateCountry'
 import MenuTitle from '@/components/menuTitle/menuTitle'
+import BackToTop from '@/components/returnToTop/returnToTop'
 import { useSize } from '@/hooks'
 import { getCountryList, getAllGroupId } from '@/api'
 import { API } from 'apis'
@@ -286,6 +287,7 @@ export default function Channel() {
         allGruopData={allGruopData}
         ref={updateCountryDialogRef}
       />
+      <BackToTop />
     </div>
   )
 }

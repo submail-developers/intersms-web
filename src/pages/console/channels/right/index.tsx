@@ -150,7 +150,7 @@ export default function Right() {
   const columns: ColumnsType<DataType> = [
     {
       title: <div style={{ marginLeft: '20px' }}>通道名</div>,
-      width: 160,
+      width: size == 'small' ? 80 : 130,
       fixed: true,
       render: (_, record) => (
         <Tooltip
@@ -158,11 +158,7 @@ export default function Right() {
           placement='bottom'
           mouseEnterDelay={0.3}
           trigger={['hover', 'click']}>
-          <div
-            style={{ marginLeft: '20px', width: 140 }}
-            className='g-ellipsis'>
-            {record.channel_name}
-          </div>
+          <div className='g-ellipsis'>{record.channel_name}</div>
         </Tooltip>
       ),
       // render: (_, record) => (

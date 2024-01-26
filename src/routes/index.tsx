@@ -19,8 +19,8 @@ export interface RouteExtParams {
   name?: string // 面包屑展示的名字
   alias?: string // 侧边栏的名称
   icon?: string // 侧边栏的icon
+  aliasMob?: string //手机端导航名称
 }
-
 const loaderFn = (props?: RouteExtParams, cb?: () => void) => {
   return () => {
     cb && cb()
@@ -59,6 +59,10 @@ export const baseRouterList: RouteObject[] = [
     element: <Navigate to='/data/manage/index' />,
   },
   {
+    path: '/data/manage',
+    element: <Navigate to='/data/manage/index' />,
+  },
+  {
     path: '/manage',
     element: <Navigate to='/manage/index/userinfo' />,
   },
@@ -75,7 +79,11 @@ export const routerList: RouteObject[] = [
     path: '/console',
     element: <Layout />,
     loader: loaderFn({ name: '客户管理' }),
-    handle: handleFn({ alias: '客户', icon: 'icon-kehuguanli' }),
+    handle: handleFn({
+      alias: '客户',
+      icon: 'icon-kehuguanli',
+      aliasMob: '客户管理',
+    }),
     children: [
       {
         path: 'customer',
@@ -296,7 +304,11 @@ export const routerList: RouteObject[] = [
     path: '/data',
     element: <Layout />,
     loader: loaderFn({ name: '统计列表' }),
-    handle: handleFn({ alias: '统计', icon: 'icon-tongji1' }),
+    handle: handleFn({
+      alias: '统计',
+      icon: 'icon-tongji1',
+      aliasMob: '统计列表',
+    }),
     children: [
       {
         path: 'manage',
@@ -321,7 +333,11 @@ export const routerList: RouteObject[] = [
     path: '/manage',
     element: <Layout />,
     loader: loaderFn({ name: '管理设置' }),
-    handle: handleFn({ alias: '管理', icon: 'icon-wode' }),
+    handle: handleFn({
+      alias: '管理',
+      icon: 'icon-wode',
+      aliasMob: '账户设置',
+    }),
     children: [
       {
         path: 'index',

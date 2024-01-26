@@ -23,7 +23,7 @@
       margin-bottom: 48px;
       font-size: 20px;
       line-height: 28px;
-      color: #999;
+      color: #666;
       // font-weight: 400;
     }
   }
@@ -78,6 +78,22 @@
           &.ant-input-status-error {
             border-color: #ff4d4f;
           }
+        }
+        input.ant-input::-webkit-input-placeholder {
+          /* WebKit browsers */
+          color: #666;
+        }
+        input.ant-input:-moz-placeholder {
+          /* Mozilla Firefox 4 to 18 */
+          color: #666;
+        }
+        input.ant-input::-moz-placeholder {
+          /* Mozilla Firefox 19+ */
+          color: #666;
+        }
+        input.ant-input:-ms-input-placeholder {
+          /* Internet Explorer 10+ */
+          color: #666;
         }
       }
     }

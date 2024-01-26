@@ -269,8 +269,9 @@ export default function Channel() {
   const columns: ColumnsType<DataType> = [
     {
       title: '通道名',
-      width: size == 'small' ? 100 : 130,
       className: size == 'small' ? '' : 'paddingL30',
+      width: size == 'small' ? 100 : 150,
+      align: size == 'small' ? 'center' : 'left',
       fixed: true,
       render: (_, record: DataType) => (
         <Tooltip
@@ -278,7 +279,9 @@ export default function Channel() {
           placement='bottom'
           mouseEnterDelay={0.3}
           trigger={['hover', 'click']}>
-          <div className='g-ellipsis-1'>{record.name}</div>
+          <div style={{ width: '120px' }} className='g-ellipsis-1'>
+            {record.name}
+          </div>
         </Tooltip>
       ),
     },

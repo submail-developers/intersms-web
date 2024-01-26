@@ -9,6 +9,7 @@ import {
 } from '@/store/reducers/menu'
 import React, { useState, useEffect } from 'react'
 import { useSize } from '@/hooks'
+
 /**
  * 面包屑
  */
@@ -43,17 +44,21 @@ export default function BreadCrumb() {
 
   return (
     <div data-class='breadcrumb-wrap'>
-      <div className=' fx-y-center breadcrumb'>
-        <div
-          className='prefix-btn fx-center-center'
-          onClick={() => dispatch(changeClose())}>
-          <i
-            className={`iconfont fn14 icon-${
-              status ? 'shouhui' : 'shouhui1'
-            }`}></i>
+      {size == 'small' ? (
+        ''
+      ) : (
+        <div className=' fx-y-center breadcrumb'>
+          <div
+            className='prefix-btn fx-center-center'
+            onClick={() => dispatch(changeClose())}>
+            <i
+              className={`iconfont fn14 icon-${
+                status ? 'shouhui' : 'shouhui1'
+              }`}></i>
+          </div>
+          <div className='crumb fn18'>{loaderData.name}</div>
         </div>
-        <div className='crumb fn18'>{loaderData.name}</div>
-      </div>
+      )}
     </div>
   )
 }

@@ -12,12 +12,13 @@ import {
   App,
 } from 'antd'
 import type { TableColumnsType } from 'antd'
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import { getStatistics, getChannelList, getChannelGroupList } from '@/api'
+import { getStatistics, getChannelList } from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 
@@ -53,7 +54,7 @@ export default function SendList() {
   const [loading, setloading] = useState(false)
   const [total, settotal] = useState<number>(0)
   const [page, setpage] = useState<number>(1)
-  const [pageSize, setpageSize] = useState<number>(50)
+  const [pageSize, setpageSize] = useState<number>(10000)
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
   // 通道列表
@@ -81,6 +82,17 @@ export default function SendList() {
       setpageSize(_pageSize)
     }
   }
+
+  // const pagination: TablePaginationConfig = {
+  //   current: page,
+  //   position: ['bottomRight'],
+  //   onChange: changePage,
+  //   total: total,
+  //   defaultPageSize: 50,
+  //   pageSizeOptions: [10, 20, 50, 100],
+  //   showQuickJumper: true, // 快速跳转
+  //   showTotal: (total, range) => `共 ${total} 条`,
+  // }
 
   // 初始化form的值
   const initFormValues: FormValues = {
@@ -141,7 +153,7 @@ export default function SendList() {
   }
 
   useEffect(() => {
-    search()
+    // search()
   }, [page, pageSize])
   // 获取通道列表
   const getChannel = async () => {
