@@ -303,7 +303,9 @@ export default function SendList() {
           <span>
             {record.send}
             <br />
-            {record.sent}
+
+            {record.report_code == '' ? '-' : record.sent}
+            {/* {record.sent} */}
           </span>
         )
       },
@@ -313,9 +315,12 @@ export default function SendList() {
       dataIndex: 'timer',
       className: 'paddingL20',
       width: 80,
-      render: (_, record) => (
-        <span style={{ color: '#5765cc' }}>{record.downlink_time}s</span>
-      ),
+      render: (_, record) =>
+        record.report_code == '' ? (
+          <span style={{ color: '#5765cc' }}>-</span>
+        ) : (
+          <span style={{ color: '#5765cc' }}>{record.downlink_time}s</span>
+        ),
     },
     {
       title: '回执',
@@ -353,7 +358,7 @@ export default function SendList() {
     },
     {
       title: '通道',
-      width: 124,
+      width: 180,
       className: 'paddingL20',
       render: (_, record) => (
         <Tooltip
@@ -368,7 +373,7 @@ export default function SendList() {
     {
       title: '通道组',
       className: 'paddingL20',
-      width: 124,
+      width: 210,
       render: (_, record) => (
         <Tooltip
           title={<Tip2 record={record} />}
