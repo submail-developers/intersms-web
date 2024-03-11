@@ -480,7 +480,7 @@ export default function Channel() {
     addChannelDialogRef.current.open({ isAdd: false, record })
   }
   const showDetail = (record: DataType) => {
-    drawerRef.current.open(record.id)
+    drawerRef.current.open(record.id, record.name)
   }
   const showBindSensDialog = (record: DataType) => {
     bindSensitiveWordDialogRef.current.open(record)

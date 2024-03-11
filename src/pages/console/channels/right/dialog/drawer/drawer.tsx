@@ -33,6 +33,7 @@ const Dialog = (props: Props, ref: any) => {
   const point = usePoint('xl')
   const [form] = Form.useForm()
   const [channelId, setchannelId] = useState<string>('') // 通道ID
+  const [channelName, setchannelName] = useState<string>('') // 通道name
   const [tableData, setTableData] = useState<API.GroupRelatedDataItem[]>([])
   const [loading, setloading] = useState(false)
 
@@ -73,6 +74,7 @@ const Dialog = (props: Props, ref: any) => {
   }, [show])
 
   const open = async (record: DataType) => {
+    setchannelName(record.channel_name)
     setchannelId(record.channel_id)
     setShow(true)
   }
@@ -155,7 +157,8 @@ const Dialog = (props: Props, ref: any) => {
                 <div className='fx-y-center'>
                   <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
                   <span className='fn20' style={{ marginLeft: '10px' }}>
-                    通道关联国家/地区
+                    {/* 通道关联国家/地区 */}
+                    {channelName}
                   </span>
                 </div>
               )}

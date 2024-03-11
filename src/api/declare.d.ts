@@ -381,6 +381,7 @@ declare module 'apis' {
     interface GroupRelatedDataItem {
       id: string
       channel_id: string
+      channel_name: string
       country_cn: string
       region_code: string
       weight: string

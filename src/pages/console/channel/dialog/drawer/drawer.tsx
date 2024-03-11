@@ -39,6 +39,7 @@ const Dialog = (props: Props, ref: any) => {
   const point = usePoint('xl')
   const [form] = Form.useForm()
   const [channelId, setchannelId] = useState<string>('') // 通道ID
+  const [channelName, setchannelName] = useState<string>('通道关联国家/地区') // 通道name
   const [tableData, setTableData] = useState<API.ChannelCountryConfigItem[]>([])
   const [loading, setloading] = useState(false)
 
@@ -51,6 +52,7 @@ const Dialog = (props: Props, ref: any) => {
   const [show, setShow] = useState(false)
 
   const drawerref: MutableRefObject<HTMLDivElement> = useRef(null)
+
   // 因为内部table组件使用了虚拟表格，必须要配置scroll={{x: number, y: number}}，drawer的宽和高用的vh vw，所以需要获取drawer组件的内容区宽高
   const [drawerContentRect, setdrawerContentRect] =
     useState<DrawerContentRectType>({
@@ -75,7 +77,8 @@ const Dialog = (props: Props, ref: any) => {
     }
   }, [show])
 
-  const open = async (id: string) => {
+  const open = async (id: string, name: string) => {
+    setchannelName(name)
     setShow(true)
     setchannelId(id)
   }
@@ -196,7 +199,8 @@ const Dialog = (props: Props, ref: any) => {
                 <div className='fx-y-center'>
                   <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
                   <span className='fn20' style={{ marginLeft: '10px' }}>
-                    通道关联国家/地区
+                    {/* 通道关联国家/地区 */}
+                    {channelName}
                   </span>
                 </div>
               )}
