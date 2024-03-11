@@ -152,16 +152,20 @@ const Dialog = (props: Props, ref: any) => {
             className={`drawer-header ${
               size == 'middle' ? 'fx-between-center' : 'xl'
             }`}>
-            <div className='fx-y-center'>
-              {point && (
-                <div className='fx-y-center'>
-                  <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
-                  <span className='fn20' style={{ marginLeft: '10px' }}>
-                    {/* 通道关联国家/地区 */}
-                    {channelName}
-                  </span>
-                </div>
-              )}
+            <div className={`${size == 'middle' ? 'fx-y-center' : 'xl'}`}>
+              {/* {point && ( */}
+              <div
+                className='fx-y-center'
+                style={{
+                  marginRight: point ? '' : 90,
+                }}>
+                <i className='icon iconfont icon-quanqiuguojia fn20 color'></i>
+                <span className='fn20' style={{ marginLeft: '10px' }}>
+                  {/* 通道关联国家/地区 */}
+                  {channelName}
+                </span>
+              </div>
+              {/* )} */}
               <div
                 className=' switch-all'
                 style={{ marginLeft: point ? 40 : 0 }}>
@@ -220,7 +224,9 @@ const Dialog = (props: Props, ref: any) => {
               </Form>
             </ConfigProvider>
           </header>
-          <div className='drawer-table-wrap'>
+          <div
+            className='drawer-table-wrap'
+            style={{ marginTop: point ? '' : 20 }}>
             <TableCountry
               ref={tableref}
               search={search}
