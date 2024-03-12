@@ -8,6 +8,10 @@ import {
   Table,
   Row,
   Col,
+  Badge,
+  Dropdown,
+  Space,
+  Popconfirm,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import UpdateCountryConfig from './dialog/updateCountry'
@@ -16,6 +20,9 @@ import BackToTop from '@/components/returnToTop/returnToTop'
 import { useSize } from '@/hooks'
 import { getCountryList, getAllGroupId } from '@/api'
 import { API } from 'apis'
+// import { DownOutlined } from '@ant-design/icons'
+// import type { TableColumnsType } from 'antd'
+import { Link } from 'react-router-dom'
 
 import './country.scss'
 
@@ -24,6 +31,13 @@ interface FormValues {
   id: string
   group_id: string
   keyword: string
+}
+
+interface ExpandedDataType {
+  key: React.Key
+  date: string
+  name: string
+  upgradeNum: string
 }
 
 // 国家信息配置
@@ -131,10 +145,18 @@ export default function Channel() {
       ellipsis: true,
     },
     {
+      title: '关联通道',
+      width: 100,
+      className: 'paddingL20',
+      render: (_, record) => (
+        <Link to='/console/config/countryDetail'>查看详情</Link>
+      ),
+    },
+    {
       title: '行业通道组',
       dataIndex: 'tra_group_name',
       className: 'trade-0',
-      width: 160,
+      width: 200,
       // render: (_, record) => (
       //   <div style={{ width: 156 }} className='g-ellipsis'>
       //     {record.tra_group_name}
@@ -151,7 +173,7 @@ export default function Channel() {
       title: '营销通道组',
       dataIndex: 'mke_group_name',
       className: 'sale-0',
-      width: 160,
+      width: 200,
     },
     {
       title: '营销Sender',
@@ -178,6 +200,54 @@ export default function Channel() {
   const updateCountryEvent = (record: DataType) => {
     updateCountryDialogRef.current.open(record)
   }
+
+  // const expandedRowRender = () => {
+  //   const columnsChild: TableColumnsType<ExpandedDataType> = [
+  //     { title: '运营商网络', dataIndex: 'date', key: 'date' },
+  //     { title: '成本价格', dataIndex: 'cprice', key: 'cprice' },
+  //     { title: '建议零售价', dataIndex: 'price', key: 'price' },
+  //     {
+  //       title: '操作',
+  //       dataIndex: 'upgradeNum',
+  //       key: 'upgradeNum',
+  //       render: (_, record) => (
+  //         <div>
+  //           <Button type='link' style={{ paddingLeft: 0 }}>
+  //             编辑
+  //           </Button>
+  //           <Popconfirm
+  //             placement='left'
+  //             title='警告'
+  //             description='确定删除该通道吗？'
+  //             okText='确定'
+  //             cancelText='取消'>
+  //             <Button type='link'>删除</Button>
+  //           </Popconfirm>
+  //         </div>
+  //       ),
+  //     },
+  //   ]
+
+  //   const dataChild = []
+  //   for (let i = 0; i < 3; ++i) {
+  //     dataChild.push({
+  //       key: i.toString(),
+  //       date: 'u mobile',
+  //       cprice: '0.01000',
+  //       price: '￥0,093000',
+  //       upgradeNum: 'Upgraded: 56',
+  //     })
+  //   }
+  //   return (
+  //     <Table
+  //       className='child-table'
+  //       columns={columnsChild}
+  //       dataSource={dataChild}
+  //       pagination={false}
+  //       scroll={{ x: 'max-content' }}
+  //     />
+  //   )
+  // }
 
   return (
     <div data-class='country'>
@@ -263,6 +333,25 @@ export default function Channel() {
             colorBgContainer: 'transparent',
           },
         }}>
+        {/* <Table
+          // className='theme-cell reset-table'
+          columns={columns}
+          dataSource={tableData}
+          expandable={{ expandedRowRender }}
+          rowKey={'id'}
+          onRow={onRow}
+          rowClassName={(record, index) =>
+            index == activeIndex ? 'active' : ''
+          }
+          sticky
+          pagination={{
+            position: ['bottomRight'],
+            pageSize: 100,
+            pageSizeOptions: [100, 200, 300],
+          }}
+          scroll={{ x: 'max-content' }}
+          loading={loading}
+        /> */}
         <Table
           className='theme-cell reset-table'
           columns={columns}

@@ -39,12 +39,12 @@ const handleFn = (params?: RouteExtParams) => {
 }
 
 export const baseRouterList: RouteObject[] = [
-  {
-    path: '/',
-    loader: () => {
-      throw redirect('/login') // 重定向到登陆页面
-    },
-  },
+  // {
+  //   path: '/',
+  //   loader: () => {
+  //     throw redirect('/login') // 重定向到登陆页面
+  //   },
+  // },
   {
     path: '/login',
     element: <Login />,
@@ -66,12 +66,12 @@ export const baseRouterList: RouteObject[] = [
     path: '/manage',
     element: <Navigate to='/manage/index/userinfo' />,
   },
-  {
-    path: '*',
-    loader: () => {
-      throw redirect('/login') // 重定向到登陆页面
-    },
-  },
+  // {
+  //   path: '*',
+  //   loader: () => {
+  //     throw redirect('/login') // 重定向到登陆页面
+  //   },
+  // },
 ]
 
 export const routerList: RouteObject[] = [
@@ -171,14 +171,37 @@ export const routerList: RouteObject[] = [
             element: (
               <LazyImportComponent
                 lazyChildren={lazy(
-                  () => import('@/pages/console/country/country'),
+                  () => import('@/pages/console/country/index'),
                 )}
               />
             ),
             errorElement: <Error />,
             loader: loaderFn({ name: '国家信息配置' }),
             handle: handleFn({ alias: '国家信息配置' }),
+            children: [
+              {
+                path: 'index',
+                element: (
+                  <LazyImportComponent
+                    lazyChildren={lazy(
+                      () => import('@/pages/console/country/country'),
+                    )}
+                  />
+                ),
+              },
+              {
+                path: 'countryDetail',
+                element: (
+                  <LazyImportComponent
+                    lazyChildren={lazy(
+                      () => import('@/pages/console/country/countryDetail'),
+                    )}
+                  />
+                ),
+              },
+            ],
           },
+
           {
             path: 'network',
             element: (
