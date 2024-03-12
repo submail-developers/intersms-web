@@ -149,7 +149,7 @@ export default function Channel() {
       width: 100,
       className: 'paddingL20',
       render: (_, record) => (
-        <Link to='/console/config/countryDetail'>查看详情</Link>
+        <Link to='/console/config/country/countryDetail'>查看详情</Link>
       ),
     },
     {

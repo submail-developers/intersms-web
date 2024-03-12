@@ -39,12 +39,12 @@ const handleFn = (params?: RouteExtParams) => {
 }
 
 export const baseRouterList: RouteObject[] = [
-  // {
-  //   path: '/',
-  //   loader: () => {
-  //     throw redirect('/login') // 重定向到登陆页面
-  //   },
-  // },
+  {
+    path: '/',
+    loader: () => {
+      throw redirect('/login') // 重定向到登陆页面
+    },
+  },
   {
     path: '/login',
     element: <Login />,
@@ -53,6 +53,10 @@ export const baseRouterList: RouteObject[] = [
   {
     path: '/console',
     element: <Navigate to='/console/customer/sendlist' />,
+  },
+  {
+    path: '/console/config/country',
+    element: <Navigate to='/console/config/country/index' />,
   },
   {
     path: '/data',
@@ -66,12 +70,12 @@ export const baseRouterList: RouteObject[] = [
     path: '/manage',
     element: <Navigate to='/manage/index/userinfo' />,
   },
-  // {
-  //   path: '*',
-  //   loader: () => {
-  //     throw redirect('/login') // 重定向到登陆页面
-  //   },
-  // },
+  {
+    path: '*',
+    loader: () => {
+      throw redirect('/login') // 重定向到登陆页面
+    },
+  },
 ]
 
 export const routerList: RouteObject[] = [
