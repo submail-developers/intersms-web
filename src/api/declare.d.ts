@@ -618,6 +618,30 @@ declare module 'apis' {
     /**
      * 国家信息配置end
      */
+    /**
+     * 获取单个国家信息详情start
+     */
+    interface GetSingleCountryInfoParams {
+      region_code: string
+    }
+    // 获取国家信息返回的数据
+    interface GetSingleCountryInfoItems {
+      id: string
+      country_cn: string
+      region_code: string
+      channel_id: string
+      channel_name: string
+      price: string
+      network_name: string
+      network_price: string
+      comment: string
+      datetime: string
+      operator: string
+      network_list: array
+    }
+    /**
+     * 获取单个国家信息详情end
+     */
 
     /**
      * 网络信息配置start

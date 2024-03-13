@@ -534,6 +534,22 @@ export const saveCountry = (data: API.SaveCountryParams) => {
  */
 
 /**
+ * 获取单个国家信息详情start
+ */
+export const getSingleCountryInfo = (data: API.GetSingleCountryInfoParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetSingleCountryInfoItems[]>,
+    API.GetSingleCountryInfoParams
+  >('console/api/customer/get_country_channel_network_price_detail', {
+    ...data,
+  })
+}
+/**
+ * 获取单个国家信息详情end
+ */
+
+/**
  * 网络信息配置start
  */
 // 获取网络信息列表
