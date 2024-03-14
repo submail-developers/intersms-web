@@ -61,9 +61,11 @@ const EditableCell = ({
   handleSave,
   ...restProps
 }) => {
+  const { message } = App.useApp()
   //编辑表格单元格
   let inputRef = useRef(null)
   const [editing, setEditing] = useState(false) //定义编辑状态
+  const [disabled, setdisabled] = useState(false)
   const form = useContext(EditableContext)
 
   useEffect(() => {
@@ -74,7 +76,17 @@ const EditableCell = ({
     }
   }, [editing])
 
+  useEffect(() => {
+    if (dataIndex == 'price' && record.network_list.length > 0) {
+      setdisabled(true)
+    }
+  }, [])
+
   function toggleEdit() {
+    if (disabled) {
+      message.error('该价格区间禁止操作')
+      return
+    }
     //切换编辑状态
     setEditing(!editing)
     form.setFieldsValue({
@@ -99,6 +111,7 @@ const EditableCell = ({
   if (editable) {
     //如果开启了表格编辑属性
     // 是否开启了编辑状态 (开启:显示输入框 关闭:显示div)
+
     childNode = editing ? (
       <Form.Item
         name={dataIndex}
@@ -109,7 +122,16 @@ const EditableCell = ({
           },
         ]}
         style={{ marginBottom: '0' }}>
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+        <Input
+          ref={inputRef}
+          onPressEnter={save}
+          onBlur={save}
+          disabled={
+            dataIndex == 'price' && record.network_list.length > 0
+              ? true
+              : false
+          }
+        />
       </Form.Item>
     ) : (
       <div onClick={toggleEdit}>{children}</div>
@@ -193,29 +215,33 @@ export default function Channel() {
       return item.id === row.id
     })
 
-    console.log(findEditIndex, { ...findEditObj, ...row }, 'iii')
-    tableData.splice(findEditIndex, 1, { ...findEditObj, ...row }) //将最新的数据更新到表格数据中
+    const new_row = { ...findEditObj, ...row }
+
+    tableData.splice(findEditIndex, 1, new_row) //将最新的数据更新到表格数据中
     settableData([...tableData]) //设置表格数据
-    let id = { ...findEditObj, ...row }.id
-    let type = '1'
-    let price = { ...findEditObj, ...row }.price
-    let comment = { ...findEditObj, ...row }.comment
-    let network_name = ''
-    let network_price = ''
-    try {
-      const res = await saveChaneNetwork({
-        id,
-        type,
-        price,
-        comment,
-        network_name,
-        network_price,
-      })
-      if (res) {
-        message.success('保存成功！')
-      }
-      search()
-    } catch (error) {}
+    let { id, price, comment } = new_row
+    if (
+      new_row.price != findEditObj.price ||
+      new_row.comment != findEditObj.comment
+    ) {
+      try {
+        const res = await saveChaneNetwork({
+          id,
+          type: '1',
+          price:
+            new_row.network_list.length > 0
+              ? new_row.network_list[0].network_price
+              : price,
+          comment,
+          network_name: '',
+          network_price: '',
+        })
+        if (res) {
+          message.success('保存成功！')
+        }
+        search()
+      } catch (error) {}
+    }
   }
 
   useEffect(() => {
