@@ -16,8 +16,6 @@ import {
 import { API } from 'apis'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
-import { waringTypeOptions, waringTimeOptions } from '@/utils/options'
-import { ProFormDependency } from '@ant-design/pro-components'
 
 interface Props {
   onSearch: () => void

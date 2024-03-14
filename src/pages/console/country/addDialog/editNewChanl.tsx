@@ -1,9 +1,7 @@
 import { useState, useImperativeHandle, forwardRef, useRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
-import { addkeyWord, saveChaneNetwork } from '@/api'
+import { saveChaneNetwork } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
-import type { CheckboxValueType } from 'antd/es/checkbox/Group'
-import type { RadioChangeEvent } from 'antd'
 
 interface Props {
   onSearch: () => void
