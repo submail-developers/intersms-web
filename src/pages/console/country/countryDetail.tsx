@@ -44,7 +44,7 @@ const EditableRow = (props) => {
   //编辑表格行
   let [form] = Form.useForm() //定义表单对象
   return (
-    <Form form={form} component={false}>
+    <Form form={form} component={false} autoComplete='off'>
       <EditableContext.Provider value={form}>
         <tr {...props} />
       </EditableContext.Provider>
@@ -74,7 +74,6 @@ const EditableCell = ({
   }, [editing])
 
   function toggleEdit() {
-    console.log('11')
     //切换编辑状态
     setEditing(!editing)
     form.setFieldsValue({
@@ -107,7 +106,8 @@ const EditableCell = ({
             required: true,
             message: `${title}是必填的.`,
           },
-        ]}>
+        ]}
+        style={{ marginBottom: '0' }}>
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
@@ -181,6 +181,22 @@ export default function Channel() {
     } catch (error) {}
   }
 
+  const handleSave = async (row) => {
+    //这个方法可以获取到行编辑之后的数据
+    let findEditIndex = tableData.findIndex((item) => {
+      //找到编辑行的索引
+      return item.id === row.id
+    })
+    let findEditObj = tableData.find((item) => {
+      //找到编辑行的数据对象
+      return item.id === row.id
+    })
+
+    console.log(findEditIndex, findEditObj, 'iii')
+    tableData.splice(findEditIndex, 1, { ...findEditObj, ...row }) //将最新的数据更新到表格数据中
+    settableData([...tableData]) //设置表格数据
+  }
+
   useEffect(() => {
     search()
   }, [])
@@ -193,8 +209,7 @@ export default function Channel() {
           通道名称
         </span>
       ),
-      editable: true,
-      dataIndex: 'country_cn',
+      dataIndex: 'channel_name',
       width: size == 'middle' ? 160 : 100,
       fixed: true,
       render: (_, record) => (
@@ -216,25 +231,27 @@ export default function Channel() {
     {
       title: '区间成本价',
       dataIndex: 'price',
-      width: 100,
+      editable: true,
+      width: 140,
       render: (_, record) => <span>{record.price}</span>,
     },
     {
       title: '备注',
       dataIndex: 'comment',
       width: 190,
+      editable: true,
       ellipsis: true,
     },
     {
       title: '修改时间',
-      width: 160,
+      width: 200,
       className: 'paddingL20',
       render: (_, record) => <div>{record.datetime}</div>,
     },
 
     {
       title: '操作',
-      width: 120,
+      width: 180,
       render: (_, record) => (
         <div>
           <Button
@@ -263,19 +280,7 @@ export default function Channel() {
             editable: item.editable,
             dataIndex: item.dataIndex,
             title: item.title,
-            handleSave: (row) => {
-              //这个方法可以获取到行编辑之后的数据
-              let findEditIndex = tableData.findIndex((item) => {
-                //找到编辑行的索引
-                return item.id === row.key
-              })
-              let findEditObj = tableData.find((item) => {
-                //找到编辑行的数据对象
-                return item.id === row.key
-              })
-              tableData.splice(findEditIndex, 1, { ...findEditObj, ...row }) //将最新的数据更新到表格数据中
-              settableData([...tableData]) //设置表格数据
-            },
+            handleSave: handleSave,
           }
         },
       }
