@@ -24,6 +24,7 @@ import { useSize } from '@/hooks'
 import {
   getSingleCountryInfo,
   deleteSingleNetWork,
+  saveChaneNetwork,
   channelGroupBindSensitiveWord,
 } from '@/api'
 import { API } from 'apis'
@@ -192,9 +193,29 @@ export default function Channel() {
       return item.id === row.id
     })
 
-    console.log(findEditIndex, findEditObj, 'iii')
+    console.log(findEditIndex, { ...findEditObj, ...row }, 'iii')
     tableData.splice(findEditIndex, 1, { ...findEditObj, ...row }) //将最新的数据更新到表格数据中
     settableData([...tableData]) //设置表格数据
+    let id = { ...findEditObj, ...row }.id
+    let type = '1'
+    let price = { ...findEditObj, ...row }.price
+    let comment = { ...findEditObj, ...row }.comment
+    let network_name = ''
+    let network_price = ''
+    try {
+      const res = await saveChaneNetwork({
+        id,
+        type,
+        price,
+        comment,
+        network_name,
+        network_price,
+      })
+      if (res) {
+        message.success('保存成功！')
+      }
+      search()
+    } catch (error) {}
   }
 
   useEffect(() => {
