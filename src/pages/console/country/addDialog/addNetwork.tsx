@@ -1,10 +1,17 @@
-import { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
+import {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+  useRef,
+} from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
 import {
   saveAlarmConfigList,
-  getAllChannelId,
   getAccountList,
   GetRegioncodeByCountry,
+  addNetwork,
+  saveChaneNetwork,
 } from '@/api'
 import { API } from 'apis'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
@@ -17,14 +24,15 @@ interface Props {
 }
 interface InitOpen {
   isAdd: boolean
-  record?: API.GetalArmConfigListItems
+  record?: API.GetSingleCountryInfoItems
 }
 
 const Dialog = ({ onSearch }: Props, ref: any) => {
+  const recordCopyRef = useRef(null)
+  const recordEditCopyRef = useRef(null)
   const [form] = Form.useForm()
   const { message } = App.useApp()
   const [isAdd, setisAdd] = useState<boolean>(true)
-  const [record, setrecord] = useState<API.GetalArmConfigListItems | null>(null)
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -32,71 +40,88 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  let country_cn: string
+  let region_code: string
+  let channel_id: string
+  let channel_name: string
+
+  let id: string
+  let type = 2
+  let price = ''
+  let comment = ''
+
   const open = (initValues: InitOpen) => {
     const { isAdd, record } = initValues
+    country_cn = record.country_cn
+    region_code = record.region_code
+    channel_id = record.channel_id
+    channel_name = record.channel_name
+    id = record.id
+
     setisAdd(isAdd)
     form.resetFields()
     form.setFieldsValue(initValues.record)
+    recordCopyRef.current = {
+      country_cn,
+      region_code,
+      channel_id,
+      channel_name,
+    }
+    recordEditCopyRef.current = {
+      id,
+      type,
+      price,
+      comment,
+    }
     setIsModalOpen(true)
     if (isAdd) {
       countryName()
       associatedAccount()
     } else {
-      if (record) {
-        let arr: API.GetRegioncodeByCountryItems[] = [
-          {
-            label: record.country_cn,
-            value: record.region_code,
-          },
-        ]
-        setCountryNameData(arr)
-        setrecord(record)
-      }
+      // if (record) {
+      //   let arr: API.GetSingleCountryInfoItems[] = [
+      //     {
+      //       label: record.country_cn,
+      //       value: record.region_code,
+      //     },
+      //   ]
+      //   setCountryNameData(arr)
+      //   setrecord(record)
+      // }
     }
   }
 
-  let area: string
-  let region_code: string
-  let country_cn: string
-  const seleCountry = (value: string, option: any) => {
-    country_cn = option.label
-    area = option.area
-    region_code = option.value
-  }
-
-  let sender: string
-  const seleAccount = (value: string, option: any) => {
-    sender = option.account
-  }
   const handleOk = async () => {
-    try {
-      const params = await form.validateFields()
-      let newParams
-      if (isAdd) {
-        newParams = { country_cn, area, region_code, ...params }
-      } else {
-        if (record) newParams = { ...record, ...params }
-      }
-      const res = await saveAlarmConfigList(newParams)
-      if (res) {
-        message.success('保存成功！')
-      }
-      setIsModalOpen(false)
-      onSearch()
-    } catch (error) {}
+    if (isAdd) {
+      try {
+        const params = await form.validateFields()
+        const res = await addNetwork({
+          ...params,
+          ...recordCopyRef.current,
+        })
+        if (res) {
+          message.success('保存成功！')
+        }
+        setIsModalOpen(false)
+        onSearch()
+      } catch (error) {}
+    } else {
+      try {
+        const params = await form.validateFields()
+        const res = await saveChaneNetwork({
+          ...params,
+          ...recordEditCopyRef.current,
+        })
+        if (res) {
+          message.success('保存成功！')
+        }
+        setIsModalOpen(false)
+        onSearch()
+      } catch (error) {}
+    }
   }
 
-  useEffect(() => {
-    allGroupId()
-  }, [])
-  // 通道名称
-  const allGroupId = async () => {
-    const res = await getAllChannelId('')
-    setallChannelData(res.data)
-  }
-  const [allChannelData, setallChannelData] = useState<
-    API.GetAllChannelIdParamsItems[]
-  >([])
+  useEffect(() => {}, [])
 
   // 国家名称
   const [CountryNameData, setCountryNameData] = useState<
@@ -160,14 +185,11 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         wrapperCol={{ span: 24 }}
         layout='vertical'
         autoComplete='off'>
-        <Form.Item label='id' hidden name='id'>
-          <Input placeholder='' maxLength={30} />
-        </Form.Item>
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item
               label='网络名称'
-              name='name'
+              name='network_name'
               validateTrigger='onSubmit'
               rules={[{ message: '请输入' }]}>
               <Input placeholder='请输入网络名称' maxLength={30} />
@@ -176,7 +198,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
           <Col span={12}>
             <Form.Item
               label='成本价'
-              name='name'
+              name='network_price'
               validateTrigger='onSubmit'
               rules={[{ message: '请输入' }]}>
               <Input placeholder='请输入成本价' maxLength={30} />

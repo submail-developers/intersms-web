@@ -151,7 +151,7 @@ export default function Channel() {
       render: (_, record) => (
         // {`/profile/${profile.handle}`}
         <Link
-          to={`/console/config/country/countryDetail?region_code=${record.region_code}`}>
+          to={`/console/config/country/countryDetail?region_code=${record.region_code}&country_cn=${record.country_cn}`}>
           查看详情
         </Link>
       ),

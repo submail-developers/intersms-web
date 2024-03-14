@@ -536,6 +536,7 @@ export const saveCountry = (data: API.SaveCountryParams) => {
 /**
  * 获取单个国家信息详情start
  */
+// 获取单个信息
 export const getSingleCountryInfo = (data: API.GetSingleCountryInfoParams) => {
   return request.post<
     any,
@@ -545,6 +546,28 @@ export const getSingleCountryInfo = (data: API.GetSingleCountryInfoParams) => {
     ...data,
   })
 }
+// 新增网络
+export const addNetwork = (data: API.addNetworkParams) => {
+  return request.post<any, API.Response<any>, API.addNetworkParams>(
+    'console/api/customer/add_country_channel_network_price_detail',
+    { ...data },
+  )
+}
+// 编辑通道/网络
+export const saveChaneNetwork = (data: API.SaveChaneNetworkParams) => {
+  return request.post<any, API.Response<any>, API.SaveChaneNetworkParams>(
+    'console/api/customer/save_country_channel_network_price_detail',
+    { ...data },
+  )
+}
+// 删除单个网络
+export const deleteSingleNetWork = (data: API.DeleteSingleNetWorkParams) => {
+  return request.post<any, API.Response<any>, API.DeleteSingleNetWorkParams>(
+    'console/api/customer/delete_country_channel_network_price_detail',
+    { ...data },
+  )
+}
+
 /**
  * 获取单个国家信息详情end
  */

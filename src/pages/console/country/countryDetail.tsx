@@ -1,4 +1,10 @@
-import { useEffect, useState, MutableRefObject, useRef } from 'react'
+import React, {
+  useEffect,
+  useState,
+  MutableRefObject,
+  useRef,
+  useContext,
+} from 'react'
 import {
   Button,
   Select,
@@ -8,20 +14,19 @@ import {
   Table,
   Row,
   Col,
-  Badge,
-  Dropdown,
-  Space,
   Popconfirm,
+  App,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import UpdateCountryConfig from './dialog/updateCountry'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import BackToTop from '@/components/returnToTop/returnToTop'
 import { useSize } from '@/hooks'
-import { getSingleCountryInfo } from '@/api'
+import {
+  getSingleCountryInfo,
+  deleteSingleNetWork,
+  channelGroupBindSensitiveWord,
+} from '@/api'
 import { API } from 'apis'
-import { DownOutlined } from '@ant-design/icons'
-import type { TableColumnsType } from 'antd'
 import { Link, useSearchParams } from 'react-router-dom'
 
 import AddDialog from './addDialog/addNetwork'
@@ -34,18 +39,87 @@ interface FormValues {
   region_code: string
 }
 
-interface ExpandedDataType {
-  key: React.Key
-  date: string
-  name: string
-  upgradeNum: string
+const EditableContext = React.createContext(null)
+const EditableRow = (props) => {
+  //编辑表格行
+  let [form] = Form.useForm() //定义表单对象
+  return (
+    <Form form={form} component={false}>
+      <EditableContext.Provider value={form}>
+        <tr {...props} />
+      </EditableContext.Provider>
+    </Form>
+  )
+}
+const EditableCell = ({
+  title,
+  editable,
+  children,
+  dataIndex,
+  record,
+  handleSave,
+  ...restProps
+}) => {
+  //编辑表格单元格
+  let inputRef = useRef(null)
+  const [editing, setEditing] = useState(false) //定义编辑状态
+  const form = useContext(EditableContext)
+
+  useEffect(() => {
+    //监听编辑状态值的变化
+    if (editing) {
+      //如果开启编辑状态
+      inputRef.current.focus() //input输入框聚焦
+    }
+  }, [editing])
+
+  function toggleEdit() {
+    console.log('11')
+    //切换编辑状态
+    setEditing(!editing)
+    form.setFieldsValue({
+      //将表格中的值赋值到表单中
+      // name:Easdf
+      [dataIndex]: record[dataIndex],
+    })
+  }
+
+  async function save() {
+    //保存事件
+    try {
+      const values = await form.validateFields() //获取表单中的数据
+      toggleEdit() //切换编辑状态
+      handleSave({ ...record, ...values }) //调用保存方法
+    } catch (errInfo) {
+      console.log('保存失败:', errInfo)
+    }
+  }
+
+  let childNode = children
+  if (editable) {
+    //如果开启了表格编辑属性
+    // 是否开启了编辑状态 (开启:显示输入框 关闭:显示div)
+    childNode = editing ? (
+      <Form.Item
+        name={dataIndex}
+        rules={[
+          {
+            required: true,
+            message: `${title}是必填的.`,
+          },
+        ]}>
+        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+      </Form.Item>
+    ) : (
+      <div onClick={toggleEdit}>{children}</div>
+    )
+  }
+  return <td {...restProps}>{childNode}</td>
 }
 
 // 国家信息配置
 export default function Channel() {
-  const [tableChildData, settableChildData] = useState<
-    API.GetSingleCountryInfoItems[]
-  >([])
+  const { message } = App.useApp()
   const [tableData, settableData] = useState<API.GetSingleCountryInfoItems[]>(
     [],
   )
@@ -56,6 +130,7 @@ export default function Channel() {
   const editChanleDialogRef: MutableRefObject<any> = useRef(null)
   const [params] = useSearchParams()
   const region_code = params.get('region_code')
+  const country_cn = params.get('country_cn')
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
@@ -67,18 +142,15 @@ export default function Channel() {
   const { Option } = Select
   const size = useSize()
   const [form] = Form.useForm()
-  // 初始化form的值
-  const initFormValues: FormValues = {
-    region_code: region_code,
-  }
+
   const search = async () => {
     const values = await form.getFieldsValue()
     formatSearchValue(values)
   }
   const formatSearchValue = (params: FormValues) => {
-    const { region_code } = params
     const searchParams = {
       region_code: region_code,
+      ...params,
     }
     searchEvent(searchParams)
   }
@@ -92,18 +164,36 @@ export default function Channel() {
       setloading(false)
     }
   }
+  // 新增/编辑网络
+  const updateNetwork = (isAdd: boolean = true, record?: DataType) => {
+    dialogRef.current.open({ isAdd, record })
+  }
+  // 编辑关联通道
+  const editChannle = (isAdd: boolean = true, record?: DataType) => {
+    editChanleDialogRef.current.open({ isAdd, record })
+  }
+  // 删除网络
+  const deleteEvent = async (id: string) => {
+    try {
+      await deleteSingleNetWork({ id })
+      message.success('删除成功')
+      search()
+    } catch (error) {}
+  }
 
   useEffect(() => {
-    formatSearchValue(initFormValues)
+    search()
   }, [])
 
-  const columns: ColumnsType<DataType> = [
+  //父表格
+  let tableColumns = [
     {
       title: (
         <span style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
           通道名称
         </span>
       ),
+      editable: true,
       dataIndex: 'country_cn',
       width: size == 'middle' ? 160 : 100,
       fixed: true,
@@ -148,35 +238,75 @@ export default function Channel() {
       render: (_, record) => (
         <div>
           <Button
-            onClick={() => editNetwork(false, record)}
+            onClick={() => editChannle(false, record)}
             type='link'
             style={{ paddingLeft: 0 }}>
             编辑
           </Button>
-          <Button type='link' onClick={() => updateNetwork()}>
+          <Button type='link' onClick={() => updateNetwork(true, record)}>
             新增网络
           </Button>
         </div>
       ),
     },
   ]
-  const expandedRowRender = () => {
-    const columnsChild: TableColumnsType<ExpandedDataType> = [
-      { title: '网络名称', dataIndex: 'date', key: 'date' },
-      { title: '成本价格', dataIndex: 'cprice', key: 'cprice' },
+
+  tableColumns = tableColumns.map((item) => {
+    //遍历表格头数组
+    if (item.editable) {
+      //如果表格头列开启了编辑属性
+      return {
+        ...item,
+        onCell: (record) => {
+          return {
+            record: record,
+            editable: item.editable,
+            dataIndex: item.dataIndex,
+            title: item.title,
+            handleSave: (row) => {
+              //这个方法可以获取到行编辑之后的数据
+              let findEditIndex = tableData.findIndex((item) => {
+                //找到编辑行的索引
+                return item.id === row.key
+              })
+              let findEditObj = tableData.find((item) => {
+                //找到编辑行的数据对象
+                return item.id === row.key
+              })
+              tableData.splice(findEditIndex, 1, { ...findEditObj, ...row }) //将最新的数据更新到表格数据中
+              settableData([...tableData]) //设置表格数据
+            },
+          }
+        },
+      }
+    } else {
+      return item
+    }
+  })
+
+  // 子表格
+  const expandedRowRender = (record) => {
+    const columnsChild: ColumnsType<DataType> = [
+      {
+        title: '网络名称',
+        dataIndex: 'network_name',
+      },
+      { title: '成本价格', dataIndex: 'network_price', key: 'network_price' },
       {
         title: '操作',
-        dataIndex: 'upgradeNum',
-        key: 'upgradeNum',
         render: (_, record) => (
           <div>
-            <Button type='link' style={{ paddingLeft: 0 }}>
+            <Button
+              type='link'
+              style={{ paddingLeft: 0 }}
+              onClick={() => updateNetwork(false, record)}>
               编辑
             </Button>
             <Popconfirm
               placement='left'
               title='警告'
               description='确定删除该通道吗？'
+              onConfirm={() => deleteEvent(record.id)}
               okText='确定'
               cancelText='取消'>
               <Button type='link'>删除</Button>
@@ -186,37 +316,21 @@ export default function Channel() {
       },
     ]
 
-    const dataChild = []
-    for (let i = 0; i < 3; ++i) {
-      dataChild.push({
-        key: i.toString(),
-        date: 'u mobile',
-        cprice: '0.01000',
-        upgradeNum: 'Upgraded: 56',
-      })
-    }
     return (
       <Table
         className='child-table'
         columns={columnsChild}
-        dataSource={dataChild}
+        dataSource={record.network_list}
         pagination={false}
         scroll={{ x: 'max-content' }}
+        rowKey={'id'}
       />
     )
-  }
-  // 新增/编辑网络
-  const updateNetwork = (isAdd: boolean = true, record?: DataType) => {
-    dialogRef.current.open({ isAdd, record })
-  }
-  // 编辑关联通道
-  const editNetwork = (isAdd: boolean = true, record?: DataType) => {
-    editChanleDialogRef.current.open({ isAdd, record })
   }
 
   return (
     <div data-class='country'>
-      <MenuTitle title='- 关联通道'></MenuTitle>
+      <MenuTitle title={`${country_cn}- 关联通道`}></MenuTitle>
       <Row wrap align={'bottom'}>
         <Col>
           <ConfigProvider
@@ -234,11 +348,11 @@ export default function Channel() {
               autoComplete='off'>
               <Form.Item
                 label=''
-                name='keyword'
+                name='channel_name'
                 style={{ marginBottom: size == 'small' ? 0 : 10 }}>
                 <Input
                   size={size}
-                  placeholder='通道名称/网络名称'
+                  placeholder='通道名称'
                   maxLength={20}
                   style={{ width: 162 }}></Input>
               </Form.Item>
@@ -272,14 +386,23 @@ export default function Channel() {
         }}>
         <Table
           // className='theme-cell reset-table'
-          columns={columns}
+          columns={tableColumns}
           dataSource={tableData}
-          expandable={{ expandedRowRender }}
+          expandable={{
+            expandedRowRender,
+            rowExpandable: (record) => Boolean(record.network_list.length),
+          }}
           rowKey={'id'}
           onRow={onRow}
           rowClassName={(record, index) =>
             index == activeIndex ? 'active' : ''
           }
+          components={{
+            body: {
+              row: EditableRow,
+              cell: EditableCell,
+            },
+          }}
           sticky
           pagination={{
             position: ['bottomRight'],

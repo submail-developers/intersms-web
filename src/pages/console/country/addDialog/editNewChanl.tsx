@@ -1,6 +1,6 @@
-import { useState, useImperativeHandle, forwardRef } from 'react'
+import { useState, useImperativeHandle, forwardRef, useRef } from 'react'
 import { Modal, Form, Input, App, Row, Col, Radio, Select } from 'antd'
-import { addkeyWord } from '@/api'
+import { addkeyWord, saveChaneNetwork } from '@/api'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import type { RadioChangeEvent } from 'antd'
@@ -10,6 +10,7 @@ interface Props {
 }
 
 const Dialog = ({ onSearch }: Props, ref: any) => {
+  const recordEditCopyRef = useRef(null)
   const [isAdd, setisAdd] = useState<boolean>(true)
   const [form] = Form.useForm()
   const { message } = App.useApp()
@@ -19,20 +20,36 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     }
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
+  let id: string
+  let type = 1
+  let network_name = ''
+  let network_price = ''
 
   const open = (params: any) => {
+    id = params.record.id
     const { isAdd } = params
     setisAdd(isAdd)
     form.resetFields()
-
     form.setFieldsValue(params.record)
     setIsModalOpen(true)
+    recordEditCopyRef.current = {
+      id,
+      type,
+      network_name,
+      network_price,
+    }
   }
 
   const handleOk = async () => {
     try {
       const params = await form.validateFields()
-      const res = await addkeyWord(params)
+      let comment = params.comment
+      let price = params.price
+      const res = await saveChaneNetwork({
+        comment,
+        price,
+        ...recordEditCopyRef.current,
+      })
       if (res) {
         message.success('保存成功！')
       }
@@ -58,7 +75,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       footer={<ModelFooter onOk={handleOk} onCancel={handleCancel} />}
       open={isModalOpen}>
       <Form
-        name='form'
+        name='form1'
         form={form}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
@@ -67,21 +84,19 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
-        <Row>
-          <Col span={24}>
-            <Form.Item label='id' name='id' hidden>
-              <Input placeholder='id' maxLength={30} />
+        <Row justify='space-between' gutter={30}>
+          <Col span={12}>
+            <Form.Item label='通道名称' name='channel_name'>
+              <Input
+                placeholder='请输入通道名称'
+                maxLength={30}
+                disabled={!isAdd}
+              />
             </Form.Item>
           </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <Form.Item label='通道名称' name='name'>
-              {/* <Input
-                placeholder='请输入条目名称 特定格式: (赌博|股票)'
-                maxLength={30}
-              /> */}
-              <Input placeholder='请输入通道名称' maxLength={30} />
+          <Col span={12}>
+            <Form.Item label='价格' name='price'>
+              <Input placeholder='请输入价格' maxLength={30} />
             </Form.Item>
           </Col>
         </Row>
@@ -91,7 +106,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
             <Form.Item
               label={<div>备注</div>}
               labelCol={{ span: 24 }}
-              name='keywords'>
+              name='comment'>
               <TextArea
                 rows={4}
                 className='color-words'

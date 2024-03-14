@@ -87,6 +87,11 @@
     margin-block: -16px !important;
     margin-inline: 106px 106px !important;
   }
+  @media (max-width: 768px) {
+    .ant-table-wrapper:only-child .ant-table {
+      margin-inline: 0px 0px !important;
+    }
+  }
   .ant-table-wrapper .ant-table-thead > tr > td,
   .ant-table-wrapper .ant-table-thead > tr > th {
     background: #f7f8f9 !important;

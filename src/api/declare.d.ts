@@ -619,12 +619,12 @@ declare module 'apis' {
      * 国家信息配置end
      */
     /**
-     * 获取单个国家信息详情start
+     * 获取单个国家通道信息详情start
      */
     interface GetSingleCountryInfoParams {
       region_code: string
     }
-    // 获取国家信息返回的数据
+    // 获取单个国家通道返回的数据
     interface GetSingleCountryInfoItems {
       id: string
       country_cn: string
@@ -638,6 +638,30 @@ declare module 'apis' {
       datetime: string
       operator: string
       network_list: array
+    }
+
+    //新增网络
+    interface addNetworkParams {
+      country_cn: string
+      region_code: string
+      channel_id: string
+      channel_name: string
+      network_name: string
+      network_price: string
+    }
+    // 保存网络/通道
+    interface SaveChaneNetworkParams {
+      id: string
+      type: string
+      price: string
+      comment: string
+      network_name: string
+      network_price: string
+    }
+
+    // 删除单个网络信息
+    interface DeleteSingleNetWorkParams {
+      id: string
     }
     /**
      * 获取单个国家信息详情end
