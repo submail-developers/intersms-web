@@ -102,4 +102,10 @@
   .ant-table-wrapper tr.ant-table-expanded-row > td {
     background: rgba(0, 0, 0, 0);
   }
+  .ant-table-wrapper.theme-cell2 table tbody.ant-table-tbody tr > td {
+    transition: background-color 0.3s, border-color 0.3s;
+    background-color: #fff;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+  }
 }

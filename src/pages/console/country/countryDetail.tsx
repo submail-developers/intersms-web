@@ -437,7 +437,7 @@ export default function Channel() {
           },
         }}>
         <Table
-          // className='theme-cell reset-table'
+          className='theme-cell2'
           columns={tableColumns}
           dataSource={tableData}
           expandable={{
