@@ -91,7 +91,7 @@ export const routerList: RouteObject[] = [
     children: [
       {
         path: 'customer',
-        handle: handleFn({ alias: '' }),
+        handle: handleFn({ alias: '发送管理' }),
         children: [
           {
             path: 'sendlist',
@@ -135,8 +135,8 @@ export const routerList: RouteObject[] = [
         ],
       },
       {
-        path: 'channel',
-        handle: handleFn({ alias: '通道配置' }),
+        path: 'config',
+        handle: handleFn({ alias: '基础配置' }),
         children: [
           {
             path: 'index',
@@ -164,12 +164,6 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '通道组管理' }),
             handle: handleFn({ alias: '通道组管理' }),
           },
-        ],
-      },
-      {
-        path: 'config',
-        handle: handleFn({ alias: '基础配置' }),
-        children: [
           {
             path: 'country',
             element: (
@@ -278,6 +272,12 @@ export const routerList: RouteObject[] = [
           //   loader: loaderFn({ name: '号码归属查询' }),
           //   handle: handleFn({ alias: '号码归属查询' }),
           // },
+        ],
+      },
+      {
+        path: 'black',
+        handle: handleFn({ alias: '其他配置' }),
+        children: [
           {
             path: 'sensitiveword',
             element: (
@@ -304,12 +304,6 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '关键词管理' }),
             handle: handleFn({ alias: '关键词管理' }),
           },
-        ],
-      },
-      {
-        path: 'black',
-        handle: handleFn({ alias: '黑名单管理' }),
-        children: [
           {
             path: 'index',
             element: (

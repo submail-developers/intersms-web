@@ -2,9 +2,17 @@
   .ant-table-thead > tr > th::before {
     background-color: #fafafa !important;
   }
+  .ant-table-wrapper .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding-left: 40px !important;
+  }
   @media (max-width: 768px) {
     .add-person {
       margin-top: 10px;
+    }
+    .ant-table-wrapper .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      padding-left: 10px !important;
     }
   }
   .ant-drawer-content-wrapper {

@@ -101,7 +101,7 @@ const Dialog = (props: Props, ref: any) => {
       className: 'paddingL10',
       fixed: true,
       dataIndex: 'mob',
-      width: point ? 130 : 110,
+      width: point ? 80 : 60,
       render(_, record) {
         return <div className={`td-content fw500`}>{record.mob}</div>
       },
@@ -118,7 +118,7 @@ const Dialog = (props: Props, ref: any) => {
 
     {
       title: '操作',
-      width: 120,
+      width: 50,
 
       render(_, record) {
         return (
@@ -156,22 +156,28 @@ const Dialog = (props: Props, ref: any) => {
       closable={false}
       open={show}
       rootClassName='drawer channel-drawer'
-      width={point ? '70vw' : '90vw'}>
+      width={point ? '40vw' : '94vw'}>
       <div className='drawer-container' onClick={close}>
         <div
           className='drawer-content'
           onClick={(e) => e.stopPropagation()}
           ref={drawerref}
-          style={{ height: size == 'middle' ? '70vh' : '90vh' }}>
+          style={{ height: size == 'middle' ? '50vh' : '70vh' }}>
           <header
             className={`drawer-header ${
               size == 'middle' ? 'fx-between-center' : 'xl'
             }`}>
             <div className={`${size == 'middle' ? 'fx-y-center' : 'xl'}`}>
               <div
-                className='switch-all'
-                style={{ marginLeft: point ? 10 : 0 }}>
-                <div className='fx-y-center'>报警人员设置</div>
+                className='fx-y-center'
+                style={{
+                  marginRight: point ? '' : 90,
+                  marginLeft: '10px',
+                }}>
+                <i className='icon iconfont icon-baojingguanli fn20 color'></i>
+                <span className='fn20' style={{ marginLeft: '10px' }}>
+                  报警人员设置
+                </span>
               </div>
             </div>
             <ConfigProvider
@@ -215,7 +221,7 @@ const Dialog = (props: Props, ref: any) => {
             className='drawer-table-wrap'
             style={{ marginTop: point ? '' : 20 }}>
             <Table
-              className='drawer-table'
+              className='theme-cell bg-white'
               columns={columns}
               dataSource={tableData}
               pagination={false}

@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "39564015",
+      "name": "报警管理",
+      "font_class": "baojingguanli",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
       "icon_id": "37039475",
       "name": "国际",
       "font_class": "wangluo",
