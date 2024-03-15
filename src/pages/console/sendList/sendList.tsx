@@ -242,7 +242,7 @@ export default function SendList() {
       title: '号码',
       dataIndex: 'mobile',
       className: size == 'small' ? '' : 'paddingL30',
-      width: size == 'small' ? 120 : 150,
+      width: size == 'small' ? 160 : 170,
       align: size == 'small' ? 'center' : 'left',
       fixed: true,
       render: (_, record) => <span className='fw500'>{record.mobile}</span>,

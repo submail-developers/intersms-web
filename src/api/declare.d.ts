@@ -623,6 +623,7 @@ declare module 'apis' {
      */
     interface GetSingleCountryInfoParams {
       region_code: string
+      channel_name: string
     }
     // 获取单个国家通道返回的数据
     interface GetSingleCountryInfoItems {

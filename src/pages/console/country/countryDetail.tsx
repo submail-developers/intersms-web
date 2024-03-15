@@ -173,6 +173,7 @@ export default function Channel() {
   }
   const formatSearchValue = (params: FormValues) => {
     const searchParams = {
+      channel_name: '',
       region_code: region_code,
       ...params,
     }
@@ -253,20 +254,19 @@ export default function Channel() {
   let tableColumns = [
     {
       title: (
-        <span style={{ paddingLeft: size == 'middle' ? '20px' : '0' }}>
+        <span style={{ paddingLeft: size == 'middle' ? '20px' : '0px' }}>
           通道名称
         </span>
       ),
       dataIndex: 'channel_name',
-      width: 200,
+      width: size == 'middle' ? 300 : 100,
       fixed: true,
       render: (_, record) => (
-        <div style={{ paddingLeft: size == 'middle' ? '20px' : '0' }}>
+        <div style={{ paddingLeft: size == 'middle' ? '20px' : '0px' }}>
           <div
             className='fw500'
             title={record.channel_name}
-            // style={{ width: size == 'middle' ? 300 : 240 }}
-          >
+            style={{ width: size == 'middle' ? 300 : 100 }}>
             {record.channel_name}
           </div>
         </div>
