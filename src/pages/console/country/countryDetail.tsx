@@ -16,6 +16,7 @@ import {
   Col,
   Popconfirm,
   App,
+  Tooltip,
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import MenuTitle from '@/components/menuTitle/menuTitle'
@@ -252,19 +253,20 @@ export default function Channel() {
   let tableColumns = [
     {
       title: (
-        <span style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
+        <span style={{ paddingLeft: size == 'middle' ? '20px' : '0' }}>
           通道名称
         </span>
       ),
       dataIndex: 'channel_name',
-      width: size == 'middle' ? 160 : 100,
+      width: 200,
       fixed: true,
       render: (_, record) => (
-        <div style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
+        <div style={{ paddingLeft: size == 'middle' ? '20px' : '0' }}>
           <div
-            className='g-ellipsis fw500'
+            className='fw500'
             title={record.channel_name}
-            style={{ width: size == 'middle' ? 340 : 240 }}>
+            // style={{ width: size == 'middle' ? 300 : 240 }}
+          >
             {record.channel_name}
           </div>
         </div>
@@ -273,7 +275,7 @@ export default function Channel() {
     {
       title: '管理员',
       dataIndex: 'operator',
-      width: 80,
+      width: 120,
     },
     {
       title: '区间成本价',
@@ -285,15 +287,27 @@ export default function Channel() {
     {
       title: '备注',
       dataIndex: 'comment',
-      width: 190,
+      width: 240,
       editable: true,
       ellipsis: true,
+      render: (_, record) => (
+        <div
+          className='g-ellipsis'
+          title={record.channel_name}
+          style={{ width: size == 'middle' ? 340 : 240 }}>
+          {record.comment == null ? '-' : record.comment}
+        </div>
+      ),
     },
     {
       title: '修改时间',
-      width: 200,
+      width: 240,
       className: 'paddingL20',
-      render: (_, record) => <div>{record.datetime}</div>,
+      render: (_, record) => {
+        let d = record.datetime + ''
+        d = d.slice(0, 10)
+        return <div>{d}</div>
+      },
     },
 
     {
