@@ -279,7 +279,7 @@ export default function Channel() {
           placement='bottom'
           mouseEnterDelay={0.3}
           trigger={['hover', 'click']}>
-          <div style={{ width: '120px' }} className='g-ellipsis-1'>
+          <div style={{ width: '120px' }} className='g-ellipsis-1 fw500'>
             {record.name}
           </div>
         </Tooltip>

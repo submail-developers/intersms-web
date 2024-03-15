@@ -108,11 +108,11 @@ export default function NumberChannelsRoute() {
           <>
             <span>
               {record.type == '1' ? (
-                <span className='color'>账号报警</span>
+                <span className='color fw500'>账号报警</span>
               ) : record.type == '2' ? (
-                <span className='color-warning'>通道报警</span>
+                <span className='color-warning fw500'>通道报警</span>
               ) : record.type == '3' ? (
-                <span className='color-words'>国家报警</span>
+                <span className='color-words fw500'>国家报警</span>
               ) : (
                 ''
               )}

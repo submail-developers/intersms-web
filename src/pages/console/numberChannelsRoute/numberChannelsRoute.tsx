@@ -177,6 +177,7 @@ export default function NumberChannelsRoute() {
       className: size == 'small' ? '' : 'paddingL30',
       width: size == 'small' ? 90 : 140,
       fixed: true,
+      render: (_, record) => <span className='fw500'>{record.mobile}</span>,
     },
     {
       title: '短信类型',

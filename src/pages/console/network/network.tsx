@@ -108,7 +108,7 @@ export default function Network() {
       render: (_, record: DataType) => (
         <div
           style={{ width: size == 'small' ? '90px' : '130px' }}
-          className='g-ellipsis'
+          className='g-ellipsis fw500'
           title={record.name}>
           {record.name}
         </div>

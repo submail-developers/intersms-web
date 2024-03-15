@@ -245,6 +245,7 @@ export default function SendList() {
       width: size == 'small' ? 120 : 150,
       align: size == 'small' ? 'center' : 'left',
       fixed: true,
+      render: (_, record) => <span className='fw500'>{record.mobile}</span>,
     },
     {
       title: '发送账户',

@@ -81,7 +81,7 @@ export default function Channel() {
       fixed: true,
       render: (_, record) => (
         <div
-          className='g-ellipsis'
+          className='g-ellipsis fw500'
           style={{ width: size == 'small' ? '80px' : '160px' }}
           title={record.name}>
           {record.name}

@@ -934,6 +934,7 @@ declare module 'apis' {
       date: string
       date_last: string
       channel_name: string
+      mail: string
     }
     //新增客户注册文件记录参数
     interface AddSenderEvidenceParams {

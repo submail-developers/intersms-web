@@ -113,7 +113,7 @@ export default function Channel() {
       render: (_, record) => (
         <div style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
           <div
-            className='g-ellipsis'
+            className='g-ellipsis fw500'
             title={record.country_cn}
             style={{ width: size == 'middle' ? 160 : 100 }}>
             {record.country_cn}
