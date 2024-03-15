@@ -14,6 +14,7 @@ import {
 } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import AddDialog from './dialog/addDialog'
+import MyDrawer from './dialog/drawer/drawer'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import {
   getalArmConfigList,
@@ -24,7 +25,6 @@ import { useSize } from '@/hooks'
 import { API } from 'apis'
 
 import './warning.scss'
-
 interface DataType extends API.GetalArmConfigListItems {}
 interface FormValues {
   id: string
@@ -38,6 +38,7 @@ interface SwitchProps {
 // 国家信息配置
 export default function NumberChannelsRoute() {
   const addDialogRef: MutableRefObject<any> = useRef(null)
+  const drawerRef: MutableRefObject<any> = useRef(null)
   const { Option } = Select
 
   // 被点击的客户(不是被checkbox选中的客户)
@@ -214,6 +215,10 @@ export default function NumberChannelsRoute() {
     addDialogRef.current.open({ isAdd, record })
   }
 
+  const addWaringPerson = () => {
+    drawerRef.current.open()
+  }
+
   const { message } = App.useApp()
   //批量停用/启用
   const batchDeactivation = async (isOnOff: any) => {
@@ -336,7 +341,7 @@ export default function NumberChannelsRoute() {
               },
             }}>
             <Form
-              name='basic'
+              name='basic1'
               form={form}
               layout='inline'
               wrapperCol={{ span: 24 }}
@@ -395,6 +400,25 @@ export default function NumberChannelsRoute() {
                   </Button>
                 </ConfigProvider>
               </Form.Item>
+
+              <Form.Item style={{ marginBottom: size == 'small' ? 5 : 10 }}>
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorPrimary: '#ff4d4f',
+                      colorPrimaryHover: '#ff4d4f',
+                    },
+                  }}>
+                  <Button
+                    type='primary'
+                    size={size}
+                    onClick={() => addWaringPerson()}
+                    htmlType='submit'
+                    style={{ width: 110, marginLeft: 0 }}>
+                    添加报警人员
+                  </Button>
+                </ConfigProvider>
+              </Form.Item>
             </Form>
           </ConfigProvider>
         </Col>
@@ -422,6 +446,7 @@ export default function NumberChannelsRoute() {
         />
       </ConfigProvider>
       <AddDialog ref={addDialogRef} onSearch={search} />
+      <MyDrawer ref={drawerRef} />
     </div>
   )
 }
