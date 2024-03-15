@@ -116,12 +116,12 @@ const EditableCell = ({
     childNode = editing ? (
       <Form.Item
         name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title}是必填的.`,
-          },
-        ]}
+        // rules={[
+        //   {
+        //     required: true,
+        //     message: `${title}是必填的.`,
+        //   },
+        // ]}
         style={{ marginBottom: '0' }}>
         <Input
           ref={inputRef}
