@@ -1,11 +1,6 @@
 import { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { Modal, Form, Input, App, Row, Col, Select, Radio } from 'antd'
-import {
-  saveAlarmConfigList,
-  getAllChannelId,
-  getAccountList,
-  GetRegioncodeByCountry,
-} from '@/api'
+import { saveAlarmNotifierList, getAccountList } from '@/api'
 import { API } from 'apis'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import type { RadioChangeEvent } from 'antd'
@@ -19,7 +14,6 @@ interface Props {
 interface InitOpen {
   isAdd: boolean
   record?: API.GetalArmConfigListItems
-  tableWarningData: []
 }
 
 const Dialog = ({ onSearch }: Props, ref: any) => {
@@ -35,15 +29,12 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const open = (initValues: InitOpen) => {
-    const { isAdd, tableWarningData } = initValues
-    console.log(tableWarningData)
+    const { isAdd, record } = initValues
     setisAdd(isAdd)
     form.resetFields()
     form.setFieldsValue(initValues.record)
     setIsModalOpen(true)
     if (isAdd) {
-      countryName()
-      associatedAccount()
     } else {
       if (record) {
         let arr: API.GetRegioncodeByCountryItems[] = [
@@ -52,7 +43,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
             value: record.region_code,
           },
         ]
-        setCountryNameData(arr)
         setrecord(record)
       }
     }
@@ -80,7 +70,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       } else {
         if (record) newParams = { ...record, ...params }
       }
-      const res = await saveAlarmConfigList(newParams)
+      const res = await saveAlarmNotifierList(newParams)
       if (res) {
         message.success('保存成功！')
       }
@@ -89,44 +79,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     } catch (error) {}
   }
 
-  useEffect(() => {
-    allGroupId()
-  }, [])
-  // 通道名称
-  const allGroupId = async () => {
-    const res = await getAllChannelId('')
-    setallChannelData(res.data)
-  }
-  const [allChannelData, setallChannelData] = useState<
-    API.GetAllChannelIdParamsItems[]
-  >([])
-
-  // 国家名称
-  const [CountryNameData, setCountryNameData] = useState<
-    API.GetRegioncodeByCountryItems[]
-  >([])
-  const countryName = async () => {
-    const res = await GetRegioncodeByCountry({
-      country_cn: '',
-      keyword: '',
-    })
-    let arr: any = []
-    res.data.map((item: any) => {
-      arr = [...arr, ...item.children]
-    })
-    setCountryNameData(arr)
-  }
-
-  // 关联账号列表
-  const [associatedAccountData, setAssociatedAccountData] = useState<
-    API.AccountListItem[]
-  >([])
-  const associatedAccount = async () => {
-    const res = await getAccountList({
-      keyword: '',
-    })
-    setAssociatedAccountData(res.data)
-  }
+  useEffect(() => {}, [])
 
   const handleCancel = () => {
     setIsModalOpen(false)
@@ -167,22 +120,19 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete='off'>
-        <Row justify='space-between'>
-          {/* <Col span={4}>
-            <Form.Item label='手机号码' name='name'>
-              <Input disabled={!isAdd} placeholder='请输入网络名称' />
-            </Form.Item>
-          </Col> */}
-          <Col span={4}>
-            <Form.Item label='姓名' name='name'>
-              <Input disabled={!isAdd} placeholder='请输入网络名称' />
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Form.Item label='操作' name='name'>
-              <Input disabled={!isAdd} placeholder='请输入网络名称' />
-            </Form.Item>
-          </Col>
+        <Row justify='space-between' gutter={30}>
+          <>
+            <Col span={12}>
+              <Form.Item label='手机号码' name='mob'>
+                <Input placeholder='请输入手机号码' />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label='姓名' name='name'>
+                <Input placeholder='请输入姓名' />
+              </Form.Item>
+            </Col>
+          </>
         </Row>
       </Form>
     </Modal>

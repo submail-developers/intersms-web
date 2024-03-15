@@ -1,4 +1,12 @@
 .drawer.channel-drawer {
+  .ant-table-thead > tr > th::before {
+    background-color: #fafafa !important;
+  }
+  @media (max-width: 768px) {
+    .add-person {
+      margin-top: 10px;
+    }
+  }
   .ant-drawer-content-wrapper {
     box-shadow: none;
     .ant-drawer-content {

@@ -405,8 +405,7 @@ export default function NumberChannelsRoute() {
                 <ConfigProvider
                   theme={{
                     token: {
-                      colorPrimary: '#ff4d4f',
-                      colorPrimaryHover: '#ff4d4f',
+                      colorPrimary: '#0074d7',
                     },
                   }}>
                   <Button

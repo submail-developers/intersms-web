@@ -248,20 +248,20 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '报警配置' }),
             handle: handleFn({ alias: '报警配置' }),
           },
-          {
-            path: 'set_warning_person',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(
-                  () =>
-                    import('@/pages/console/setWarningPerson/setWarningPerson'),
-                )}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: '报警人员配置' }),
-            handle: handleFn({ alias: '报警人员配置' }),
-          },
+          // {
+          //   path: 'set_warning_person',
+          //   element: (
+          //     <LazyImportComponent
+          //       lazyChildren={lazy(
+          //         () =>
+          //           import('@/pages/console/setWarningPerson/setWarningPerson'),
+          //       )}
+          //     />
+          //   ),
+          //   errorElement: <Error />,
+          //   loader: loaderFn({ name: '报警人员配置' }),
+          //   handle: handleFn({ alias: '报警人员配置' }),
+          // },
           // {
           //   path: 'numberattribution',
           //   element: (

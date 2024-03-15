@@ -8,10 +8,10 @@ import React, {
   useContext,
 } from 'react'
 import { TableColumnsType, Popconfirm } from 'antd'
-import { Form, Input, ConfigProvider, Button, Drawer, App, Table } from 'antd'
+import { Form, ConfigProvider, Button, Drawer, App, Table } from 'antd'
 import { useSize, usePoint } from '@/hooks'
-
-import { getAlarmNotifier, saveAlarmNotifierList } from '@/api'
+import AddWariningPersonDialog from '../addWarningPerson/addDialog'
+import { getAlarmNotifier, deleteAlarmNotifierList } from '@/api'
 import { API } from 'apis'
 import './drawer.scss'
 
@@ -23,90 +23,13 @@ export type DrawerContentRectType = {
   x: number
   y: number
 }
-const EditableContext = React.createContext(null)
-const EditableRow = (props) => {
-  //编辑表格行
-  let [form] = Form.useForm() //定义表单对象
-  return (
-    <Form form={form} component={false}>
-      <EditableContext.Provider value={form}>
-        <tr {...props} />
-      </EditableContext.Provider>
-    </Form>
-  )
-}
-const EditableCell = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  ...restProps
-}) => {
-  //编辑表格单元格
-  let inputRef = useRef(null)
-  const [editing, setEditing] = useState(false) //定义编辑状态
-  const form = useContext(EditableContext)
-
-  useEffect(() => {
-    //监听编辑状态值的变化
-    if (editing) {
-      //如果开启编辑状态
-      inputRef.current.focus() //input输入框聚焦
-    }
-  }, [editing])
-
-  function toggleEdit() {
-    //切换编辑状态
-    setEditing(!editing)
-    form.setFieldsValue({
-      //将表格中的值赋值到表单中
-      // name:Easdf
-      [dataIndex]: record[dataIndex],
-    })
-  }
-
-  async function save() {
-    //保存事件
-    try {
-      const values = await form.validateFields() //获取表单中的数据
-      toggleEdit() //切换编辑状态
-      handleSave({ ...record, ...values }) //调用保存方法
-    } catch (errInfo) {
-      console.log('保存失败:', errInfo)
-    }
-  }
-
-  let childNode = children
-  if (editable) {
-    //如果开启了表格编辑属性
-    // 是否开启了编辑状态 (开启:显示输入框 关闭:显示div)
-    childNode = editing ? (
-      <Form.Item
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title}是必填的.`,
-          },
-        ]}
-        style={{ marginBottom: '0' }}>
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div onClick={toggleEdit}>{children}</div>
-    )
-  }
-  return <td {...restProps}>{childNode}</td>
-}
 const Dialog = (props: Props, ref: any) => {
   const size = useSize()
   const point = usePoint('xl')
   const [form] = Form.useForm()
   const [tableData, setTableData] = useState<API.GetAlarmNotifierItems[]>([])
   const [loading, setloading] = useState(false)
-
+  const addDialogRef: MutableRefObject<any> = useRef(null)
   const tableref: MutableRefObject<any> = useRef(null)
   useImperativeHandle(ref, () => {
     return {
@@ -172,46 +95,11 @@ const Dialog = (props: Props, ref: any) => {
 
   useEffect(() => {}, [])
 
-  const handleSave = async (row) => {
-    //这个方法可以获取到行编辑之后的数据
-    let findEditIndex = tableData.findIndex((item) => {
-      //找到编辑行的索引
-      return item.key === row.key
-    })
-    let findEditObj = tableData.find((item) => {
-      //找到编辑行的数据对象
-      return item.key === row.key
-    })
-
-    const new_row = { ...findEditObj, ...row }
-
-    tableData.splice(findEditIndex, 1, new_row) //将最新的数据更新到表格数据中
-    setTableData([...tableData]) //设置表格数据
-    let { mob, name } = new_row
-    if (
-      (new_row.mob && new_row.name && new_row.mob != findEditObj.mob) ||
-      new_row.name != findEditObj.name
-    ) {
-      // save_alarm_notifier
-      try {
-        const res = await saveAlarmNotifierList({
-          name,
-          mob,
-        })
-        if (res) {
-          // message.success('保存成功！')
-        }
-        search()
-      } catch (error) {}
-    }
-  }
-
-  let tableColumns = [
+  const columns: TableColumnsType<DataType> = [
     {
       title: '手机号码',
       className: 'paddingL10',
       fixed: true,
-      editable: true,
       dataIndex: 'mob',
       width: point ? 130 : 110,
       render(_, record) {
@@ -221,7 +109,6 @@ const Dialog = (props: Props, ref: any) => {
     {
       title: '姓名',
       width: 80,
-      editable: true,
       className: 'paddingL30',
       dataIndex: 'name',
       render(_, record) {
@@ -240,7 +127,7 @@ const Dialog = (props: Props, ref: any) => {
               placement='left'
               title='警告'
               description='确定删除该条报警人员吗？'
-              // onConfirm={() => singleDeleteEvent(record.mob)}
+              onConfirm={() => singleDeleteEvent(record.mob)}
               okText='确定'
               cancelText='取消'>
               删除
@@ -250,35 +137,15 @@ const Dialog = (props: Props, ref: any) => {
       },
     },
   ]
-  tableColumns = tableColumns.map((item) => {
-    //遍历表格头数组
-    if (item.editable) {
-      //如果表格头列开启了编辑属性
-      return {
-        ...item,
-        onCell: (record) => {
-          return {
-            record: record,
-            editable: item.editable,
-            dataIndex: item.dataIndex,
-            title: item.title,
-            handleSave: handleSave,
-          }
-        },
-      }
-    } else {
-      return item
-    }
-  })
 
   // 新增报警人员
-  const handleAdd = () => {
-    const newData: DataType = {
-      mob: '请输入手机号码',
-      name: '请输入姓名',
-      key: tableData.length,
-    }
-    setTableData([...tableData, newData])
+  const handleAddWarningPerson = (isAdd: boolean = true, record?: DataType) => {
+    addDialogRef.current.open({ isAdd, record })
+  }
+  // 删除报警人员
+  const singleDeleteEvent = async (mob: any) => {
+    await deleteAlarmNotifierList({ mob })
+    await search()
   }
 
   return (
@@ -329,7 +196,9 @@ const Dialog = (props: Props, ref: any) => {
                       },
                     }}>
                     <div className='btn-group'>
-                      <div className='btn' onClick={() => handleAdd()}>
+                      <div
+                        className='btn add-person'
+                        onClick={() => handleAddWarningPerson()}>
                         <i className='icon iconfont icon-bianji'></i>
                         <span>新增</span>
                       </div>
@@ -347,20 +216,15 @@ const Dialog = (props: Props, ref: any) => {
             style={{ marginTop: point ? '' : 20 }}>
             <Table
               className='drawer-table'
-              columns={tableColumns}
+              columns={columns}
               dataSource={tableData}
               pagination={false}
               loading={loading}
-              components={{
-                body: {
-                  row: EditableRow,
-                  cell: EditableCell,
-                },
-              }}
             />
           </div>
         </div>
       </div>
+      <AddWariningPersonDialog ref={addDialogRef} onSearch={search} />
     </Drawer>
   )
 }
