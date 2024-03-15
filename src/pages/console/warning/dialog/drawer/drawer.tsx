@@ -11,7 +11,7 @@ import { TableColumnsType, Popconfirm } from 'antd'
 import { Form, Input, ConfigProvider, Button, Drawer, App, Table } from 'antd'
 import { useSize, usePoint } from '@/hooks'
 
-import { getAlarmNotifier } from '@/api'
+import { getAlarmNotifier, saveAlarmNotifierList } from '@/api'
 import { API } from 'apis'
 import './drawer.scss'
 
@@ -90,7 +90,8 @@ const EditableCell = ({
             required: true,
             message: `${title}是必填的.`,
           },
-        ]}>
+        ]}
+        style={{ marginBottom: '0' }}>
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
@@ -154,7 +155,12 @@ const Dialog = (props: Props, ref: any) => {
     try {
       ifsetloading && setloading(true)
       const res = await getAlarmNotifier('')
-      setTableData(res.data)
+      setTableData(
+        res.data.map((item, index) => {
+          item.key = index
+          return item
+        }),
+      )
     } catch (error) {
       setloading(false)
     }
@@ -169,42 +175,35 @@ const Dialog = (props: Props, ref: any) => {
   const handleSave = async (row) => {
     //这个方法可以获取到行编辑之后的数据
     let findEditIndex = tableData.findIndex((item) => {
-      console.log(item, '?????????')
       //找到编辑行的索引
-      return item.id === row.id
+      return item.key === row.key
     })
     let findEditObj = tableData.find((item) => {
       //找到编辑行的数据对象
-      return item.id === row.id
+      return item.key === row.key
     })
 
     const new_row = { ...findEditObj, ...row }
 
     tableData.splice(findEditIndex, 1, new_row) //将最新的数据更新到表格数据中
     setTableData([...tableData]) //设置表格数据
-    let { id, price, comment } = new_row
-    // if (
-    // new_row.price != findEditObj.price ||
-    // new_row.comment != findEditObj.comment
-    // ) {
-    // try {
-    // const res = await saveChaneNetwork({
-    //   id,
-    //   type: '1',
-    //   price:
-    //     new_row.network_list.length > 0
-    //       ? new_row.network_list[0].network_price
-    //       : price,
-    //   comment,
-    //   network_name: '',
-    //   network_price: '',
-    // })
-    // if (res) {
-    //   // message.success('保存成功！')
-    // }
-    // search()
-    // } catch (error) {}
-    // }
+    let { mob, name } = new_row
+    if (
+      (new_row.mob && new_row.name && new_row.mob != findEditObj.mob) ||
+      new_row.name != findEditObj.name
+    ) {
+      // save_alarm_notifier
+      try {
+        const res = await saveAlarmNotifierList({
+          name,
+          mob,
+        })
+        if (res) {
+          // message.success('保存成功！')
+        }
+        search()
+      } catch (error) {}
+    }
   }
 
   let tableColumns = [
@@ -213,6 +212,7 @@ const Dialog = (props: Props, ref: any) => {
       className: 'paddingL10',
       fixed: true,
       editable: true,
+      dataIndex: 'mob',
       width: point ? 130 : 110,
       render(_, record) {
         return <div className={`td-content fw500`}>{record.mob}</div>
@@ -223,6 +223,7 @@ const Dialog = (props: Props, ref: any) => {
       width: 80,
       editable: true,
       className: 'paddingL30',
+      dataIndex: 'name',
       render(_, record) {
         return <div className={`td-content`}>{record.name}</div>
       },
@@ -259,7 +260,7 @@ const Dialog = (props: Props, ref: any) => {
           return {
             record: record,
             editable: item.editable,
-            dataIndex: item.title,
+            dataIndex: item.dataIndex,
             title: item.title,
             handleSave: handleSave,
           }
@@ -273,8 +274,9 @@ const Dialog = (props: Props, ref: any) => {
   // 新增报警人员
   const handleAdd = () => {
     const newData: DataType = {
-      mob: '请输入手机号',
+      mob: '请输入手机号码',
       name: '请输入姓名',
+      key: tableData.length,
     }
     setTableData([...tableData, newData])
   }
@@ -348,7 +350,6 @@ const Dialog = (props: Props, ref: any) => {
               columns={tableColumns}
               dataSource={tableData}
               pagination={false}
-              rowKey={'id'}
               loading={loading}
               components={{
                 body: {

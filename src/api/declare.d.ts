@@ -777,6 +777,7 @@ declare module 'apis' {
     interface GetAlarmNotifierItems {
       mob: string
       name: string
+      key?: number
     }
     // 保存报警设置
     interface SaveAlarmConfigListParams {
