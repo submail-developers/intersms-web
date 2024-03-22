@@ -56,6 +56,7 @@ const getBase64 = (file: RcFile): Promise<string> =>
   })
 
 const Dialog = (props: PropsList, ref: any) => {
+  const size = useSize()
   const [CountryNameData, setCountryNameData] = useState<
     API.GetRegioncodeByCountryItems[]
   >([])
@@ -297,7 +298,7 @@ const Dialog = (props: PropsList, ref: any) => {
           </Col>
         </Row>
         <Row justify='space-between' gutter={30}>
-          <Col span={12}>
+          <Col span={size == 'small' ? 24 : 12}>
             <Form.Item
               label='通道'
               name='channel_id'

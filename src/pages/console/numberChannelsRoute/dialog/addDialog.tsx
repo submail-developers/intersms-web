@@ -272,7 +272,7 @@ const Dialog = (props: Props, ref: any) => {
         </Row>
 
         <Row justify='space-between' gutter={30}>
-          <Col span={12}>
+          <Col span={size == 'small' ? 24 : 12}>
             <Form.Item label='通道组' name='group' validateTrigger='onSubmit'>
               <Select
                 showSearch

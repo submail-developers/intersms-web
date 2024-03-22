@@ -436,7 +436,7 @@ export default function SendList() {
             <Select
               showSearch
               placeholder='请选择通道'
-              style={{ width: 162 }}
+              style={{ width: size == 'small' ? 340 : 200 }}
               size={size}
               options={channelList}
               fieldNames={{ label: 'name', value: 'id' }}
@@ -459,7 +459,7 @@ export default function SendList() {
             <Select
               showSearch
               placeholder='请选择通道组'
-              style={{ width: 162 }}
+              style={{ width: size == 'small' ? 340 : 200 }}
               size={size}
               options={channelsList}
               fieldNames={{ label: 'name', value: 'id' }}

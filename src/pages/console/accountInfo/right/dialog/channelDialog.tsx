@@ -6,6 +6,7 @@ import { accountInfoState } from '@/store/reducers/accountInfo'
 import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import { API } from 'apis'
 import { channelsTypeOptions2 } from '@/utils/options'
+import { useSize } from '@/hooks'
 interface Props {
   allCountry: API.CountryItem[]
   onUpdateTable: () => void
@@ -31,6 +32,7 @@ function Dialog(props: Props, ref: any) {
       open,
     }
   })
+  const size = useSize()
   const [form] = Form.useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isAdd, setisAdd] = useState(false)
@@ -132,7 +134,7 @@ function Dialog(props: Props, ref: any) {
           />
         </Form.Item>
         <Row justify='space-between' gutter={30}>
-          <Col span={12}>
+          <Col span={size == 'small' ? 24 : 12}>
             <Form.Item label='通道组' name='group_id'>
               <Select
                 showSearch

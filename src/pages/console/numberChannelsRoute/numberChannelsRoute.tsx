@@ -373,7 +373,7 @@ export default function NumberChannelsRoute() {
                 <Select
                   showSearch
                   placeholder='全部通道组'
-                  style={{ width: 162 }}
+                  style={{ width: size == 'small' ? 340 : 200 }}
                   size={size}
                   options={channelsList}
                   fieldNames={{ label: 'name', value: 'id' }}

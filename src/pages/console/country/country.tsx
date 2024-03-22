@@ -278,7 +278,7 @@ export default function Channel() {
                 <Select
                   showSearch
                   placeholder='全部通道组'
-                  style={{ width: 162 }}
+                  style={{ width: size == 'small' ? 340 : 200 }}
                   size={size}
                   options={allGruopData}
                   fieldNames={{ label: 'name', value: 'id' }}
