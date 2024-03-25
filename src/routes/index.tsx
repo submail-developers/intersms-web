@@ -132,6 +132,19 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: 'Sender管理' }),
             handle: handleFn({ alias: 'Sender管理' }),
           },
+          {
+            path: 'failTask',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/console/failTask/failTask'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '失败任务处理列表' }),
+            handle: handleFn({ alias: '失败任务处理列表' }),
+          },
         ],
       },
       {

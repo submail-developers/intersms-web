@@ -1,0 +1,10 @@
+[data-class='fail-task'] {
+  .btn-group {
+    &.small {
+      overflow-x: scroll;
+      .btn {
+        min-width: fit-content;
+      }
+    }
+  }
+}

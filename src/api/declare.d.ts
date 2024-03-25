@@ -281,6 +281,103 @@ declare module 'apis' {
      */
 
     /**
+     * 失败任务处理列表start
+     */
+    // 获取失败任务处理列表参数
+    interface GetHandlerListParams {
+      mail: string
+      page: string
+      limit: string
+    }
+    // 失败任务处理列表返回值
+    interface GetHandlerListItem {
+      id: string
+      account: string
+      appid: string
+      region_code: string
+      sms_type: string
+      task_name: string
+      begin_time: string
+      end_time: string
+      state: string
+      handle_count: string
+      count_success_push: string
+      group_id: string
+      group_name: string
+      sms_tag: string
+      account_mail: string
+      account_name: string
+      account_mob: string
+      account_company: string
+      flg: string
+    }
+
+    interface GetHandlerResList {
+      data: GetHandlerListItem[]
+    }
+    // 失败任务详情参数
+    interface GetHandlerDetailListParams {
+      account: string
+      page: string
+      limit: string
+    }
+    // 失败任务详情返回值
+    interface GetHandlerDetailListItem {
+      send_id: string
+      account: string
+      appid: string
+      country: string
+      country_code: string
+      region_code: string
+      dst_addr: string
+      encode: string
+      project: string
+      src_addr: string
+      text: string
+      sms_type: string
+      sms_tag: string
+    }
+    interface GetHandlerDetailListItem2 {
+      id: string
+      account: string
+      app: string
+    }
+
+    interface GetHandlerDetailResList {
+      list: GetHandlerDetailListItem[]
+      app: GetHandlerDetailListItem2[]
+    }
+    // 状态推送参数
+    interface StatePushHandlerParams {
+      account: string
+      task_name: string
+      appid: string
+      sms_type: string
+      region_code: string
+    }
+    // 二次发送参数
+    interface SendAgainHandlerParams {
+      account: string
+      task_name: string
+      appid: string
+      sms_type: string
+      region_code: string
+      sms_tag: string
+      group_id: string
+    }
+    // 删除单个号码
+    interface DeleteHandlerItemParams {
+      send_id: string
+    }
+    // 删除全部号码
+    interface DeleteAllHandlerItemParams {
+      account: string
+    }
+    /**
+     * 失败任务处理列表end
+     */
+
+    /**
      * 通道组管理start
      */
     // 获取通道组

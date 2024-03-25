@@ -27,6 +27,7 @@ import { usePoint } from '@/hooks'
 import { getAccountList, deleteAccount } from '@/api'
 import { API } from 'apis'
 import './index.scss'
+import { useSearchParams } from 'react-router-dom'
 
 interface DataType extends API.AccountListItem {}
 
@@ -51,6 +52,8 @@ function Left(props: any, ref: any) {
   const [activeRow, setactiveRow] = useState<DataType | null>(null) // 被点击的客户(不是被checkbox选中的客户)
   const [peopelNum, setpeopelNum] = useState<number>() //客户数量
   const [tableHeight, setTableHeight] = useState<number>(474) // table高度
+  const [params] = useSearchParams()
+  const account = params.get('sender')
 
   const onRow = (record: DataType, index?: number) => {
     return {
@@ -116,11 +119,11 @@ function Left(props: any, ref: any) {
   ]
 
   useEffect(() => {
-    search()
+    search('', account)
     return () => {
       dispatch(changeActiveAccount(null))
     }
-  }, [])
+  }, [account])
   useEffect(() => {
     // 获取tableContainer的内容区宽高
     const observer = new ResizeObserver(([entry]) => {
@@ -139,7 +142,15 @@ function Left(props: any, ref: any) {
     }
   }, [point])
 
-  const search = async (activeAccountId: string = '') => {
+  useEffect(() => {
+    if (account && tableData.length > 0) {
+      const record = tableData.find((item) => item.sender == account)
+      setactiveRow(record)
+      dispatch(changeActiveAccount(record))
+    }
+  }, [account, tableData])
+
+  const search = async (activeAccountId: string = '', account: string = '') => {
     try {
       setloading(true)
       const values = await form.validateFields()
@@ -158,8 +169,10 @@ function Left(props: any, ref: any) {
             (item) => item.account == activeAccountId,
           )
         }
-        dispatch(changeActiveAccount(res.data[defaultIndex]))
-        setactiveRow(res.data[defaultIndex])
+        if (!account) {
+          dispatch(changeActiveAccount(res.data[defaultIndex]))
+          setactiveRow(res.data[defaultIndex])
+        }
       } else {
         dispatch(changeActiveAccount(null))
         setactiveRow(null)

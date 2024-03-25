@@ -212,6 +212,60 @@ export const changeTestState = (data: API.ChangeTestStateParams) => {
  */
 
 /**
+ * 失败任务处理列表start
+ */
+
+//获取失败任务处理列表
+export const getHandlerList = (data: API.GetHandlerListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetHandlerResList>,
+    API.GetHandlerListParams
+  >('console/api/handler/get_handler_list', { ...data })
+}
+// 获取失败任务详情处理列表
+export const getHandlerDetailList = (data: API.GetHandlerDetailListParams) => {
+  return request.post<
+    any,
+    API.Response<API.GetHandlerDetailResList>,
+    API.GetHandlerDetailListParams
+  >('console/api/handler/get_handler_detail_list', { ...data })
+}
+
+// 状态推送
+export const statePushHandler = (data: API.StatePushHandlerParams) => {
+  return request.post<any, API.Response<any>, API.StatePushHandlerParams>(
+    'console/api/handler/state_push_handler',
+    { ...data },
+  )
+}
+// 二次发送
+export const sendAgainHandler = (data: API.SendAgainHandlerParams) => {
+  return request.post<any, API.Response<any>, API.SendAgainHandlerParams>(
+    'console/api/handler/send_again_handler',
+    { ...data },
+  )
+}
+// 删除单个号码
+export const deleteHandlerItem = (data: API.DeleteHandlerItemParams) => {
+  return request.post<any, API.Response<any>, API.DeleteHandlerItemParams>(
+    'console/api/handler/delete_handler_item',
+    { ...data },
+  )
+}
+// 删除全部号码
+export const deleteAllHandlerItem = (data: API.DeleteAllHandlerItemParams) => {
+  return request.post<any, API.Response<any>, API.DeleteAllHandlerItemParams>(
+    'console/api/handler/delete_handler_task',
+    { ...data },
+  )
+}
+
+/**
+ * 失败任务处理列表end
+ */
+
+/**
  * 通道组管理start
  */
 // 获取通道组id

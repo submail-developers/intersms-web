@@ -122,6 +122,11 @@ export const senderManageOptions = [
   { label: '国际Sender', value: '1' },
   { label: '本地Sender', value: '2' },
 ]
+// 失败处理方式
+export const failTaskOptions = [
+  { label: '状态推送', value: '0' },
+  { label: '二次发送', value: '1' },
+]
 
 // 通道组类型
 export const channelsTypeOptions = [
