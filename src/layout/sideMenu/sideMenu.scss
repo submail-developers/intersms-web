@@ -70,4 +70,20 @@
       }
     }
   }
+
+  .fail-badge {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    transform: translate(0, -50%);
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+    text-indent: 0px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 50%;
+    background: #ff4d4f;
+  }
 }
