@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Drawer } from 'antd'
 import { routerList } from '@/routes'
 import { RouteObject, useMatches, useLocation } from 'react-router-dom'
 import { logout } from '@/api'
 import './mobileMenu.scss'
-
+import { CountContext } from '../index'
 type Props = {
   show: boolean
   onClose: () => void
@@ -48,6 +48,8 @@ export default function MobileMenu(props: Props) {
     await logout()
     nav('/')
   }
+
+  const context = useContext(CountContext)
 
   return (
     <Drawer
@@ -94,7 +96,15 @@ export default function MobileMenu(props: Props) {
                     }`}
                     key={ditem.path}
                     onClick={() => handleMenu(menu, ditem)}>
-                    {ditem.handle.alias}
+                    {/* {ditem.handle.alias} */}
+                    {menu.path == 'customer' && ditem.path == 'failTask' ? (
+                      <>
+                        {ditem.handle.alias}
+                        <span className='fail-badge'>{context}</span>
+                      </>
+                    ) : (
+                      <>{ditem.handle.alias}</>
+                    )}
                   </dd>
                 ))}
             </dl>
