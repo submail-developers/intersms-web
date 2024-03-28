@@ -167,8 +167,13 @@ declare module 'apis' {
     // 获取客户列表参数
     interface AccountListParams {
       keyword?: string
+      page?: number // 第几页
+      limit?: number // 每页数量
     }
     // 客户列表返回值
+    interface AccountListRes extends Response<AccountListItem[]> {
+      total: number
+    }
     interface AccountListItem {
       id: string
       account: string
@@ -402,6 +407,8 @@ declare module 'apis' {
     interface GetChannelGroupListParams {
       id?: string
       keyword?: string
+      page?: number
+      limit?: number
     }
 
     interface UpdateChannelGroupParams {
@@ -411,6 +418,10 @@ declare module 'apis' {
       enabled: '0' | '1' // 是否启用 0关闭  1启用
     }
     // 获取通道组列表
+    interface GetChannelGroupListRes
+      extends Response<GetChannelGroupListItem[]> {
+      total: number
+    }
     interface GetChannelGroupListItem extends UpdateChannelGroupParams {
       sens_word_list: ChannelsBindSensitiveItem[] // 敏感词
       mobile_block_list: GetBlackListItems[] // 黑名单

@@ -20,9 +20,8 @@ import {
   Tooltip,
   Form,
 } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
-
 import { usePoint } from '@/hooks'
 import { getAccountList, deleteAccount } from '@/api'
 import { API } from 'apis'
@@ -30,7 +29,10 @@ import './index.scss'
 import { useSearchParams } from 'react-router-dom'
 
 interface DataType extends API.AccountListItem {}
-
+interface FormValues {
+  page: string
+  limit: string
+}
 /**
  * 客户信息
  */
@@ -54,6 +56,9 @@ function Left(props: any, ref: any) {
   const [tableHeight, setTableHeight] = useState<number>(474) // table高度
   const [params] = useSearchParams()
   const account = params.get('sender')
+  const [total, settotal] = useState<number>(0)
+  const [page, setpage] = useState<number>(1)
+  const [pageSize, setpageSize] = useState<number>(200)
 
   const onRow = (record: DataType, index?: number) => {
     return {
@@ -127,7 +132,7 @@ function Left(props: any, ref: any) {
   useEffect(() => {
     // 获取tableContainer的内容区宽高
     const observer = new ResizeObserver(([entry]) => {
-      setTableHeight(() => entry.contentRect.height - 118) // table 的滚动高度
+      setTableHeight(() => entry.contentRect.height - 164) // table 的滚动高度
     })
     if (point) {
       observer.observe(tableContainerRef?.current)
@@ -157,9 +162,12 @@ function Left(props: any, ref: any) {
       const { keyword } = values
       const res = await getAccountList({
         keyword,
+        page,
+        limit: pageSize,
       })
-      setpeopelNum(res.data.length)
+      setpeopelNum(res.total)
       settableData(res.data)
+      settotal(res.total)
       setloading(false)
 
       if (res.data.length > 0) {
@@ -195,6 +203,29 @@ function Left(props: any, ref: any) {
   // 开启dialog
   const openAddDialog = () => {
     dialogRef.current.open()
+  }
+  useEffect(() => {
+    search()
+  }, [page, pageSize])
+  const changePage = async (_page: number, _pageSize: number) => {
+    if (_page != page) setpage(_page)
+    if (_pageSize != pageSize) {
+      // pagesize由大到小切换时，此时tableData.length大于pagesize，会有个报错警告。解决掉这个警告
+      if (_pageSize < pageSize) {
+        settableData(tableData.slice(0, _pageSize))
+      }
+      setpageSize(_pageSize)
+    }
+  }
+  const pagination: TablePaginationConfig = {
+    current: page,
+    position: ['bottomRight'],
+    onChange: changePage,
+    total: total,
+    showSizeChanger: false,
+    defaultPageSize: 200,
+    // pageSizeOptions: [200],
+    showTotal: (total, range) => `共 ${total} 条`,
   }
 
   return (
@@ -268,7 +299,9 @@ function Left(props: any, ref: any) {
               rowClassName={(record, index) =>
                 record.account == activeRow?.account ? 'active' : ''
               }
-              pagination={false}
+              size='small'
+              // pagination={{ position: ['bottomRight'] }}
+              pagination={pagination}
               scroll={{ y: tableHeight }}
               loading={loading}
             />

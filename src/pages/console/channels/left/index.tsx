@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from 'antd'
 import { PaperClipOutlined } from '@ant-design/icons'
-import type { ColumnsType } from 'antd/es/table'
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import AddDialog from './addDialog/addDialog'
 import BindSensitiveWordDialog from './bindSensitiveWordDialog/bindSensitiveWordDialog'
 import BindBlackDialog from './bindBlackDialog/bindBlackDialog'
@@ -32,6 +32,10 @@ interface DataType extends API.GetChannelGroupListItem {}
 interface SwitchProps {
   record: DataType
 }
+interface FormValues {
+  page: string
+  limit: string
+}
 /**
  * 客户信息
  */
@@ -46,6 +50,9 @@ export default function Left() {
   const [keyword, setkeyword] = useState<string>('')
   const [channelsNum, setchannelsNum] = useState<number>() //通道组数量
   const [tableHeight, setTableHeight] = useState<number>(474) // table高度
+  const [total, settotal] = useState<number>(0)
+  const [page, setpage] = useState<number>(1)
+  const [pageSize, setpageSize] = useState<number>(200)
   // 列表
   const [tableData, settableData] = useState<DataType[]>([])
   // 被点击的客户(不是被checkbox选中的客户)
@@ -140,7 +147,7 @@ export default function Left() {
   }
 
   useEffect(() => {
-    search()
+    // search()
     return () => {
       // 清除副作用，切换到其他页面时清空store
       dispatch(changeActiveChannels(null))
@@ -150,7 +157,7 @@ export default function Left() {
   useEffect(() => {
     // 获取tableContainer的内容区宽高
     const observer = new ResizeObserver(([entry]) => {
-      setTableHeight(() => entry.contentRect.height - 118) // table 的滚动高度
+      setTableHeight(() => entry.contentRect.height - 164) // table 的滚动高度
     })
     if (point) {
       observer.observe(tableContainerRef?.current)
@@ -165,12 +172,21 @@ export default function Left() {
     }
   }, [point])
 
+  useEffect(() => {
+    search()
+  }, [page, pageSize])
   // noResetActive是否重置当前选中项
   const search = async (noResetActive?: boolean) => {
     try {
-      const res = await getChannelGroupList({ id: '', keyword })
+      const res = await getChannelGroupList({
+        id: '',
+        keyword,
+        page,
+        limit: pageSize,
+      })
       settableData(res.data)
-      setchannelsNum(res.data.length)
+      setchannelsNum(res.total)
+      settotal(res.total)
       if (noResetActive) return
       if (res.data.length > 0) {
         dispatch(changeActiveChannels(res.data[0]))
@@ -246,6 +262,27 @@ export default function Left() {
     // },
   ]
 
+  const changePage = async (_page: number, _pageSize: number) => {
+    if (_page != page) setpage(_page)
+    if (_pageSize != pageSize) {
+      // pagesize由大到小切换时，此时tableData.length大于pagesize，会有个报错警告。解决掉这个警告
+      if (_pageSize < pageSize) {
+        settableData(tableData.slice(0, _pageSize))
+      }
+      setpageSize(_pageSize)
+    }
+  }
+  const pagination: TablePaginationConfig = {
+    current: page,
+    position: ['bottomRight'],
+    onChange: changePage,
+    total: total,
+    defaultPageSize: 200,
+    // pageSizeOptions: [10, 20, 50, 100],
+    showSizeChanger: false,
+    // showQuickJumper: true, // 快速跳转
+    showTotal: (total, range) => `共 ${total} 条`,
+  }
   return (
     <section data-class='channels-left' className={`${point ? '' : 'xl'}`}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -333,7 +370,7 @@ export default function Left() {
               rowClassName={(record) =>
                 record.id == activeRow?.id ? 'active' : ''
               }
-              pagination={false}
+              pagination={pagination}
               scroll={{ y: tableHeight }}
             />
           </ConfigProvider>

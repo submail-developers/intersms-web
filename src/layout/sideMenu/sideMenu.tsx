@@ -52,7 +52,11 @@ export default function SideMenu() {
                   {menu.path == 'customer' && ditem.path == 'failTask' ? (
                     <>
                       {ditem.handle.alias}
-                      <span className='fail-badge'>{context}</span>
+                      {context > '0' ? (
+                        <span className='fail-badge'>{context}</span>
+                      ) : (
+                        ''
+                      )}
                     </>
                   ) : (
                     <>{ditem.handle.alias}</>

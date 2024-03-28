@@ -104,11 +104,10 @@ export const getSendList = (data: API.GetSendListParams) => {
 
 // 获取客户列表
 export const getAccountList = (data: API.AccountListParams) => {
-  return request.post<
-    any,
-    API.Response<API.AccountListItem[]>,
-    API.AccountListParams
-  >('console/api/customer/get_sender_list', { ...data })
+  return request.post<any, API.AccountListRes, API.AccountListParams>(
+    'console/api/customer/get_sender_list',
+    { ...data },
+  )
 }
 
 // 删除客户
@@ -281,7 +280,7 @@ export const getAllGroupId = (data: API.GetAllGroupIdParams) => {
 export const getChannelGroupList = (data: API.GetChannelGroupListParams) => {
   return request.post<
     any,
-    API.Response<API.GetChannelGroupListItem[]>,
+    API.GetChannelGroupListRes,
     API.GetChannelGroupListParams
   >('console/api/customer/get_group', { ...data })
 }
