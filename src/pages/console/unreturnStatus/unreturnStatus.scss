@@ -1,0 +1,33 @@
+[data-class='sendlist'] {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .refresh {
+    height: 100%;
+    &.middle {
+      margin-left: 20px;
+      width: 26px;
+      .iconfont {
+        font-size: 22px;
+      }
+    }
+
+    &.small {
+      margin-left: 12px;
+      width: 18px;
+      .iconfont {
+        font-size: 14px;
+      }
+    }
+
+    cursor: pointer;
+    transition: transform 0.3s;
+    will-change: transform;
+    color: #555;
+
+    &:hover {
+      transform-origin: center;
+      transform: rotate(180deg);
+    }
+  }
+}

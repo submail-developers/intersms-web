@@ -10,27 +10,28 @@ import {
   Tooltip,
   App,
 } from 'antd'
+import type { DatePickerProps } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { RangePickerProps } from 'antd/es/date-picker'
 import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import { getSendList, getChannelList, getChannelGroupList } from '@/api'
+import { getSendList, GetRegioncodeByCountry } from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
-
-import './sendList.scss'
+import './unreturnStatus.scss'
 
 interface DataType extends API.SendListItem {}
 interface FormValues {
   channel: string
   group: string
+  country_cn: string
   time: [Dayjs, Dayjs] | null
   keyword: string
   order_flg: string
 }
-
+type RangeValue = [Dayjs | null, Dayjs | null] | null
 enum reportClassName {
   'color-error',
   'color-success',
@@ -38,16 +39,12 @@ enum reportClassName {
   'color-success-2',
 }
 
-const allChannel = { name: '全部通道', id: 'all' } as API.ChannelItem
-const allChannels = {
-  name: '全部通道组',
-  id: 'all',
-} as API.GetChannelGroupListItem
+const allCountry = { label: '全部国家/地区', value: 'all' } as API.CountryItem
+const { RangePicker } = DatePicker
 
 // 发送列表
 export default function SendList() {
   const { message } = App.useApp()
-  const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<DataType[]>([])
@@ -55,26 +52,23 @@ export default function SendList() {
   const [total, settotal] = useState<number>(0)
   const [page, setpage] = useState<number>(1)
   const [pageSize, setpageSize] = useState<number>(50)
+  const [value, setValue] = useState<RangeValue>(null)
+
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
-  // 通道列表
-  const [channelList, setchannelList] = useState<API.ChannelItem[]>([
-    allChannel,
+  // 国家列表
+  const [countryList, setcountryList] = useState<API.CountryItem[]>([
+    allCountry,
   ])
 
-  // 通道组列表
-  const [channelsList, setchannelsList] = useState<
-    API.GetChannelGroupListItem[]
-  >([allChannels])
   // 快捷可选日期
-  const rangePresets: {
-    label: string
-    value: [Dayjs, Dayjs]
-  }[] = [
-    { label: '今天', value: [dayjs().add(0, 'd'), dayjs().add(0, 'd')] },
-    { label: '最近3天', value: [dayjs().add(-2, 'd'), dayjs().add(0, 'd')] },
-    { label: '最近7天', value: [dayjs().add(-6, 'd'), dayjs().add(0, 'd')] },
-  ]
+  // const rangePresets: {
+  //   label: string
+  //   value: [Dayjs, Dayjs]
+  // }[] = [
+  //   { label: '今天', value: [dayjs().add(0, 'd'), dayjs().add(0, 'd')] },
+  //   { label: '最近3天', value: [dayjs().add(-2, 'd'), dayjs().add(0, 'd')] },
+  // ]
 
   const changePage = async (_page: number, _pageSize: number) => {
     if (_page != page) setpage(_page)
@@ -86,18 +80,6 @@ export default function SendList() {
       setpageSize(_pageSize)
     }
   }
-  const sortList = [
-    {
-      id: 0,
-      order_flg: 'send',
-      name: '按请求时间排序',
-    },
-    {
-      id: 1,
-      order_flg: 'sent',
-      name: '按完成时间排序',
-    },
-  ]
 
   const pagination: TablePaginationConfig = {
     current: page,
@@ -114,6 +96,7 @@ export default function SendList() {
   const initFormValues: FormValues = {
     channel: 'all',
     group: 'all',
+    country_cn: 'all',
     time: [dayjs().add(0, 'd'), dayjs().add(0, 'd')],
     keyword: '',
     order_flg: 'send',
@@ -123,7 +106,7 @@ export default function SendList() {
   const search = async () => {
     setloading(true)
     const values = await form.getFieldsValue()
-    const { channel, group, time, keyword, order_flg } = values
+    const { channel, group, time, keyword, order_flg, country_cn } = values
     const start = (time && time[0].format('YYYY-MM-DD')) || ''
     const end = (time && time[1].format('YYYY-MM-DD')) || ''
     const params = {
@@ -132,6 +115,7 @@ export default function SendList() {
       end,
       channel,
       group,
+      country_cn,
       keyword,
       page,
       limit: pageSize,
@@ -153,13 +137,21 @@ export default function SendList() {
   }
 
   const disabledDate: RangePickerProps['disabledDate'] = (current, info) => {
+    console.log(info)
     return current && current >= dayjs().endOf('day') // 无法选择今天以后的日期
   }
+  // const disabledDate: DatePickerProps['disabledDate'] = (current, { from }) => {
+  //   console.log(from, 'form')
+  //   // if (from) {
+  //   //   return Math.abs(current.diff(from, 'days')) >= 7
+  //   // }
+
+  //   return false
+  // }
 
   useEffect(() => {
     form.resetFields()
-    getChannel()
-    getChannels()
+    getCountryList()
   }, [])
 
   const handleSearch = () => {
@@ -173,20 +165,7 @@ export default function SendList() {
   useEffect(() => {
     search()
   }, [page, pageSize])
-  // 获取通道列表
-  const getChannel = async () => {
-    try {
-      const res = await getChannelList()
-      setchannelList([...channelList, ...res.data])
-    } catch (error) {}
-  }
-  // 获取通道组列表
-  const getChannels = async () => {
-    try {
-      const res = await getChannelGroupList({})
-      setchannelsList([...channelsList, ...res.data])
-    } catch (error) {}
-  }
+
   const onRow = (record: DataType, index?: number) => {
     return {
       onClick: () => {
@@ -194,47 +173,14 @@ export default function SendList() {
       },
     }
   }
-
-  // 点击提示复制
-  type TipProps = {
-    record: DataType
-  }
-  const Tip = (props: TipProps) => {
-    let text = `
-        ${props.record.channel_name}
-      `
-    const copy = async () => {
-      try {
-        await navigator.clipboard.writeText(text)
-        message.success('复制成功')
-      } catch (error) {
-        message.success('复制失败')
-      }
-    }
-    return (
-      <div onClick={copy}>
-        <div>{props.record.channel_name}</div>
-      </div>
-    )
-  }
-  // 通道组复制
-  const Tip2 = (props: TipProps) => {
-    let text = `
-        ${props.record.group_name}
-      `
-    const copy = async () => {
-      try {
-        await navigator.clipboard.writeText(text)
-        message.success('复制成功')
-      } catch (error) {
-        message.success('复制失败')
-      }
-    }
-    return (
-      <div onClick={copy}>
-        <div>{props.record.group_name}</div>
-      </div>
-    )
+  // 获取所有国家
+  const getCountryList = async () => {
+    const res = await GetRegioncodeByCountry()
+    let countrys: API.CountryItem[] = []
+    res.data.forEach((item) => {
+      countrys = [...countrys, ...item.children]
+    })
+    setcountryList([{ label: '全部国家', value: '0', area: '' }, ...countrys])
   }
 
   const columns: ColumnsType<DataType> = [
@@ -363,7 +309,7 @@ export default function SendList() {
       className: 'paddingL20',
       render: (_, record) => (
         <Tooltip
-          title={<Tip record={record} />}
+          title={record.channel_name}
           placement='bottom'
           mouseEnterDelay={0.3}
           trigger={['hover', 'click']}>
@@ -377,7 +323,7 @@ export default function SendList() {
       width: 210,
       render: (_, record) => (
         <Tooltip
-          title={<Tip2 record={record} />}
+          title={record.group_name}
           placement='bottom'
           mouseEnterDelay={0.3}
           trigger={['hover', 'click']}>
@@ -415,10 +361,18 @@ export default function SendList() {
       },
     },
   ]
-
+  // 短信类型
+  const smsType = [
+    { id: 'all', name: '全部短信类型' },
+    { id: '1', name: '行业短信' },
+    { id: '2', name: '营销短信' },
+  ]
+  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+    console.log(date, dateString)
+  }
   return (
     <div data-class='sendlist'>
-      <MenuTitle title='发送列表'></MenuTitle>
+      <MenuTitle title='未返回任务列表'></MenuTitle>
       <ConfigProvider
         theme={{
           token: {
@@ -432,36 +386,29 @@ export default function SendList() {
           layout={size == 'small' ? 'inline' : 'inline'}
           wrapperCol={{ span: 24 }}
           autoComplete='off'>
+          {/* <MyFormItem
+            size={size}
+            label='发送时间'
+            style={{ marginBottom: '10px' }}> */}
+          <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
+            <RangePicker
+              size={size}
+              bordered={false}
+              disabledDate={disabledDate}
+              // presets={rangePresets}
+              clearIcon={false}
+              onChange={setValue}
+              style={{ width: size == 'small' ? 190 : 240 }}></RangePicker>
+          </Form.Item>
+          {/* </MyFormItem> */}
+
           <Form.Item label='' name='channel' style={{ marginBottom: 10 }}>
             <Select
               showSearch
-              placeholder='请选择通道'
-              style={{ width: size == 'small' ? 340 : 200 }}
+              placeholder='请选择短信类型'
+              style={{ width: size == 'small' ? 240 : 160 }}
               size={size}
-              options={channelList}
-              fieldNames={{ label: 'name', value: 'id' }}
-              optionFilterProp='name'
-              filterOption={(input, option) =>
-                (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
-              }
-              suffixIcon={
-                <i
-                  className='icon iconfont icon-xiala'
-                  style={{
-                    color: '#000',
-                    fontSize: '12px',
-                    transform: 'scale(.45)',
-                  }}
-                />
-              }></Select>
-          </Form.Item>
-          <Form.Item label='' name='group' style={{ marginBottom: 10 }}>
-            <Select
-              showSearch
-              placeholder='请选择通道组'
-              style={{ width: size == 'small' ? 340 : 200 }}
-              size={size}
-              options={channelsList}
+              options={smsType}
               fieldNames={{ label: 'name', value: 'id' }}
               optionFilterProp='name'
               filterOption={(input, option) =>
@@ -479,16 +426,19 @@ export default function SendList() {
               }></Select>
           </Form.Item>
 
-          <Form.Item label='' name='order_flg' style={{ marginBottom: 10 }}>
+          <Form.Item label='' name='country_cn' style={{ marginBottom: 10 }}>
             <Select
               showSearch
-              style={{ width: 162 }}
+              placeholder='请选择国家/地区'
+              style={{ width: size == 'small' ? 240 : 160 }}
               size={size}
-              options={sortList}
-              fieldNames={{ label: 'name', value: 'order_flg' }}
+              options={countryList}
+              fieldNames={{ label: 'label', value: 'value' }}
               optionFilterProp='name'
               filterOption={(input, option) =>
-                (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
+                (option?.label ?? '')
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
               }
               suffixIcon={
                 <i
@@ -502,24 +452,10 @@ export default function SendList() {
               }></Select>
           </Form.Item>
 
-          <MyFormItem
-            size={size}
-            label='发送时间'
-            style={{ marginBottom: '10px' }}>
-            <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
-              <RangePicker
-                size={size}
-                bordered={false}
-                disabledDate={disabledDate}
-                presets={rangePresets}
-                clearIcon={false}
-                style={{ width: size == 'small' ? 190 : 240 }}></RangePicker>
-            </Form.Item>
-          </MyFormItem>
           <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
             <Input
               size={size}
-              placeholder='账户/手机号/国家/地区'
+              placeholder='账户'
               style={{ width: 162 }}></Input>
           </Form.Item>
 
@@ -541,11 +477,20 @@ export default function SendList() {
             </ConfigProvider>
           </Form.Item>
           <Form.Item style={{ marginBottom: 10 }}>
-            <div
-              className={`refresh fx-center-center ${size}`}
-              onClick={resetForm}>
-              <i className={`icon iconfont icon-shuaxin1`}></i>
-            </div>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#0074d7',
+                },
+              }}>
+              <Button
+                type='primary'
+                size={size}
+                onClick={() => handleSearch()}
+                style={{ width: 110, marginLeft: 0 }}>
+                全部推送成功
+              </Button>
+            </ConfigProvider>
           </Form.Item>
         </Form>
       </ConfigProvider>

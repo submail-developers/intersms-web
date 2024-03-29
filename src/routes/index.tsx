@@ -120,19 +120,6 @@ export const routerList: RouteObject[] = [
             handle: handleFn({ alias: '客户信息' }),
           },
           {
-            path: 'senderManage',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(
-                  () => import('@/pages/console/senderManage/senderManage'),
-                )}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: 'Sender管理' }),
-            handle: handleFn({ alias: 'Sender管理' }),
-          },
-          {
             path: 'failTask',
             element: (
               <LazyImportComponent
@@ -144,6 +131,32 @@ export const routerList: RouteObject[] = [
             errorElement: <Error />,
             loader: loaderFn({ name: '失败任务处理列表' }),
             handle: handleFn({ alias: '失败任务处理列表' }),
+          },
+          {
+            path: 'unreturnStatus',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/console/unreturnStatus/unreturnStatus'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: '未返回任务列表' }),
+            handle: handleFn({ alias: '未返回任务列表' }),
+          },
+          {
+            path: 'senderManage',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(
+                  () => import('@/pages/console/senderManage/senderManage'),
+                )}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: 'Sender管理' }),
+            handle: handleFn({ alias: 'Sender管理' }),
           },
         ],
       },
