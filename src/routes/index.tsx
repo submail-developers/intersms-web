@@ -343,6 +343,17 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '黑名单' }),
             handle: handleFn({ alias: '黑名单' }),
           },
+          {
+            path: 'test',
+            element: (
+              <LazyImportComponent
+                lazyChildren={lazy(() => import('@/pages/console/test'))}
+              />
+            ),
+            errorElement: <Error />,
+            loader: loaderFn({ name: 'test' }),
+            handle: handleFn({ alias: 'test' }),
+          },
         ],
       },
     ],

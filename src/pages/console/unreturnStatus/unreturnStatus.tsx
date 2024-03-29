@@ -393,11 +393,7 @@ export default function SendList() {
           <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
             <RangePicker
               size={size}
-              bordered={false}
-              disabledDate={disabledDate}
-              // presets={rangePresets}
-              clearIcon={false}
-              onChange={setValue}
+              // disabledDate={disabledDate}
               style={{ width: size == 'small' ? 190 : 240 }}></RangePicker>
           </Form.Item>
           {/* </MyFormItem> */}
