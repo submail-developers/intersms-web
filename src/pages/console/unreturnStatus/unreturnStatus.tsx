@@ -17,21 +17,30 @@ import MenuTitle from '@/components/menuTitle/menuTitle'
 import MyFormItem from '@/components/antd/myFormItem/myFormItem'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import { getSendList, GetRegioncodeByCountry } from '@/api'
+import {
+  getSendList,
+  getNoStateLogList,
+  GetRegioncodeByCountry,
+  updateNoStateQueueStatus,
+} from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
+import weekday from 'dayjs/plugin/weekday'
+import localeData from 'dayjs/plugin/localeData'
+
+dayjs.extend(weekday)
+dayjs.extend(localeData)
+
 import './unreturnStatus.scss'
 
-interface DataType extends API.SendListItem {}
+interface DataType extends API.GetNoStateLogItem {}
 interface FormValues {
-  channel: string
-  group: string
-  country_cn: string
   time: [Dayjs, Dayjs] | null
-  keyword: string
-  order_flg: string
+  sms_type: string
+  mail: string
+  country: string
 }
-type RangeValue = [Dayjs | null, Dayjs | null] | null
+
 enum reportClassName {
   'color-error',
   'color-success',
@@ -39,36 +48,30 @@ enum reportClassName {
   'color-success-2',
 }
 
-const allCountry = { label: '全部国家/地区', value: 'all' } as API.CountryItem
-const { RangePicker } = DatePicker
+const allChannel = { name: '全部通道', id: '0' } as API.ChannelItem
 
+const allCountry = { label: '全部国家/地区', value: '0' } as API.CountryItem
 // 发送列表
 export default function SendList() {
   const { message } = App.useApp()
+  const { RangePicker } = DatePicker
   const size = useSize()
   const [form] = Form.useForm()
   const [tableData, settableData] = useState<DataType[]>([])
   const [loading, setloading] = useState(false)
   const [total, settotal] = useState<number>(0)
   const [page, setpage] = useState<number>(1)
-  const [pageSize, setpageSize] = useState<number>(50)
-  const [value, setValue] = useState<RangeValue>(null)
+  const [pageSize, setpageSize] = useState<number>(200)
+  const [mails, setMails] = useState()
+  const [ids, setIds] = useState([]) //id数组
 
   // 被点击的客户(不是被checkbox选中的客户)
   const [activeIndex, setactiveIndex] = useState<number>()
+
   // 国家列表
   const [countryList, setcountryList] = useState<API.CountryItem[]>([
     allCountry,
   ])
-
-  // 快捷可选日期
-  // const rangePresets: {
-  //   label: string
-  //   value: [Dayjs, Dayjs]
-  // }[] = [
-  //   { label: '今天', value: [dayjs().add(0, 'd'), dayjs().add(0, 'd')] },
-  //   { label: '最近3天', value: [dayjs().add(-2, 'd'), dayjs().add(0, 'd')] },
-  // ]
 
   const changePage = async (_page: number, _pageSize: number) => {
     if (_page != page) setpage(_page)
@@ -86,45 +89,50 @@ export default function SendList() {
     position: ['bottomRight'],
     onChange: changePage,
     total: total,
-    defaultPageSize: 50,
-    pageSizeOptions: [10, 20, 50, 100],
+    defaultPageSize: 200,
+    pageSizeOptions: [100, 200, 300],
     showQuickJumper: true, // 快速跳转
     showTotal: (total, range) => `共 ${total} 条`,
   }
 
   // 初始化form的值
   const initFormValues: FormValues = {
-    channel: 'all',
-    group: 'all',
-    country_cn: 'all',
+    sms_type: '0',
+    mail: '',
+    country: '0',
     time: [dayjs().add(0, 'd'), dayjs().add(0, 'd')],
-    keyword: '',
-    order_flg: 'send',
   }
 
   // 获取列表数据
   const search = async () => {
     setloading(true)
     const values = await form.getFieldsValue()
-    const { channel, group, time, keyword, order_flg, country_cn } = values
-    const start = (time && time[0].format('YYYY-MM-DD')) || ''
-    const end = (time && time[1].format('YYYY-MM-DD')) || ''
+    const { sms_type, mail, time, country } = values
+    setMails(mail)
+    // const begin_date = (time && time[0].format('YYYY-MM-DD')) || ''
+    // const end_date = (time && time[1].format('YYYY-MM-DD')) || ''
+    const begin_date = '2023-10-13'
+    const end_date = '2023-10-13'
     const params = {
-      type: 'all',
-      start,
-      end,
-      channel,
-      group,
-      country_cn,
-      keyword,
+      sms_type,
+      begin_date,
+      end_date,
+      mail,
+      country,
       page,
       limit: pageSize,
-      order_flg,
     }
     try {
-      const res = await getSendList(params)
+      const res = await getNoStateLogList(params)
       settableData(res.data)
       settotal(res.total)
+
+      let idList = []
+      let list = res.data.map((item, index) => {
+        idList.push(item.id)
+      })
+      setIds(idList)
+
       setloading(false)
     } catch (error) {
       setloading(false)
@@ -136,19 +144,13 @@ export default function SendList() {
     search()
   }
 
-  const disabledDate: RangePickerProps['disabledDate'] = (current, info) => {
-    console.log(info)
-    return current && current >= dayjs().endOf('day') // 无法选择今天以后的日期
+  const disabledDate: DatePickerProps['disabledDate'] = (current, { from }) => {
+    if (from) {
+      return Math.abs(current.diff(from, 'days')) >= 3
+    }
+
+    return false
   }
-  // const disabledDate: DatePickerProps['disabledDate'] = (current, { from }) => {
-  //   console.log(from, 'form')
-  //   // if (from) {
-  //   //   return Math.abs(current.diff(from, 'days')) >= 7
-  //   // }
-
-  //   return false
-  // }
-
   useEffect(() => {
     form.resetFields()
     getCountryList()
@@ -163,7 +165,9 @@ export default function SendList() {
   }
 
   useEffect(() => {
-    search()
+    if (mails) {
+      search()
+    }
   }, [page, pageSize])
 
   const onRow = (record: DataType, index?: number) => {
@@ -182,38 +186,105 @@ export default function SendList() {
     })
     setcountryList([{ label: '全部国家', value: '0', area: '' }, ...countrys])
   }
+  // 点击提示复制
+  type TipProps = {
+    record: DataType
+  }
+  const Tip = (props: TipProps) => {
+    let text = `
+        ${props.record.channel_name}
+      `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.channel_name}</div>
+      </div>
+    )
+  }
+  // 通道组复制
+  const Tip2 = (props: TipProps) => {
+    let text = `
+        ${props.record.group_name}
+      `
+    const copy = async () => {
+      try {
+        await navigator.clipboard.writeText(text)
+        message.success('复制成功')
+      } catch (error) {
+        message.success('复制失败')
+      }
+    }
+    return (
+      <div onClick={copy}>
+        <div>{props.record.group_name}</div>
+      </div>
+    )
+  }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: '号码',
-      dataIndex: 'mobile',
+      title: '发送账户',
+      dataIndex: 'mail',
       className: size == 'small' ? '' : 'paddingL30',
-      width: size == 'small' ? 160 : 170,
+      width: size == 'small' ? 240 : 260,
       align: size == 'small' ? 'center' : 'left',
       fixed: true,
-      render: (_, record) => <span className='fw500'>{record.mobile}</span>,
+      render: (_, record) => <span className='fw500'>{record.mail}</span>,
     },
     {
-      title: '发送账户',
-      className: size == 'small' ? '' : 'paddingL30',
-      width: size == 'small' ? 140 : 180,
+      title: 'ID',
+      dataIndex: 'id',
+      className: 'paddingL30',
+      width: 80,
+    },
+    // {
+    //   title: '模板ID',
+    //   dataIndex: 'group_id',
+    //   className: 'paddingL30',
+    //   width: size == 'small' ? 180 : 260,
+    // },
+    {
+      title: '号码',
+      dataIndex: 'mobile',
+      className: 'paddingL30',
+      width: 140,
+    },
+
+    {
+      title: (
+        <span style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
+          国家/地区名
+        </span>
+      ),
+      dataIndex: 'country_cn',
+      width: size == 'middle' ? 160 : 100,
       render: (_, record) => (
-        <Tooltip
-          title={record.account_mail}
-          placement='bottom'
-          mouseEnterDelay={0.3}
-          trigger={['hover', 'click']}>
-          <div className='g-ellipsis'>
-            <a href={record.account_path} target='_blank'>
-              {record.account_mail}
-            </a>
+        <div style={{ paddingLeft: size == 'middle' ? '30px' : '0' }}>
+          <div
+            className='g-ellipsis'
+            title={record.country_cn}
+            style={{ width: size == 'middle' ? 160 : 100 }}>
+            {record.country_cn}
           </div>
-        </Tooltip>
+          {/* <div
+            className='color-gray g-ellipsis'
+            title={record.region_code}
+            style={{ width: size == 'middle' ? 160 : 100 }}>
+            {record.region_code}
+          </div> */}
+        </div>
       ),
     },
     {
       title: '短信正文',
-      dataIndex: 'message',
+      dataIndex: 'content',
       width: 320,
       className: 'paddingL20',
       render: (_, record) => (
@@ -226,150 +297,26 @@ export default function SendList() {
         </Tooltip>
       ),
     },
-    {
-      title: '发送名称',
-      dataIndex: 'sender',
-      className: 'paddingL20',
-      width: 104,
-      render: (_, record) => (
-        <div
-          style={{ width: 100 }}
-          className='g-ellipsis'
-          title={record.sender}>
-          {record.sender}
-        </div>
-      ),
-    },
-    {
-      title: '请求/完成时间',
-      dataIndex: 'time',
-      className: 'paddingL20',
-      width: 200,
-      render: (_, record) => {
-        return (
-          <span>
-            {record.send}
-            <br />
-
-            {record.report_code == '' ? '-' : record.sent}
-            {/* {record.sent} */}
-          </span>
-        )
-      },
-    },
-    {
-      title: '下行耗时',
-      dataIndex: 'timer',
-      className: 'paddingL20',
-      width: 80,
-      render: (_, record) =>
-        record.report_code == '' ? (
-          <span style={{ color: '#5765cc' }}>-</span>
-        ) : (
-          <span style={{ color: '#5765cc' }}>{record.downlink_time}s</span>
-        ),
-    },
-    {
-      title: '回执',
-      dataIndex: 'report_code',
-      className: 'paddingL20',
-      width: 100,
-      render: (_, record) => (
-        <div className='g-ellipsis-2'>
-          <span
-            className={`${
-              reportClassName[
-                record.report_state == '0' && record.report_code == 'DELIVRD'
-                  ? '3'
-                  : record.report_state
-              ]
-            }`}>
-            {record.report_code || '未返回'}
-          </span>
-        </div>
-      ),
-    },
-    {
-      title: '国家/地区',
-      dataIndex: 'country_cn',
-      className: 'paddingL20',
-      width: 124,
-      render: (_, record) => (
-        <div
-          style={{ width: 120 }}
-          className='g-ellipsis'
-          title={record.country_cn}>
-          {record.country_cn}
-        </div>
-      ),
-    },
-    {
-      title: '通道',
-      width: 180,
-      className: 'paddingL20',
-      render: (_, record) => (
-        <Tooltip
-          title={record.channel_name}
-          placement='bottom'
-          mouseEnterDelay={0.3}
-          trigger={['hover', 'click']}>
-          <div className='g-ellipsis'>{record.channel_name}</div>
-        </Tooltip>
-      ),
-    },
-    {
-      title: '通道组',
-      className: 'paddingL20',
-      width: 210,
-      render: (_, record) => (
-        <Tooltip
-          title={record.group_name}
-          placement='bottom'
-          mouseEnterDelay={0.3}
-          trigger={['hover', 'click']}>
-          <div className='g-ellipsis-1'>{record.group_name}</div>
-        </Tooltip>
-      ),
-    },
-    {
-      title: '网络类型',
-      width: 100,
-      className: 'paddingL20',
-      render: (_, record) => <span>{record.network_name}</span>,
-    },
-    {
-      title: '短信类型',
-      width: 100,
-      className: 'paddingL20',
-      render: (_, record) => (
-        <span>{record.type == '2' ? '营销短信' : '行业短信'}</span>
-      ),
-    },
-    {
-      title: '成本/计费价',
-      dataIndex: 'price',
-      width: 120,
-      className: 'paddingL20',
-      render: (_, record) => {
-        return (
-          <span>
-            <span style={{ color: '#888888' }}>{record.cost}</span>
-            <br />
-            {record.fee}
-          </span>
-        )
-      },
-    },
   ]
   // 短信类型
   const smsType = [
-    { id: 'all', name: '全部短信类型' },
+    { id: '0', name: '全部短信类型' },
     { id: '1', name: '行业短信' },
     { id: '2', name: '营销短信' },
   ]
-  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(date, dateString)
+
+  // 全部推送成功
+  const pushSuc = async () => {
+    try {
+      const res = await updateNoStateQueueStatus({
+        ids: ids,
+      })
+      if (res) {
+        message.success('推送成功')
+      }
+    } catch (error) {}
   }
+
   return (
     <div data-class='sendlist'>
       <MenuTitle title='未返回任务列表'></MenuTitle>
@@ -386,19 +333,20 @@ export default function SendList() {
           layout={size == 'small' ? 'inline' : 'inline'}
           wrapperCol={{ span: 24 }}
           autoComplete='off'>
-          {/* <MyFormItem
+          <MyFormItem
             size={size}
             label='发送时间'
-            style={{ marginBottom: '10px' }}> */}
-          <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
-            <RangePicker
-              size={size}
-              // disabledDate={disabledDate}
-              style={{ width: size == 'small' ? 190 : 240 }}></RangePicker>
-          </Form.Item>
-          {/* </MyFormItem> */}
-
-          <Form.Item label='' name='channel' style={{ marginBottom: 10 }}>
+            style={{ marginBottom: '10px' }}>
+            <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
+              <RangePicker
+                size={size}
+                variant='borderless'
+                disabledDate={disabledDate}
+                clearIcon={false}
+                style={{ width: size == 'small' ? 190 : 240 }}></RangePicker>
+            </Form.Item>
+          </MyFormItem>
+          <Form.Item label='' name='sms_type' style={{ marginBottom: 10 }}>
             <Select
               showSearch
               placeholder='请选择短信类型'
@@ -422,7 +370,7 @@ export default function SendList() {
               }></Select>
           </Form.Item>
 
-          <Form.Item label='' name='country_cn' style={{ marginBottom: 10 }}>
+          <Form.Item label='' name='country' style={{ marginBottom: 10 }}>
             <Select
               showSearch
               placeholder='请选择国家/地区'
@@ -448,11 +396,11 @@ export default function SendList() {
               }></Select>
           </Form.Item>
 
-          <Form.Item label='' name='keyword' style={{ marginBottom: 10 }}>
+          <Form.Item label='' name='mail' style={{ marginBottom: 10 }}>
             <Input
               size={size}
               placeholder='账户'
-              style={{ width: 162 }}></Input>
+              style={{ width: 220 }}></Input>
           </Form.Item>
 
           <Form.Item style={{ marginBottom: 10 }}>
@@ -482,7 +430,7 @@ export default function SendList() {
               <Button
                 type='primary'
                 size={size}
-                onClick={() => handleSearch()}
+                onClick={() => pushSuc()}
                 style={{ width: 110, marginLeft: 0 }}>
                 全部推送成功
               </Button>

@@ -12,7 +12,8 @@ import token from '@/style/antdToken'
 // 设置默认风格样式及antd使用中文格式
 // 使用AntdApp包裹组件的原因https://ant.design/components/app-cn
 import { ConfigProvider, App as AntdApp } from 'antd'
-import zhCN from 'antd/es/locale/zh_CN'
+// import zhCN from 'antd/es/locale/zh_CN'
+import zhCN from 'antd/lib/locale/zh_CN'
 export default function App() {
   return (
     <ConfigProvider

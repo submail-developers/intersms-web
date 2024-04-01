@@ -20,7 +20,7 @@ import { getSendList, getChannelList, getChannelGroupList } from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 
-import './sendList.scss'
+import './unreturnStatus.scss'
 
 interface DataType extends API.SendListItem {}
 interface FormValues {
@@ -509,7 +509,7 @@ export default function SendList() {
             <Form.Item label='' name='time' style={{ marginBottom: '0px' }}>
               <RangePicker
                 size={size}
-                variant='borderless'
+                bordered={false}
                 disabledDate={disabledDate}
                 presets={rangePresets}
                 clearIcon={false}

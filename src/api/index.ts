@@ -265,6 +265,31 @@ export const deleteAllHandlerItem = (data: API.DeleteAllHandlerItemParams) => {
  */
 
 /**
+ * 未返回任务列表start
+ */
+//获取未返回任务列表
+export const getNoStateLogList = (data: API.GetNoStateLogListParams) => {
+  return request.post<
+    any,
+    API.GetNoStateLogListRes,
+    API.GetNoStateLogListParams
+  >('console/api/handler/get_no_state_log', { ...data })
+}
+// 全部推送成功
+export const updateNoStateQueueStatus = (
+  data: API.updateNoStateQueueStatusParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.updateNoStateQueueStatusParams
+  >('console/api/handler/update_no_state_queue_status', { ...data })
+}
+/**
+ * 未返回任务列表end
+ */
+
+/**
  * 通道组管理start
  */
 // 获取通道组id

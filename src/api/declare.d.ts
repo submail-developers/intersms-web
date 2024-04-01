@@ -352,6 +352,7 @@ declare module 'apis' {
       list: GetHandlerDetailListItem[]
       app: GetHandlerDetailListItem2[]
     }
+
     // 状态推送参数
     interface StatePushHandlerParams {
       account: string
@@ -380,6 +381,62 @@ declare module 'apis' {
     }
     /**
      * 失败任务处理列表end
+     */
+
+    /**
+     * 未返回任务列表start
+     */
+    // 获取未返回任务列表参数
+    interface GetNoStateLogListParams {
+      page: number // 第几页
+      limit: number // 每页数量
+      begin_date: string // 开始时间
+      end_date?: string // 结束时间
+      country?: string // 国际
+      mail?: string // 搜索关键字
+      sms_type?: string //排序
+    }
+
+    // 发送列表返回值
+    interface GetNoStateLogListRes extends Response<GetNoStateLogItem[]> {
+      total: number
+    }
+    interface GetNoStateLogItem {
+      id: string
+      mail: string
+      group_id: string
+      mobile: string
+      region_code: string
+      account: string // 账户ID
+      account_mail: string // 账户邮箱
+      account_path: string // 跳转链接
+      title: string // 发送名称
+      content: string
+      type: '1' | '2' // 短信类型 1行业2营销
+      net_type: '0' | '1' // 网络类型
+      network: string // 运营商ID
+      network_name: string // 运营商-网络类型
+      send: string // 发送时间
+      sent: string // 完成时间
+      sender: string
+      fee: string // 计费
+      cost: string // 成本
+      group_name: string //通道组
+      channel_name: string // 通道
+      country_cn: string //国家名称
+      region_code: string
+      report_state: '0' | '1' | '2' // 发送状态 0失败， 1成功，2发送中
+      report_code: string // 状态码
+      report_desc: string // 状态描述
+      downlink_time: string // 下行耗时
+    }
+    // 全部推送成功
+    interface updateNoStateQueueStatusParams {
+      ids: Array
+    }
+
+    /**
+     * 未返回任务列表end
      */
 
     /**
