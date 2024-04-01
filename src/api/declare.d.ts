@@ -405,30 +405,13 @@ declare module 'apis' {
       id: string
       mail: string
       group_id: string
-      mobile: string
+      address: string
+      appid: string
       region_code: string
-      account: string // 账户ID
-      account_mail: string // 账户邮箱
-      account_path: string // 跳转链接
-      title: string // 发送名称
-      content: string
-      type: '1' | '2' // 短信类型 1行业2营销
-      net_type: '0' | '1' // 网络类型
-      network: string // 运营商ID
-      network_name: string // 运营商-网络类型
-      send: string // 发送时间
-      sent: string // 完成时间
-      sender: string
-      fee: string // 计费
-      cost: string // 成本
-      group_name: string //通道组
-      channel_name: string // 通道
-      country_cn: string //国家名称
-      region_code: string
-      report_state: '0' | '1' | '2' // 发送状态 0失败， 1成功，2发送中
-      report_code: string // 状态码
-      report_desc: string // 状态描述
-      downlink_time: string // 下行耗时
+      project: string
+      message: string
+      country_cn: string
+      country_area_code: string
     }
     // 全部推送成功
     interface updateNoStateQueueStatusParams {
@@ -778,6 +761,7 @@ declare module 'apis' {
       mke_group: string
       mke_group_name: string
       mke_sender: string
+      area: string
     }
 
     /**

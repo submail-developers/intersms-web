@@ -136,7 +136,6 @@ export default function Left() {
     },
     {
       title: '状态',
-      dataIndex: 'status',
       width: 40,
       render: (_, record) => <SwitchNode record={record}></SwitchNode>,
     },

@@ -129,8 +129,8 @@ export const routerList: RouteObject[] = [
               />
             ),
             errorElement: <Error />,
-            loader: loaderFn({ name: '失败任务处理列表' }),
-            handle: handleFn({ alias: '失败任务处理列表' }),
+            loader: loaderFn({ name: '失败任务列表' }),
+            handle: handleFn({ alias: '失败任务列表' }),
           },
           {
             path: 'unreturnStatus',
@@ -343,17 +343,17 @@ export const routerList: RouteObject[] = [
             loader: loaderFn({ name: '黑名单' }),
             handle: handleFn({ alias: '黑名单' }),
           },
-          {
-            path: 'test',
-            element: (
-              <LazyImportComponent
-                lazyChildren={lazy(() => import('@/pages/console/test'))}
-              />
-            ),
-            errorElement: <Error />,
-            loader: loaderFn({ name: 'test' }),
-            handle: handleFn({ alias: 'test' }),
-          },
+          // {
+          //   path: 'test',
+          //   element: (
+          //     <LazyImportComponent
+          //       lazyChildren={lazy(() => import('@/pages/console/test'))}
+          //     />
+          //   ),
+          //   errorElement: <Error />,
+          //   loader: loaderFn({ name: 'test' }),
+          //   handle: handleFn({ alias: 'test' }),
+          // },
         ],
       },
     ],

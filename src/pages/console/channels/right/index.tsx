@@ -246,7 +246,6 @@ export default function Right() {
     },
     {
       title: '关联国家/地区',
-      dataIndex: 'actions',
       width: 160,
       render: (_, record) => (
         <Button
@@ -259,7 +258,6 @@ export default function Right() {
     },
     {
       title: '操作',
-      dataIndex: 'actions',
       width: 120,
       render: (_, record) => (
         <>

@@ -169,7 +169,6 @@ const Dialog = (props: Props, ref: any) => {
       title: '短信失败类型',
       width: 120,
       className: 'paddingL30',
-      dataIndex: 'name',
       render(_, record) {
         return (
           <div>

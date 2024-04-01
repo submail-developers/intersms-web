@@ -108,7 +108,6 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '电话',
-      dataIndex: 'row',
       className: 'paddingL30',
       width: 140,
       render: (_, record) => {
@@ -123,7 +122,6 @@ export default function NumberChannelsRoute() {
     },
     {
       title: '公司',
-      dataIndex: 'time',
       width: 220,
       className: 'paddingL30',
       render: (_, record) => {

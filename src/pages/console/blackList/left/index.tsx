@@ -71,7 +71,6 @@ export default function Left() {
     },
     {
       title: 'account',
-      dataIndex: 'account',
       ellipsis: true,
       width: 50,
       render: (_, record) => <SwitchNode record={record}></SwitchNode>,

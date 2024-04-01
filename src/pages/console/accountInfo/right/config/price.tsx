@@ -121,7 +121,6 @@ function Price(props: Props, ref: any) {
     },
     {
       title: '操作',
-      dataIndex: 'actions',
       render: (_, record) => (
         <div>
           <Button

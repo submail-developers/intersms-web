@@ -176,7 +176,6 @@ function Channel(props: Props, ref: any) {
     },
     {
       title: '操作',
-      dataIndex: 'actions',
       width: 140,
       render: (_, record) => (
         <div>

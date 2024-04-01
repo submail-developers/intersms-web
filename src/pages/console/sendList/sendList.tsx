@@ -267,7 +267,7 @@ export default function SendList() {
     },
     {
       title: '短信正文',
-      dataIndex: 'message',
+      dataIndex: 'content',
       width: 320,
       className: 'paddingL20',
       render: (_, record) => (
@@ -296,7 +296,7 @@ export default function SendList() {
     },
     {
       title: '请求/完成时间',
-      dataIndex: 'time',
+      dataIndex: 'sent',
       className: 'paddingL20',
       width: 200,
       render: (_, record) => {
@@ -313,7 +313,7 @@ export default function SendList() {
     },
     {
       title: '下行耗时',
-      dataIndex: 'timer',
+      dataIndex: 'downlink_time',
       className: 'paddingL20',
       width: 80,
       render: (_, record) =>
@@ -401,7 +401,7 @@ export default function SendList() {
     },
     {
       title: '成本/计费价',
-      dataIndex: 'price',
+      dataIndex: 'cost',
       width: 120,
       className: 'paddingL20',
       render: (_, record) => {

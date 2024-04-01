@@ -115,7 +115,6 @@ function Error(props: Props, ref: any) {
     {
       title: '短信类型',
       width: 120,
-      dataIndex: 'Sms_type',
       render: (_, record) => (
         <div>{record.sms_type == '1' ? '行业通道组' : '营销通道组'}</div>
       ),
@@ -162,7 +161,6 @@ function Error(props: Props, ref: any) {
     },
     {
       title: '操作',
-      dataIndex: 'actions',
       width: 140,
       render: (_, record) => (
         <div>
