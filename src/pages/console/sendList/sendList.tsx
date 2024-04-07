@@ -250,7 +250,7 @@ export default function SendList() {
     {
       title: '发送账户',
       className: size == 'small' ? '' : 'paddingL30',
-      width: size == 'small' ? 140 : 180,
+      width: size == 'small' ? 140 : 240,
       render: (_, record) => (
         <Tooltip
           title={record.account_mail}

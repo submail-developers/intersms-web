@@ -25,7 +25,7 @@ import {
 } from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
-
+import moment from 'moment'
 import './unreturnStatus.scss'
 
 interface DataType extends API.GetNoStateLogItem {}
@@ -140,12 +140,17 @@ export default function SendList() {
   }
 
   const disabledDate: DatePickerProps['disabledDate'] = (current, { from }) => {
+    // 禁用今天之后的日期
+    if (current && current >= dayjs().endOf('day')) {
+      return true
+    }
+
     if (from) {
       return Math.abs(current.diff(from, 'days')) >= 3
     }
-
     return false
   }
+
   useEffect(() => {
     form.resetFields()
     getCountryList()
