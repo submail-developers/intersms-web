@@ -6,7 +6,12 @@ import MyDrawer from './dialog/drawer/drawer'
 import BindSensitiveWordDialog from './dialog/bindSensitiveWordDialog/bindSensitiveWordDialog'
 import BindBlackDialog from './dialog/bindBlackDialog/bindBlackDialog'
 import MenuTitle from '@/components/menuTitle/menuTitle'
-import { getChannelList, deleteChannel, channelUpdateListener } from '@/api'
+import {
+  getChannelList,
+  deleteChannel,
+  channelUpdateListener,
+  getChannelGroupList,
+} from '@/api'
 import { useSize } from '@/hooks'
 import { API } from 'apis'
 import {
@@ -17,7 +22,10 @@ import {
 import { LoadingOutlined } from '@ant-design/icons'
 
 import './channel.scss'
-
+const allChannels = {
+  name: '全部通道组',
+  id: 'all',
+} as API.GetChannelGroupListItem
 interface DataType extends API.ChannelItem {}
 type ConfigItemProps = {
   record: DataType
@@ -491,6 +499,7 @@ export default function Channel() {
 
   useEffect(() => {
     initData()
+    getChannels()
   }, [])
 
   useEffect(() => {
@@ -582,6 +591,19 @@ export default function Channel() {
     initData()
   }
 
+  // 通道组列表
+  const [channelsList, setchannelsList] = useState<
+    API.GetChannelGroupListItem[]
+  >([allChannels])
+
+  // 获取通道组列表
+  const getChannels = async () => {
+    try {
+      const res = await getChannelGroupList({})
+      setchannelsList([...channelsList, ...res.data])
+    } catch (error) {}
+  }
+
   return (
     <div data-class='channel'>
       <MenuTitle title='通道管理'></MenuTitle>
@@ -653,7 +675,11 @@ export default function Channel() {
         scroll={{ x: 'max-content' }}
         loading={loading}
       />
-      <AddChannel ref={addChannelDialogRef} initData={initData} />
+      <AddChannel
+        ref={addChannelDialogRef}
+        initData={initData}
+        allChannelData={channelsList}
+      />
       <BindSensitiveWordDialog
         ref={bindSensitiveWordDialogRef}
         onSearch={initData}

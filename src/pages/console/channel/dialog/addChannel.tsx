@@ -7,11 +7,14 @@ import {
   yesOrNoOptions,
   accessTypeOptions,
   channelTypeOptions,
+  isOpenTypeOptions,
 } from '@/utils/options'
 import { ProFormDependency } from '@ant-design/pro-components'
 import { API } from 'apis'
+import { useSize } from '@/hooks'
 interface Props {
   initData: () => void
+  allChannelData: API.GetAllChannelIdParamsItems[]
 }
 
 // 新增时初始化的值
@@ -29,6 +32,9 @@ const initialValues = {
   flow: '',
   udh: '1',
   mobile_type: '0',
+  resend: '0',
+  // resend_id: '0',
+  resend_timer: '40',
 }
 
 const Dialog = (props: Props, ref: any) => {
@@ -41,7 +47,7 @@ const Dialog = (props: Props, ref: any) => {
       open,
     }
   })
-
+  const size = useSize()
   const open = (initFomeValue: any) => {
     setIsModalOpen(true)
     const { isAdd } = initFomeValue
@@ -53,6 +59,11 @@ const Dialog = (props: Props, ref: any) => {
   const handleOk = async () => {
     try {
       const formVal = await form.validateFields()
+      console.log(formVal)
+      if (formVal.resend == '0') {
+        formVal.resend_timer = '0'
+        formVal.resend_id = '0'
+      }
       const res = await saveChannel(formVal)
       message.success('保存成功')
       props.initData()
@@ -226,6 +237,86 @@ const Dialog = (props: Props, ref: any) => {
             </Form.Item>
           </Col>
         </Row>
+
+        <Row justify='space-between' gutter={30}>
+          <Col span={12}>
+            <Form.Item label='是否开启补发' name='resend'>
+              <Radio.Group options={isOpenTypeOptions} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <ProFormDependency name={['resend']}>
+          {({ resend }) => {
+            return (
+              <Row justify='space-between' gutter={30}>
+                <Col span={resend == '1' ? 12 : 0}>
+                  <Form.Item
+                    hidden={resend != '1'}
+                    label='补发超时限制(s)'
+                    labelCol={{ span: 24 }}
+                    shouldUpdate
+                    name='resend_timer'>
+                    <Input placeholder='请输入时间' />
+                  </Form.Item>
+                </Col>
+                {size == 'small' ? (
+                  <Col span={resend == '1' ? 24 : 0}>
+                    <Form.Item
+                      label='补发通道组'
+                      name='resend_id'
+                      validateTrigger='onSubmit'>
+                      <Select
+                        showSearch
+                        placeholder='请选择通道组'
+                        optionFilterProp='children'
+                        options={props.allChannelData.slice(1)}
+                        fieldNames={{ label: 'name', value: 'id' }}
+                        onChange={onChange1}
+                        onSearch={onSearch}
+                        filterOption={(input, option) =>
+                          (option?.name ?? '')
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+                ) : (
+                  <Col span={resend == '1' ? 12 : 0}>
+                    <Form.Item
+                      label='补发通道组'
+                      name='resend_id'
+                      validateTrigger='onSubmit'>
+                      <Select
+                        showSearch
+                        placeholder='请选择通道组'
+                        optionFilterProp='children'
+                        options={props.allChannelData.slice(1)}
+                        fieldNames={{ label: 'name', value: 'id' }}
+                        onChange={onChange1}
+                        onSearch={onSearch}
+                        filterOption={(input, option) =>
+                          (option?.name ?? '')
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+                )}
+
+                <Col span={resend == '1' ? 12 : 0}>
+                  <Form.Item label='补发超时限制' name='resend_timer' hidden>
+                    <Input placeholder='' />
+                  </Form.Item>
+                  <Form.Item label='补发通道组' name='resend_id' hidden>
+                    <Input placeholder='' />
+                  </Form.Item>
+                </Col>
+              </Row>
+            )
+          }}
+        </ProFormDependency>
       </Form>
     </Modal>
   )

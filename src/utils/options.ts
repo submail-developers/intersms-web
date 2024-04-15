@@ -41,6 +41,17 @@ export const accessTypeOptions = [
     value: '1',
   },
 ]
+// 是否开启补发
+export const isOpenTypeOptions = [
+  {
+    label: '是',
+    value: '1',
+  },
+  {
+    label: '否',
+    value: '0',
+  },
+]
 
 // 通道类型
 export const channelTypeOptions = [
