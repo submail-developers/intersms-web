@@ -104,19 +104,23 @@ const Dialog = (props: Props, ref: any) => {
             }
             options={props.allCountry}></Select>
         </Form.Item>
+
         <Row justify='space-between' gutter={30}>
           <Col span={12}>
             <Form.Item label='短信类型' name='type' validateTrigger='onSubmit'>
               <Radio.Group options={channelPriceTypeOptions} />
             </Form.Item>
           </Col>
+        </Row>
 
-          <ProFormDependency name={['type']}>
-            {({ type }) => {
-              return (
-                <Col span={12}>
+        <ProFormDependency name={['type']}>
+          {({ type }) => {
+            return (
+              <Row justify='space-between' gutter={30}>
+                <Col span={type == '1' ? 12 : 0}>
                   <Form.Item
-                    label={type == '1' ? '行业价格' : '营销价格'}
+                    hidden={type != '1'}
+                    label='行业价格(CNY)'
                     name='price'
                     validateTrigger='onSubmit'
                     rules={[
@@ -133,10 +137,71 @@ const Dialog = (props: Props, ref: any) => {
                     />
                   </Form.Item>
                 </Col>
-              )
-            }}
-          </ProFormDependency>
-        </Row>
+                <Col span={type == '1' ? 12 : 0}>
+                  <Form.Item
+                    hidden={type != '1'}
+                    label='行业价格(USD)'
+                    name='us_price'
+                    validateTrigger='onSubmit'
+                    rules={[
+                      { message: '请输入' },
+                      {
+                        type: 'number',
+                        message: '请输入正确的数字!',
+                      },
+                    ]}>
+                    <Input
+                      type='number'
+                      placeholder='请输入价格'
+                      maxLength={30}
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={type == '1' ? 0 : 12}>
+                  <Form.Item
+                    hidden={type == '1'}
+                    label='营销价格(CNY)'
+                    name='price'
+                    validateTrigger='onSubmit'
+                    rules={[
+                      { message: '请输入' },
+                      {
+                        type: 'number',
+                        message: '请输入正确的数字!',
+                      },
+                    ]}>
+                    <Input
+                      type='number'
+                      placeholder='请输入价格'
+                      maxLength={30}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={type == '1' ? 0 : 12}>
+                  <Form.Item
+                    hidden={type == '1'}
+                    label='营销价格(USD)'
+                    name='us_price'
+                    validateTrigger='onSubmit'
+                    rules={[
+                      { message: '请输入' },
+                      {
+                        type: 'number',
+                        message: '请输入正确的数字!',
+                      },
+                    ]}>
+                    <Input
+                      type='number'
+                      placeholder='请输入价格'
+                      maxLength={30}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            )
+          }}
+        </ProFormDependency>
       </Form>
     </Modal>
   )

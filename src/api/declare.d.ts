@@ -240,6 +240,7 @@ declare module 'apis' {
       country_cn: string
       type: '1' | '2' // 1营销2行业
       price: string // 价格
+      us_price: string
       date: string
     }
     // 客户信息-通道配置item

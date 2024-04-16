@@ -109,8 +109,12 @@ function Price(props: Props, ref: any) {
       ),
     },
     {
-      title: '单价',
+      title: '单价(CNY)',
       dataIndex: 'price',
+    },
+    {
+      title: '单价(USD)',
+      dataIndex: 'us_price',
     },
     {
       title: '短信类型',
