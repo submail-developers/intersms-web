@@ -371,6 +371,16 @@ export const channelGroupAddChannel = (
     { ...data },
   )
 }
+// 设置通道组是否补发
+export const saveGrouRelatedChannelResend = (
+  data: API.saveGrouRelatedChannelResendParams,
+) => {
+  return request.post<
+    any,
+    API.Response<any>,
+    API.saveGrouRelatedChannelResendParams
+  >('console/api/customer/save_group_related_channel_resend', { ...data })
+}
 // 通道组删除通道
 export const channelGroupDeleteChannel = (
   data: API.ChannelGroupDeleteChannelParams,

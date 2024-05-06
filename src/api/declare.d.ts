@@ -490,6 +490,7 @@ declare module 'apis' {
       group_id: string
       channel_id: string
       channel_name: string
+      channel_resend: string
       channel_access_type: '0' | '1' // 接入类型 0smpp  1http
       channel_type: '1' | '2' // 通道类型  1行业  2营销
       channel_flow: string // 流速
@@ -700,6 +701,12 @@ declare module 'apis' {
     interface ChannelGroupAddChannelParams {
       group_id: string
       channel_id: string
+    }
+    // 设置通道组是否补发-参数
+    interface saveGrouRelatedChannelResendParams {
+      group_id: string
+      channel_id: string
+      resend: string
     }
     // 通道组删除通道-参数
     interface ChannelGroupDeleteChannelParams

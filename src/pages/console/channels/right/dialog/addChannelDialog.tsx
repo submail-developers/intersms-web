@@ -5,6 +5,7 @@ import ModelFooter from '@/components/antd/modelFooter/modelFooter'
 import { API } from 'apis'
 import { useAppSelector } from '@/store/hook'
 import { channelsState } from '@/store/reducers/channels'
+import { isOpenTypeOptions } from '@/utils/options'
 
 interface DataType extends API.GroupChannelItem {}
 
@@ -73,6 +74,7 @@ const Dialog = (props: Props, ref: any) => {
         form={form}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
+        initialValues={{ resend: '0' }}
         layout='vertical'>
         <Form.Item label='通道名称' name='channel_id'>
           <Select
@@ -86,6 +88,10 @@ const Dialog = (props: Props, ref: any) => {
             options={channelList}
           />
         </Form.Item>
+
+        {/* <Form.Item label='配置补发' name='resend' validateTrigger='onSubmit'>
+          <Radio.Group options={isOpenTypeOptions} />
+        </Form.Item> */}
       </Form>
     </Modal>
   )

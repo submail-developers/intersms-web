@@ -5,7 +5,11 @@ import BindKeyword from './dialog/bindKeyword/bindKeyword'
 import { Button, Popconfirm, ConfigProvider, Table, App, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useSize } from '@/hooks'
-import { getGroupChannelList, channelGroupDeleteChannel } from '@/api'
+import {
+  getGroupChannelList,
+  channelGroupDeleteChannel,
+  saveGrouRelatedChannelResend,
+} from '@/api'
 import AddChannelDialog from './dialog/addChannelDialog'
 import { API } from 'apis'
 import AccessCountryDrawer from './dialog/drawer/drawer'
@@ -125,6 +129,21 @@ export default function Right() {
       selectedRowKeys.filter((item) => item != record.channel_id),
     )
   }
+  // 配置补发
+  const setResend = async (record, resend) => {
+    console.log(record, '??')
+    try {
+      let params = {
+        group_id: record.group_id,
+        channel_id: record.channel_id,
+        resend: resend,
+      }
+      await saveGrouRelatedChannelResend(params)
+
+      getList()
+      message.success('配置成功！')
+    } catch (error) {}
+  }
   // 点击提示复制
   type TipProps = {
     record: DataType
@@ -224,6 +243,7 @@ export default function Right() {
         return <div className={color}>{text}</div>
       },
     },
+
     {
       title: '关键字',
       width: 140,
@@ -258,7 +278,7 @@ export default function Right() {
     },
     {
       title: '操作',
-      width: 120,
+      width: 160,
       render: (_, record) => (
         <>
           {[0, -1, -2, 99].includes(record.connection_status) ? (
@@ -282,6 +302,38 @@ export default function Right() {
                 删除
               </Button>
             </span>
+          )}
+          &nbsp;&nbsp;
+          {record.channel_resend == '0' ? (
+            <Popconfirm
+              placement='bottom'
+              title='警告'
+              description='确定配置补发吗？'
+              onConfirm={() => setResend(record, '1')}
+              okText='确定'
+              cancelText='取消'>
+              <Button
+                className='color-success'
+                type='link'
+                style={{ paddingLeft: 0, paddingRight: 0 }}>
+                配置补发
+              </Button>
+            </Popconfirm>
+          ) : (
+            <Popconfirm
+              placement='bottom'
+              title='警告'
+              description='确定取消补发吗？'
+              onConfirm={() => setResend(record, '0')}
+              okText='确定'
+              cancelText='取消'>
+              <Button
+                className='color-error'
+                type='link'
+                style={{ paddingLeft: 0, paddingRight: 0 }}>
+                取消补发
+              </Button>
+            </Popconfirm>
           )}
         </>
       ),
