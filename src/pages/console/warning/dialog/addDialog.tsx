@@ -26,6 +26,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
   const { message } = App.useApp()
   const [isAdd, setisAdd] = useState<boolean>(true)
   const [record, setrecord] = useState<API.GetalArmConfigListItems | null>(null)
+  const [channelName, setChannelName] = useState('')
   useImperativeHandle(ref, () => {
     return {
       open,
@@ -65,6 +66,13 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
     region_code = option.value
   }
 
+  const selectChannel = (value: string, option: any) => {
+    console.log(option.name)
+    setChannelName(option.name)
+  }
+
+  const onChange1 = (value: string, option: any) => {}
+
   let sender: string
   const seleAccount = (value: string, option: any) => {
     sender = option.account
@@ -74,7 +82,14 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
       const params = await form.validateFields()
       let newParams
       if (isAdd) {
-        newParams = { country_cn, area, region_code, ...params }
+        newParams = {
+          country_cn,
+          area,
+          region_code,
+          channel_name: channelName,
+          ...params,
+        }
+        console.log(newParams, 'newParams1')
       } else {
         if (record) newParams = { ...record, ...params }
       }
@@ -135,10 +150,6 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
 
   const onChange = (e: RadioChangeEvent) => {
     console.log('checked = ', e)
-  }
-
-  const onChange1 = (value: string) => {
-    console.log(`selected ${value}`)
   }
 
   const selTab = (value: string) => {
@@ -231,7 +242,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
                         optionFilterProp='children'
                         options={allChannelData}
                         fieldNames={{ label: 'name', value: 'id' }}
-                        onChange={onChange1}
+                        onChange={selectChannel}
                         filterOption={(input, option) =>
                           (option?.name ?? '')
                             .toLowerCase()
