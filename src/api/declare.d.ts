@@ -282,6 +282,12 @@ declare module 'apis' {
       test_flg: '0' | '1' // 0否1是
     }
 
+    // 客户信息-删除-国家价格配置
+    interface DeleteAccountPriceParams {
+      account: string // 账户ID
+      id: string
+    }
+
     /**
      * 客户信息end
      */

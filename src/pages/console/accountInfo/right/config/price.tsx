@@ -59,7 +59,10 @@ function Price(props: Props, ref: any) {
   // 删除
   const deleteEvent = async (id: string) => {
     try {
-      await deleteAccountPrice({ id })
+      await deleteAccountPrice({
+        id,
+        account: accountInfoStore.activeAccount?.account || '',
+      })
       message.success('删除成功')
       setSelectedRowKeys(selectedRowKeys.filter((item) => item != id))
       updateTableData()
@@ -72,7 +75,10 @@ function Price(props: Props, ref: any) {
       return
     }
     try {
-      await deleteAccountPrice({ id: selectedRowKeys.join(',') })
+      await deleteAccountPrice({
+        id: selectedRowKeys.join(','),
+        account: accountInfoStore.activeAccount?.account || '',
+      })
       setSelectedRowKeys([])
       message.success('删除成功')
       updateTableData()

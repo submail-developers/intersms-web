@@ -171,12 +171,18 @@ export const updateAccountError = (data: API.UpdateAccountErrorParams) => {
   )
 }
 // 客户信息-删除-国家价格配置
-export const deleteAccountPrice = (data: API.Ids) => {
-  return request.post<any, API.Response<any>, API.Ids>(
+export const deleteAccountPrice = (data: API.DeleteAccountPriceParams) => {
+  return request.post<any, API.Response<any>, API.DeleteAccountPriceParams>(
     'console/api/customer/delete_sender_country',
     { ...data },
   )
 }
+// export const deleteAccountPrice = (data: API.Ids) => {
+//   return request.post<any, API.Response<any>, API.Ids>(
+//     'console/api/customer/delete_sender_country',
+//     { ...data },
+//   )
+// }
 // 客户信息-删除-国家通道配置
 export const deleteAccountChannel = (data: API.Ids) => {
   return request.post<any, API.Response<any>, API.Ids>(
