@@ -147,33 +147,60 @@ const Dialog = (props: Props, ref: any) => {
           {({ access_type }) => {
             return (
               <Row justify='space-between' gutter={30}>
-                <Col span={access_type == '0' ? 12 : 0}>
-                  <Form.Item
-                    hidden={access_type != '0'}
-                    label='SMSC服务方IP地址'
-                    labelCol={{ span: 24 }}
-                    shouldUpdate
-                    name='smsc_ip'>
-                    <Input placeholder='请输入IP地址' maxLength={30} />
-                  </Form.Item>
-                </Col>
-                <Col span={access_type == '0' ? 12 : 0}>
-                  <Form.Item
-                    hidden={access_type != '0'}
-                    label='SMSC服务方端口号'
-                    labelCol={{ span: 24 }}
-                    name='smsc_port'>
-                    <Input placeholder='请输入端口号' maxLength={30} />
-                  </Form.Item>
-                </Col>
-                <Col span={access_type == '0' ? 0 : 24}>
-                  <Form.Item
-                    label='http接口地址'
-                    name='http_url'
-                    hidden={access_type == '0'}>
-                    <Input placeholder='请输入http接口地址' maxLength={30} />
-                  </Form.Item>
-                </Col>
+                {/* SMPP接入类型的表单项 */}
+                {['0'].includes(access_type) && (
+                  <>
+                    <Col span={12}>
+                      <Form.Item
+                        label='SMSC服务方IP地址'
+                        labelCol={{ span: 24 }}
+                        shouldUpdate
+                        name='smsc_ip'>
+                        <Input placeholder='请输入IP地址' maxLength={30} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label='SMSC服务方端口号'
+                        labelCol={{ span: 24 }}
+                        name='smsc_port'>
+                        <Input placeholder='请输入端口号' maxLength={30} />
+                      </Form.Item>
+                    </Col>
+                  </>
+                )}
+
+                {/* CMPP接入类型的表单项 */}
+                {['2'].includes(access_type) && (
+                  <>
+                    <Col span={12}>
+                      <Form.Item
+                        label='CMPP服务方IP地址'
+                        labelCol={{ span: 24 }}
+                        shouldUpdate
+                        name='cmpp_ip'>
+                        <Input placeholder='请输入IP地址' maxLength={30} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label='CMPP服务方端口号'
+                        labelCol={{ span: 24 }}
+                        name='cmpp_port'>
+                        <Input placeholder='请输入端口号' maxLength={30} />
+                      </Form.Item>
+                    </Col>
+                  </>
+                )}
+
+                {/* HTTP接入类型的表单项 */}
+                {['1'].includes(access_type) && (
+                  <Col span={24}>
+                    <Form.Item label='http接口地址' name='http_url'>
+                      <Input placeholder='请输入http接口地址' maxLength={30} />
+                    </Form.Item>
+                  </Col>
+                )}
               </Row>
             )
           }}

@@ -40,6 +40,10 @@ export const accessTypeOptions = [
     label: 'HTTP',
     value: '1',
   },
+  {
+    label: 'CMPP',
+    value: '2',
+  },
 ]
 // 是否开启补发
 export const isOpenTypeOptions = [
