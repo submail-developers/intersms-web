@@ -102,28 +102,20 @@ export const waringTimeOptions = [
     label: '10 分钟',
   },
   {
-    value: '15',
-    label: '15 分钟',
-  },
-  {
-    value: '20',
-    label: '20 分钟',
-  },
-  {
-    value: '25',
-    label: '25 分钟',
-  },
-  {
     value: '30',
     label: '30 分钟',
   },
   {
-    value: '45',
-    label: '45 分钟',
+    value: '60',
+    label: '1 小时',
   },
   {
-    value: '60',
-    label: '60 分钟',
+    value: '120',
+    label: '2 小时',
+  },
+  {
+    value: '180',
+    label: '3 小时',
   },
 ]
 // 通道类型-价格

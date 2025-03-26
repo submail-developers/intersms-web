@@ -299,7 +299,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
             {({ type }) => {
               return (
                 <>
-                  <Col span={type != '1' ? 24 : 12}>
+                  <Col span={12}>
                     <Form.Item label='报警时间范围' name='time'>
                       <Select
                         showSearch
@@ -325,7 +325,7 @@ const Dialog = ({ onSearch }: Props, ref: any) => {
                 <>
                   <Col span={12}>
                     <Form.Item
-                      hidden={type != '1'}
+                      // hidden={type != '1'}
                       label='报警最小条数'
                       name='row'>
                       <Input placeholder='请输入最小条数' />
